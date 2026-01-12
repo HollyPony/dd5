@@ -16,7 +16,7 @@ function strObjInterpolation(str, obj){
   return str.replace(
     /{([^{}]*)}/g,
     (a, b) => {
-      const r = obj[b];0
+      const r = obj[b];
       return typeof r === 'string' || typeof r === 'number' ? r : a;
     },
   );
@@ -40,8 +40,12 @@ function objNavigate(obj, path){
   }
 };
 
+const translations = {
+  fr: fr
+}
+
 function _(key, interpolations) {
-  language = language ?? "en";
+  language = language ?? "fr";
   const value = objNavigate(translations[language], key);
   return strObjInterpolation(value, interpolations);
 }

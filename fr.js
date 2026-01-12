@@ -1,4 +1,4 @@
-export const fr = {
+const fr = {
   origins: {
     acolyte: 'Acolyte',
     artisan: 'Artisan',
