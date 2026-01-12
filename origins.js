@@ -1,0 +1,18 @@
+const origins = {
+  acolyte: { skills: ['insight', 'religion'] },
+  artisan: { skills: ['investigation', 'persuasion'] },
+  charlatan: { skills: ['deception', 'sleightOfHand'] },
+  criminal: { skills: ['sleightOfHand', 'stealth'] },
+  entertainer: { skills: ['acrobatics', 'performance'] },
+  farmer: { skills: ['animalHandling', 'nature'] },
+  guard: { skills: ['athletics', 'perception'] },
+  guide: { skills: ['stealth', 'survival'] },
+  hermit: { skills: ['medicine', 'religion'] },
+  merchant: { skills: ['animalHandling', 'persuasion'] },
+  noble: { skills: ['history', 'persuasion'] },
+  sage: { skills: ['arcana', 'history'] },
+  sailor: { skills: ['acrobatics', 'perception'] },
+  scribe: { skills: ['investigation', 'perception'] },
+  soldier: { skills: ['athletics', 'intimidation'] },
+  wayfarer: { skills: ['insight', 'stealth'] },
+}
