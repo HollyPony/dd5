@@ -1,5 +1,9 @@
 const fr = {
+  charName: {
+    _label: 'Nom du personnage',
+  },
   origins: {
+    _label: 'Origine',
     acolyte: 'Acolyte',
     artisan: 'Artisan',
     charlatan: 'Charlatan',
@@ -38,6 +42,7 @@ const fr = {
     'survival': 'Survie',
   },
   classes: {
+    _label: 'Classe',
     barbarian: 'Barbare',
     bard: 'Barde',
     cleric: 'Clerc',
@@ -50,5 +55,95 @@ const fr = {
     sorcerer: 'Ensorceleur',
     warlock: 'Occultiste',
     wizard: 'Magicien',
+  },
+  races: {
+    _label: 'Race',
+    aasimar: 'Aasimar',
+    dragonborn: 'Drakéide',
+    dwarf: 'Nain',
+    elf: 'Elfe',
+    gnome: 'Gnome',
+    goliath: 'Goliath',
+    halfling: 'Halfelin',
+    human: 'Humain',
+    orc: 'Orc',
+    tiefling: 'Tieffelin',
+  },
+  subClasses: {
+    _label: 'Sous-classe',
+    _select: 'Choisir une sous-classe',
+    _unavailable: 'Dispo au niveau 3',
+    barbarian: {
+      berserker: 'Voie du Berserker',
+      wildHeart: 'Voie du Coeur sauvage',
+      worldTree: 'Voie de l\'Arbre-Monde',
+      zealot: 'Voie du Zélateur',
+    },
+    bard: {
+      dance: 'Collège de la Danse',
+      glamour: 'Collège de la Séduction',
+      lore: 'Collège du Savoir',
+      valor: 'Collège de la Vaillance',
+    },
+    cleric: {
+      life: 'Domaine de la Vie',
+      light: 'Domaine de la Lumière',
+      trickery: 'Domaine de la Ruse',
+      war: 'Domaine de la Guerre',
+    },
+    druid: {
+      land: 'Cercle de la Terre',
+      moon: 'Cercle de la Lune',
+      sea: 'Cercle des Mers',
+      stars: 'Cercle des Astres',
+    },
+    fighter: {
+      battleMaster: 'Maître de Guerre',
+      champion: 'Champion',
+      eldritchKnight: 'Chevalier Occulte',
+      psiWarrior: 'Soldat Psi',
+    },
+    monk: {
+      mercy: 'Credo de la Miséricorde',
+      shadow: 'Credo de l\'Ombre',
+      elements: 'Credo des éléments',
+      openHand: 'Credo de la Paume',
+    },
+    paladin: {
+      devotion: 'Serment de Dévotion',
+      glory: 'Serment de la Gloire',
+      ancients: 'Serment des Anciens',
+      vengeance: 'Serment de Vengeance',
+    },
+    ranger: {
+      beast: 'Belluaire',
+      fey: 'Vagabond Féérique',
+      stalker: 'Traqueur des Ténèbres',
+      hunter: 'Chasseur',
+    },
+    rogue: {
+      arcana: 'Arnaqueur Arcanique',
+      assassin: 'Assassin',
+      soulknife: 'Âme acérée',
+      thief: 'Voleur',
+    },
+    sorcerer: {
+      aberrant: 'Sorcellerie Aberrante',
+      clockwork: 'Sorcellerie Mécanique',
+      draconic: 'Sorcellerie Draconique',
+      wild: 'Sorcellerie Sauvage',
+    },
+    warlock: {
+      archfey: 'Protecteur Archifée',
+      celestial: 'Protecteur Céleste',
+      fiend: 'Protecteur Fiélon',
+      old: 'Protecteur Grand Ancien',
+    },
+    wizard: {
+      abjureur: 'Abjurateur',
+      diviner: 'Devin',
+      evoker: 'Evocateur',
+      illusionist: 'Illusioniste',
+    },
   }
 }

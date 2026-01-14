@@ -1,9 +1,9 @@
 const charsheet = {
   charName: 'Titus Minus',
   charClass: 'wizard',
+  charSubClass: undefined,
   charLevel: 1,
   charOrigin: 'farmer',
-  playerName: 'Arthur',
   charRace: 'dwarf',
   charAlignment: 'neutralGood',
   charExperience: 200,
@@ -19,80 +19,64 @@ const charsheet = {
 }
 
 const skillList = {
-  'acrobatics': 'dexterity',
-  'animalHandling': 'wisdom',
-  'arcana': 'intelligence',
-  'athletics': 'strength',
-  'deception': 'charisma',
-  'history': 'intelligence',
-  'insight': 'wisdom',
-  'intimidation': 'charisma',
-  'investigation': 'intelligence',
-  'medicine': 'wisdom',
-  'nature': 'intelligence',
-  'perception': 'wisdom',
-  'performance': 'charisma',
-  'persuasion': 'charisma',
-  'religion': 'intelligence',
-  'sleightOfHand': 'dexterity',
-  'stealth': 'dexterity',
-  'survival': 'wisdom',
+  acrobatics: 'dexterity',
+  animalHandling: 'wisdom',
+  arcana: 'intelligence',
+  athletics: 'strength',
+  deception: 'charisma',
+  history: 'intelligence',
+  insight: 'wisdom',
+  intimidation: 'charisma',
+  investigation: 'intelligence',
+  medicine: 'wisdom',
+  nature: 'intelligence',
+  perception: 'wisdom',
+  performance: 'charisma',
+  persuasion: 'charisma',
+  religion: 'intelligence',
+  sleightOfHand: 'dexterity',
+  stealth: 'dexterity',
+  survival: 'wisdom',
 }
 
-function getPlayName() {
-  return charsheet.playerName
-}
+// INPUTS
 
-function getCharName() {
-  return charsheet.charName
-}
+const charNameElement = document.getElementsByName('charName')[0]
+const charClassElement = document.getElementsByName('charClass')[0]
+const charSubClassElement = document.getElementsByName('charSubClass')[0]
+const charLevelElement = document.getElementsByName('charLevel')[0]
+const charOriginElement = document.getElementsByName('charOrigin')[0]
+const charRaceElement = document.getElementsByName('charRace')[0]
+const charAlignmentElement = document.getElementsByName('alignment')[0]
+const charExperienceElement = document.getElementsByName('experiencepoints')[0]
 
-function getCharClass() {
-  return charsheet.charClass
-}
+const proficiencyBonus = document.getElementsByName('proficiencybonus')[0]
 
-function getCharLevel() {
-  return charsheet.charLevel
-}
 
-function getCharOrigin() {
-  return charsheet.charOrigin
-}
+// ACCESSORS
 
-function getCharRace() {
-  return charsheet.charRace
-}
+function getCharName() { return charsheet.charName }
+function getCharClass() { return charsheet.charClass }
+function getCharSubClass() { return charsheet.charSubClass }
+function getCharLevel() { return charsheet.charLevel }
+function getCharOrigin() { return charsheet.charOrigin }
+function getCharRace() { return charsheet.charRace }
+function getCharAlignment() { return charsheet.charAlignment }
+function getCharExperience() { return charsheet.charExperience }
+function getAttributeScore(attributeName) { return charsheet.attributes[attributeName] }
+function getSkillChoosed() { return charsheet.skillChoosed }
 
-function getCharAlignment() {
-  return charsheet.charAlignment
-}
+// COMPUTED VALUES
 
-function getCharExperience() {
-  return charsheet.charExperience
-}
+function setAttribute(attributeName, score) { charsheet.attributes[attributeName] = parseInt(score) }
+function getAttributeModifier(attributeName) { return Math.floor(getAttributeScore(attributeName) / 2) - 5 }
+function getProficencyBonus() { return Math.floor(getCharLevel() / 4) + 2 }
+function skillAsText(score) { return score > 0 ? `+${score}` : `${score}` }
 
-function getAttributeScore(attributeName) {
-  return charsheet.attributes[attributeName]
-}
+// UPDATE INTERFACE
 
-function setAttribute(attributeName, score) {
-  charsheet.attributes[attributeName] = parseInt(score)
-}
-
-function getAttributeModifier(attributeName) {
-  return Math.floor(getAttributeScore(attributeName) / 2) - 5
-}
-
-function getSkillChoosed() {
-  return charsheet.skillChoosed
-}
-
-function getProficencyBonus() {
-  return Math.floor(getCharLevel()/4) + 2
-}
-
-function skillAsText(score) {
-  return score > 0 ? `+${score}` : `${score}`
+function classChanged() {
+  const gamerClass = classes[getCharClass()]
 }
 
 // USER INTERACTIONS
@@ -103,8 +87,7 @@ function updateModifier(element, score) {
 
   const modifier = getAttributeModifier(attributeName)
 
-  document.getElementsByName(`${attributeName}Modifier`)[0].value =
-    skillAsText(modifier)
+  document.getElementsByName(`${attributeName}Modifier`)[0].value = skillAsText(modifier)
 }
 
 function skillCheck(element) {
@@ -114,18 +97,21 @@ function skillCheck(element) {
   } else {
     getSkillChoosed().splice(getSkillChoosed().indexOf(element.name), 1)
   }
-  
-  document.getElementsByName(`${element.name}Score`)[0].value =
-    skillAsText(getAttributeModifier(skillList[element.name]) + (skillChecked ? getProficencyBonus() : 0))
-  
+
+  document.getElementsByName(`${element.name}Score`)[0].textContent = skillAsText(
+    getAttributeModifier(skillList[element.name]) + (skillChecked ? getProficencyBonus() : 0)
+  )
+
   if (getSkillChoosed().length >= classes[getCharClass()]?.authorizedNumberSkills ?? 0) {
-    Object.keys(skillList).forEach(skill => {
-      document.getElementsByName(`${skill}`)[0].disabled = !getSkillChoosed().includes(skill)
+    Object.keys(skillList).forEach((skill) => {
+      document.getElementsByName(`${skill}`)[0].disabled =
+        !getSkillChoosed().includes(skill)
     })
     document.getElementsByClassName('skills')[0].classList.remove('uncompleted')
   } else {
-    Object.keys(skillList).forEach(skill => {
-      document.getElementsByName(`${skill}`)[0].disabled = !classes[getCharClass()]?.authorizedSkills?.includes(skill)
+    Object.keys(skillList).forEach((skill) => {
+      document.getElementsByName(`${skill}`)[0].disabled =
+        !classes[getCharClass()]?.authorizedSkills?.includes(skill)
     })
     document.getElementsByClassName('skills')[0].classList.add('uncompleted')
   }
@@ -133,38 +119,60 @@ function skillCheck(element) {
 
 // INITIALIZATION
 
-function setFromData (charsheet) {
-  document.getElementsByName('charname')[0].value =
-    getCharName()
-  document.getElementsByName('classlevel')[0].value =
-    getCharClass() ? `${getCharClass()} Lv.${getCharLevel()}` : null
-  document.getElementsByName('origin')[0].value =
-    getCharOrigin()
-  document.getElementsByName('playername')[0].value =
-    getPlayName()
-  document.getElementsByName('race')[0].value =
-    getCharRace()
-  document.getElementsByName('alignment')[0].value =
-    getCharAlignment()
-  document.getElementsByName('experiencepoints')[0].value =
-    getCharExperience()
+function init() {
+  lib.populateSelect(
+    charOriginElement,
+    Object.keys(origins).map((originName) => ({ value: originName, text: i18n._(`origins.${originName}`), }))
+  )
 
-  Object.keys(charsheet.attributes).forEach(attributeName => {
+  lib.populateSelect(
+    charClassElement,
+    Object.keys(classes).map((className) => ({ value: className, text: i18n._(`classes.${className}`), }))
+  )
+
+  lib.populateSelect(
+    charRaceElement,
+    Object.keys(races).map((raceName) => ({ value: raceName, text: i18n._(`races.${raceName}`), }))
+  )
+}
+
+function setFromData(charsheet) {
+  charNameElement.value = getCharName()
+  charClassElement.value = getCharClass()
+  if (getCharClass()) {
+    lib.populateSelect(
+      charSubClassElement,
+      [
+        { value: '', text: i18n._(getCharLevel() < 3 ? `subClasses._unavailable` : `subClasses._select`) },
+        ...Object.keys(classes[getCharClass()].subClasses).map((subClassName) => ({
+          value: subClassName,
+          text: i18n._(`subClasses.${getCharClass()}.${subClassName}`),
+        })),
+      ],
+      { clear: true }
+    )
+
+    charSubClassElement.value = getCharLevel() > 2 && getCharSubClass() || ''
+    charSubClassElement.disabled = getCharLevel() < 3
+  }
+  charOriginElement.value = getCharOrigin()
+  charRaceElement.value = getCharRace()
+
+  charAlignmentElement.value = getCharAlignment()
+  charExperienceElement.value = getCharExperience()
+
+  Object.keys(charsheet.attributes).forEach((attributeName) => {
     const score = getAttributeScore(attributeName)
     const modifier = getAttributeModifier(attributeName)
-    
-    document.getElementsByName(`${attributeName}`)[0].value =
-      score
-    document.getElementsByName(`${attributeName}Modifier`)[0].value =
-      skillAsText(modifier)
+
+    document.getElementsByName(`${attributeName}`)[0].value = score
+    document.getElementsByName(`${attributeName}Modifier`)[0].value = skillAsText(modifier)
 
     if (classes[getCharClass()]?.saves?.includes(attributeName)) {
-      document.getElementsByName(`${attributeName}Save`)[0].value =
-        skillAsText(modifier + getProficencyBonus())
+      document.getElementsByName(`${attributeName}Save`)[0].textContent = skillAsText(modifier + getProficencyBonus())
       document.getElementsByName(`${attributeName}SaveProf`)[0].checked = true
     } else {
-      document.getElementsByName(`${attributeName}Save`)[0].value =
-        skillAsText(modifier)
+      document.getElementsByName(`${attributeName}Save`)[0].textContent = skillAsText(modifier)
     }
   })
 
@@ -172,22 +180,27 @@ function setFromData (charsheet) {
   Object.entries(skillList).forEach(([skill, attribute]) => {
     const skillCheckbox = document.getElementsByName(`${skill}`)[0]
 
-    const isAuthorized = classes[getCharClass()]?.authorizedSkills?.includes(skill)
+    const isAuthorized =
+      classes[getCharClass()]?.authorizedSkills?.includes(skill)
     const isFromOrigin = origins[getCharOrigin()]?.skills?.includes(skill)
     const isChoosed = getSkillChoosed().includes(skill)
 
-    skillCheckbox.disabled = remainingSkills < 1 || !isAuthorized || isFromOrigin
+    skillCheckbox.disabled =
+      remainingSkills < 1 || !isAuthorized || isFromOrigin
     skillCheckbox.checked = isFromOrigin || isChoosed
 
-    document.getElementsByName(`${skill}Score`)[0].value =
-        skillAsText(getAttributeModifier(attribute) + (skillCheckbox.checked ? getProficencyBonus() : 0))
+    document.getElementsByName(`${skill}Score`)[0].textContent = skillAsText(
+      getAttributeModifier(attribute) +
+      (skillCheckbox.checked ? getProficencyBonus() : 0)
+    )
   })
 
   if (remainingSkills > 0) {
-    document.getElementsByClassName('skills')[0].classList.add('uncompleted')
+    // document.getElementsByClassName('skills')[0].classList.add('uncompleted')
   }
 
-  document.getElementsByName('proficiencybonus')[0].value = skillAsText(getProficencyBonus())
+  proficiencyBonus.value = skillAsText(getProficencyBonus())
 }
 
+init()
 setFromData(charsheet)
