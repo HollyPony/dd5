@@ -1,8 +1,31 @@
+/* Modules */
+
+@import 'styles/ability-card.css';
+@import 'styles/block.css';
+
+.flex-basis-0 {
+  flex-basis: 0;
+}
+
 .vr {
   min-width: 1px;
+}
+
+.title {
+  font-weight: bold;
+  margin-bottom: 5px;
 }
 
 input[disabled] ~ label,
 input[disabled] ~ span {
   color: gray;
+}
+
+.save-score,
+.ability-card {
+  .skill-score {
+    display: inline-block;
+    min-width: 20px;
+    text-align: end;
+  }
 }

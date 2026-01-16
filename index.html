@@ -57,16 +57,16 @@
               <label for="experiencepoints" class="form-text text-center">Experience Points</label>
             </div>
             <div class="d-flex flex-column align-items-center">
-              <label for="armorClass" class="form-text text-center">Armor Class</label>
+              <label for="armorClass" class="form-text text-center title">Armor Class</label>
               <input name="armorClass" class="form-control" placeholder="0" />
               <label for="shield" class="form-text text-center">Shield</label>
-              <input name="shield" type="checkbox" class="form-check-input" />
+              <input name="shield" type="checkbox" class="form-check-input shield-check" />
             </div>
           </div>
 
           <div class="w-100 d-flex border misc">
             <div class="d-flex flex-column m-2 hit-points">
-              <span class="text-center">Hit Points</span>
+              <span class="text-center title">Hit Points</span>
               <div class="d-flex align-items-stretch">
                 <div class="d-flex flex-column">
                   <input name="currentHp" class="flex-fill form-control border-0 border-bottom rounded-0" />
@@ -87,7 +87,7 @@
             <div class="vr"></div>
 
             <div class="d-flex flex-column m-2 hit-dice">
-              <span class="text-center">Hit Dice</span>
+              <span class="text-center title">Hit Dice</span>
               <input name="spentHd" class="form-control border-0 border-bottom rounded-0" />
               <label for="spentHd" class="form-text">Spent</label>
               <input name="maxHd" class="form-control border-0 border-bottom rounded-0" />
@@ -97,7 +97,7 @@
             <div class="vr"></div>
 
             <div class="m-2 death-saves">
-              <span class="text-center">Death Saves</span>
+              <span class="text-center title">Death Saves</span>
               <input type="checkbox" class="form-check-input" />
               <input type="checkbox" class="form-check-input" />
               <input type="checkbox" class="form-check-input" />
@@ -113,213 +113,284 @@
         <hr />
 
         <div class="row">
-          <div class="col-4">
-            <div class="d-flex gap-3">
-              <div class="d-flex flex-column gap-3">
-                <div class="border p-2 rounded">
-                  <label for="proficiencybonus" class="text-center w-100">Proficiency Bonus</label>
+          <div class="col-4 d-flex flex-column gap-2">
+            <div class="d-flex gap-1">
+              <div class="d-flex flex-column gap-2">
+                <div class="block">
+                  <label for="proficiencybonus" class="text-center w-100 title">Proficiency Bonus</label>
                   <input disabled name="proficiencybonus" class="form-control p-0 border-0 border-bottom text-center"
                     placeholder="+2">
                 </div>
-                <div class="border p-2 rounded">
-                  <label for="strengthscore" class="text-center w-100">Strength</label>
-                  <input name="strength" class="form-control" placeholder="10"
-                    onchange="updateModifier(this, this.value)" />
-                  <input disabled name="strengthModifier" class="form-control" placeholder="+0">
-                  <hr />
-                  <div class="form-check">
-                    <input disable name="strengthSaveProf" type="checkbox" class="form-check-input" />
-                    <span name="strengthSave"></span>
-                    <label for="strength-save">Save</label>
+                <div class="ability-card strength">
+                  <div class="ability-card-header"></div>
+                  <div class="ability-card-content">
+                    <label for="strengthscore" class="text-center w-100 title">Strength</label>
+                    <div class="values">
+                      <input disabled name="strength-modifier" class="form-control rounded-circle ability-modifier"
+                        placeholder="+0">
+                      <input name="strength-score"
+                        class="form-control border-start-0 rounded-0 rounded-end-2 ability-score" placeholder="10"
+                        onchange="updateModifier(this, this.value)" />
+                    </div>
+                    <hr />
+                    <div class="form-check">
+                      <input disable name="strength-save-check" type="checkbox" class="form-check-input save-check" />
+                      <span class="save-score"></span>
+                      <label for="strength-save">Save</label>
+                    </div>
+                    <hr />
+                    <div class="form-check">
+                      <input name="athletics" type="checkbox" class="form-check-input athletics-check"
+                        onchange="skillCheck(this)" />
+                      <span class="skill-score athletics-score"></span>
+                      <label for="Athletics">Athletics</label>
+                    </div>
                   </div>
-                  <hr />
-                  <div class="form-check">
-                    <input name="athletics" type="checkbox" class="form-check-input" onchange="skillCheck(this)" />
-                    <span name="athleticsScore"></span>
-                    <label for="Athletics">Athletics</label>
-                  </div>
+                  <div class="ability-card-footer"></div>
                 </div>
-                <div class="border p-2 rounded">
-                  <label for="dexterityscore" class="text-center w-100">Dexterity</label>
-                  <input name="dexterity" class="form-control" placeholder="10"
-                    onchange="updateModifier(this, this.value)">
-                  <input disabled name="dexterityModifier" class="form-control" placeholder="+0">
-                  <hr />
-                  <div class="form-check">
-                    <input disable name="dexteritySaveProf" type="checkbox" class="form-check-input" />
-                    <span name="dexteritySave"></span>
-                    <label for="dexterity-save">Save</label>
+                <div class="ability-card dexterity">
+                  <div class="ability-card-header"></div>
+                  <div class="ability-card-content">
+                    <label for="dexterityscore" class="text-center w-100 title">Dexterity</label>
+                    <div class="values">
+                      <input disabled name="dexterity-modifier" class="form-control ability-modifier" placeholder="+0">
+                      <input name="dexterity-score" class="form-control ability-score" placeholder="10"
+                        onchange="updateModifier(this, this.value)">
+                    </div>
+                    <hr />
+                    <div class="form-check">
+                      <input disable name="dexterity-save-check" type="checkbox" class="form-check-input save-check" />
+                      <span class="save-score"></span>
+                      <label for="dexterity-save">Save</label>
+                    </div>
+                    <hr />
+                    <div class="form-check">
+                      <input name="acrobatics" type="checkbox" class="form-check-input acrobatics-check"
+                        onchange="skillCheck(this)" />
+                      <span class="skill-score acrobatics-score"></span>
+                      <label for="Acrobatics">Acrobatics</label>
+                    </div>
+                    <div class="form-check">
+                      <input name="sleightOfHand" type="checkbox" class="form-check-input sleightOfHand-check"
+                        onchange="skillCheck(this)" />
+                      <span class="skill-score sleightOfHand-score"></span>
+                      <label for="Sleight of Hand">Sleight of Hand</label>
+                    </div>
+                    <div class="form-check">
+                      <input name="stealth" type="checkbox" class="form-check-input stealth-check"
+                        onchange="skillCheck(this)" />
+                      <span class="skill-score stealth-score"></span>
+                      <label for="Stealth">Stealth</label>
+                    </div>
                   </div>
-                  <hr />
-                  <div class="form-check">
-                    <input name="acrobatics" type="checkbox" class="form-check-input" onchange="skillCheck(this)" />
-                    <span name="acrobaticsScore"></span>
-                    <label for="Acrobatics">Acrobatics</label>
-                  </div>
-                  <div class="form-check">
-                    <input name="sleightOfHand" type="checkbox" class="form-check-input" onchange="skillCheck(this)" />
-                    <span name="sleightOfHandScore"></span>
-                    <label for="Sleight of Hand">Sleight of Hand</label>
-                  </div>
-                  <div class="form-check">
-                    <input name="stealth" type="checkbox" class="form-check-input" onchange="skillCheck(this)" />
-                    <span name="stealthScore"></span>
-                    <label for="Stealth">Stealth</label>
-                  </div>
+                  <div class="ability-card-footer"></div>
                 </div>
-                <div class="border p-2 rounded">
-                  <label for="constitutionscore" class="text-center w-100">Constitution</label>
-                  <input name="constitution" class="form-control" placeholder="10"
-                    onchange="updateModifier(this, this.value)">
-                  <input disabled name="constitutionModifier" class="form-control" placeholder="+0">
-                  <hr />
-                  <div class="form-check">
-                    <input disable name="constitutionSaveProf" type="checkbox" class="form-check-input" />
-                    <span name="constitutionSave"></span>
-                    <label for="constitution-save">Save</label>
+                <div class="ability-card constitution">
+                  <div class="ability-card-header"></div>
+                  <div class="ability-card-content">
+                    <label for="constitutionscore" class="text-center w-100 title">Constitution</label>
+                    <div class="values">
+                      <input disabled name="constitution-modifier" class="form-control ability-modifier"
+                        placeholder="+0">
+                      <input name="constitution-score" class="form-control ability-score" placeholder="10"
+                        onchange="updateModifier(this, this.value)">
+                    </div>
+                    <hr />
+                    <div class="form-check">
+                      <input disable name="constitution-save-check" type="checkbox"
+                        class="form-check-input save-check" />
+                      <span class="save-score"></span>
+                      <label for="constitution-save">Save</label>
+                    </div>
                   </div>
+                  <div class="ability-card-footer"></div>
                 </div>
-                <div class="border p-2 rounded">
-                  <label for="inspiration" class="text-center w-100">Inspiration</label>
-                  <input name="inspiration" type="checkbox" class="form-check-input" />
+                <div class="block">
+                  <label for="inspiration" class="text-center w-100 title">Inspiration</label>
+                  <input name="inspiration" type="checkbox" class="form-check-input inspiration-check" />
                 </div>
               </div>
               <div class="d-flex flex-column gap-3">
-                <div class="border p-2 rounded">
-                  <label for="intelligencescore" class="text-center w-100">Intelligence</label>
-                  <input name="intelligence" class="form-control" placeholder="10"
-                    onchange="updateModifier(this, this.value)">
-                  <input disabled name="intelligenceModifier" class="form-control" placeholder="+0">
-                  <hr />
-                  <div class="form-check">
-                    <input disable name="intelligenceSaveProf" type="checkbox" class="form-check-input" />
-                    <span name="intelligenceSave"></span>
-                    <label for="intelligence-save">Save</label>
+                <div class="ability-card intelligence">
+                  <div class="ability-card-header"></div>
+                  <div class="ability-card-content">
+                    <label for="intelligencescore" class="text-center w-100 title">Intelligence</label>
+                    <div class="values">
+                      <input disabled name="intelligence-modifier" class="form-control ability-modifier"
+                        placeholder="+0">
+                      <input name="intelligence-score" class="form-control ability-score" placeholder="10"
+                        onchange="updateModifier(this, this.value)">
+                    </div>
+                    <hr />
+                    <div class="form-check">
+                      <input disable name="intelligence-save-check" type="checkbox"
+                        class="form-check-input save-check" />
+                      <span class="save-score"></span>
+                      <label for="intelligence-save">Save</label>
+                    </div>
+                    <hr />
+                    <div class="form-check">
+                      <input name="arcana" type="checkbox" class="form-check-input arcana-check"
+                        onchange="skillCheck(this)" />
+                      <span class="skill-score arcana-score"></span>
+                      <label for="Arcana">Arcana</label>
+                    </div>
+                    <div class="form-check">
+                      <input name="history" type="checkbox" class="form-check-input history-check"
+                        onchange="skillCheck(this)" />
+                      <span class="skill-score history-score"></span>
+                      <label for="History">History</label>
+                    </div>
+                    <div class="form-check">
+                      <input name="investigation" type="checkbox" class="form-check-input investigation-check"
+                        onchange="skillCheck(this)" />
+                      <span class="skill-score investigation-score"></span>
+                      <label for="Investigation">Investigation</label>
+                    </div>
+                    <div class="form-check">
+                      <input name="nature" type="checkbox" class="form-check-input nature-check"
+                        onchange="skillCheck(this)" />
+                      <span class="skill-score nature-score"></span>
+                      <label for="Nature">Nature</label>
+                    </div>
+                    <div class="form-check">
+                      <input name="religion" type="checkbox" class="form-check-input religion-check"
+                        onchange="skillCheck(this)" />
+                      <span class="skill-score religion-score"></span>
+                      <label for="Religion">Religion</label>
+                    </div>
                   </div>
-                  <hr />
-                  <div class="form-check">
-                    <input name="arcana" type="checkbox" class="form-check-input" onchange="skillCheck(this)" />
-                    <span name="arcanaScore"></span>
-                    <label for="Arcana">Arcana</label>
-                  </div>
-                  <div class="form-check">
-                    <input name="history" type="checkbox" class="form-check-input" onchange="skillCheck(this)" />
-                    <span name="historyScore"></span>
-                    <label for="History">History</label>
-                  </div>
-                  <div class="form-check">
-                    <input name="investigation" type="checkbox" class="form-check-input" onchange="skillCheck(this)" />
-                    <span name="investigationScore"></span>
-                    <label for="Investigation">Investigation</label>
-                  </div>
-                  <div class="form-check">
-                    <input name="nature" type="checkbox" class="form-check-input" onchange="skillCheck(this)" />
-                    <span name="natureScore"></span>
-                    <label for="Nature">Nature</label>
-                  </div>
-                  <div class="form-check">
-                    <input name="religion" type="checkbox" class="form-check-input" onchange="skillCheck(this)" />
-                    <span name="religionScore"></span>
-                    <label for="Religion">Religion</label>
-                  </div>
+                  <div class="ability-card-footer"></div>
                 </div>
-                <div class="border p-2 rounded">
-                  <label for="wisdomscore" class="text-center w-100">Wisdom</label>
-                  <input name="wisdom" class="form-control" placeholder="10"
-                    onchange="updateModifier(this, this.value)">
-                  <input disabled name="wisdomModifier" class="form-control" placeholder="+0">
-                  <hr />
-                  <div class="form-check">
-                    <input disable name="wisdomSaveProf" type="checkbox" class="form-check-input" />
-                    <span name="wisdomSave"></span>
-                    <label for="wisdom-save">Save</label>
+                <div class="ability-card wisdom">
+                  <div class="ability-card-header"></div>
+                  <div class="ability-card-content">
+                    <label for="wisdomscore" class="text-center w-100 title">Wisdom</label>
+                    <div class="values">
+                      <input disabled name="wisdom-modifier" class="form-control ability-modifier" placeholder="+0">
+                      <input name="wisdom-score" class="form-control ability-score" placeholder="10"
+                        onchange="updateModifier(this, this.value)">
+                    </div>
+                    <hr />
+                    <div class="form-check">
+                      <input disable name="wisdom-save-check" type="checkbox" class="form-check-input save-check" />
+                      <span class="save-score"></span>
+                      <label for="wisdom-save">Save</label>
+                    </div>
+                    <hr />
+                    <div class="form-check">
+                      <input name="animalHandling" type="checkbox" class="form-check-input animalHandling-check"
+                        onchange="skillCheck(this)" />
+                      <span class="skill-score animalHandling-score"></span>
+                      <label for="Animal Handling">Animal Handling</label>
+                    </div>
+                    <div class="form-check">
+                      <input name="insight" type="checkbox" class="form-check-input insight-check"
+                        onchange="skillCheck(this)" />
+                      <span class="skill-score insight-score"></span>
+                      <label for="Insight">Insight</label>
+                    </div>
+                    <div class="form-check">
+                      <input name="medicine" type="checkbox" class="form-check-input medicine-check"
+                        onchange="skillCheck(this)" />
+                      <span class="skill-score medicine-score"></span>
+                      <label for="Medicine">Medicine</label>
+                    </div>
+                    <div class="form-check">
+                      <input name="perception" type="checkbox" class="form-check-input perception-check"
+                        onchange="skillCheck(this)" />
+                      <span class="skill-score perception-score"></span>
+                      <label for="Perception">Perception</label>
+                    </div>
+                    <div class="form-check">
+                      <input name="survival" type="checkbox" class="form-check-input survival-check"
+                        onchange="skillCheck(this)" />
+                      <span class="skill-score survival-score"></span>
+                      <label for="Survival">Survival</label>
+                    </div>
                   </div>
-                  <hr />
-                  <div class="form-check">
-                    <input name="animalHandling" type="checkbox" class="form-check-input" onchange="skillCheck(this)" />
-                    <span name="animalHandlingScore"></span>
-                    <label for="Animal Handling">Animal Handling</label>
-                  </div>
-                  <div class="form-check">
-                    <input name="insight" type="checkbox" class="form-check-input" onchange="skillCheck(this)" />
-                    <span name="insightScore"></span>
-                    <label for="Insight">Insight</label>
-                  </div>
-                  <div class="form-check">
-                    <input name="medicine" type="checkbox" class="form-check-input" onchange="skillCheck(this)" />
-                    <span name="medicineScore"></span>
-                    <label for="Medicine">Medicine</label>
-                  </div>
-                  <div class="form-check">
-                    <input name="perception" type="checkbox" class="form-check-input" onchange="skillCheck(this)" />
-                    <span name="perceptionScore"></span>
-                    <label for="Perception">Perception</label>
-                  </div>
-                  <div class="form-check">
-                    <input name="survival" type="checkbox" class="form-check-input" onchange="skillCheck(this)" />
-                    <span name="survivalScore"></span>
-                    <label for="Survival">Survival</label>
-                  </div>
+                  <div class="ability-card-footer"></div>
                 </div>
-                <div class="border p-2 rounded">
-                  <label for="charismascore" class="text-center w-100">Charisma</label>
-                  <input name="charisma" class="form-control" placeholder="10"
-                    onchange="updateModifier(this, this.value)">
-                  <input disabled name="charismaModifier" class="form-control" placeholder="+0">
-                  <hr />
-                  <div class="form-check">
-                    <input disable name="charismaSaveProf" type="checkbox" class="form-check-input" />
-                    <span name="charismaSave"></span>
-                    <label for="charisma-save">Save</label>
+                <div class="ability-card charisma">
+                  <div class="ability-card-header"></div>
+                  <div class="ability-card-content">
+                    <label for="charismascore" class="text-center w-100 title">Charisma</label>
+                    <div class="values">
+                      <input disabled name="charisma-modifier" class="form-control ability-modifier" placeholder="+0">
+                      <input name="charisma-score" class="form-control ability-score" placeholder="10"
+                        onchange="updateModifier(this, this.value)">
+                    </div>
+                    <hr />
+                    <div class="form-check">
+                      <input disable name="charisma-save-check" type="checkbox" class="form-check-input save-check" />
+                      <span class="save-score"></span>
+                      <label for="charisma-save">Save</label>
+                    </div>
+                    <hr />
+                    <div class="form-check">
+                      <input name="deception" type="checkbox" class="form-check-input deception-check"
+                        onchange="skillCheck(this)" />
+                      <span class="skill-score deception-score"></span>
+                      <label for="deception">Deception</label>
+                    </div>
+                    <div class="form-check">
+                      <input name="intimidation" type="checkbox" class="form-check-input intimidation-check"
+                        onchange="skillCheck(this)" />
+                      <span class="skill-score intimidation-score"></span>
+                      <label for="intimidation">Intimidation</label>
+                    </div>
+                    <div class="form-check">
+                      <input name="performance" type="checkbox" class="form-check-input performance-check"
+                        onchange="skillCheck(this)" />
+                      <span class="skill-score performance-score"></span>
+                      <label for="Performance">Performance</label>
+                    </div>
+                    <div class="form-check">
+                      <input name="persuasion" type="checkbox" class="form-check-input persuasion-check"
+                        onchange="skillCheck(this)" />
+                      <span class="skill-score persuasion-score"></span>
+                      <label for="Persuasion">Persuasion</label>
+                    </div>
                   </div>
-                  <hr />
-                  <div class="form-check">
-                    <input name="deception" type="checkbox" class="form-check-input" onchange="skillCheck(this)" />
-                    <span name="deceptionScore"></span>
-                    <label for="Deception">Deception</label>
-                  </div>
-                  <div class="form-check">
-                    <input name="intimidation" type="checkbox" class="form-check-input" onchange="skillCheck(this)" />
-                    <span name="intimidationScore"></span>
-                    <label for="Intimidation">Intimidation</label>
-                  </div>
-                  <div class="form-check">
-                    <input name="performance" type="checkbox" class="form-check-input" onchange="skillCheck(this)" />
-                    <span name="performanceScore"></span>
-                    <label for="Performance">Performance</label>
-                  </div>
-                  <div class="form-check">
-                    <input name="persuasion" type="checkbox" class="form-check-input" onchange="skillCheck(this)" />
-                    <span name="persuasionScore"></span>
-                    <label for="Persuasion">Persuasion</label>
-                  </div>
+                  <div class="ability-card-footer"></div>
                 </div>
               </div>
             </div>
-            <div class="row">
+            <div class="block">
               entrainement et maitrises
             </div>
           </div>
-          <div class="col">
-            <div class="row">
-              <div class="col">initiative</div>
-              <div class="col">speed</div>
-              <div class="col">taille</div>
-              <div class="col">perception passive</div>
+          <div class="col d-flex flex-column gap-3">
+            <div class="d-flex gap-2">
+              <div class="flex-grow-1 flex-basis-0 block">initiative</div>
+              <div class="flex-grow-1 flex-basis-0 block">speed</div>
+              <div class="flex-grow-1 flex-basis-0 block">taille</div>
+              <div class="flex-grow-1 flex-basis-0 block">perception passive</div>
             </div>
-            <div class="row">
-              <div class="col">armes & sorts mineurs</div>
+            <div class="">
+              <div class="block">
+                <div class="text-center title">armes & sorts mineurs</div>
+                <hr />
+              </div>
             </div>
-            <div class="row">
-              <div class="col">capacités de classe</div>
+            <div class="">
+              <div class="block">
+                <div class="text-center title">capacités de classe</div>
+                <hr />
+              </div>
             </div>
-            <div class="row">
-              <div class="col">traits d'epèce</div>
-              <div class="col">dons</div>
+            <div class="d-flex gap-2">
+              <div class="flex-grow-1 flex-basis-0 block">
+                <div class="text-center title">traits d'epèce</div>
+                <hr />
+              </div>
+              <div class="flex-grow-1 flex-basis-0 block">
+                <div class="text-center title">dons</div>
+                <hr />
+              </div>
             </div>
           </div>
         </div>
-
 
         <label for="alignment" class="form-text">Alignment</label>
         <input name="alignment" class="form-control" placeholder="Lawful Good" />

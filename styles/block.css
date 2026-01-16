@@ -1,0 +1,53 @@
+.block {
+  --border-width: 1px;
+  --corner-width: 8px;
+  --border-color: var(--bs-border-color);
+
+  position: relative;
+  min-height: calc(var(--corner-width) * 2);
+  padding: var(--corner-width) calc(var(--corner-width) + 4px);
+
+  &:before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--border-color);
+    mask: radial-gradient(
+          var(--corner-width) at var(--corner-width) var(--corner-width),
+          #0000 calc(98% - var(--border-width)),
+          #000 calc(100% - var(--border-width)) 98%,
+          #0000
+        )
+        calc(0px - var(--corner-width)) calc(0px - var(--corner-width)),
+      linear-gradient(90deg, #000 calc(var(--border-width) * 2), #0000 0)
+        calc(0px - var(--border-width)) 50% /100% calc(
+          100% - calc(var(--corner-width) * 2) + var(--border-width)
+        ) repeat-x,
+      linear-gradient(#000 calc(var(--border-width) * 2), #0000 0) 50%
+        calc(0px - var(--border-width)) /
+        calc(100% - calc(var(--corner-width) * 2) + var(--border-width)) 100%
+        repeat-y;
+  }
+
+  &:after {
+    --corner-mask: var(--corner-width);
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+
+    margin: calc(var(--corner-width) / 2);
+    border: 1px solid var(--border-color);
+
+    clip-path: polygon(
+      var(--corner-mask) 0,
+      calc(100% - var(--corner-mask)) 0,
+      100% var(--corner-mask),
+      100% calc(100% - var(--corner-mask)),
+      calc(100% - var(--corner-mask)) 100%,
+      var(--corner-mask) 100%,
+      0 calc(100% - var(--corner-mask)),
+      0 var(--corner-mask)
+    );
+  }
+}

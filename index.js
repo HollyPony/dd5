@@ -91,29 +91,27 @@ function updateModifier(element, score) {
 }
 
 function skillCheck(element) {
-  const skillChecked = document.getElementsByName(element.name)[0].checked
+  const skillChecked = document.getElementsByName(`${element.name}`)[0].checked
   if (skillChecked) {
     getSkillChoosed().push(element.name)
   } else {
     getSkillChoosed().splice(getSkillChoosed().indexOf(element.name), 1)
   }
 
-  document.getElementsByName(`${element.name}Score`)[0].textContent = skillAsText(
+  document.getElementsByClassName(`${element.name}-score`)[0].textContent = skillAsText(
     getAttributeModifier(skillList[element.name]) + (skillChecked ? getProficencyBonus() : 0)
   )
 
   if (getSkillChoosed().length >= classes[getCharClass()]?.authorizedNumberSkills ?? 0) {
     Object.keys(skillList).forEach((skill) => {
-      document.getElementsByName(`${skill}`)[0].disabled =
-        !getSkillChoosed().includes(skill)
+      document.getElementsByName(`${skill}`)[0].disabled = !getSkillChoosed().includes(skill)
     })
-    document.getElementsByClassName('skills')[0].classList.remove('uncompleted')
+    // document.getElementsByClassName('skills')[0].classList.remove('uncompleted')
   } else {
     Object.keys(skillList).forEach((skill) => {
-      document.getElementsByName(`${skill}`)[0].disabled =
-        !classes[getCharClass()]?.authorizedSkills?.includes(skill)
+      document.getElementsByName(`${skill}`)[0].disabled = !classes[getCharClass()]?.authorizedSkills?.includes(skill)
     })
-    document.getElementsByClassName('skills')[0].classList.add('uncompleted')
+    // document.getElementsByClassName('skills')[0].classList.add('uncompleted')
   }
 }
 
@@ -162,17 +160,19 @@ function setFromData(charsheet) {
   charExperienceElement.value = getCharExperience()
 
   Object.keys(charsheet.attributes).forEach((attributeName) => {
+    const attributeNode = document.getElementsByClassName(`${attributeName}`)[0]
+
     const score = getAttributeScore(attributeName)
     const modifier = getAttributeModifier(attributeName)
 
-    document.getElementsByName(`${attributeName}`)[0].value = score
-    document.getElementsByName(`${attributeName}Modifier`)[0].value = skillAsText(modifier)
+    attributeNode.getElementsByClassName('ability-modifier')[0].value = skillAsText(modifier)
+    attributeNode.getElementsByClassName('ability-score')[0].value = score
 
     if (classes[getCharClass()]?.saves?.includes(attributeName)) {
-      document.getElementsByName(`${attributeName}Save`)[0].textContent = skillAsText(modifier + getProficencyBonus())
-      document.getElementsByName(`${attributeName}SaveProf`)[0].checked = true
+      attributeNode.getElementsByClassName('save-score')[0].textContent = skillAsText(modifier + getProficencyBonus())
+      attributeNode.getElementsByClassName('save-check')[0].checked = true
     } else {
-      document.getElementsByName(`${attributeName}Save`)[0].textContent = skillAsText(modifier)
+      attributeNode.getElementsByClassName('save-score')[0].textContent = skillAsText(modifier)
     }
   })
 
@@ -180,18 +180,15 @@ function setFromData(charsheet) {
   Object.entries(skillList).forEach(([skill, attribute]) => {
     const skillCheckbox = document.getElementsByName(`${skill}`)[0]
 
-    const isAuthorized =
-      classes[getCharClass()]?.authorizedSkills?.includes(skill)
+    const isAuthorized = classes[getCharClass()]?.authorizedSkills?.includes(skill)
     const isFromOrigin = origins[getCharOrigin()]?.skills?.includes(skill)
     const isChoosed = getSkillChoosed().includes(skill)
 
-    skillCheckbox.disabled =
-      remainingSkills < 1 || !isAuthorized || isFromOrigin
+    skillCheckbox.disabled = remainingSkills < 1 || !isAuthorized || isFromOrigin
     skillCheckbox.checked = isFromOrigin || isChoosed
 
-    document.getElementsByName(`${skill}Score`)[0].textContent = skillAsText(
-      getAttributeModifier(attribute) +
-      (skillCheckbox.checked ? getProficencyBonus() : 0)
+    document.getElementsByClassName(`${skill}-score`)[0].textContent = skillAsText(
+      getAttributeModifier(attribute) + (skillCheckbox.checked ? getProficencyBonus() : 0)
     )
   })
 

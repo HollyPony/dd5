@@ -1,0 +1,101 @@
+.ability-card {
+  --inner-width: 2px;
+  --outer-width: 1px;
+  --margin: 10px; /* profondeur des décrochements */
+  --offset: calc(var(--margin) / 2);
+  --border-color: var(--bs-border-color);
+
+  .ability-card-header,
+  .ability-card-content,
+  .ability-card-footer {
+    position: relative;
+
+    &:before,
+    &:after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+  }
+
+  .ability-card-content {
+    padding: 0.5em calc(var(--margin) + var(--inner-width) + 0.5em);
+    border-top: var(--inner-width) solid var(--border-color);
+    border-bottom: var(--inner-width) solid var(--border-color);
+
+    &:before {
+      margin: 0 var(--margin);
+      border-left: var(--inner-width) solid var(--border-color);
+      border-right: var(--inner-width) solid var(--border-color);
+    }
+
+    &:after {
+      margin: 0 var(--offset);
+      border-left: var(--outer-width) solid var(--border-color);
+      border-right: var(--outer-width) solid var(--border-color);
+    }
+  }
+
+  .ability-card-header,
+  .ability-card-footer {
+    height: var(--margin);
+
+    &:before {
+      margin: 0 var(--margin);
+      border-left: var(--inner-width) solid var(--border-color);
+      border-right: var(--inner-width) solid var(--border-color);
+    }
+    &:after {
+      height: var(--offset);
+      left: var(--offset);
+      right: var(--offset);
+      border-left: var(--outer-width) solid var(--border-color);
+      border-right: var(--outer-width) solid var(--border-color);
+    }
+  }
+
+  .ability-card-header:after {
+    top: var(--offset);
+    border-top: var(--outer-width) solid var(--border-color);
+  }
+
+  .ability-card-footer:after {
+    border-bottom: var(--outer-width) solid var(--border-color);
+  }
+
+  .form-check {
+    margin: 0;
+    font-size: 0.9em;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    min-height: 0;
+  }
+
+  .values {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    .ability-modifier {
+      text-align: center;
+      height: 55px;
+      width: 55px;
+    }
+
+    .ability-score {
+      /* --p: 50px;
+      height: 180px;
+      aspect-ratio: 3/2;
+      clip-path: polygon(
+        var(--p) 0,
+        calc(100% - var(--p)) 0,
+        100% 100%,
+        0 100%
+      );
+      background: #542437; */
+    }
+  }
+}
