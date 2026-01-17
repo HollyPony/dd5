@@ -116,34 +116,34 @@
           <div class="col-4 d-flex flex-column gap-2">
             <div class="d-flex gap-1">
               <div class="d-flex flex-column gap-2">
-                <div class="block">
-                  <label for="proficiencybonus" class="text-center w-100 title">Proficiency Bonus</label>
+                <div class="block proficiency">
+                  <label for="proficiencybonus" class="text-center w-100 title"
+                    data-i18n="stats.proficiencyBonus">Proficiency Bonus</label>
                   <input disabled name="proficiencybonus" class="form-control p-0 border-0 border-bottom text-center"
                     placeholder="+2">
                 </div>
                 <div class="ability-card strength">
                   <div class="ability-card-header"></div>
                   <div class="ability-card-content">
-                    <label for="strengthscore" class="text-center w-100 title">Strength</label>
+                    <label for="strength-score" class="text-center w-100 title"
+                      data-i18n="stats.ability.strength">Strength</label>
                     <div class="values">
-                      <input disabled name="strength-modifier" class="form-control rounded-circle ability-modifier"
-                        placeholder="+0">
-                      <input name="strength-score"
-                        class="form-control border-start-0 rounded-0 rounded-end-2 ability-score" placeholder="10"
-                        onchange="updateModifier(this, this.value)" />
+                      <input disabled name="strength-modifier" class="form-control ability-modifier" placeholder="+0"
+                        data-ability="strength" />
+                      <input name="strength-score" class="form-control ability-score" placeholder="10"
+                        data-ability="strength" />
                     </div>
                     <hr />
                     <div class="form-check">
-                      <input disable name="strength-save-check" type="checkbox" class="form-check-input save-check" />
+                      <input disabled name="strength-save-check" type="checkbox" class="form-check-input save-check" />
                       <span class="save-score"></span>
                       <label for="strength-save">Save</label>
                     </div>
                     <hr />
                     <div class="form-check">
-                      <input name="athletics" type="checkbox" class="form-check-input athletics-check"
-                        onchange="skillCheck(this)" />
+                      <input name="athletics" type="checkbox" class="form-check-input skill-check athletics-check" />
                       <span class="skill-score athletics-score"></span>
-                      <label for="Athletics">Athletics</label>
+                      <label for="athletics" data-i18n="stats.skills.athletics">Athletics</label>
                     </div>
                   </div>
                   <div class="ability-card-footer"></div>
@@ -151,36 +151,36 @@
                 <div class="ability-card dexterity">
                   <div class="ability-card-header"></div>
                   <div class="ability-card-content">
-                    <label for="dexterityscore" class="text-center w-100 title">Dexterity</label>
+                    <label for="dexterity-score" class="text-center w-100 title"
+                      data-i18n="stats.ability.dexterity">Dexterity</label>
                     <div class="values">
-                      <input disabled name="dexterity-modifier" class="form-control ability-modifier" placeholder="+0">
+                      <input disabled name="dexterity-modifier" class="form-control ability-modifier" placeholder="+0"
+                        data-ability="dexterity" />
                       <input name="dexterity-score" class="form-control ability-score" placeholder="10"
-                        onchange="updateModifier(this, this.value)">
+                        data-ability="dexterity" />
                     </div>
                     <hr />
                     <div class="form-check">
-                      <input disable name="dexterity-save-check" type="checkbox" class="form-check-input save-check" />
+                      <input disabled name="dexterity-save-check" type="checkbox" class="form-check-input save-check" />
                       <span class="save-score"></span>
                       <label for="dexterity-save">Save</label>
                     </div>
                     <hr />
                     <div class="form-check">
-                      <input name="acrobatics" type="checkbox" class="form-check-input acrobatics-check"
-                        onchange="skillCheck(this)" />
+                      <input name="acrobatics" type="checkbox" class="form-check-input skill-check acrobatics-check" />
                       <span class="skill-score acrobatics-score"></span>
-                      <label for="Acrobatics">Acrobatics</label>
+                      <label for="acrobatics" data-i18n="stats.skills.acrobatics">Acrobatics</label>
                     </div>
                     <div class="form-check">
-                      <input name="sleightOfHand" type="checkbox" class="form-check-input sleightOfHand-check"
-                        onchange="skillCheck(this)" />
+                      <input name="sleightOfHand" type="checkbox"
+                        class="form-check-input skill-check sleightOfHand-check" />
                       <span class="skill-score sleightOfHand-score"></span>
-                      <label for="Sleight of Hand">Sleight of Hand</label>
+                      <label for="sleightOfHand" data-i18n="stats.skills.sleightOfHand">Sleight of Hand</label>
                     </div>
                     <div class="form-check">
-                      <input name="stealth" type="checkbox" class="form-check-input stealth-check"
-                        onchange="skillCheck(this)" />
+                      <input name="stealth" type="checkbox" class="form-check-input skill-check stealth-check" />
                       <span class="skill-score stealth-score"></span>
-                      <label for="Stealth">Stealth</label>
+                      <label for="stealth" data-i18n="stats.skills.stealth">Stealth</label>
                     </div>
                   </div>
                   <div class="ability-card-footer"></div>
@@ -188,16 +188,17 @@
                 <div class="ability-card constitution">
                   <div class="ability-card-header"></div>
                   <div class="ability-card-content">
-                    <label for="constitutionscore" class="text-center w-100 title">Constitution</label>
+                    <label for="constitution-score" class="text-center w-100 title"
+                      data-i18n="stats.ability.constitution">Constitution</label>
                     <div class="values">
                       <input disabled name="constitution-modifier" class="form-control ability-modifier"
-                        placeholder="+0">
+                        placeholder="+0" data-ability="constitution">
                       <input name="constitution-score" class="form-control ability-score" placeholder="10"
-                        onchange="updateModifier(this, this.value)">
+                        data-ability="constitution" />
                     </div>
                     <hr />
                     <div class="form-check">
-                      <input disable name="constitution-save-check" type="checkbox"
+                      <input disabled name="constitution-save-check" type="checkbox"
                         class="form-check-input save-check" />
                       <span class="save-score"></span>
                       <label for="constitution-save">Save</label>
@@ -205,7 +206,7 @@
                   </div>
                   <div class="ability-card-footer"></div>
                 </div>
-                <div class="block">
+                <div class="block inspiration">
                   <label for="inspiration" class="text-center w-100 title">Inspiration</label>
                   <input name="inspiration" type="checkbox" class="form-check-input inspiration-check" />
                 </div>
@@ -214,50 +215,47 @@
                 <div class="ability-card intelligence">
                   <div class="ability-card-header"></div>
                   <div class="ability-card-content">
-                    <label for="intelligencescore" class="text-center w-100 title">Intelligence</label>
+                    <label for="intelligence-score" class="text-center w-100 title"
+                      data-i18n="stats.ability.intelligence">Intelligence</label>
                     <div class="values">
                       <input disabled name="intelligence-modifier" class="form-control ability-modifier"
-                        placeholder="+0">
+                        placeholder="+0" data-ability="intelligence">
                       <input name="intelligence-score" class="form-control ability-score" placeholder="10"
-                        onchange="updateModifier(this, this.value)">
+                        data-ability="intelligence" />
                     </div>
                     <hr />
                     <div class="form-check">
-                      <input disable name="intelligence-save-check" type="checkbox"
+                      <input disabled name="intelligence-save-check" type="checkbox"
                         class="form-check-input save-check" />
                       <span class="save-score"></span>
                       <label for="intelligence-save">Save</label>
                     </div>
                     <hr />
                     <div class="form-check">
-                      <input name="arcana" type="checkbox" class="form-check-input arcana-check"
-                        onchange="skillCheck(this)" />
+                      <input name="arcana" type="checkbox" class="form-check-input skill-check arcana-check" />
                       <span class="skill-score arcana-score"></span>
-                      <label for="Arcana">Arcana</label>
+                      <label for="arcana" data-i18n="stats.skills.arcana">Arcana</label>
                     </div>
                     <div class="form-check">
-                      <input name="history" type="checkbox" class="form-check-input history-check"
-                        onchange="skillCheck(this)" />
+                      <input name="history" type="checkbox" class="form-check-input skill-check history-check" />
                       <span class="skill-score history-score"></span>
-                      <label for="History">History</label>
+                      <label for="history" data-i18n="stats.skills.history">History</label>
                     </div>
                     <div class="form-check">
-                      <input name="investigation" type="checkbox" class="form-check-input investigation-check"
-                        onchange="skillCheck(this)" />
+                      <input name="investigation" type="checkbox"
+                        class="form-check-input skill-check investigation-check" />
                       <span class="skill-score investigation-score"></span>
-                      <label for="Investigation">Investigation</label>
+                      <label for="investigation" data-i18n="stats.skills.investigation">Investigation</label>
                     </div>
                     <div class="form-check">
-                      <input name="nature" type="checkbox" class="form-check-input nature-check"
-                        onchange="skillCheck(this)" />
+                      <input name="nature" type="checkbox" class="form-check-input skill-check nature-check" />
                       <span class="skill-score nature-score"></span>
-                      <label for="Nature">Nature</label>
+                      <label for="nature" data-i18n="stats.skills.nature">Nature</label>
                     </div>
                     <div class="form-check">
-                      <input name="religion" type="checkbox" class="form-check-input religion-check"
-                        onchange="skillCheck(this)" />
+                      <input name="religion" type="checkbox" class="form-check-input skill-check religion-check" />
                       <span class="skill-score religion-score"></span>
-                      <label for="Religion">Religion</label>
+                      <label for="religion" data-i18n="stats.skills.religion">Religion</label>
                     </div>
                   </div>
                   <div class="ability-card-footer"></div>
@@ -265,48 +263,46 @@
                 <div class="ability-card wisdom">
                   <div class="ability-card-header"></div>
                   <div class="ability-card-content">
-                    <label for="wisdomscore" class="text-center w-100 title">Wisdom</label>
+                    <label for="wisdom-score" class="text-center w-100 title"
+                      data-i18n="stats.ability.wisdom">Wisdom</label>
                     <div class="values">
-                      <input disabled name="wisdom-modifier" class="form-control ability-modifier" placeholder="+0">
+                      <input disabled name="wisdom-modifier" class="form-control ability-modifier" placeholder="+0"
+                        data-ability="wisdom" />
                       <input name="wisdom-score" class="form-control ability-score" placeholder="10"
-                        onchange="updateModifier(this, this.value)">
+                        data-ability="wisdom" />
                     </div>
                     <hr />
                     <div class="form-check">
-                      <input disable name="wisdom-save-check" type="checkbox" class="form-check-input save-check" />
+                      <input disabled name="wisdom-save-check" type="checkbox" class="form-check-input save-check" />
                       <span class="save-score"></span>
                       <label for="wisdom-save">Save</label>
                     </div>
                     <hr />
                     <div class="form-check">
-                      <input name="animalHandling" type="checkbox" class="form-check-input animalHandling-check"
-                        onchange="skillCheck(this)" />
+                      <input name="animalHandling" type="checkbox"
+                        class="form-check-input skill-check animalHandling-check" />
                       <span class="skill-score animalHandling-score"></span>
-                      <label for="Animal Handling">Animal Handling</label>
+                      <label for="animalHandling" data-i18n="stats.skills.animalHandling">Animal Handling</label>
                     </div>
                     <div class="form-check">
-                      <input name="insight" type="checkbox" class="form-check-input insight-check"
-                        onchange="skillCheck(this)" />
+                      <input name="insight" type="checkbox" class="form-check-input skill-check insight-check" />
                       <span class="skill-score insight-score"></span>
-                      <label for="Insight">Insight</label>
+                      <label for="insight" data-i18n="stats.skills.insight">Insight</label>
                     </div>
                     <div class="form-check">
-                      <input name="medicine" type="checkbox" class="form-check-input medicine-check"
-                        onchange="skillCheck(this)" />
+                      <input name="medicine" type="checkbox" class="form-check-input skill-check medicine-check" />
                       <span class="skill-score medicine-score"></span>
-                      <label for="Medicine">Medicine</label>
+                      <label for="medicine" data-i18n="stats.skills.medicine">Medicine</label>
                     </div>
                     <div class="form-check">
-                      <input name="perception" type="checkbox" class="form-check-input perception-check"
-                        onchange="skillCheck(this)" />
+                      <input name="perception" type="checkbox" class="form-check-input skill-check perception-check" />
                       <span class="skill-score perception-score"></span>
-                      <label for="Perception">Perception</label>
+                      <label for="perception" data-i18n="stats.skills.perception">Perception</label>
                     </div>
                     <div class="form-check">
-                      <input name="survival" type="checkbox" class="form-check-input survival-check"
-                        onchange="skillCheck(this)" />
+                      <input name="survival" type="checkbox" class="form-check-input skill-check survival-check" />
                       <span class="skill-score survival-score"></span>
-                      <label for="Survival">Survival</label>
+                      <label for="survival" data-i18n="stats.skills.survival">Survival</label>
                     </div>
                   </div>
                   <div class="ability-card-footer"></div>
@@ -314,42 +310,44 @@
                 <div class="ability-card charisma">
                   <div class="ability-card-header"></div>
                   <div class="ability-card-content">
-                    <label for="charismascore" class="text-center w-100 title">Charisma</label>
+                    <label for="charisma-score" class="text-center w-100 title"
+                      data-i18n="stats.ability.charisma">Charisma</label>
                     <div class="values">
-                      <input disabled name="charisma-modifier" class="form-control ability-modifier" placeholder="+0">
+                      <input disabled name="charisma-modifier" class="form-control ability-modifier" placeholder="+0"
+                        data-ability="charisma" />
                       <input name="charisma-score" class="form-control ability-score" placeholder="10"
-                        onchange="updateModifier(this, this.value)">
+                        data-ability="charisma" />
                     </div>
-                    <hr />
+                  </div>
+                  <div class="ability-card-content">
                     <div class="form-check">
-                      <input disable name="charisma-save-check" type="checkbox" class="form-check-input save-check" />
+                      <input disabled name="charisma-save-check" type="checkbox" class="form-check-input save-check" />
                       <span class="save-score"></span>
                       <label for="charisma-save">Save</label>
                     </div>
-                    <hr />
+                  </div>
+                  <div class="ability-card-content">
                     <div class="form-check">
-                      <input name="deception" type="checkbox" class="form-check-input deception-check"
-                        onchange="skillCheck(this)" />
+                      <input name="deception" type="checkbox" class="form-check-input skill-check deception-check" />
                       <span class="skill-score deception-score"></span>
-                      <label for="deception">Deception</label>
+                      <label for="deception" data-i18n="stats.skills.deception">Deception</label>
                     </div>
                     <div class="form-check">
-                      <input name="intimidation" type="checkbox" class="form-check-input intimidation-check"
-                        onchange="skillCheck(this)" />
+                      <input name="intimidation" type="checkbox"
+                        class="form-check-input skill-check intimidation-check" />
                       <span class="skill-score intimidation-score"></span>
-                      <label for="intimidation">Intimidation</label>
+                      <label for="intimidation" data-i18n="stats.skills.intimidation">Intimidation</label>
                     </div>
                     <div class="form-check">
-                      <input name="performance" type="checkbox" class="form-check-input performance-check"
-                        onchange="skillCheck(this)" />
+                      <input name="performance" type="checkbox"
+                        class="form-check-input skill-check performance-check" />
                       <span class="skill-score performance-score"></span>
-                      <label for="Performance">Performance</label>
+                      <label for="performance" data-i18n="stats.skills.performance">Performance</label>
                     </div>
                     <div class="form-check">
-                      <input name="persuasion" type="checkbox" class="form-check-input persuasion-check"
-                        onchange="skillCheck(this)" />
+                      <input name="persuasion" type="checkbox" class="form-check-input skill-check persuasion-check" />
                       <span class="skill-score persuasion-score"></span>
-                      <label for="Persuasion">Persuasion</label>
+                      <label for="persuasion" data-i18n="stats.skills.persuasion">Persuasion</label>
                     </div>
                   </div>
                   <div class="ability-card-footer"></div>
@@ -357,36 +355,67 @@
               </div>
             </div>
             <div class="block">
-              entrainement et maitrises
+              <div class="text-center title" data-i18n="stats.trainings.title">entrainement et maitrises</div>
+              <div class="armors">
+                <span data-i18n="stats.trainings.armor.title"></span>
+                <input name="armor-light" type="checkbox" class="form-check-input" />
+                <label for="armor-light" data-i18n="stats.trainings.armor.light"></label>
+                <input name="armor-medium" type="checkbox" class="form-check-input" />
+                <label for="armor-medium" data-i18n="stats.trainings.armor.medium"></label>
+                <input name="armor-heavy" type="checkbox" class="form-check-input" />
+                <label for="armor-heavy" data-i18n="stats.trainings.armor.heavy"></label>
+                <input name="armor-shields" type="checkbox" class="form-check-input" />
+                <label for="armor-shields" data-i18n="stats.trainings.armor.shields"></label>
+              </div>
+              <div class="weapons">
+                <span data-i18n="stats.trainings.weapon.title"></span>
+              </div>
+              <div class="tools">
+                <span data-i18n="stats.trainings.tool.title"></span>
+              </div>
             </div>
           </div>
           <div class="col d-flex flex-column gap-3">
-            <div class="d-flex gap-2">
-              <div class="flex-grow-1 flex-basis-0 block">initiative</div>
-              <div class="flex-grow-1 flex-basis-0 block">speed</div>
-              <div class="flex-grow-1 flex-basis-0 block">taille</div>
-              <div class="flex-grow-1 flex-basis-0 block">perception passive</div>
+            <div class="d-flex gap-2 specs">
+              <div class="flex-grow-1 flex-basis-0 block">
+                <label for="initiative" class="text-center title" data-i18n="specs.initiative">initiative</label>
+                <input disabled name="initiative" class="form-control p-0 border-0 border-bottom text-center"
+                  placeholder="+2">
+              </div>
+              <div class="flex-grow-1 flex-basis-0 block">
+                <label for="speed" class="text-center title" data-i18n="specs.speed">speed</label>
+                <input disabled name="speed" class="form-control p-0 border-0 border-bottom text-center"
+                  placeholder="8">
+              </div>
+              <div class="flex-grow-1 flex-basis-0 block">
+                <label for="size" class="text-center title" data-i18n="specs.size">taille</label>
+                <input disabled name="size" class="form-control p-0 border-0 border-bottom text-center"
+                  placeholder="175 cm">
+              </div>
+              <div class="flex-grow-1 flex-basis-0 block">
+                <label for="passivePerception" class="text-center title" data-i18n="specs.passivePerception">perception
+                  passive</label>
+                <input disabled name="passivePerception" class="form-control p-0 border-0 border-bottom text-center"
+                  placeholder="2">
+              </div>
             </div>
             <div class="">
               <div class="block">
-                <div class="text-center title">armes & sorts mineurs</div>
-                <hr />
+                <div class="text-center title" data-i18n="weaponscantrip">armes & sorts mineurs</div>
+                <select name="weapons" class="form-select border-0 border-bottom rounded-0 p-0"></select>
               </div>
             </div>
             <div class="">
               <div class="block">
                 <div class="text-center title">capacités de classe</div>
-                <hr />
               </div>
             </div>
             <div class="d-flex gap-2">
               <div class="flex-grow-1 flex-basis-0 block">
                 <div class="text-center title">traits d'epèce</div>
-                <hr />
               </div>
               <div class="flex-grow-1 flex-basis-0 block">
                 <div class="text-center title">dons</div>
-                <hr />
               </div>
             </div>
           </div>
@@ -404,12 +433,7 @@
   <!-- Inner lib -->
   <script src="fr.js"></script>
   <script src="i18n.js"></script>
-  <script src="origins.js"></script>
-  <script src="classes.js"></script>
-  <script src="races.js"></script>
-
-  <script src="lib.js"></script>
-  <script src="index.js"></script>
+  <script type="module" src="index.js"></script>
 </body>
 
 </html>

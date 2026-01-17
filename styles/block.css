@@ -3,14 +3,22 @@
   --corner-width: 8px;
   --border-color: var(--bs-border-color);
 
+  display: flex;
+  flex-direction: column;
+
   position: relative;
   min-height: calc(var(--corner-width) * 2);
   padding: var(--corner-width) calc(var(--corner-width) + 4px);
 
-  &:before {
+  &:before,
+  &:after {
     content: '';
     position: absolute;
     inset: 0;
+    pointer-events: none;
+  }
+
+  &:before {
     background: var(--border-color);
     mask: radial-gradient(
           var(--corner-width) at var(--corner-width) var(--corner-width),
@@ -31,10 +39,6 @@
 
   &:after {
     --corner-mask: var(--corner-width);
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
 
     margin: calc(var(--corner-width) / 2);
     border: 1px solid var(--border-color);
@@ -49,5 +53,10 @@
       0 calc(100% - var(--corner-mask)),
       0 var(--corner-mask)
     );
+  }
+
+  .title {
+    padding-bottom: 8px;
+    border-bottom: 2px solid black;
   }
 }

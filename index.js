@@ -1,3 +1,11 @@
+import { populateSelect } from './modules/lib.js'
+import * as userData from './modules/userData.js'
+import { classes, } from './modules/data/classes.js'
+import { origins, } from './modules/data/origins.js'
+import { races, } from './modules/data/races.js'
+import { weapons, } from './modules/data/weapons.js'
+import { abilities, getAllSkills } from './modules/data/abilities.js'
+
 const charsheet = {
   charName: 'Titus Minus',
   charClass: 'wizard',
@@ -18,27 +26,6 @@ const charsheet = {
   skillChoosed: [],
 }
 
-const skillList = {
-  acrobatics: 'dexterity',
-  animalHandling: 'wisdom',
-  arcana: 'intelligence',
-  athletics: 'strength',
-  deception: 'charisma',
-  history: 'intelligence',
-  insight: 'wisdom',
-  intimidation: 'charisma',
-  investigation: 'intelligence',
-  medicine: 'wisdom',
-  nature: 'intelligence',
-  perception: 'wisdom',
-  performance: 'charisma',
-  persuasion: 'charisma',
-  religion: 'intelligence',
-  sleightOfHand: 'dexterity',
-  stealth: 'dexterity',
-  survival: 'wisdom',
-}
-
 // INPUTS
 
 const charNameElement = document.getElementsByName('charName')[0]
@@ -52,152 +39,191 @@ const charExperienceElement = document.getElementsByName('experiencepoints')[0]
 
 const proficiencyBonus = document.getElementsByName('proficiencybonus')[0]
 
+const abilityElements = Object.keys(abilities).reduce((acc, ability) => {
+  const abilityElement = document.getElementsByClassName(`${ability}`)[0]
 
-// ACCESSORS
+  return {
+    ...acc,
+    [ability]: {
+      root: abilityElement,
+      score: abilityElement.getElementsByClassName('ability-score')[0],
+      modifier: abilityElement.getElementsByClassName('ability-modifier')[0],
+      saveCheck: abilityElement.getElementsByClassName('save-check')[0],
+      saveScore: abilityElement.getElementsByClassName('save-score')[0],
+    }
+  }
+}, {})
 
-function getCharName() { return charsheet.charName }
-function getCharClass() { return charsheet.charClass }
-function getCharSubClass() { return charsheet.charSubClass }
-function getCharLevel() { return charsheet.charLevel }
-function getCharOrigin() { return charsheet.charOrigin }
-function getCharRace() { return charsheet.charRace }
-function getCharAlignment() { return charsheet.charAlignment }
-function getCharExperience() { return charsheet.charExperience }
-function getAttributeScore(attributeName) { return charsheet.attributes[attributeName] }
-function getSkillChoosed() { return charsheet.skillChoosed }
+const skillElements = Object.values(abilities).reduce((acc, ability) => ({
+  ...acc,
+  ...ability.relatedSkills.reduce((accSkill, skill) => ({
+    ...accSkill,
+    [skill]: {
+      check: document.getElementsByClassName(`skill-check ${skill}-check`)[0],
+      score: document.getElementsByClassName(`skill-score ${skill}-score`)[0],
+    }
+  }), {})
+}), {})
 
-// COMPUTED VALUES
+const weaponSelectElement = document.getElementsByName('weapons')[0]
 
-function setAttribute(attributeName, score) { charsheet.attributes[attributeName] = parseInt(score) }
-function getAttributeModifier(attributeName) { return Math.floor(getAttributeScore(attributeName) / 2) - 5 }
-function getProficencyBonus() { return Math.floor(getCharLevel() / 4) + 2 }
+// DISPLAY HELPERS
+
 function skillAsText(score) { return score > 0 ? `+${score}` : `${score}` }
 
-// UPDATE INTERFACE
+// DISPLAY UPDATES
 
-function classChanged() {
-  const gamerClass = classes[getCharClass()]
-}
-
-// USER INTERACTIONS
-
-function updateModifier(element, score) {
-  const attributeName = element.name
-  setAttribute(attributeName, score)
-
-  const modifier = getAttributeModifier(attributeName)
-
-  document.getElementsByName(`${attributeName}Modifier`)[0].value = skillAsText(modifier)
-}
-
-function skillCheck(element) {
-  const skillChecked = document.getElementsByName(`${element.name}`)[0].checked
-  if (skillChecked) {
-    getSkillChoosed().push(element.name)
-  } else {
-    getSkillChoosed().splice(getSkillChoosed().indexOf(element.name), 1)
-  }
-
-  document.getElementsByClassName(`${element.name}-score`)[0].textContent = skillAsText(
-    getAttributeModifier(skillList[element.name]) + (skillChecked ? getProficencyBonus() : 0)
-  )
-
-  if (getSkillChoosed().length >= classes[getCharClass()]?.authorizedNumberSkills ?? 0) {
-    Object.keys(skillList).forEach((skill) => {
-      document.getElementsByName(`${skill}`)[0].disabled = !getSkillChoosed().includes(skill)
-    })
-    // document.getElementsByClassName('skills')[0].classList.remove('uncompleted')
-  } else {
-    Object.keys(skillList).forEach((skill) => {
-      document.getElementsByName(`${skill}`)[0].disabled = !classes[getCharClass()]?.authorizedSkills?.includes(skill)
-    })
-    // document.getElementsByClassName('skills')[0].classList.add('uncompleted')
-  }
-}
-
-// INITIALIZATION
-
-function init() {
-  lib.populateSelect(
-    charOriginElement,
-    Object.keys(origins).map((originName) => ({ value: originName, text: i18n._(`origins.${originName}`), }))
-  )
-
-  lib.populateSelect(
-    charClassElement,
-    Object.keys(classes).map((className) => ({ value: className, text: i18n._(`classes.${className}`), }))
-  )
-
-  lib.populateSelect(
-    charRaceElement,
-    Object.keys(races).map((raceName) => ({ value: raceName, text: i18n._(`races.${raceName}`), }))
-  )
-}
-
-function setFromData(charsheet) {
-  charNameElement.value = getCharName()
-  charClassElement.value = getCharClass()
-  if (getCharClass()) {
-    lib.populateSelect(
+function refreshSubClass() {
+  if (userData.getCharClass()) {
+    populateSelect(
       charSubClassElement,
       [
-        { value: '', text: i18n._(getCharLevel() < 3 ? `subClasses._unavailable` : `subClasses._select`) },
-        ...Object.keys(classes[getCharClass()].subClasses).map((subClassName) => ({
+        { value: '', text: i18n._(userData.getCharLevel() < 3 ? `subClasses._unavailable` : `subClasses._select`) },
+        ...Object.keys(classes[userData.getCharClass()].subClasses).map((subClassName) => ({
           value: subClassName,
-          text: i18n._(`subClasses.${getCharClass()}.${subClassName}`),
+          text: i18n._(`subClasses.${userData.getCharClass()}.${subClassName}`),
         })),
       ],
       { clear: true }
     )
 
-    charSubClassElement.value = getCharLevel() > 2 && getCharSubClass() || ''
-    charSubClassElement.disabled = getCharLevel() < 3
+    charSubClassElement.value = userData.getCharLevel() > 2 && userData.getCharSubClass() || ''
+    charSubClassElement.disabled = userData.getCharLevel() < 3
   }
-  charOriginElement.value = getCharOrigin()
-  charRaceElement.value = getCharRace()
-
-  charAlignmentElement.value = getCharAlignment()
-  charExperienceElement.value = getCharExperience()
-
-  Object.keys(charsheet.attributes).forEach((attributeName) => {
-    const attributeNode = document.getElementsByClassName(`${attributeName}`)[0]
-
-    const score = getAttributeScore(attributeName)
-    const modifier = getAttributeModifier(attributeName)
-
-    attributeNode.getElementsByClassName('ability-modifier')[0].value = skillAsText(modifier)
-    attributeNode.getElementsByClassName('ability-score')[0].value = score
-
-    if (classes[getCharClass()]?.saves?.includes(attributeName)) {
-      attributeNode.getElementsByClassName('save-score')[0].textContent = skillAsText(modifier + getProficencyBonus())
-      attributeNode.getElementsByClassName('save-check')[0].checked = true
-    } else {
-      attributeNode.getElementsByClassName('save-score')[0].textContent = skillAsText(modifier)
-    }
-  })
-
-  const remainingSkills = classes[getCharClass()]?.authorizedNumberSkills ?? 0 - getSkillChoosed().length
-  Object.entries(skillList).forEach(([skill, attribute]) => {
-    const skillCheckbox = document.getElementsByName(`${skill}`)[0]
-
-    const isAuthorized = classes[getCharClass()]?.authorizedSkills?.includes(skill)
-    const isFromOrigin = origins[getCharOrigin()]?.skills?.includes(skill)
-    const isChoosed = getSkillChoosed().includes(skill)
-
-    skillCheckbox.disabled = remainingSkills < 1 || !isAuthorized || isFromOrigin
-    skillCheckbox.checked = isFromOrigin || isChoosed
-
-    document.getElementsByClassName(`${skill}-score`)[0].textContent = skillAsText(
-      getAttributeModifier(attribute) + (skillCheckbox.checked ? getProficencyBonus() : 0)
-    )
-  })
-
-  if (remainingSkills > 0) {
-    // document.getElementsByClassName('skills')[0].classList.add('uncompleted')
-  }
-
-  proficiencyBonus.value = skillAsText(getProficencyBonus())
 }
 
-init()
-setFromData(charsheet)
+function refreshProficiencyBonus() {
+  proficiencyBonus.value = skillAsText(userData.getProficencyBonus())
+}
+
+function updateAbilityScore(ability) {
+  const abilityElement = abilityElements[ability]
+
+  abilityElement.score.value = userData.getAbilityScore(ability)
+
+  updateAbilityModifier(ability)
+  updateAbilitySave(ability)
+}
+
+function updateAbilityModifier(ability) {
+  abilityElements[ability].modifier.value = skillAsText(userData.getAbilityModifier(ability))
+
+  abilities[ability].relatedSkills.forEach(updateSkillScore)
+}
+
+function updateAbilitySave(ability) {
+  abilityElements[ability].saveScore.textContent = skillAsText(userData.getAbilitySave(ability))
+  abilityElements[ability].saveCheck.checked = classes[userData.getCharClass()]?.saves?.includes(ability)
+}
+
+function updateSkillScore(skill) {
+  const skillScoreElement = skillElements[skill].score
+
+  skillScoreElement.textContent = skillAsText(userData.getSkillScore(skill))
+}
+
+// EVENTS
+
+function charLevelChanged(event) {
+  userData.setCharLevel(event.currentTarget.value)
+  refreshSubClass()
+  refreshProficiencyBonus()
+  Object.keys(abilities).forEach(updateAbilityModifier)
+  Object.keys(abilities).forEach(updateAbilitySave)
+}
+
+function charClassChanged(event) {
+  userData.setCharClass(event.currentTarget.value)
+  refreshSubClass()
+}
+
+function abilityScoreChanged(event) {
+  const element = event.currentTarget
+
+  const abilityName = element.dataset.ability
+  userData.setAttribute(abilityName, element.value)
+
+  updateAbilityModifier(abilityName)
+}
+
+function skillChecked(event) {
+  const element = event.currentTarget
+
+  const skill = element.name
+  const skillChecked = skillElements[skill].check.checked
+
+  userData[skillChecked ? 'addSkillChoosed' : 'removeSkillChoosed'](skill)
+
+  updateSkillScore(skill)
+
+  getAllSkills().forEach((skill) => {
+    skillElements[skill].check.disabled = userData.isDisabledSkill(skill)
+  })
+}
+
+// INITIALIZATION
+
+function init(charsheet) {
+  populateSelect(
+    charOriginElement,
+    Object.keys(origins).map((originName) => ({ value: originName, text: i18n._(`origins.${originName}`), }))
+  )
+
+  populateSelect(
+    charClassElement,
+    Object.keys(classes).map((className) => ({ value: className, text: i18n._(`classes.${className}`), }))
+  )
+
+  populateSelect(
+    charRaceElement,
+    Object.keys(races).map((raceName) => ({ value: raceName, text: i18n._(`races.${raceName}`), }))
+  )
+
+  populateSelect(
+    weaponSelectElement,
+    [
+      { value: '', text: i18n._('weapons._select') },
+      ...
+      Object.entries(weapons).map(([weaponClass, weapons]) => ({
+        isGroup: true,
+        label: i18n._(`weaponClasses.${weaponClass}`),
+        options: Object.keys(weapons).map(weapon => ({ value: weapon, text: i18n._(`weapons.${weapon}`) })),
+      })),
+    ]
+  )
+
+  // Init data
+  userData.init(charsheet)
+
+  charNameElement.value = userData.getCharName()
+  charClassElement.value = userData.getCharClass()
+
+  charOriginElement.value = userData.getCharOrigin()
+  charRaceElement.value = userData.getCharRace()
+
+  charAlignmentElement.value = userData.getCharAlignment()
+  charExperienceElement.value = userData.getCharExperience()
+  charLevelElement.value = userData.getCharLevel()
+
+  Object.entries(abilities).forEach(([abilityName, abilityValue]) => {
+    abilityValue.relatedSkills.forEach(skill => {
+      skillElements[skill].check.disabled = userData.isDisabledSkill(skill)
+      skillElements[skill].check.checked = userData.isCheckedSkill(skill)
+    })
+
+    updateAbilityScore(abilityName)
+  })
+
+  refreshProficiencyBonus()
+  refreshSubClass()
+}
+
+function setBindings() {
+  charLevelElement.addEventListener('change', charLevelChanged)
+  charClassElement.addEventListener('change', charClassChanged)
+  for (element of Object.values(skillElements).map(_ => _.check)) { element.addEventListener('change', skillChecked) }
+  for (element of Object.values(abilityElements).map(_ => _.score)) { element.addEventListener('change', abilityScoreChanged) }
+}
+
+setBindings()
+init(charsheet)

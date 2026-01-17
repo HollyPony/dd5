@@ -1,4 +1,4 @@
-const origins = {
+export const origins = {
   acolyte: { skills: ['insight', 'religion'] },
   artisan: { skills: ['investigation', 'persuasion'] },
   charlatan: { skills: ['deception', 'sleightOfHand'] },

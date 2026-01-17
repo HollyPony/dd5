@@ -1,4 +1,4 @@
-const races = {
+export const races = {
   aasimar: {},
   dragonborn: {},
   dwarf: {},

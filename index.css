@@ -29,3 +29,40 @@ input[disabled] ~ span {
     text-align: end;
   }
 }
+
+.proficiency {
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 15px;
+
+  input {
+    height: 55px;
+    width: 55px;
+  }
+}
+
+.inspiration {
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 15px;
+
+  input {
+    height: 25px;
+    width: 25px;
+  }
+}
+
+.block {
+  .armors {
+    padding-bottom: 7px;
+
+    label {
+      font-size: 0.9em;
+    }
+  }
+
+  .weapons,
+  .tools {
+    border-top: 2px solid black;
+  }
+}

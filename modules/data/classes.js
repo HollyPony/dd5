@@ -1,4 +1,4 @@
-const classes = {
+export const classes = {
 
   barbarian: {
     saves: ['strenght', 'constitution'],
@@ -17,7 +17,7 @@ const classes = {
   bard: {
     saves: ['dexterity', 'charisma'],
     authorizedNumberSkills: 3,
-    authorizedSkills: [ 'acrobatics', 'animalHandling', 'arcana', 'athletics', 'deception', 'history', 'insight', 'intimidation', 'investigation', 'medicine', 'nature', 'perception', 'performance', 'persuasion', 'religion', 'sleightOfHand', 'stealth', 'survival'],
+    authorizedSkills: ['acrobatics', 'animalHandling', 'arcana', 'athletics', 'deception', 'history', 'insight', 'intimidation', 'investigation', 'medicine', 'nature', 'perception', 'performance', 'persuasion', 'religion', 'sleightOfHand', 'stealth', 'survival'],
     subClasses: {
       dance: {},
       glamour: {},
@@ -33,7 +33,7 @@ const classes = {
       life: {},
       light: {},
       trickery: {},
-      war:{},
+      war: {},
     },
   },
   druid: {

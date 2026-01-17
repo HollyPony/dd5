@@ -22,7 +22,10 @@
   .ability-card-content {
     padding: 0.5em calc(var(--margin) + var(--inner-width) + 0.5em);
     border-top: var(--inner-width) solid var(--border-color);
-    border-bottom: var(--inner-width) solid var(--border-color);
+
+    &:last-child {
+      border-bottom: var(--inner-width) solid var(--border-color);
+    }
 
     &:before {
       margin: 0 var(--margin);
