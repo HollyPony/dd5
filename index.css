@@ -66,3 +66,22 @@ input[disabled] ~ span {
     border-top: 2px solid black;
   }
 }
+
+.level-block,
+.armorclass-block {
+  min-width: 120px;
+
+  input.form-control {
+    &.level,
+    &.xp,
+    &.armorclass {
+      width: 50px;
+    }
+  }
+  .form-text {
+    &.level,
+    &.xp {
+      width: 50px;
+    }
+  }
+}

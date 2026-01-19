@@ -40,7 +40,7 @@ const i18n = {
     try {
       return aPath.reduce((a, v) => a[v], obj) || path;
     } catch {
-      return;
+      return path;
     }
   },
 

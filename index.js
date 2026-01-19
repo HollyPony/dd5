@@ -1,32 +1,43 @@
-import { populateSelect } from './modules/lib.js'
+import { selectHelper } from './modules/lib.js'
 import * as userData from './modules/userData.js'
-import { classes, } from './modules/data/classes.js'
+import { getList as getClassesList, getSubClasses, } from './modules/data/classes.js'
 import { origins, } from './modules/data/origins.js'
-import { races, } from './modules/data/races.js'
-import { weapons, } from './modules/data/weapons.js'
+import { getSpeciesList, } from './modules/data/species.js'
+import { weapons, } from './modules/data/equipments.js'
 import { abilities, getAllSkills } from './modules/data/abilities.js'
 
 const charsheet = {
-  charName: 'Titus Minus',
-  charClass: 'wizard',
-  charSubClass: undefined,
-  charLevel: 1,
-  charOrigin: 'farmer',
-  charRace: 'dwarf',
+  charName: 'Doudou McDoubidou',
+  charOrigin: 'artisan',
+  charClassName: 'monk',
+  charSubClassName: undefined,
+  charSpeciesName: 'goliath.stone',
+  charLevel: 2,
+  charExperience: 300,
   charAlignment: 'neutralGood',
-  charExperience: 200,
+  charSizeCategory: 'medium',
+  charSize: '242',
   attributes: {
-    strength: 15,
-    dexterity: 14,
-    constitution: 13,
-    wisdom: 10,
+    strength: 12,
+    dexterity: 17,
+    constitution: 14,
+    wisdom: 12,
     intelligence: 8,
     charisma: 12,
   },
-  skillChoosed: [],
+  skillChoosed: ['athletics', 'acrobatics'],
+  equipments: {
+    weapons: {},
+    armors: {},
+    shield: false,
+    tools: {},
+    miscs: []
+  }
 }
 
-// INPUTS
+/////////////////////////////////////////////////////////////////////////
+// INPUTS ///////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
 
 const charNameElement = document.getElementsByName('charName')[0]
 const charClassElement = document.getElementsByName('charClass')[0]
@@ -36,70 +47,97 @@ const charOriginElement = document.getElementsByName('charOrigin')[0]
 const charRaceElement = document.getElementsByName('charRace')[0]
 const charAlignmentElement = document.getElementsByName('alignment')[0]
 const charExperienceElement = document.getElementsByName('experiencepoints')[0]
+const armorClassElement = document.getElementsByName('armorClass')[0]
 
 const proficiencyBonus = document.getElementsByName('proficiencybonus')[0]
 
-const abilityElements = Object.keys(abilities).reduce((acc, ability) => {
+const abilityElements = {}
+const skillElements = {}
+Object.entries(abilities).forEach(([ability, value]) => {
   const abilityElement = document.getElementsByClassName(`${ability}`)[0]
 
-  return {
-    ...acc,
-    [ability]: {
-      root: abilityElement,
-      score: abilityElement.getElementsByClassName('ability-score')[0],
-      modifier: abilityElement.getElementsByClassName('ability-modifier')[0],
-      saveCheck: abilityElement.getElementsByClassName('save-check')[0],
-      saveScore: abilityElement.getElementsByClassName('save-score')[0],
-    }
+  abilityElements[ability] = {
+    root: abilityElement,
+    score: abilityElement.getElementsByClassName('ability-score')[0],
+    modifier: abilityElement.getElementsByClassName('ability-modifier')[0],
+    saveCheck: abilityElement.getElementsByClassName('save-check')[0],
+    saveScore: abilityElement.getElementsByClassName('save-score')[0],
   }
-}, {})
 
-const skillElements = Object.values(abilities).reduce((acc, ability) => ({
-  ...acc,
-  ...ability.relatedSkills.reduce((accSkill, skill) => ({
-    ...accSkill,
-    [skill]: {
+  value.relatedSkills.forEach(skill =>
+    skillElements[skill] = {
       check: document.getElementsByClassName(`skill-check ${skill}-check`)[0],
       score: document.getElementsByClassName(`skill-score ${skill}-score`)[0],
     }
-  }), {})
-}), {})
+  )
+})
+
+
+const classFeaturesElement = document.getElementsByClassName('class-features')[0]
+
+// SPECS INPUTS
+
+const specsElements = {
+  initiative: document.getElementsByName('specs.initiative')[0],
+  speed: document.getElementsByName('specs.speed')[0],
+  sizeCategory: document.getElementsByClassName('size-category')[0],
+  size: document.getElementsByName('specs.size')[0],
+  passivePerception: document.getElementsByName('specs.passivePerception')[0],
+}
+
 
 const weaponSelectElement = document.getElementsByName('weapons')[0]
 
-// DISPLAY HELPERS
+//////////////////////////////////////////////////////////////////////
+// DISPLAY HELPERS //////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 
 function skillAsText(score) { return score > 0 ? `+${score}` : `${score}` }
 
 // DISPLAY UPDATES
 
 function refreshSubClass() {
-  if (userData.getCharClass()) {
-    populateSelect(
+  if (userData.getCharClassName()) {
+    selectHelper.populate(
       charSubClassElement,
       [
         { value: '', text: i18n._(userData.getCharLevel() < 3 ? `subClasses._unavailable` : `subClasses._select`) },
-        ...Object.keys(classes[userData.getCharClass()].subClasses).map((subClassName) => ({
+        ...getSubClasses(userData.getCharClassName()).map(subClassName => ({
           value: subClassName,
-          text: i18n._(`subClasses.${userData.getCharClass()}.${subClassName}`),
+          text: i18n._(`statics.subClasses.${userData.getCharClassName()}.${subClassName}`),
         })),
       ],
       { clear: true }
     )
 
-    charSubClassElement.value = userData.getCharLevel() > 2 && userData.getCharSubClass() || ''
+    charSubClassElement.value = userData.getCharLevel() > 2 && userData.getCharSubClassName() || ''
     charSubClassElement.disabled = userData.getCharLevel() < 3
   }
+}
+
+function refreshArmorClass() {
+  armorClassElement.value = userData.getArmorClass()
 }
 
 function refreshProficiencyBonus() {
   proficiencyBonus.value = skillAsText(userData.getProficencyBonus())
 }
 
-function updateAbilityScore(ability) {
-  const abilityElement = abilityElements[ability]
+function refreshClassFeatures() {
+  while (classFeaturesElement.firstChild) {
+    classFeaturesElement.removeChild(classFeaturesElement.firstChild);
+  }
 
-  abilityElement.score.value = userData.getAbilityScore(ability)
+  userData.getCharClass().features?.forEach(feature => {
+    const opt = document.createElement("li")
+    opt.classList.add('list-group-item')
+    opt.appendChild(document.createTextNode(feature.name))
+    classFeaturesElement.appendChild(opt)
+  })
+}
+
+function updateAbilityScore(ability) {
+  abilityElements[ability].score.value = userData.getAbilityScore(ability)
 
   updateAbilityModifier(ability)
   updateAbilitySave(ability)
@@ -113,7 +151,7 @@ function updateAbilityModifier(ability) {
 
 function updateAbilitySave(ability) {
   abilityElements[ability].saveScore.textContent = skillAsText(userData.getAbilitySave(ability))
-  abilityElements[ability].saveCheck.checked = classes[userData.getCharClass()]?.saves?.includes(ability)
+  abilityElements[ability].saveCheck.checked = userData.getCharClass()?.saves?.includes(ability)
 }
 
 function updateSkillScore(skill) {
@@ -122,28 +160,65 @@ function updateSkillScore(skill) {
   skillScoreElement.textContent = skillAsText(userData.getSkillScore(skill))
 }
 
-// EVENTS
+function refreshAbilities() {
+  Object.entries(abilities).forEach(([abilityName, abilityValue]) => { // ability
+    abilityValue.relatedSkills.forEach(skill => {
+      skillElements[skill].check.disabled = userData.isDisabledSkill(skill)
+      skillElements[skill].check.checked = userData.isCheckedSkill(skill)
+    })
+
+    // updateAbilityScore(abilityName)
+  })
+}
+
+/////////////////////////////////////////////////////////////////////////
+// EVENTS ///////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+function charClassChanged(event) {
+  userData.setCharClassName(event.currentTarget.value)
+  refreshSubClass()
+}
+
+function charOriginChanged(event) {
+  // TODO: alert skills lost
+  userData.setCharOrigin(event.currentTarget.value)
+  userData.skillChoosedClear()
+
+  refreshAbilities()
+}
+
+function charSpeciesChanged(event) {
+  userData.setCharSpeciesName(event.currentTarget.value)
+  // TODO
+}
+
+function charSubClassChanged(event) {
+  userData.setCharSubClassName(event.currentTarget.value)
+  // TODO:
+}
 
 function charLevelChanged(event) {
   userData.setCharLevel(event.currentTarget.value)
+
   refreshSubClass()
   refreshProficiencyBonus()
   Object.keys(abilities).forEach(updateAbilityModifier)
   Object.keys(abilities).forEach(updateAbilitySave)
-}
+  // Update species abilities / spells etc ...
 
-function charClassChanged(event) {
-  userData.setCharClass(event.currentTarget.value)
-  refreshSubClass()
+  // TODO: userData.reloadClass
+  // TODO: userData.reloadSpecies
 }
 
 function abilityScoreChanged(event) {
-  const element = event.currentTarget
+  const score = event.currentTarget.value
+  const ability = element.dataset.ability
 
-  const abilityName = element.dataset.ability
-  userData.setAttribute(abilityName, element.value)
+  userData.setAttribute(ability, score)
 
-  updateAbilityModifier(abilityName)
+  updateAbilityScore(ability)
+  // updateAbilityModifier(ability)
 }
 
 function skillChecked(event) {
@@ -152,7 +227,7 @@ function skillChecked(event) {
   const skill = element.name
   const skillChecked = skillElements[skill].check.checked
 
-  userData[skillChecked ? 'addSkillChoosed' : 'removeSkillChoosed'](skill)
+  userData[skillChecked ? 'skillChoosedAdd' : 'skillChoosedRemove'](skill)
 
   updateSkillScore(skill)
 
@@ -161,30 +236,45 @@ function skillChecked(event) {
   })
 }
 
-// INITIALIZATION
+/////////////////////////////////////////////////////////////////////////
+// INITIALIZATION ///////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
 
 function init(charsheet) {
-  populateSelect(
+  // Set Origins list
+  selectHelper.populate(
     charOriginElement,
-    Object.keys(origins).map((originName) => ({ value: originName, text: i18n._(`origins.${originName}`), }))
+    Object.keys(origins).map((originName) => ({ value: originName, text: i18n._(`statics.origins.${originName}`), }))
   )
 
-  populateSelect(
+  // Set Classes list
+  selectHelper.populate(
     charClassElement,
-    Object.keys(classes).map((className) => ({ value: className, text: i18n._(`classes.${className}`), }))
+    getClassesList().map(className => ({ value: className, text: i18n._(`statics.classes.${className}`), }))
   )
 
-  populateSelect(
+  // Set Races list
+  selectHelper.populate(
     charRaceElement,
-    Object.keys(races).map((raceName) => ({ value: raceName, text: i18n._(`races.${raceName}`), }))
+    getSpeciesList().map(species => (
+      species.lineages ? {
+        isGroup: true,
+        label: i18n._(`statics.species.${species.name}`),
+        options: species.lineages.map(lineage => ({
+          value: `${species.name}.${lineage}`,
+          text: i18n._(`statics.species.${species.name}-${lineage}`),
+        })),
+      } : {
+        value: species.name, text: i18n._(`statics.species.${species.name}`),
+      }
+    ))
   )
 
-  populateSelect(
+  selectHelper.populate(
     weaponSelectElement,
     [
-      { value: '', text: i18n._('weapons._select') },
-      ...
-      Object.entries(weapons).map(([weaponClass, weapons]) => ({
+      { value: '', text: i18n._('weaponscantrip.weapons._select') },
+      ...Object.entries(weapons).map(([weaponClass, weapons]) => ({
         isGroup: true,
         label: i18n._(`weaponClasses.${weaponClass}`),
         options: Object.keys(weapons).map(weapon => ({ value: weapon, text: i18n._(`weapons.${weapon}`) })),
@@ -196,34 +286,38 @@ function init(charsheet) {
   userData.init(charsheet)
 
   charNameElement.value = userData.getCharName()
-  charClassElement.value = userData.getCharClass()
+  charClassElement.value = userData.getCharClassName()
 
   charOriginElement.value = userData.getCharOrigin()
-  charRaceElement.value = userData.getCharRace()
+  charRaceElement.value = userData.getCharSpeciesName()
 
   charAlignmentElement.value = userData.getCharAlignment()
   charExperienceElement.value = userData.getCharExperience()
   charLevelElement.value = userData.getCharLevel()
 
-  Object.entries(abilities).forEach(([abilityName, abilityValue]) => {
-    abilityValue.relatedSkills.forEach(skill => {
-      skillElements[skill].check.disabled = userData.isDisabledSkill(skill)
-      skillElements[skill].check.checked = userData.isCheckedSkill(skill)
-    })
+  const species = userData.getCharSpecies()
+  specsElements.initiative.value = userData.getAbilityModifier('dexterity')
+  specsElements.speed.value = species?.speed || 0 // TODO: take armor strength + update on armor change
+  specsElements.sizeCategory.value = userData.getSizeCategory()
+  specsElements.size.value = userData.getSize() || ''
+  specsElements.passivePerception.value = userData.getSkillScore('perception') + 10
 
-    updateAbilityScore(abilityName)
-  })
+  Object.keys(abilities).forEach(abilityName => updateAbilityScore(abilityName))
 
-  refreshProficiencyBonus()
   refreshSubClass()
+  refreshArmorClass()
+  refreshAbilities()
+  refreshProficiencyBonus()
+  refreshClassFeatures()
 }
 
 function setBindings() {
-  charLevelElement.addEventListener('change', charLevelChanged)
+  charOriginElement.addEventListener('change', charOriginChanged)
   charClassElement.addEventListener('change', charClassChanged)
+  charLevelElement.addEventListener('change', charLevelChanged)
   for (element of Object.values(skillElements).map(_ => _.check)) { element.addEventListener('change', skillChecked) }
   for (element of Object.values(abilityElements).map(_ => _.score)) { element.addEventListener('change', abilityScoreChanged) }
 }
 
-setBindings()
 init(charsheet)
+setBindings()

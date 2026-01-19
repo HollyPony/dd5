@@ -1,25 +1,28 @@
-export const abilities = {
-  strength: {
-    relatedSkills: ['athletics']
-  },
-  dexterity: {
-    relatedSkills: ['acrobatics', 'sleightOfHand', 'stealth',]
-  },
-  constitution: {
-    relatedSkills: []
-  },
-  wisdom: {
-    relatedSkills: ['animalHandling', 'insight', 'medicine', 'perception', 'survival',]
-  },
-  intelligence: {
-    relatedSkills: ['arcana', 'history', 'investigation', 'nature', 'religion',]
-  },
-  charisma: {
-    relatedSkills: ['deception', 'intimidation', 'performance', 'persuasion',]
-  },
-}
+import { f, } from '../lib.js'
+
+export const abilities = f({
+  strength: f({
+    relatedSkills: f(['athletics']),
+  }),
+  dexterity: f({
+    relatedSkills: f(['acrobatics', 'sleightOfHand', 'stealth',]),
+  }),
+  constitution: f({
+    relatedSkills: f([]),
+  }),
+  wisdom: f({
+    relatedSkills: f(['animalHandling', 'insight', 'medicine', 'perception', 'survival',]),
+  }),
+  intelligence: f({
+    relatedSkills: f(['arcana', 'history', 'investigation', 'nature', 'religion',]),
+  }),
+  charisma: f({
+    relatedSkills: f(['deception', 'intimidation', 'performance', 'persuasion',]),
+  }),
+})
+
 export function getAllSkills() {
-  return Object.values(abilities).reduce((acc, value) => acc.concat(value.relatedSkills), [])
+  return Object.values(abilities).flatMap(value => value.relatedSkills)
 }
 
 export function getAbilityFromSkill(skill) {

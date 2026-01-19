@@ -1,18 +1,69 @@
-export const origins = {
-  acolyte: { skills: ['insight', 'religion'] },
-  artisan: { skills: ['investigation', 'persuasion'] },
-  charlatan: { skills: ['deception', 'sleightOfHand'] },
-  criminal: { skills: ['sleightOfHand', 'stealth'] },
-  entertainer: { skills: ['acrobatics', 'performance'] },
-  farmer: { skills: ['animalHandling', 'nature'] },
-  guard: { skills: ['athletics', 'perception'] },
-  guide: { skills: ['stealth', 'survival'] },
-  hermit: { skills: ['medicine', 'religion'] },
-  merchant: { skills: ['animalHandling', 'persuasion'] },
-  noble: { skills: ['history', 'persuasion'] },
-  sage: { skills: ['arcana', 'history'] },
-  sailor: { skills: ['acrobatics', 'perception'] },
-  scribe: { skills: ['investigation', 'perception'] },
-  soldier: { skills: ['athletics', 'intimidation'] },
-  wayfarer: { skills: ['insight', 'stealth'] },
-}
+// P.178
+import { f } from '../lib.js'
+
+export const origins = f({
+  acolyte: f({
+    skills: ['insight', 'religion'],
+    feat: 'magicInitiate',
+  }),
+  artisan: f({
+    skills: ['investigation', 'persuasion'],
+    feat: 'crafter',
+  }),
+  charlatan: f({
+    skills: ['deception', 'sleightOfHand'],
+    feat: 'skilled',
+  }),
+  criminal: f({
+    skills: ['sleightOfHand', 'stealth'],
+    feat: 'alert',
+  }),
+  entertainer: f({
+    skills: ['acrobatics', 'performance'],
+    feat: 'musician',
+  }),
+  farmer: f({
+    skills: ['animalHandling', 'nature'],
+    feat: 'tough',
+  }),
+  guard: f({
+    skills: ['athletics', 'perception'],
+    feat: 'alert',
+  }),
+  guide: f({
+    skills: ['stealth', 'survival'],
+    feat: 'magicInitiate',
+  }),
+  hermit: f({
+    skills: ['medicine', 'religion'],
+    feat: 'healer',
+  }),
+  merchant: f({
+    skills: ['animalHandling', 'persuasion'],
+    feat: 'lucky',
+  }),
+  noble: f({
+    skills: ['history', 'persuasion'],
+    feat: 'skilled',
+  }),
+  sage: f({
+    skills: ['arcana', 'history'],
+    feat: 'magicInitiate',
+  }),
+  sailor: f({
+    skills: ['acrobatics', 'perception'],
+    feat: 'tavernBrawler',
+  }),
+  scribe: f({
+    skills: ['investigation', 'perception'],
+    feat: 'skilled',
+  }),
+  soldier: f({
+    skills: ['athletics', 'intimidation'],
+    feat: 'savage',
+  }),
+  wayfarer: f({
+    skills: ['insight', 'stealth'],
+    feat: 'lucky',
+  }),
+})

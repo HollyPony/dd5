@@ -1,9 +1,14 @@
+export const f = Object.freeze
+
 export function clearSelect(selectElement) {
-  while (selectElement.options.length > 0) {
-    selectElement.remove(0);
+  while (selectElement.firstChild) {
+    selectElement.removeChild(selectElement.firstChild);
   }
 }
 
+export const selectHelper = {
+  populate: populateSelect
+}
 export function populateSelect(selectElement, items, options = {}) {
   if (options.clear) {
     clearSelect(selectElement)
@@ -19,7 +24,7 @@ export function populateSelect(selectElement, items, options = {}) {
   const addOptionTo = function addOptionTo({ value, text }, elem) {
     const opt = document.createElement("option")
     opt.value = value
-    opt.innerText = text
+    opt.appendChild(document.createTextNode(text))
     elem.append(opt)
   }
 
