@@ -1,5 +1,5 @@
 // P.178
-import { f } from '../lib.js'
+import { f } from '../domlib.js'
 
 export const origins = f({
   acolyte: f({

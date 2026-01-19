@@ -1,39 +1,14 @@
-import { selectHelper } from './modules/lib.js'
+import { createElement, selectHelper } from './modules/domlib.js'
 import * as userData from './modules/userData.js'
 import { getList as getClassesList, getSubClasses, } from './modules/data/classes.js'
 import { origins, } from './modules/data/origins.js'
 import { getSpeciesList, } from './modules/data/species.js'
 import { weapons, } from './modules/data/equipments.js'
 import { abilities, getAllSkills } from './modules/data/abilities.js'
+import parseMarkdown from './modules/markdown.js'
 
-const charsheet = {
-  charName: 'Doudou McDoubidou',
-  charOrigin: 'artisan',
-  charClassName: 'monk',
-  charSubClassName: undefined,
-  charSpeciesName: 'goliath.stone',
-  charLevel: 2,
-  charExperience: 300,
-  charAlignment: 'neutralGood',
-  charSizeCategory: 'medium',
-  charSize: '242',
-  attributes: {
-    strength: 12,
-    dexterity: 17,
-    constitution: 14,
-    wisdom: 12,
-    intelligence: 8,
-    charisma: 12,
-  },
-  skillChoosed: ['athletics', 'acrobatics'],
-  equipments: {
-    weapons: {},
-    armors: {},
-    shield: false,
-    tools: {},
-    miscs: []
-  }
-}
+// TODO: remove mock
+import { mock as storedData } from './modules/storeManager.js'
 
 /////////////////////////////////////////////////////////////////////////
 // INPUTS ///////////////////////////////////////////////////////////////
@@ -124,15 +99,39 @@ function refreshProficiencyBonus() {
 }
 
 function refreshClassFeatures() {
+  // TODO: trigger on classChange & subClassChange & levelChange
   while (classFeaturesElement.firstChild) {
     classFeaturesElement.removeChild(classFeaturesElement.firstChild);
   }
 
   userData.getCharClass().features?.forEach(feature => {
-    const opt = document.createElement("li")
-    opt.classList.add('list-group-item')
-    opt.appendChild(document.createTextNode(feature.name))
-    classFeaturesElement.appendChild(opt)
+    const featureElement = createElement('div', null, { class: 'accordion-item' })
+    const header = featureElement.appendChild(createElement('div',
+      createElement('span',
+        document.createTextNode('Lv.' + feature.atLevel + ' - ' + i18n._(`statics.class-features.${userData.getCharClassName()}.${feature.name}.name`)), {
+        class: 'input-group-text flex-grow-1',
+      }),
+      { class: 'accordion-header input-group' },
+    ))
+    header.appendChild(createElement('button', 'btn', {
+      class: 'btn btn-outline-secondary',
+      type: 'button',
+      'data-bs-toggle': 'collapse',
+      'data-bs-target': `#collapse-class-features-${userData.getCharClassName()}-${feature.name}`,
+      role: 'button',
+    }))
+
+    featureElement.appendChild(header)
+    featureElement.appendChild(createElement('div',
+      parseMarkdown(i18n._(`statics.class-features.${userData.getCharClassName()}.${feature.name}.description`)),
+      {
+        id: `collapse-class-features-${userData.getCharClassName()}-${feature.name}`,
+        class: 'accordion-collapse collapse',
+        'data-bs-parent': '#class-features-accordion',
+      },
+    ))
+
+    classFeaturesElement.appendChild(featureElement)
   })
 }
 
@@ -319,5 +318,5 @@ function setBindings() {
   for (element of Object.values(abilityElements).map(_ => _.score)) { element.addEventListener('change', abilityScoreChanged) }
 }
 
-init(charsheet)
+init(storedData)
 setBindings()

@@ -1,4 +1,4 @@
-import { f, } from '../lib.js'
+import { f, } from '../domlib.js'
 
 export const abilities = f({
   strength: f({

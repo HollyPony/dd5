@@ -1,5 +1,5 @@
 // P.187
-import { f, } from '../lib.js'
+import { f, } from '../domlib.js'
 import { spells, } from './spells.js'
 
 const species = f({

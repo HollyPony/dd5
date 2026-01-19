@@ -1,4 +1,4 @@
-import { f, } from '../lib.js'
+import { f, } from '../domlib.js'
 
 const classes = f({
   barbarian: f({ // P.51
@@ -73,12 +73,17 @@ const classes = f({
     authorizedNumberSkills: 2,
     authorizedSkills: f(['acrobatics', 'athletics', 'history', 'insight', 'religion', 'stealth']),
     features: f([
-      f({ name: 'martialArts', atLevel: 1 }), // TODO
+      f({ name: 'martialArts', atLevel: 1, }), // TODO
       f({
         name: 'unarmoredDefense', atLevel: 1, type: 'ACOverride',
         condition: (inputs) => !inputs.hasArmor && !inputs.hasShield,
-        apply: (modifiers) => 10 + modifiers['dexterity'] + modifiers['wisdom']
+        apply: ({ modifiers }) => 10 + modifiers['dexterity'] + modifiers['wisdom'],
       }),
+      f({ name: 'monksFocus', atLevel: 2, }),
+      f({ name: 'unarmoredMovement', atLevel: 2, }),
+      f({ name: 'uncannyMetabolism', atLevel: 2, }),
+      f({ name: 'deflectAttacks', atLevel: 3, }),
+      f({ name: 'monkSubClass', atLevel: 3, }),
     ]),
     subClasses: f({
       mercy: f({}),

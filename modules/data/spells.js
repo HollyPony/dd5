@@ -1,5 +1,5 @@
 // P.200
-import { f, } from '../lib.js'
+import { f, } from '../domlib.js'
 
 export const spells = f({
   enlargeReduce: f({ // Agrandissement/rapetissement

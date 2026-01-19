@@ -1,5 +1,6 @@
 import { getAbilityFromSkill, } from './data/abilities.js'
 import getClass from './data/classes.js'
+import * as equipments from './data/equipments.js'
 import { origins, } from './data/origins.js'
 import getSpecies from './data/species.js'
 
@@ -33,12 +34,14 @@ const charsheet = Object.seal({
     charisma: 0,
   }),
   skillChoosed: [],
+  feats: [],
   equipments: {
-    weapons: {},
-    armors: {},
-    shield: false,
-    tools: {},
-    miscs: []
+    weapons: [],
+    armors: [],
+    shields: [],
+    tools: [],
+    miscs: [],
+    magicItems: [],
   }, // TODO: seal
 })
 
@@ -61,7 +64,7 @@ export function getEquipments() { return charsheet.equipments }
 export function getCharClass() { return charsheet.charClass }
 export function getCharSpecies() { return charsheet.charSpecies }
 export function getCharModifiers() { return charsheet.modifiers }
-export function getCharFeatures() { return } // TODO: get from class + species human?
+export function getCharFeats() { return charsheet.feats } // TODO: get from class + species human?
 
 // SETTERS
 
@@ -99,37 +102,51 @@ function abilityScoreToModifier(score) {
 
 // COMPUTED VALUES
 
+/* TODO: update if
+ *  - armor equipped
+ *  - Shield equipped
+ *  - levelUp ?
+ *  - traits - features changed (according to levelUp or GM)
+ *  - magic items equipped
+ *  - magic item attuned
+ */
 export function getArmorClass() {
-  const equippedArmors = getEquipments?.armors ? Object.values(getEquipments?.armors).filter(armor => armor.isEquipped) : false
+  const modifiers = getCharModifiers()
+  const equippedArmors = getEquipments()?.armors ? Object.values(getEquipments()?.armors).filter(armor => armor.isEquipped) : false
+  const equippedShields = getEquipments()?.shields ? Object.values(getEquipments()?.shields).filter(armor => armor.isEquipped) : false
   const hasArmor = equippedArmors?.length > 0
-  const hasShield = getEquipments?.shield
+  const hasShield = equippedShields?.length > 0
 
   const overrideFeatures = getCharClass().features
     .filter(_ => _.type === 'ACOverride' && _.condition({ hasArmor, hasShield }))
 
-  // si pas armure ni bouclier - monk 10+dex+sag P.128
-  // si pas armure - barbarian 10+dex+con - sorcerer/draconic 10+dex+cha P.99
-  if (overrideFeatures.length > 0) {
-    if (overrideFeatures.length > 1) {
-      console.error('too much features overrides')
-      return -1
-    }
-    return overrideFeatures[0].apply(getCharModifiers())
-  }
-
   if (equippedArmors.length > 1) {
     console.error('too much equipped armors')
-    return -1
+    return 'err'
+  }
+  if (overrideFeatures.length > 1) { // TODO: user must choose one
+    console.error('too much features overrides')
+    return 'err'
   }
 
-  const dexMod = getAbilityModifier('dexterity')
-  let armor = hasArmor ? equippedArmors[0].armorClass(dexMod) : 10 + dexMod // Armors P.220 || Basic AC without armors P.42
-  getCharFeatures().filter(_ => _.type == 'ACModifier' && _.condition({ hasArmor })).forEach(feature =>
+  // si pas armure ni bouclier - monk 10+dex+sag P.128
+  // si pas armure - barbarian 10+dex+con - sorcerer/draconic 10+dex+cha P.99
+  let armor = overrideFeatures.length > 0
+    ? overrideFeatures[0].apply({ hasArmor, hasShield, modifiers })
+    : hasArmor
+      ? equippedArmors[0].armorClass({ modifiers })
+      : 10 + modifiers.dexterity // Armors P.220 || Basic AC without armors P.42
+
+  getCharFeats().filter(_ => _.type == 'ACModifier' && _.condition({ hasArmor, hasShield })).forEach(feat =>
     // si armure - char has feat (don P.210) Defense = +1
-    armor = feature.apply(armor)
+    armor = feat.apply(armor)
   )
 
   if (hasShield) armor = armor + 2
+
+  getEquipments().magicItems
+    ?.filter(_ => _.condition.call(_) && Object.keys(_.modifiers).includes('ACModifier') && _.modifiers['ACModifier']?.condition.call(_))
+    .forEach(magicItem => armor = magicItem.modifiers['ACModifier'].apply.call(magicItem, { ac: armor }))
 
   // TODO: Apply equipments modifier
   // Cloak of Protection – +1 à la CA et aux jets de sauvegarde tant que vous portez la cape.
@@ -138,7 +155,16 @@ export function getArmorClass() {
   // Ioun Stone of Protection – +1 à la CA tant que la pierre orbite autour de vous
   return armor
 }
-export function getProficencyBonus() { return Math.floor(getCharLevel() / 4) + 2 }
+export function getProficencyBonus() {
+  let proficiencyBonus = Math.floor(getCharLevel() / 4) + 2
+
+  // TODO: update on equipped / unequipped / attuned / on scores changes
+  getEquipments().magicItems
+    ?.filter(_ => _.condition.call(_) && Object.keys(_.modifiers).includes('PBModifier') && _.modifiers['PBModifier']?.condition.call(_))
+    .forEach(magicItem => proficiencyBonus = magicItem.modifiers['PBModifier'].apply.call(magicItem, { pb: proficiencyBonus }))
+
+  return proficiencyBonus
+}
 export function getAbilityModifier(ability) { return charsheet.modifiers[ability] }
 export function getAbilitySave(ability) {
   return getCharClass()?.saves?.includes(ability)
@@ -160,23 +186,23 @@ export function getSkillScore(skill) {
 
 // INITIALIZER
 
-export function init(_charsheet) {
-  charsheet.charName = _charsheet.charName
-  charsheet.charOrigin = _charsheet.charOrigin
-  charsheet.charClassName = _charsheet.charClassName
-  charsheet.charSubClassName = _charsheet.charSubClassName
-  charsheet.charSpeciesName = _charsheet.charSpeciesName
-  charsheet.charLevel = _charsheet.charLevel
-  charsheet.charExperience = _charsheet.charExperience
-  charsheet.charAlignment = _charsheet.charAlignment
-  charsheet.charSizeCategory = _charsheet.charSizeCategory
-  charsheet.charSize = _charsheet.charSize
-  charsheet.attributes.strength = _charsheet.attributes.strength
-  charsheet.attributes.dexterity = _charsheet.attributes.dexterity
-  charsheet.attributes.constitution = _charsheet.attributes.constitution
-  charsheet.attributes.wisdom = _charsheet.attributes.wisdom
-  charsheet.attributes.intelligence = _charsheet.attributes.intelligence
-  charsheet.attributes.charisma = _charsheet.attributes.charisma
+export function init(source) {
+  charsheet.charName = source.charName
+  charsheet.charOrigin = source.charOrigin
+  charsheet.charClassName = source.charClassName
+  charsheet.charSubClassName = source.charSubClassName
+  charsheet.charSpeciesName = source.charSpeciesName
+  charsheet.charLevel = source.charLevel
+  charsheet.charExperience = source.charExperience
+  charsheet.charAlignment = source.charAlignment
+  charsheet.charSizeCategory = source.charSizeCategory
+  charsheet.charSize = source.charSize
+  charsheet.attributes.strength = source.attributes.strength
+  charsheet.attributes.dexterity = source.attributes.dexterity
+  charsheet.attributes.constitution = source.attributes.constitution
+  charsheet.attributes.wisdom = source.attributes.wisdom
+  charsheet.attributes.intelligence = source.attributes.intelligence
+  charsheet.attributes.charisma = source.attributes.charisma
 
   charsheet.modifiers.strength = abilityScoreToModifier(charsheet.attributes.strength)
   charsheet.modifiers.dexterity = abilityScoreToModifier(charsheet.attributes.dexterity)
@@ -185,41 +211,18 @@ export function init(_charsheet) {
   charsheet.modifiers.intelligence = abilityScoreToModifier(charsheet.attributes.intelligence)
   charsheet.modifiers.charisma = abilityScoreToModifier(charsheet.attributes.charisma)
 
-  charsheet.skillChoosed = _charsheet.skillChoosed
+  charsheet.skillChoosed = source.skillChoosed
 
   charsheet.charClass = getClass(getCharClassName(), getCharSubClassName(), getCharLevel())
   charsheet.charSpecies = getSpecies(getCharSpeciesName())
-}
 
-// EXPORT
+  // TODO: init species traits
 
-export function toJSON() {
-  return JSON.stringify({
-    charName: charsheet.charName,
-    charOriginName: charsheet.charOrigin,
-    charClassName: charsheet.charClassName,
-    charSubClassName: charsheet.charSubClassName,
-    charSpecies: charsheet.charSpeciesName,
-    charLevel: charsheet.charLevel,
-    charExperience: charsheet.charExperience,
-    charAlignment: charsheet.charAlignment,
-    charSizeCategory: charsheet.charSizeCategory,
-    charSize: charsheet.charSize,
-    attributes: {
-      strength: charsheet.attributes.strength,
-      dexterity: charsheet.attributes.dexterity,
-      constitution: charsheet.attributes.constitution,
-      wisdom: charsheet.attributes.wisdom,
-      intelligence: charsheet.attributes.intelligence,
-      charisma: charsheet.attributes.charisma,
-    },
-    skillChoosed: charsheet.skillChoosed,
-    equipments: {
-      weapons: charsheet.equipments.weapons,
-      armors: charsheet.equipments.armors,
-      shield: charsheet.equipments.shield,
-      tools: charsheet.equipments.tools,
-      miscs: charsheet.equipments.miscs,
-    }
+  // TODO: init class features
+
+  // TODO: init feats
+
+  Object.keys(charsheet.equipments).forEach(_ => {
+    charsheet.equipments[_] = source?.equipments[_]?.map(equipment => ({ ...equipments[_][equipment.name], ...equipment }))
   })
 }

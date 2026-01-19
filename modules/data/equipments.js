@@ -1,4 +1,4 @@
-import { f, } from '../lib.js'
+import { f, } from '../domlib.js'
 
 // bludgeoning: Contondant
 // piercing: Perforant
@@ -322,104 +322,213 @@ export const weapons = f({
 })
 
 export const armors = f({
-  light: f({// Armures légères
-    padded: f({
-      armorClass: (dex) => 11 + dex,
-      strength: null,
-      stealthMalus: true,
-      weight: `4 kg`, // TODO: Weight
-      cost: `5 po`
-    }),
-    leather: f({
-      armorClass: (dex) => 11 + dex,
-      strength: null,
-      stealthMalus: false,
-      weight: `5 kg`,
-      cost: `10 po`
-    }),
-    studdedLeather: f({
-      armorClass: (dex) => 12 + dex,
-      strength: null,
-      stealthMalus: false,
-      weight: `6,5 kg`,
-      cost: `45 po`
-    }),
+  padded: f({
+    armorClass: ({ modifiers: { dexterity: dex } }) => 11 + dex,
+    strength: null,
+    stealthMalus: true,
+    weight: `4 kg`, // TODO: Weight
+    cost: `5 po`,
+    category: 'light',
   }),
-  medium: f({ // Armures intermédiaires
-    hideArmor: f({
-      armorClass: (dex) => 12 + Math.min(dex, 2),
-      strength: null,
-      stealthMalus: false,
-      weight: `6 kg`,
-      cost: `10 po`
-    }),
-    chainShirt: f({
-      armorClass: (dex) => 13 + Math.min(dex, 2),
-      strength: null,
-      stealthMalus: false,
-      weight: `10 kg`,
-      cost: `50 po`
-    }),
-    scaleMail: f({
-      armorClass: (dex) => 14 + Math.min(dex, 2),
-      strength: null,
-      stealthMalus: true,
-      weight: `22,5 kg`,
-      cost: `50 po`
-    }),
-    breastplate: f({
-      armorClass: (dex) => 14 + Math.min(dex, 2),
-      strength: null,
-      stealthMalus: false,
-      weight: `10 kg`,
-      cost: `400 po`
-    }),
-    halfPlate: f({
-      armorClass: (dex) => 15 + Math.min(dex, 2),
-      strength: null,
-      stealthMalus: true,
-      weight: `20 kg`,
-      cost: `750 po`
-    }),
+  leather: f({
+    armorClass: ({ modifiers: { dexterity: dex } }) => 11 + dex,
+    strength: null,
+    stealthMalus: false,
+    weight: `5 kg`,
+    cost: `10 po`,
+    category: 'light',
   }),
-  heavy: f({ // Armures lourdes
-    ringMail: f({
-      armorClass: () => 14,
-      strength: null,
-      stealthMalus: true,
-      weight: `20 kg`,
-      cost: `30 po`
-    }),
-    chainMail: f({
-      armorClass: () => 16,
-      strength: 13,
-      stealthMalus: true,
-      weight: `27,5 kg`,
-      cost: `75 po`
-    }),
-    splint: f({
-      armorClass: () => 17,
-      strength: 15,
-      stealthMalus: true,
-      weight: `30 kg`,
-      cost: `200 po`
-    }),
-    plate: f({
-      armorClass: () => 18,
-      strength: 15,
-      stealthMalus: true,
-      weight: `32,5 kg`,
-      cost: `1500 po`
-    }),
+  studdedLeather: f({
+    armorClass: ({ modifiers: { dexterity: dex } }) => 12 + dex,
+    strength: null,
+    stealthMalus: false,
+    weight: `6,5 kg`,
+    cost: `45 po`,
+    category: 'light',
   }),
-  shield: f({ // Bouclier
-    shield: f({
-      name: `Bouclier`,
-      armorClass: 2,
-      strength: null,
-      stealthMalus: false,
-      weight: `3 kg`,
-      cost: `10 po`
-    }),
+  hideArmor: f({
+    armorClass: ({ modifiers: { dexterity: dex } }) => 12 + Math.min(dex, 2),
+    strength: null,
+    stealthMalus: false,
+    weight: `6 kg`,
+    cost: `10 po`,
+    category: 'medium',
+  }),
+  chainShirt: f({
+    armorClass: ({ modifiers: { dexterity: dex } }) => 13 + Math.min(dex, 2),
+    strength: null,
+    stealthMalus: false,
+    weight: `10 kg`,
+    cost: `50 po`,
+    category: 'medium',
+  }),
+  scaleMail: f({
+    armorClass: ({ modifiers: { dexterity: dex } }) => 14 + Math.min(dex, 2),
+    strength: null,
+    stealthMalus: true,
+    weight: `22,5 kg`,
+    cost: `50 po`,
+    category: 'medium',
+  }),
+  breastplate: f({
+    armorClass: ({ modifiers: { dexterity: dex } }) => 14 + Math.min(dex, 2),
+    strength: null,
+    stealthMalus: false,
+    weight: `10 kg`,
+    cost: `400 po`,
+    category: 'medium',
+  }),
+  halfPlate: f({
+    armorClass: ({ modifiers: { dexterity: dex } }) => 15 + Math.min(dex, 2),
+    strength: null,
+    stealthMalus: true,
+    weight: `20 kg`,
+    cost: `750 po`,
+    category: 'medium',
+  }),
+  ringMail: f({
+    armorClass: () => 14,
+    strength: null,
+    stealthMalus: true,
+    weight: `20 kg`,
+    cost: `30 po`,
+    category: 'heavy',
+  }),
+  chainMail: f({
+    armorClass: () => 16,
+    strength: 13,
+    stealthMalus: true,
+    weight: `27,5 kg`,
+    cost: `75 po`,
+    category: 'heavy',
+  }),
+  splint: f({
+    armorClass: () => 17,
+    strength: 15,
+    stealthMalus: true,
+    weight: `30 kg`,
+    cost: `200 po`,
+    category: 'heavy',
+  }),
+  plate: f({
+    armorClass: () => 18,
+    strength: 15,
+    stealthMalus: true,
+    weight: `32,5 kg`,
+    cost: `1500 po`,
+    category: 'heavy',
+  }),
+})
+
+const shield = f({ // Bouclier
+  shield: f({
+    name: `Bouclier`,
+    armorClass: ({ ac }) => ac + 2,
+    strength: null,
+    stealthMalus: false,
+    weight: `3 kg`,
+    cost: `10 po`
+  }),
+})
+
+
+export const gears = f({
+  acid: { weight: '0,5 kg', cost: '25 po', },
+  antitoxin: { weight: '—', cost: '50 po', },
+  clothesFine: { weight: '3 kg', cost: '15 po', },
+  ramPortable: { weight: '17,5 kg', cost: '4 po', },
+  ballBearings: { weight: '1 kg', cost: '1 po', },
+  tinderbox: { weight: '0,5 kg', cost: '5 pa', },
+  candle: { weight: '—', cost: '1 pc', },
+  bottleGlass: { weight: '1 kg', cost: '2 po', },
+  lock: { weight: '0,5 kg', cost: '10 po', },
+  quiver: { weight: '0,5 kg', cost: '1 po', },
+  map: { weight: '—', cost: '1 po', },
+  chain: { weight: '5 kg', cost: '5 po', },
+  caltrops: { weight: '1 kg', cost: '1 po', },
+  bell: { weight: '—', cost: '1 po', },
+  chest: { weight: '12,5 kg', cost: '5 po', },
+  rope: { weight: '2,5 kg', cost: '1 po', },
+  costume: { weight: '2 kg', cost: '5 po', },
+  blanket: { weight: '1,5 kg', cost: '5 pa', },
+  jug: { weight: '2 kg', cost: '2 pc', },
+  holyWater: { weight: '0,5 kg', cost: '25 po', },
+  ladder: { weight: '12,5 kg', cost: '1 pa', },
+  ink: { weight: '—', cost: '10 po', },
+  caseMapOrScroll: { weight: '0,5 kg', cost: '1 po', },
+  caseCrossbowBolt: { weight: '0,5 kg', cost: '1 po', },
+  alchemistsFire: { weight: '0,5 kg', cost: '50 po', },
+  string: { weight: '—', cost: '1 pa', },
+  net: { weight: '1,5 kg', cost: '1 po', },
+  vial: { weight: '—', cost: '1 po', },
+  flask: { weight: '0,5 kg', cost: '2 pc', },
+  arcaneFocus: { weight: 'Variable', cost: 'Variable', },
+  druidicFocus: { weight: 'Variable', cost: 'Variable', },
+  grapplingHook: { weight: '2 kg', cost: '2 po', },
+  oil: { weight: '0,5 kg', cost: '1 pa', },
+  lamp: { weight: '0,5 kg', cost: '5 pa', },
+  lanternHooded: { weight: '1 kg', cost: '5 po', },
+  lanternBullseye: { weight: '1 kg', cost: '10 po', },
+  book: { weight: '2,5 kg', cost: '25 po', },
+  spyglass: { weight: '0,5 kg', cost: '1000 po', },
+  magnifyingGlass: { weight: '—', cost: '100 po', },
+  climbersKit: { weight: '6 kg', cost: '25 po', },
+  manacles: { weight: '3 kg', cost: '2 po', },
+  mirror: { weight: '250 g', cost: '5 po', },
+  ammunition: { weight: 'Variable', cost: 'Variable', },
+  waterskin: { weight: '2,5 kg', cost: '2 pa', },
+  blockAndTackle: { weight: '2,5 kg', cost: '1 po', },
+  basket: { weight: '1 kg', cost: '4 pa', },
+  paper: { weight: '—', cost: '2 pa', },
+  burglarsPack: { weight: '21 kg', cost: '16 po', },
+  diplomatsPack: { weight: '19,5 kg', cost: '39 po', },
+  entertainersPack: { weight: '29 kg', cost: '40 po', },
+  priestsPack: { weight: '14,5 kg', cost: '33 po', },
+  scholarsPack: { weight: '11 kg', cost: '40 po', },
+  explorersPack: { weight: '27,5 kg', cost: '10 po', },
+  dungeoneersPack: { weight: '27,5 kg', cost: '12 po', },
+  parchment: { weight: '—', cost: '1 pa', },
+  spellScrollLevel1: { weight: '—', cost: '50 po', },
+  spellScrollCantrip: { weight: '—', cost: '30 po', },
+  perfume: { weight: '—', cost: '5 po', },
+  shovel: { weight: '2,5 kg', cost: '2 po', },
+  pole: { weight: '3,5 kg', cost: '5 pc', },
+  crowbar: { weight: '2,5 kg', cost: '2 po', },
+  huntingTrap: { weight: '12,5 kg', cost: '5 po', },
+  spikesIron: { weight: '2,5 kg', cost: '1 po', },
+  poisonBasic: { weight: '—', cost: '100 po', },
+  inkPen: { weight: '—', cost: '2 pc', },
+  potIron: { weight: '5 kg', cost: '2 po', },
+  potionOfHealing: { weight: '250 g', cost: '50 po', },
+  rations: { weight: '1 kg', cost: '5 pa', },
+  robe: { weight: '2 kg', cost: '1 po', },
+  sack: { weight: '250 g', cost: '1 pc', },
+  backpack: { weight: '2,5 kg', cost: '2 po', },
+  bedroll: { weight: '3,5 kg', cost: '1 po', },
+  pouch: { weight: '0,5 kg', cost: '5 pa', },
+  componentPouch: { weight: '1 kg', cost: '25 po', },
+  bucket: { weight: '1 kg', cost: '5 pc', },
+  signalWhistle: { weight: '—', cost: '5 pc', },
+  holySymbol: { weight: 'Variable', cost: 'Variable', },
+  tent: { weight: '10 kg', cost: '2 po', },
+  clothesTravelers: { weight: '2 kg', cost: '2 po', },
+  barrel: { weight: '35 kg', cost: '2 po', },
+  torch: { weight: '0,5 kg', cost: '1 pc', },
+  healersKit: { weight: '1,5 kg', cost: '5 po', },
+})
+
+
+export const magicItems = f({
+  cloakOfProtection: f({
+    requireAttunement: true,
+    hasAttunement: false,
+    condition: function () { return !this.requireAttunement || this.hasAttunements },
+    modifiers: {
+      ACModifier: {
+        condition: function () { return !this.requireAttunement || this.hasAttunements },
+        apply: function ({ ac }) { return ac + 1 }
+      },
+      savesModifier: { apply: ({ modifiers }) => Object.entries(modifiers).reduce((acc, [name, modifier]) => ({ ...acc, [name]: modifier + 1 }), {}) }
+    }
   }),
 })
