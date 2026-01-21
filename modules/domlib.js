@@ -1,8 +1,8 @@
-export function createElement(type, content, attributes = {}) {
+export function createElement(type, children, attributes = {}) {
   const element = document.createElement(type)
   Object.entries(attributes).forEach(([name, value]) => element.setAttribute(name, value))
-  if (content) {
-    element.appendChild(typeof content === 'string' ? document.createTextNode(content) : content)
+  if (children && Array.isArray(children)) {
+    children.forEach(child => element.appendChild(typeof child === 'string' ? document.createTextNode(child) : child))
   }
   return element
 }
@@ -13,24 +13,24 @@ export function clearSelect(selectElement) {
   }
 }
 
-export const selectHelper = {
-  populate: populateSelect
-}
 export function populateSelect(selectElement, items, options = {}) {
+  const fragment = document.createDocumentFragment()
   if (options.clear) {
     clearSelect(selectElement)
   }
 
-  const addOptionGroupTo = ({ label }) => createElement('optgroup', null, { label })
-  const addOptionTo = ({ value, text }) => createElement('option', text, { value })
-
   items.forEach(item => {
     if (item.isGroup) {
-      const optgroup = addOptionGroupTo(item, selectElement)
-      selectElement.appendChild(optgroup)
-      item.options.forEach(optItem => optgroup.appendChild(addOptionTo(optItem)))
+      fragment.appendChild(createElement(
+        'optgroup',
+        item.options.map(optItem => createElement('option', [optItem.text], { value: optItem.value })),
+        { label: item.label }
+      ))
     } else {
-      addOptionTo(item, selectElement)
+      fragment.appendChild(createElement('option', [item.text], { value: item.value }))
     }
   })
+
+  selectElement.appendChild(fragment)
+  return selectElement
 }

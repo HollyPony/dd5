@@ -1,4 +1,4 @@
-import { createElement, selectHelper } from './modules/domlib.js'
+import { createElement, populateSelect, } from './modules/domlib.js'
 import * as userData from './modules/userData.js'
 import { getList as getClassesList, getSubClasses, } from './modules/data/classes.js'
 import { origins, } from './modules/data/origins.js'
@@ -73,7 +73,7 @@ function skillAsText(score) { return score > 0 ? `+${score}` : `${score}` }
 
 function refreshSubClass() {
   if (userData.getCharClassName()) {
-    selectHelper.populate(
+    populateSelect(
       charSubClassElement,
       [
         { value: '', text: i18n._(userData.getCharLevel() < 3 ? `subClasses._unavailable` : `subClasses._select`) },
@@ -107,13 +107,13 @@ function refreshClassFeatures() {
   userData.getCharClass().features?.forEach(feature => {
     const featureElement = createElement('div', null, { class: 'accordion-item' })
     const header = featureElement.appendChild(createElement('div',
-      createElement('span',
-        document.createTextNode('Lv.' + feature.atLevel + ' - ' + i18n._(`statics.class-features.${userData.getCharClassName()}.${feature.name}.name`)), {
-        class: 'input-group-text flex-grow-1',
-      }),
+      [createElement('span',
+        [document.createTextNode('Lv.' + feature.atLevel + ' - ' + i18n._(`statics.class-features.${userData.getCharClassName()}.${feature.name}.name`))],
+        { class: 'input-group-text flex-grow-1', }
+      )],
       { class: 'accordion-header input-group' },
     ))
-    header.appendChild(createElement('button', 'btn', {
+    header.appendChild(createElement('button', ['btn'], { // TODO: translate btn
       class: 'btn btn-outline-secondary',
       type: 'button',
       'data-bs-toggle': 'collapse',
@@ -123,7 +123,7 @@ function refreshClassFeatures() {
 
     featureElement.appendChild(header)
     featureElement.appendChild(createElement('div',
-      parseMarkdown(i18n._(`statics.class-features.${userData.getCharClassName()}.${feature.name}.description`)),
+      [parseMarkdown(i18n._(`statics.class-features.${userData.getCharClassName()}.${feature.name}.description`))],
       {
         id: `collapse-class-features-${userData.getCharClassName()}-${feature.name}`,
         class: 'accordion-collapse collapse',
@@ -240,20 +240,20 @@ function skillChecked(event) {
 /////////////////////////////////////////////////////////////////////////
 
 function init(charsheet) {
-  // Set Origins list
-  selectHelper.populate(
+  // Set Origins list 
+  populateSelect(
     charOriginElement,
     Object.keys(origins).map((originName) => ({ value: originName, text: i18n._(`statics.origins.${originName}`), }))
   )
 
   // Set Classes list
-  selectHelper.populate(
+  populateSelect(
     charClassElement,
     getClassesList().map(className => ({ value: className, text: i18n._(`statics.classes.${className}`), }))
   )
 
   // Set Races list
-  selectHelper.populate(
+  populateSelect(
     charRaceElement,
     getSpeciesList().map(species => (
       species.lineages ? {
@@ -269,7 +269,7 @@ function init(charsheet) {
     ))
   )
 
-  selectHelper.populate(
+  populateSelect(
     weaponSelectElement,
     [{ value: '', text: i18n._('weaponscantrip.weapons._select') }].concat(
       Object.entries(
