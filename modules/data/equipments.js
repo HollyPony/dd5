@@ -1,334 +1,363 @@
-import { f, } from '../domlib.js'
-
-// bludgeoning: Contondant
-// piercing: Perforant
-// slashing: Tranchant
+import { f, } from '../helpers.js'
+import { ARMOR_CATEGORY, MAGIC_ITEM_TYPE, WEAPON_CATEGORY, WEAPON_DAMAGE_TYPE } from './common.js'
 
 // mastery: Botte
 
-export const weapons = f({
-  simpleMelee: f({// Armes courantes de corps à corps
-    quarterstaff: f({
-      damage: `1d6`,
-      type: 'bludgeoning',
-      properties: f([`Polyvalente (1d8)`]),
-      mastery: `Renversement`,
-      weight: `2 kg`,
-      cost: '20 pc'
-    }),
-    dagger: f({
-      damage: `1d4`,
-      type: 'piercing',
-      properties: f([`Finesse`, `Lancer (portée 6/18)`, `Légère`]),
-      mastery: `Coup double`,
-      weight: `0,5 kg`,
-      cost: '200 pc'
-    }),
-    club: f({
-      damage: `1d4`,
-      type: 'bludgeoning',
-      properties: f([`Légère`]),
-      mastery: `Ralentissement`,
-      weight: `1 kg`,
-      cost: '10 pc'
-    }),
-    handaxe: f({
-      damage: `1d6`,
-      type: 'slashing',
-      properties: f([`Lancer (portée 6/18)`, `Légère`]),
-      mastery: `Ouverture`,
-      weight: `1 kg`,
-      cost: '500 pc'
-    }),
-    javelin: f({
-      damage: `1d6`,
-      type: 'piercing',
-      properties: f([`Lancer (portée 9/36)`]),
-      mastery: `Ralentissement`,
-      weight: `1 kg`,
-      cost: '50 pc'
-    }),
-    spear: f({
-      damage: `1d6`,
-      type: 'piercing',
-      properties: f([`Lancer (portée 6/18)`, `Polyvalente (1d8)`]),
-      mastery: `Sape`,
-      weight: `1,5 kg`,
-      cost: '100 pc'
-    }),
-    lightHammer: f({
-      damage: `1d4`,
-      type: 'bludgeoning',
-      properties: f([`Lancer (portée 6/18)`, `Légère`]),
-      mastery: `Coup double`,
-      weight: `1 kg`,
-      cost: '200 pc'
-    }),
-    mace: f({
-      damage: `1d6`,
-      type: 'bludgeoning',
-      properties: f([`—`]),
-      mastery: `Sape`,
-      weight: `2 kg`,
-      cost: '500 pc'
-    }),
-    greatclub: f({
-      damage: `1d8`,
-      type: 'bludgeoning',
-      properties: f([`Deux mains`]),
-      mastery: `Poussée`,
-      weight: `5 kg`,
-      cost: '20 pc'
-    }),
-    sickle: f({
-      damage: `1d4`,
-      type: 'slashing',
-      properties: f([`Légère`]),
-      mastery: `Coup double`,
-      weight: `1 kg`,
-      cost: '100 pc'
-    }),
+// P.214
+
+export const weapons = f({ // P.214
+  quarterstaff: f({
+    damage: `1d6`,
+    damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
+    category: WEAPON_CATEGORY.simpleMelee,
+    properties: f([`Polyvalente (1d8)`]),
+    mastery: `Renversement`,
+    weight: `2 kg`,
+    cost: '20 pc'
   }),
-  simpleRanged: f({// Armes courantes à distance
-    lightCrossbow: f({
-      damage: `1d8`,
-      type: 'piercing',
-      properties: f([`Chargement`, `Deux mains`, `Munitions (portée 24/96 ; carreaux)`]),
-      mastery: `Ralentissement`,
-      weight: `2,5 kg`,
-      cost: '2500 pc'
-    }),
-    shortbow: f({
-      damage: `1d6`,
-      type: 'piercing',
-      properties: f([`Deux mains`, `Munitions (portée 24/96 ; flèches)`]),
-      mastery: `Ouverture`,
-      weight: `1 kg`,
-      cost: '2500 pc'
-    }),
-    dart: f({
-      damage: `1d4`,
-      type: 'piercing',
-      properties: f([`Finesse`, `Lancer (portée 6/18)`]),
-      mastery: `Ouverture`,
-      weight: `125 g`,
-      cost: `5 pc`
-    }),
-    sling: f({
-      damage: `1d4`,
-      type: 'bludgeoning',
-      properties: f([`Munitions (portée 9/36 ; billes)`]),
-      mastery: `Ralentissement`,
-      weight: `—`,
-      cost: '10 pc'
-    }),
+  dagger: f({
+    damage: `1d4`,
+    damageType: WEAPON_DAMAGE_TYPE.piercing,
+    category: WEAPON_CATEGORY.simpleMelee,
+    properties: f([`Finesse`, `Lancer (portée 6/18)`, `Légère`]),
+    mastery: `Coup double`,
+    weight: `0,5 kg`,
+    cost: '200 pc'
   }),
-  martialMelee: f({// Armes de guerre de corps à corps
-    scimitar: f({
-      damage: `1d6`,
-      type: 'slashing',
-      properties: f([`Finesse`, `Légère`]),
-      mastery: `Coup double`,
-      weight: `1,5 kg`,
-      cost: '2500 pc'
-    }),
-    glaive: f({
-      damage: `1d10`,
-      type: 'slashing',
-      properties: f([`Allonge`, `Deux mains`, `Lourde`]),
-      mastery: `Écorchure`,
-      weight: `3 kg`,
-      cost: '2000 pc'
-    }),
-    greatSword: f({
-      damage: `2d6`,
-      type: 'slashing',
-      properties: f([`Deux mains`, `Lourde`]),
-      mastery: `Écorchure`,
-      weight: `3 kg`,
-      cost: '5000 pc'
-    }),
-    shortSword: f({
-      damage: `1d6`,
-      type: 'piercing',
-      properties: f([`Finesse`, `Légère`]),
-      mastery: `Ouverture`,
-      weight: `1 kg`,
-      cost: '1000 pc'
-    }),
-    longSword: f({
-      damage: `1d8`,
-      type: 'slashing',
-      properties: f([`Polyvalente (1d10)`]),
-      mastery: `Sape`,
-      weight: `1,5 kg`,
-      cost: '1500 pc'
-    }),
-    flail: f({
-      damage: `1d8`,
-      type: 'bludgeoning',
-      properties: f([`—`]),
-      mastery: `Sape`,
-      weight: `1 kg`,
-      cost: '1000 pc'
-    }),
-    whip: f({
-      damage: `1d4`,
-      type: 'slashing',
-      properties: f([`Allonge`, `Finesse`]),
-      mastery: `Ralentissement`,
-      weight: `1,5 kg`,
-      cost: '200 pc'
-    }),
-    gretAxe: f({
-      damage: `1d12`,
-      type: 'slashing',
-      properties: f([`Deux mains`, `Lourde`]),
-      mastery: `Enchaînement`,
-      weight: `3,5 kg`,
-      cost: '3000 pc'
-    }),
-    battleAxe: f({
-      damage: `1d8`,
-      type: 'slashing',
-      properties: f([`Polyvalente (1d10)`]),
-      mastery: `Renversement`,
-      weight: `2 kg`,
-      cost: '1000 pc'
-    }),
-    halberd: f({
-      damage: `1d10`,
-      type: 'slashing',
-      properties: f([`Allonge`, `Deux mains`, `Lourde`]),
-      mastery: `Enchaînement`,
-      weight: `3 kg`,
-      cost: '2000 pc'
-    }),
-    lance: f({
-      damage: `1d10`,
-      type: 'piercing',
-      properties: f([`Allonge`, `Deux mains (sauf à cheval)`, `Lourde`]),
-      mastery: `Renversement`,
-      weight: `3 kg`,
-      cost: '1000 pc'
-    }),
-    maul: f({
-      damage: `2d6`,
-      type: 'bludgeoning',
-      properties: f([`Deux mains`, `Lourde`]),
-      mastery: `Renversement`,
-      weight: `5 kg`,
-      cost: '1000 pc'
-    }),
-    warhammer: f({
-      damage: `1d8`,
-      type: 'bludgeoning',
-      properties: f([`Polyvalente (1d10)`]),
-      mastery: `Poussée`,
-      weight: `2,5 kg`,
-      cost: '1500 pc'
-    }),
-    morningstar: f({
-      damage: `1d8`,
-      type: 'piercing',
-      properties: f([`—`]),
-      mastery: `Sape`,
-      weight: `2 kg`,
-      cost: '1500 pc'
-    }),
-    warPick: f({
-      damage: `1d8`,
-      type: 'piercing',
-      properties: f([`Polyvalente (1d10)`]),
-      mastery: `Sape`,
-      weight: `1 kg`,
-      cost: '500 pc'
-    }),
-    pike: f({
-      damage: `1d10`,
-      type: 'piercing',
-      properties: f([`Allonge`, `Deux mains, Lourde`]),
-      mastery: `Poussée`,
-      weight: `9 kg`,
-      cost: '500 pc'
-    }),
-    rapier: f({
-      damage: `1d8`,
-      type: 'piercing',
-      properties: f([`Finesse`]),
-      mastery: `Ouverture`,
-      weight: `1 kg`,
-      cost: '2500 pc'
-    }),
-    trident: f({
-      damage: `1d8`,
-      type: 'piercing',
-      properties: f([`Lancer (portée 6/18)`, `Polyvalente (1d10)`]),
-      mastery: `Renversement`,
-      weight: `2 kg`,
-      cost: '500 pc'
-    }),
+  club: f({
+    damage: `1d4`,
+    damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
+    category: WEAPON_CATEGORY.simpleMelee,
+    properties: f([`Légère`]),
+    mastery: `Ralentissement`,
+    weight: `1 kg`,
+    cost: '10 pc'
   }),
-  martialRanged: f({// Armes de guerre à distance
-    handCrossbow: f({
-      damage: `1d6`,
-      type: 'piercing',
-      properties: f([`Chargement`, `Légère`, `Munitions (portée 9/36 ; carreaux)`]),
-      mastery: `Ouverture`,
-      weight: `1,5 kg`,
-      cost: '7500 pc'
-    }),
-    heavyCrossbow: f({
-      damage: `1d10`,
-      type: `piercing`,
-      properties: f([`Chargement`, `Deux mains`, `Lourde`, `Munitions(portée 30/ 120; carreaux)`]),
-      mastery: `Poussée`,
-      weight: `9 kg`,
-      cost: '5000 pc'
-    }),
-    longbow: f({
-      damage: `1d8`,
-      type: 'piercing',
-      properties: f([`Deux mains`, `Lourde`, `Munitions (portée 45/180 ; flèches)`]),
-      mastery: `Ralentissement`,
-      weight: `1 kg`,
-      cost: '5000 pc'
-    }),
-    musket: f({
-      damage: `1d12`,
-      type: 'piercing',
-      properties: f([`Chargement`, `Deux mains`, `Munitions (portée 12/36 ; balles)`]),
-      mastery: `Ralentissement`,
-      weight: `5 kg`,
-      cost: '50000 pc'
-    }),
-    pistol: f({
-      damage: `1d10`,
-      type: 'piercing',
-      properties: f([`Chargement`, `Munitions (portée 9/27 ; balles)`]),
-      mastery: `Ouverture`,
-      weight: `1,5 kg`,
-      cost: '25000 pc'
-    }),
-    blowgun: f({
-      damage: `1`,
-      type: 'piercing',
-      properties: f([`Chargement`, `Munitions (portée 7,50/30 ; dards)`]),
-      mastery: `Ouverture`,
-      weight: `0,5 kg`,
-      cost: '1000 pc'
-    }),
+  handaxe: f({
+    damage: `1d6`,
+    damageType: WEAPON_DAMAGE_TYPE.slashing,
+    category: WEAPON_CATEGORY.simpleMelee,
+    properties: f([`Lancer (portée 6/18)`, `Légère`]),
+    mastery: `Ouverture`,
+    weight: `1 kg`,
+    cost: '500 pc'
+  }),
+  javelin: f({
+    damage: `1d6`,
+    damageType: WEAPON_DAMAGE_TYPE.piercing,
+    category: WEAPON_CATEGORY.simpleMelee,
+    properties: f([`Lancer (portée 9/36)`]),
+    mastery: `Ralentissement`,
+    weight: `1 kg`,
+    cost: '50 pc'
+  }),
+  spear: f({
+    damage: `1d6`,
+    damageType: WEAPON_DAMAGE_TYPE.piercing,
+    category: WEAPON_CATEGORY.simpleMelee,
+    properties: f([`Lancer (portée 6/18)`, `Polyvalente (1d8)`]),
+    mastery: `Sape`,
+    weight: `1,5 kg`,
+    cost: '100 pc'
+  }),
+  lightHammer: f({
+    damage: `1d4`,
+    damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
+    category: WEAPON_CATEGORY.simpleMelee,
+    properties: f([`Lancer (portée 6/18)`, `Légère`]),
+    mastery: `Coup double`,
+    weight: `1 kg`,
+    cost: '200 pc'
+  }),
+  mace: f({
+    damage: `1d6`,
+    damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
+    category: WEAPON_CATEGORY.simpleMelee,
+    properties: f([`—`]),
+    mastery: `Sape`,
+    weight: `2 kg`,
+    cost: '500 pc'
+  }),
+  greatclub: f({
+    damage: `1d8`,
+    damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
+    category: WEAPON_CATEGORY.simpleMelee,
+    properties: f([`Deux mains`]),
+    mastery: `Poussée`,
+    weight: `5 kg`,
+    cost: '20 pc'
+  }),
+  sickle: f({
+    damage: `1d4`,
+    damageType: WEAPON_DAMAGE_TYPE.slashing,
+    category: WEAPON_CATEGORY.simpleMelee,
+    properties: f([`Légère`]),
+    mastery: `Coup double`,
+    weight: `1 kg`,
+    cost: '100 pc'
+  }),
+  lightCrossbow: f({
+    damage: `1d8`,
+    damageType: WEAPON_DAMAGE_TYPE.piercing,
+    category: WEAPON_CATEGORY.simpleRanged,
+    properties: f([`Chargement`, `Deux mains`, `Munitions (portée 24/96 ; carreaux)`]),
+    mastery: `Ralentissement`,
+    weight: `2,5 kg`,
+    cost: '2500 pc'
+  }),
+  shortbow: f({
+    damage: `1d6`,
+    damageType: WEAPON_DAMAGE_TYPE.piercing,
+    category: WEAPON_CATEGORY.simpleRanged,
+    properties: f([`Deux mains`, `Munitions (portée 24/96 ; flèches)`]),
+    mastery: `Ouverture`,
+    weight: `1 kg`,
+    cost: '2500 pc'
+  }),
+  dart: f({
+    damage: `1d4`,
+    damageType: WEAPON_DAMAGE_TYPE.piercing,
+    category: WEAPON_CATEGORY.simpleRanged,
+    properties: f([`Finesse`, `Lancer (portée 6/18)`]),
+    mastery: `Ouverture`,
+    weight: `125 g`,
+    cost: `5 pc`
+  }),
+  sling: f({
+    damage: `1d4`,
+    damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
+    category: WEAPON_CATEGORY.simpleRanged,
+    properties: f([`Munitions (portée 9/36 ; billes)`]),
+    mastery: `Ralentissement`,
+    weight: `—`,
+    cost: '10 pc'
+  }),
+  scimitar: f({
+    damage: `1d6`,
+    damageType: WEAPON_DAMAGE_TYPE.slashing,
+    category: WEAPON_CATEGORY.martialMelee,
+    properties: f([`Finesse`, `Légère`]),
+    mastery: `Coup double`,
+    weight: `1,5 kg`,
+    cost: '2500 pc'
+  }),
+  glaive: f({
+    damage: `1d10`,
+    damageType: WEAPON_DAMAGE_TYPE.slashing,
+    category: WEAPON_CATEGORY.martialMelee,
+    properties: f([`Allonge`, `Deux mains`, `Lourde`]),
+    mastery: `Écorchure`,
+    weight: `3 kg`,
+    cost: '2000 pc'
+  }),
+  greatSword: f({
+    damage: `2d6`,
+    damageType: WEAPON_DAMAGE_TYPE.slashing,
+    category: WEAPON_CATEGORY.martialMelee,
+    properties: f([`Deux mains`, `Lourde`]),
+    mastery: `Écorchure`,
+    weight: `3 kg`,
+    cost: '5000 pc'
+  }),
+  shortSword: f({
+    damage: `1d6`,
+    damageType: WEAPON_DAMAGE_TYPE.piercing,
+    category: WEAPON_CATEGORY.martialMelee,
+    properties: f([`Finesse`, `Légère`]),
+    mastery: `Ouverture`,
+    weight: `1 kg`,
+    cost: '1000 pc'
+  }),
+  longSword: f({
+    damage: `1d8`,
+    damageType: WEAPON_DAMAGE_TYPE.slashing,
+    category: WEAPON_CATEGORY.martialMelee,
+    properties: f([`Polyvalente (1d10)`]),
+    mastery: `Sape`,
+    weight: `1,5 kg`,
+    cost: '1500 pc'
+  }),
+  flail: f({
+    damage: `1d8`,
+    damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
+    category: WEAPON_CATEGORY.martialMelee,
+    properties: f([`—`]),
+    mastery: `Sape`,
+    weight: `1 kg`,
+    cost: '1000 pc'
+  }),
+  whip: f({
+    damage: `1d4`,
+    damageType: WEAPON_DAMAGE_TYPE.slashing,
+    category: WEAPON_CATEGORY.martialMelee,
+    properties: f([`Allonge`, `Finesse`]),
+    mastery: `Ralentissement`,
+    weight: `1,5 kg`,
+    cost: '200 pc'
+  }),
+  gretAxe: f({
+    damage: `1d12`,
+    damageType: WEAPON_DAMAGE_TYPE.slashing,
+    category: WEAPON_CATEGORY.martialMelee,
+    properties: f([`Deux mains`, `Lourde`]),
+    mastery: `Enchaînement`,
+    weight: `3,5 kg`,
+    cost: '3000 pc'
+  }),
+  battleAxe: f({
+    damage: `1d8`,
+    damageType: WEAPON_DAMAGE_TYPE.slashing,
+    category: WEAPON_CATEGORY.martialMelee,
+    properties: f([`Polyvalente (1d10)`]),
+    mastery: `Renversement`,
+    weight: `2 kg`,
+    cost: '1000 pc'
+  }),
+  halberd: f({
+    damage: `1d10`,
+    damageType: WEAPON_DAMAGE_TYPE.slashing,
+    category: WEAPON_CATEGORY.martialMelee,
+    properties: f([`Allonge`, `Deux mains`, `Lourde`]),
+    mastery: `Enchaînement`,
+    weight: `3 kg`,
+    cost: '2000 pc'
+  }),
+  lance: f({
+    damage: `1d10`,
+    damageType: WEAPON_DAMAGE_TYPE.piercing,
+    category: WEAPON_CATEGORY.martialMelee,
+    properties: f([`Allonge`, `Deux mains (sauf à cheval)`, `Lourde`]),
+    mastery: `Renversement`,
+    weight: `3 kg`,
+    cost: '1000 pc'
+  }),
+  maul: f({
+    damage: `2d6`,
+    damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
+    category: WEAPON_CATEGORY.martialMelee,
+    properties: f([`Deux mains`, `Lourde`]),
+    mastery: `Renversement`,
+    weight: `5 kg`,
+    cost: '1000 pc'
+  }),
+  warhammer: f({
+    damage: `1d8`,
+    damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
+    category: WEAPON_CATEGORY.martialMelee,
+    properties: f([`Polyvalente (1d10)`]),
+    mastery: `Poussée`,
+    weight: `2,5 kg`,
+    cost: '1500 pc'
+  }),
+  morningstar: f({
+    damage: `1d8`,
+    damageType: WEAPON_DAMAGE_TYPE.piercing,
+    category: WEAPON_CATEGORY.martialMelee,
+    properties: f([`—`]),
+    mastery: `Sape`,
+    weight: `2 kg`,
+    cost: '1500 pc'
+  }),
+  warPick: f({
+    damage: `1d8`,
+    damageType: WEAPON_DAMAGE_TYPE.piercing,
+    category: WEAPON_CATEGORY.martialMelee,
+    properties: f([`Polyvalente (1d10)`]),
+    mastery: `Sape`,
+    weight: `1 kg`,
+    cost: '500 pc'
+  }),
+  pike: f({
+    damage: `1d10`,
+    damageType: WEAPON_DAMAGE_TYPE.piercing,
+    category: WEAPON_CATEGORY.martialMelee,
+    properties: f([`Allonge`, `Deux mains, Lourde`]),
+    mastery: `Poussée`,
+    weight: `9 kg`,
+    cost: '500 pc'
+  }),
+  rapier: f({
+    damage: `1d8`,
+    damageType: WEAPON_DAMAGE_TYPE.piercing,
+    category: WEAPON_CATEGORY.martialMelee,
+    properties: f([`Finesse`]),
+    mastery: `Ouverture`,
+    weight: `1 kg`,
+    cost: '2500 pc'
+  }),
+  trident: f({
+    damage: `1d8`,
+    damageType: WEAPON_DAMAGE_TYPE.piercing,
+    category: WEAPON_CATEGORY.martialMelee,
+    properties: f([`Lancer (portée 6/18)`, `Polyvalente (1d10)`]),
+    mastery: `Renversement`,
+    weight: `2 kg`,
+    cost: '500 pc'
+  }),
+  handCrossbow: f({
+    damage: `1d6`,
+    damageType: WEAPON_DAMAGE_TYPE.piercing,
+    category: WEAPON_CATEGORY.martialRanged,
+    properties: f([`Chargement`, `Légère`, `Munitions (portée 9/36 ; carreaux)`]),
+    mastery: `Ouverture`,
+    weight: `1,5 kg`,
+    cost: '7500 pc'
+  }),
+  heavyCrossbow: f({
+    damage: `1d10`,
+    damageType: WEAPON_DAMAGE_TYPE.piercing,
+    category: WEAPON_CATEGORY.martialRanged,
+    properties: f([`Chargement`, `Deux mains`, `Lourde`, `Munitions(portée 30/ 120; carreaux)`]),
+    mastery: `Poussée`,
+    weight: `9 kg`,
+    cost: '5000 pc'
+  }),
+  longbow: f({
+    damage: `1d8`,
+    damageType: WEAPON_DAMAGE_TYPE.piercing,
+    category: WEAPON_CATEGORY.martialRanged,
+    properties: f([`Deux mains`, `Lourde`, `Munitions (portée 45/180 ; flèches)`]),
+    mastery: `Ralentissement`,
+    weight: `1 kg`,
+    cost: '5000 pc'
+  }),
+  musket: f({
+    damage: `1d12`,
+    damageType: WEAPON_DAMAGE_TYPE.piercing,
+    category: WEAPON_CATEGORY.martialRanged,
+    properties: f([`Chargement`, `Deux mains`, `Munitions (portée 12/36 ; balles)`]),
+    mastery: `Ralentissement`,
+    weight: `5 kg`,
+    cost: '50000 pc'
+  }),
+  pistol: f({
+    damage: `1d10`,
+    damageType: WEAPON_DAMAGE_TYPE.piercing,
+    category: WEAPON_CATEGORY.martialRanged,
+    properties: f([`Chargement`, `Munitions (portée 9/27 ; balles)`]),
+    mastery: `Ouverture`,
+    weight: `1,5 kg`,
+    cost: '25000 pc'
+  }),
+  blowgun: f({
+    damage: `1`,
+    damageType: WEAPON_DAMAGE_TYPE.piercing,
+    category: WEAPON_CATEGORY.martialRanged,
+    properties: f([`Chargement`, `Munitions (portée 7,50/30 ; dards)`]),
+    mastery: `Ouverture`,
+    weight: `0,5 kg`,
+    cost: '1000 pc'
   }),
 })
 
-export const armors = f({
+export const armors = f({ // P.220
   padded: f({
     armorClass: ({ modifiers: { dexterity: dex } }) => 11 + dex,
     strength: null,
     stealthMalus: true,
     weight: `4 kg`, // TODO: Weight
     cost: `5 po`,
-    category: 'light',
+    category: ARMOR_CATEGORY.Light,
   }),
   leather: f({
     armorClass: ({ modifiers: { dexterity: dex } }) => 11 + dex,
@@ -336,7 +365,7 @@ export const armors = f({
     stealthMalus: false,
     weight: `5 kg`,
     cost: `10 po`,
-    category: 'light',
+    category: ARMOR_CATEGORY.Light,
   }),
   studdedLeather: f({
     armorClass: ({ modifiers: { dexterity: dex } }) => 12 + dex,
@@ -344,7 +373,7 @@ export const armors = f({
     stealthMalus: false,
     weight: `6,5 kg`,
     cost: `45 po`,
-    category: 'light',
+    category: ARMOR_CATEGORY.Light,
   }),
   hideArmor: f({
     armorClass: ({ modifiers: { dexterity: dex } }) => 12 + Math.min(dex, 2),
@@ -352,7 +381,7 @@ export const armors = f({
     stealthMalus: false,
     weight: `6 kg`,
     cost: `10 po`,
-    category: 'medium',
+    category: ARMOR_CATEGORY.Medium,
   }),
   chainShirt: f({
     armorClass: ({ modifiers: { dexterity: dex } }) => 13 + Math.min(dex, 2),
@@ -360,7 +389,7 @@ export const armors = f({
     stealthMalus: false,
     weight: `10 kg`,
     cost: `50 po`,
-    category: 'medium',
+    category: ARMOR_CATEGORY.Medium,
   }),
   scaleMail: f({
     armorClass: ({ modifiers: { dexterity: dex } }) => 14 + Math.min(dex, 2),
@@ -368,7 +397,7 @@ export const armors = f({
     stealthMalus: true,
     weight: `22,5 kg`,
     cost: `50 po`,
-    category: 'medium',
+    category: ARMOR_CATEGORY.Medium,
   }),
   breastplate: f({
     armorClass: ({ modifiers: { dexterity: dex } }) => 14 + Math.min(dex, 2),
@@ -376,7 +405,7 @@ export const armors = f({
     stealthMalus: false,
     weight: `10 kg`,
     cost: `400 po`,
-    category: 'medium',
+    category: ARMOR_CATEGORY.Medium,
   }),
   halfPlate: f({
     armorClass: ({ modifiers: { dexterity: dex } }) => 15 + Math.min(dex, 2),
@@ -384,7 +413,7 @@ export const armors = f({
     stealthMalus: true,
     weight: `20 kg`,
     cost: `750 po`,
-    category: 'medium',
+    category: ARMOR_CATEGORY.Medium,
   }),
   ringMail: f({
     armorClass: () => 14,
@@ -392,7 +421,7 @@ export const armors = f({
     stealthMalus: true,
     weight: `20 kg`,
     cost: `30 po`,
-    category: 'heavy',
+    category: ARMOR_CATEGORY.Heavy,
   }),
   chainMail: f({
     armorClass: () => 16,
@@ -400,7 +429,7 @@ export const armors = f({
     stealthMalus: true,
     weight: `27,5 kg`,
     cost: `75 po`,
-    category: 'heavy',
+    category: ARMOR_CATEGORY.Heavy,
   }),
   splint: f({
     armorClass: () => 17,
@@ -408,7 +437,7 @@ export const armors = f({
     stealthMalus: true,
     weight: `30 kg`,
     cost: `200 po`,
-    category: 'heavy',
+    category: ARMOR_CATEGORY.Heavy,
   }),
   plate: f({
     armorClass: () => 18,
@@ -416,11 +445,11 @@ export const armors = f({
     stealthMalus: true,
     weight: `32,5 kg`,
     cost: `1500 po`,
-    category: 'heavy',
+    category: ARMOR_CATEGORY.Heavy,
   }),
 })
 
-const shield = f({ // Bouclier
+export const shield = f({ // P.220
   shield: f({
     name: `Bouclier`,
     armorClass: ({ ac }) => ac + 2,
@@ -431,8 +460,11 @@ const shield = f({ // Bouclier
   }),
 })
 
+export const tools = f({ // P.221
+  // TODO:
+})
 
-export const gears = f({
+export const gears = f({ // P.223
   acid: { weight: '0,5 kg', cost: '25 po', },
   antitoxin: { weight: '—', cost: '50 po', },
   clothesFine: { weight: '3 kg', cost: '15 po', },
@@ -517,12 +549,12 @@ export const gears = f({
   healersKit: { weight: '1,5 kg', cost: '5 po', },
 })
 
-
 export const magicItems = f({
   cloakOfProtection: f({
     requireAttunement: true,
     hasAttunement: false,
     condition: function () { return !this.requireAttunement || this.hasAttunements },
+    type: MAGIC_ITEM_TYPE.wondrousItem,
     modifiers: {
       ACModifier: {
         condition: function () { return !this.requireAttunement || this.hasAttunements },

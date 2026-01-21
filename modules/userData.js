@@ -1,5 +1,6 @@
 import { getAbilityFromSkill, } from './data/abilities.js'
 import getClass from './data/classes.js'
+import { FEATURE_EFFECTS, CLASS_EFFECTS, ABILITY, } from './data/common.js'
 import * as equipments from './data/equipments.js'
 import { origins, } from './data/origins.js'
 import getSpecies from './data/species.js'
@@ -65,6 +66,7 @@ export function getCharClass() { return charsheet.charClass }
 export function getCharSpecies() { return charsheet.charSpecies }
 export function getCharModifiers() { return charsheet.modifiers }
 export function getCharFeats() { return charsheet.feats } // TODO: get from class + species human?
+export function getWeaponProficiency() { }
 
 // SETTERS
 
@@ -81,7 +83,7 @@ export function setCharSubClassName(charSubClassName) {
 export function setCharLevel(charLevel) {
   charsheet.charLevel = charLevel
   charsheet.charClass = getClass(getCharClassName(), getCharSubClassName(), getCharLevel())
-  charsheet.charSpecies = getSpecies(getCharSpeciesName())
+  charsheet.charSpecies = getSpecies(getCharSpeciesName(), getCharLevel())
 }
 export function setCharOrigin(charOrigin) { charsheet.charOrigin = charOrigin }
 export function setCharSpeciesName(charSpecies) { charsheet.charSpeciesName = charSpecies }
@@ -112,13 +114,13 @@ function abilityScoreToModifier(score) {
  */
 export function getArmorClass() {
   const modifiers = getCharModifiers()
-  const equippedArmors = getEquipments()?.armors ? Object.values(getEquipments()?.armors).filter(armor => armor.isEquipped) : false
-  const equippedShields = getEquipments()?.shields ? Object.values(getEquipments()?.shields).filter(armor => armor.isEquipped) : false
+  const equippedArmors = Object.values(getEquipments()?.armors || {}).filter(armor => armor.isEquipped)
+  const equippedShields = Object.values(getEquipments()?.shields || {}).filter(armor => armor.isEquipped)
   const hasArmor = equippedArmors?.length > 0
   const hasShield = equippedShields?.length > 0
 
   const overrideFeatures = getCharClass().features
-    .filter(_ => _.type === 'ACOverride' && _.condition({ hasArmor, hasShield }))
+    .filter(_ => _.effects && _.effects[FEATURE_EFFECTS.ACOverride] && _.condition({ hasArmor, hasShield }))
 
   if (equippedArmors.length > 1) {
     console.error('too much equipped armors')
@@ -137,7 +139,7 @@ export function getArmorClass() {
       ? equippedArmors[0].armorClass({ modifiers })
       : 10 + modifiers.dexterity // Armors P.220 || Basic AC without armors P.42
 
-  getCharFeats().filter(_ => _.type == 'ACModifier' && _.condition({ hasArmor, hasShield })).forEach(feat =>
+  getCharFeats().filter(_ => _.type == FEATURE_EFFECTS.ACModifier && _.condition({ hasArmor, hasShield })).forEach(feat =>
     // si armure - char has feat (don P.210) Defense = +1
     armor = feat.apply(armor)
   )
@@ -165,6 +167,20 @@ export function getProficencyBonus() {
 
   return proficiencyBonus
 }
+
+export function getCharSpeed() { // TODO: take armor strength + update on armor change
+  let speed = getCharSpecies()?.speed || 0
+
+  const hasArmor = Object.values(getEquipments()?.armors || {}).filter(armor => armor.isEquipped) > 0
+  const hasShield = Object.values(getEquipments()?.shields || {}).filter(armor => armor.isEquipped) > 0
+
+  speed = (getCharClass().effects[CLASS_EFFECTS.SpeedModifier]?.condition?.call(getCharClass(), { hasArmor, hasShield }) && getCharClass().effects[CLASS_EFFECTS.SpeedModifier]?.apply?.call(getCharClass(), { speciesSpeed: speed })) ?? speed
+  // Heavy rule
+  speed += Object.values(getEquipments()?.armors).includes(armor => armor.isEquipped && armor.strength > getAbilityScore(ABILITY.Strength))
+    /* TODO: && !feats.cancelHeavyRule */ ? -3 : 0
+  return speed
+}
+
 export function getAbilityModifier(ability) { return charsheet.modifiers[ability] }
 export function getAbilitySave(ability) {
   return getCharClass()?.saves?.includes(ability)
@@ -174,7 +190,7 @@ export function getAbilitySave(ability) {
 export function isAuthorizedSkill(skill) {
   return getCharClass()?.authorizedSkills?.includes(skill)
 }
-export function isCheckedSkill(skill) {
+export function isCheckedSkill(skill) { // TODO: get from class features + get from feats
   return origins[getCharOrigin()]?.skills?.includes(skill) || getSkillChoosed().includes(skill)
 }
 export function isDisabledSkill(skill) {

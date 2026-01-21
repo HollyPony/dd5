@@ -1,5 +1,5 @@
 // P.187
-import { f, } from '../domlib.js'
+import { f, } from '../helpers.js'
 import { spells, } from './spells.js'
 
 const species = f({
@@ -235,22 +235,18 @@ export function getSpeciesList() {
   }))
 }
 
-export default function getSpecies(speciesName) {
+export default function getSpecies(speciesName, level) {
   const [speciesBaseName, lineageName] = speciesName.split('.')
   const { lineages, ...speciesBase } = species[speciesBaseName]
-  if (!lineageName) {
-    return speciesBase
-  }
   const lineage = lineages?.[lineageName]
-  if (!lineage) {
+  if (lineageName && !lineage) {
     console.warn(`Lineage ${lineageName} not found for species ${speciesBaseName}`)
-    return speciesBase
   }
 
   return f({
     ...speciesBase,
-    ...lineage,
-    traits: [...(speciesBase?.traits || []), ...(lineage?.traits || []),],
-    spells: [...(speciesBase?.spells || []), ...(lineage?.spells || []),],
+    ...lineage || {},
+    traits: [...(speciesBase?.traits || []), ...(lineage?.traits || [])].filter(({ atLevel }) => atLevel <= level),
+    spells: [...(speciesBase?.spells || []), ...(lineage?.spells || [])].filter(({ atLevel }) => atLevel <= level),
   })
 }

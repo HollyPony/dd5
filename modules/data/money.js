@@ -1,4 +1,4 @@
-import { f, } from '../lib.js'
+import { f, } from '../helpers.js'
 
 const money = f({
   gold: { silver: 10, copper: 100 }, // 1 gold = 10 silver = 100 copper

@@ -1,12 +1,28 @@
-import { f, } from '../domlib.js'
+import { f, } from '../helpers.js'
+import { FEATURE_EFFECTS as FEATURE_EFFECTS, DICES, SKILLS, WEAPON_CATEGORY, WEAPON_PROPERTY, CLASS_EFFECTS, ABILITY } from './common.js'
+
+const abilityScoreImprovement = (level) => ({
+  name: 'abilityScoreImprovement', atLevel: level,
+  effects: {
+    [FEATURE_EFFECTS.ImprovementChoose]: {},
+    [FEATURE_EFFECTS.AddAbility]: {
+      condition: () => { }, // TODO: If abilityChoose
+      apply: () => { }, // TODO: Update Ability - 2 ability +1 OR 1 ability +2 no more 20
+    },
+    [FEATURE_EFFECTS.AddFeat]: {
+      condition: () => { }, // TODO: If abilityChoose
+      apply: () => { }, // TODO: Update Ability - Choose feat according to conditions
+    },
+  }
+})
 
 const classes = f({
   barbarian: f({ // P.51
-    mainAbility: f(['strength']),
+    mainAbility: f([ABILITY.Strength]),
     hitPointDice: 12, // TODO: +1 per level
-    saves: f(['strength', 'constitution']),
+    saves: f([ABILITY.Strength, 'constitution']),
     authorizedNumberSkills: 2,
-    authorizedSkills: f(['animalHandling', 'athletics', 'intimidation', 'nature', 'perception', 'survival']),
+    authorizedSkills: f([SKILLS.animalHandling, SKILLS.athletics, SKILLS.intimidation, SKILLS.nature, SKILLS.perception, SKILLS.survival]),
     subClasses: f({
       berserker: f({}),
       wildHeart: f({}),
@@ -19,7 +35,7 @@ const classes = f({
     hitPointDice: 8, // TODO: +1 per level
     saves: f(['dexterity', 'charisma']),
     authorizedNumberSkills: 3,
-    authorizedSkills: f(['acrobatics', 'animalHandling', 'arcana', 'athletics', 'deception', 'history', 'insight', 'intimidation', 'investigation', 'medicine', 'nature', 'perception', 'performance', 'persuasion', 'religion', 'sleightOfHand', 'stealth', 'survival']),
+    authorizedSkills: f([SKILLS.acrobatics, SKILLS.animalHandling, SKILLS.arcana, SKILLS.athletics, SKILLS.deception, SKILLS.history, SKILLS.insight, SKILLS.intimidation, SKILLS.investigation, SKILLS.medicine, SKILLS.nature, SKILLS.perception, SKILLS.performance, SKILLS.persuasion, SKILLS.religion, SKILLS.sleightOfHand, SKILLS.stealth, SKILLS.survival]),
     subClasses: f({
       dance: f({}),
       glamour: f({}),
@@ -32,7 +48,7 @@ const classes = f({
     hitPointDice: 8, // TODO: +1 per level
     saves: f(['wisdom', 'charisma']),
     authorizedNumberSkills: 2,
-    authorizedSkills: f(['history', 'insight', 'medicine', 'persuasion', 'religion']),
+    authorizedSkills: f([SKILLS.history, SKILLS.insight, SKILLS.medicine, SKILLS.persuasion, SKILLS.religion]),
     subClasses: f({
       life: f({}),
       light: f({}),
@@ -45,7 +61,7 @@ const classes = f({
     hitPointDice: 8, // TODO: +1 per level
     saves: f(['intelligence', 'wisdom']),
     authorizedNumberSkills: 2,
-    authorizedSkills: f(['animalHandling', 'insight', 'medicine', 'nature', 'perception', 'religion', 'survival']),
+    authorizedSkills: f([SKILLS.animalHandling, SKILLS.insight, SKILLS.medicine, SKILLS.nature, SKILLS.perception, SKILLS.religion, SKILLS.survival]),
     subClasses: f({
       land: f({}),
       moon: f({}),
@@ -54,11 +70,11 @@ const classes = f({
     }),
   }),
   fighter: f({ // P.105
-    mainAbility: f(['strength', 'dexterity']), // TODO: choose
+    mainAbility: f([ABILITY.Strength, 'dexterity']), // TODO: choose
     hitPointDice: 10, // TODO: +1 per level
-    saves: f(['strength', 'constitution']),
+    saves: f([ABILITY.Strength, 'constitution']),
     authorizedNumberSkills: 2,
-    authorizedSkills: f(['acrobatics', 'animalHandling', 'athletics', 'history', 'insight', 'intimidation', 'persuasion', 'perception', 'survival']),
+    authorizedSkills: f([SKILLS.acrobatics, SKILLS.animalHandling, SKILLS.athletics, SKILLS.history, SKILLS.insight, SKILLS.intimidation, SKILLS.persuasion, SKILLS.perception, SKILLS.survival]),
     subClasses: f({
       battleMaster: f({}),
       champion: f({}),
@@ -69,13 +85,29 @@ const classes = f({
   monk: f({ // P.127
     mainAbility: f(['dexterity', 'wisdom']), // TODO: twice
     hitPointDice: 8, // TODO: +1 per level
-    saves: f(['strength', 'dexterity']),
+    saves: f([ABILITY.Strength, 'dexterity']),
     authorizedNumberSkills: 2,
-    authorizedSkills: f(['acrobatics', 'athletics', 'history', 'insight', 'religion', 'stealth']),
+    authorizedSkills: f([SKILLS.acrobatics, SKILLS.athletics, SKILLS.history, SKILLS.insight, SKILLS.religion, SKILLS.stealth]),
+    weaponProfciencies: f({}), // TODO: Used to display masteries ?
+    hasWeaponProficiency: weapon => [WEAPON_CATEGORY.simpleMelee, WEAPON_CATEGORY.simpleRanged].includes(weapon.category) ||
+      ([WEAPON_CATEGORY.martialMelee, WEAPON_CATEGORY.martialRanged].includes(weapon.category) && weapon.properties.includes(WEAPON_PROPERTY.Light)),
+    hasArmorProficiency: armor => { },
+    effects: {
+      [CLASS_EFFECTS.SpeedModifier]: {
+        condition: function ({ hasArmor, hasShield }) { return !hasArmor && !hasShield },
+        apply: function ({ speciesSpeed: speed, }) { return this.specificProps.speedModifier(this.level, speed) },
+      },
+    },
     features: f([
       f({ name: 'martialArts', atLevel: 1, }), // TODO
       f({
-        name: 'unarmoredDefense', atLevel: 1, type: 'ACOverride',
+        name: 'unarmoredDefense', atLevel: 1,
+        effects: {
+          [FEATURE_EFFECTS.ACOverride]: {
+            condition: ({ hasArmor, hasShield, }) => !hasArmor && !hasShield,
+            apply: ({ modifiers: { dexterity, wisdom } }) => 10 + dexterity + wisdom,
+          }
+        },
         condition: (inputs) => !inputs.hasArmor && !inputs.hasShield,
         apply: ({ modifiers }) => 10 + modifiers['dexterity'] + modifiers['wisdom'],
       }),
@@ -83,24 +115,103 @@ const classes = f({
       f({ name: 'unarmoredMovement', atLevel: 2, }),
       f({ name: 'uncannyMetabolism', atLevel: 2, }),
       f({ name: 'deflectAttacks', atLevel: 3, }),
-      f({ name: 'monkSubClass', atLevel: 3, }),
+      f({
+        name: 'monkSubClass', atLevel: 3, effects: {
+          [FEATURE_EFFECTS.SubClassChoose]: {
+            apply: () => { }
+          },
+        }
+      }),
+      f(abilityScoreImprovement(4)),
+      f(abilityScoreImprovement(8)),
+      f(abilityScoreImprovement(12)),
+      f(abilityScoreImprovement(16)),
+      f({
+        name: 'slowFall', atLevel: 4, effects: {
+          [FEATURE_EFFECTS.ReduceFallDamage]: {
+            apply: () => { } // TODO: level * 5
+          }
+        }
+      }),
+      f({
+        name: 'extraAttack', atLevel: 5,
+      }),
+      f({
+        name: 'stunningStrike', atLevel: 5,
+      }),
+      f({
+        name: 'empoweredStrikes', atLevel: 6,
+      }),
+      f({
+        name: 'evasion', atLevel: 7,
+      }),
+
+      f({
+        name: 'acrobaticMovement', atLevel: 9,
+      }),
+      f({
+        name: 'heightenedFocus', atLevel: 10,
+      }),
+      f({
+        name: 'selfRestoration', atLevel: 10,
+      }),
+      f({
+        name: 'deflectEnergy', atLevel: 13,
+      }),
+      f({
+        name: 'disciplinedSurvivor', atLevel: 14,
+      }),
+      f({
+        name: 'perfectFocus', atLevel: 15,
+      }),
+      f({
+        name: 'superiorDefense', atLevel: 18,
+      }),
+      f({
+        name: 'epicBoon', atLevel: 19,
+        effects: {
+          [FEATURE_EFFECTS.AddFeat]: { // TODO: Epic
+            condition: () => { },
+            apply: () => { },
+          },
+        },
+      }),
+      f({
+        name: 'bodyAndMind', atLevel: 20,
+      }),
     ]),
     subClasses: f({
       mercy: f({}),
       shadow: f({}),
       elements: f({}),
-      openHand: f({}),
+      openHand: f({
+        features: f([
+          f({
+            name: 'openHandTechnique', atLevel: 3,
+            name: 'wholenessOfBody', atLevel: 6,
+            name: 'fleetStep', atLevel: 11,
+            name: 'quiveringPalm', atLevel: 17,
+          }),
+        ]),
+      }),
     }),
     specificProps: {
-      martialArtsPoints: (level) => level < 5 ? 6 : level < 11 ? 8 : level < 17 ? 10 : 12,
+      martialArtsPoints: level => (
+        () => {
+          for (let item of new Set([
+            { max: 4, value: DICES.D6 }, { max: 10, value: DICES.D8 }, { max: 16, value: DICES.D10 }, { max: Infinity, value: DICES.D12 }
+          ])) { if (level <= item.max) return item }
+        }
+      )().value,
+      speedModifier: (level, speed) => speed + (level === 1 ? 0 : (Math.floor((level - 2) / 4) + 2) * 1.5) // TODO: uncapped after level 20 ?
     }
   }),
   paladin: f({ // P.147
-    mainAbility: f(['strength', 'charisma']), // TODO: twice
+    mainAbility: f([ABILITY.Strength, 'charisma']), // TODO: twice
     hitPointDice: 10, // TODO: +1 per level
     saves: f(['wisdom', 'charisma']), // TODO: choose
     authorizedNumberSkills: 2,
-    authorizedSkills: f(['athletics', 'insight', 'intimidation', 'medicine', 'persuasion', 'religion']),
+    authorizedSkills: f([SKILLS.athletics, SKILLS.insight, SKILLS.intimidation, SKILLS.medicine, SKILLS.persuasion, SKILLS.religion]),
     subClasses: f({
       devotion: f({}),
       glory: f({}),
@@ -111,9 +222,9 @@ const classes = f({
   ranger: f({ // P.157
     mainAbility: f(['dexterity', 'wisdom']), // TODO: twice
     hitPointDice: 10, // TODO: +1 per level
-    saves: f(['strength', 'dexterity']),
+    saves: f([ABILITY.Strength, 'dexterity']),
     authorizedNumberSkills: 3,
-    authorizedSkills: f(['animalHandling', 'athletics', 'insight', 'investigation', 'nature', 'perception', 'stealth', 'sruvival']),
+    authorizedSkills: f([SKILLS.animalHandling, SKILLS.athletics, SKILLS.insight, SKILLS.investigation, SKILLS.nature, SKILLS.perception, SKILLS.stealth, SKILLS.survival]),
     subClasses: f({
       beast: f({}),
       fey: f({}),
@@ -126,7 +237,7 @@ const classes = f({
     hitPointDice: 8, // TODO: +1 per level
     saves: f(['dexterity', 'intelligence']),
     authorizedNumberSkills: 4,
-    authorizedSkills: f(['acrobatics', 'athletics', 'deception', 'insight', 'intimidation', 'investigation', 'perception', 'persuasion', 'sleightOfHand', 'stealth']),
+    authorizedSkills: f([SKILLS.acrobatics, SKILLS.athletics, SKILLS.deception, SKILLS.insight, SKILLS.intimidation, SKILLS.investigation, SKILLS.perception, SKILLS.persuasion, SKILLS.sleightOfHand, SKILLS.stealth]),
     subClasses: f({
       arcana: f({}),
       assassin: f({}),
@@ -139,7 +250,7 @@ const classes = f({
     hitPointDice: 6, // TODO: +1 per level
     saves: f(['constitution', 'charisma']),
     authorizedNumberSkills: 2,
-    authorizedSkills: f(['arcana', 'deception', 'insight', 'intimidation', 'persuasion', 'religion']),
+    authorizedSkills: f([SKILLS.arcana, SKILLS.deception, SKILLS.insight, SKILLS.intimidation, SKILLS.persuasion, SKILLS.religion]),
     subClasses: f({
       aberrant: f({}),
       clockwork: f({}),
@@ -152,7 +263,7 @@ const classes = f({
     hitPointDice: 8, // TODO: +1 per level
     saves: f(['wisdom', 'charisma']),
     authorizedNumberSkills: 2,
-    authorizedSkills: f(['arcana', 'deception', 'history', 'intimidation', 'investigation', 'nature', 'religion']),
+    authorizedSkills: f([SKILLS.arcana, SKILLS.deception, SKILLS.history, SKILLS.intimidation, SKILLS.investigation, SKILLS.nature, SKILLS.religion]),
     subClasses: f({
       archfey: f({}),
       celestial: f({}),
@@ -165,7 +276,7 @@ const classes = f({
     hitPointDice: 6, // TODO: +1 per level
     saves: f(['intelligence', 'wisdom']),
     authorizedNumberSkills: 2,
-    authorizedSkills: f(['arcana', 'history', 'insight', 'medicine', 'nature', 'religion']),
+    authorizedSkills: f([SKILLS.arcana, SKILLS.history, SKILLS.insight, SKILLS.medicine, SKILLS.nature, SKILLS.religion]),
     subClasses: f({
       abjureur: f({}),
       diviner: f({}),
@@ -179,19 +290,18 @@ export function getList() { return Object.keys(classes) }
 export function getSubClasses(className) { return Object.keys(classes[className].subClasses) }
 export default function get(className, subClassName, level) {
   const { subClasses, ...classBase } = classes[className]
-  if (!subClassName) {
-    return classBase
-  }
   const subClass = subClasses?.[subClassName]
-  if (!subClass) {
-    console.warn(`Subclass ${lineageName} invalid for ${className}`)
-    return classBase
+  if (subClassName && !subClass) {
+    console.warn(`Subclass ${subClassName} invalid for ${className}`)
   }
 
   return f({
+    level,
     ...classBase,
-    ...subClass,
-    traits: [...(classBase?.traits || []), ...(subClass?.traits?.filter(trait => trait.atLevel >= level) || []),],
-    spells: [...(classBase?.spells || []), ...(subClass?.spells?.filter(spell => spell.atLevel >= level) || []),],
+    ...subClass || {},
+    // traits: [...(classBase?.traits || []), ...(subClass?.traits?.filter(trait => trait.atLevel >= level) || []),],
+    // spells: [...(classBase?.spells || []), ...(subClass?.spells?.filter(spell => spell.atLevel >= level) || []),],
+    features: [...(classBase?.features || []), ...(subClass?.features || [])].filter(({ atLevel }) => atLevel <= level),
+    hasWeaponProficiency: () => classBase?.hasWeaponProficiency() || subClass?.hasWeaponProficiency?.()
   })
 }

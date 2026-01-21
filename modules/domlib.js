@@ -1,5 +1,3 @@
-export const f = Object.freeze
-
 export function createElement(type, content, attributes = {}) {
   const element = document.createElement(type)
   Object.entries(attributes).forEach(([name, value]) => element.setAttribute(name, value))

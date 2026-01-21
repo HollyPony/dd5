@@ -271,15 +271,23 @@ function init(charsheet) {
 
   selectHelper.populate(
     weaponSelectElement,
-    [
-      { value: '', text: i18n._('weaponscantrip.weapons._select') },
-      ...Object.entries(weapons).map(([weaponClass, weapons]) => ({
+    [{ value: '', text: i18n._('weaponscantrip.weapons._select') }].concat(
+      Object.entries(
+        Object.entries(weapons)
+          .reduce((acc, [name, weapon]) => acc.concat({ ...weapon, name }), [])
+          .reduce((acc, weapon) => {
+            if (!acc[weapon.category]) acc[weapon.category] = []
+            acc[weapon.category].push(weapon)
+            return acc
+          }, {})
+      ).map(([category, weapons]) => ({
         isGroup: true,
-        label: i18n._(`weaponClasses.${weaponClass}`),
-        options: Object.keys(weapons).map(weapon => ({ value: weapon, text: i18n._(`weapons.${weapon}`) })),
-      })),
-    ]
-  )
+        label: i18n._(`statics.weaponCategories.${category}`),
+        options: weapons.map(weapon => ({
+          value: weapon, text: i18n._(`statics.weaponNames.${weapon.name}`)
+        })),
+      }))
+    ))
 
   // Init data
   userData.init(charsheet)
@@ -294,9 +302,8 @@ function init(charsheet) {
   charExperienceElement.value = userData.getCharExperience()
   charLevelElement.value = userData.getCharLevel()
 
-  const species = userData.getCharSpecies()
   specsElements.initiative.value = userData.getAbilityModifier('dexterity')
-  specsElements.speed.value = species?.speed || 0 // TODO: take armor strength + update on armor change
+  specsElements.speed.value = userData.getCharSpeed()
   specsElements.sizeCategory.value = userData.getSizeCategory()
   specsElements.size.value = userData.getSize() || ''
   specsElements.passivePerception.value = userData.getSkillScore('perception') + 10

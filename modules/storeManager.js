@@ -21,7 +21,6 @@ export const mock = {
   equipments: {
     weapons: [],
     armors: [],
-    shields: [],
     tools: [],
     miscs: [],
     magicItems: [

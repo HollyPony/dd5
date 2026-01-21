@@ -1,5 +1,5 @@
 // P.200
-import { f, } from '../lib.js'
+import { f, } from '../helpers.js'
 
 export const feats = f({ // TODO:
   alert: f({
