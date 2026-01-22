@@ -1,6 +1,8 @@
 // Shotcut for freeze function
 export const f = Object.freeze
 
+export const s = Object.seal
+
 // Shortcut for f + O functions
 export const Of = _ => O(f(_))
 

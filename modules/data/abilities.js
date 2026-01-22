@@ -1,22 +1,23 @@
 import { f, } from '../helpers.js'
+import { ABILITY } from './common.js'
 
 export const abilities = f({
-  strength: f({
+  [ABILITY.strength]: f({
     relatedSkills: f(['athletics']),
   }),
-  dexterity: f({
+  [ABILITY.dexterity]: f({
     relatedSkills: f(['acrobatics', 'sleightOfHand', 'stealth',]),
   }),
-  constitution: f({
+  [ABILITY.constitution]: f({
     relatedSkills: f([]),
   }),
-  wisdom: f({
+  [ABILITY.wisdom]: f({
     relatedSkills: f(['animalHandling', 'insight', 'medicine', 'perception', 'survival',]),
   }),
-  intelligence: f({
+  [ABILITY.intelligence]: f({
     relatedSkills: f(['arcana', 'history', 'investigation', 'nature', 'religion',]),
   }),
-  charisma: f({
+  [ABILITY.charisma]: f({
     relatedSkills: f(['deception', 'intimidation', 'performance', 'persuasion',]),
   }),
 })

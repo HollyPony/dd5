@@ -3,12 +3,13 @@ import * as userData from './modules/userData.js'
 import { getList as getClassesList, getSubClasses, } from './modules/data/classes.js'
 import { origins, } from './modules/data/origins.js'
 import { getSpeciesList, } from './modules/data/species.js'
-import { weapons, } from './modules/data/equipments.js'
+import { getWeapons, } from './modules/data/equipments.js'
 import { abilities, getAllSkills } from './modules/data/abilities.js'
 import parseMarkdown from './modules/markdown.js'
 
 // TODO: remove mock
 import { mock as storedData } from './modules/storeManager.js'
+import { ABILITY } from './modules/data/common.js'
 
 /////////////////////////////////////////////////////////////////////////
 // INPUTS ///////////////////////////////////////////////////////////////
@@ -28,10 +29,11 @@ const proficiencyBonus = document.getElementsByName('proficiencybonus')[0]
 
 const abilityElements = {}
 const skillElements = {}
-Object.entries(abilities).forEach(([ability, value]) => {
-  const abilityElement = document.getElementsByClassName(`${ability}`)[0]
+Object.entries(ABILITY).forEach(([key, value]) => {
+  value = abilities[value]
+  const abilityElement = document.getElementsByClassName(`${key.toLowerCase()}`)[0]
 
-  abilityElements[ability] = {
+  abilityElements[key] = {
     root: abilityElement,
     score: abilityElement.getElementsByClassName('ability-score')[0],
     modifier: abilityElement.getElementsByClassName('ability-modifier')[0],
@@ -71,7 +73,9 @@ function skillAsText(score) { return score > 0 ? `+${score}` : `${score}` }
 
 // DISPLAY UPDATES
 
-function refreshSubClass() {
+function reloadClassData() { }
+
+function refreshSubClassList() {
   if (userData.getCharClassName()) {
     populateSelect(
       charSubClassElement,
@@ -136,21 +140,21 @@ function refreshClassFeatures() {
 }
 
 function updateAbilityScore(ability) {
-  abilityElements[ability].score.value = userData.getAbilityScore(ability)
+  abilityElements[ability].score.value = userData.getAbilityScore(ABILITY[ability])
 
   updateAbilityModifier(ability)
   updateAbilitySave(ability)
 }
 
 function updateAbilityModifier(ability) {
-  abilityElements[ability].modifier.value = skillAsText(userData.getAbilityModifier(ability))
+  abilityElements[ability].modifier.value = skillAsText(userData.getAbilityModifier(ABILITY[ability]))
 
-  abilities[ability].relatedSkills.forEach(updateSkillScore)
+  abilities[ABILITY[ability]].relatedSkills.forEach(updateSkillScore)
 }
 
 function updateAbilitySave(ability) {
-  abilityElements[ability].saveScore.textContent = skillAsText(userData.getAbilitySave(ability))
-  abilityElements[ability].saveCheck.checked = userData.getCharClass()?.saves?.includes(ability)
+  abilityElements[ability].saveScore.textContent = skillAsText(userData.getAbilitySave(ABILITY[ability]))
+  abilityElements[ability].saveCheck.checked = userData.getCharClass()?.saves?.includes(ABILITY[ability])
 }
 
 function updateSkillScore(skill) {
@@ -176,7 +180,8 @@ function refreshAbilities() {
 
 function charClassChanged(event) {
   userData.setCharClassName(event.currentTarget.value)
-  refreshSubClass()
+  refreshSubClassList()
+  reloadClassData()
 }
 
 function charOriginChanged(event) {
@@ -192,37 +197,39 @@ function charSpeciesChanged(event) {
   // TODO
 }
 
-function charSubClassChanged(event) {
+function charSubClassChanged({ currentTarget: { value } }) {
   userData.setCharSubClassName(event.currentTarget.value)
+
+  reloadClassData()
   // TODO:
 }
 
-function charLevelChanged(event) {
-  userData.setCharLevel(event.currentTarget.value)
+function charLevelChanged({ currentTarget: { value } }) {
+  userData.setCharLevel(value)
 
-  refreshSubClass()
+  refreshSubClassList()
   refreshProficiencyBonus()
-  Object.keys(abilities).forEach(updateAbilityModifier)
-  Object.keys(abilities).forEach(updateAbilitySave)
+  Object.keys(ABILITY).forEach(updateAbilityModifier)
+  Object.keys(ABILITY).forEach(updateAbilitySave)
+
+  refreshClassFeatures()
   // Update species abilities / spells etc ...
 
   // TODO: userData.reloadClass
   // TODO: userData.reloadSpecies
 }
 
-function abilityScoreChanged(event) {
-  const score = event.currentTarget.value
-  const ability = element.dataset.ability
+function abilityScoreChanged({ currentTarget }) {
+  const score = currentTarget.value
+  const ability = currentTarget.dataset.ability
 
-  userData.setAttribute(ability, score)
+  userData.setAttribute(ABILITY[ability], score)
 
   updateAbilityScore(ability)
   // updateAbilityModifier(ability)
 }
 
-function skillChecked(event) {
-  const element = event.currentTarget
-
+function skillChecked({ currentTarget: element }) {
   const skill = element.name
   const skillChecked = skillElements[skill].check.checked
 
@@ -273,8 +280,7 @@ function init(charsheet) {
     weaponSelectElement,
     [{ value: '', text: i18n._('weaponscantrip.weapons._select') }].concat(
       Object.entries(
-        Object.entries(weapons)
-          .reduce((acc, [name, weapon]) => acc.concat({ ...weapon, name }), [])
+        getWeapons()
           .reduce((acc, weapon) => {
             if (!acc[weapon.category]) acc[weapon.category] = []
             acc[weapon.category].push(weapon)
@@ -302,15 +308,15 @@ function init(charsheet) {
   charExperienceElement.value = userData.getCharExperience()
   charLevelElement.value = userData.getCharLevel()
 
-  specsElements.initiative.value = userData.getAbilityModifier('dexterity')
+  specsElements.initiative.value = userData.getAbilityModifier(ABILITY.dexterity)
   specsElements.speed.value = userData.getCharSpeed()
   specsElements.sizeCategory.value = userData.getSizeCategory()
   specsElements.size.value = userData.getSize() || ''
   specsElements.passivePerception.value = userData.getSkillScore('perception') + 10
 
-  Object.keys(abilities).forEach(abilityName => updateAbilityScore(abilityName))
+  Object.keys(ABILITY).forEach(abilityName => updateAbilityScore(abilityName))
 
-  refreshSubClass()
+  refreshSubClassList()
   refreshArmorClass()
   refreshAbilities()
   refreshProficiencyBonus()

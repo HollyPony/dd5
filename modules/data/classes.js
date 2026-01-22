@@ -1,15 +1,16 @@
+import { InvalidClassNameError, InvalidSubClassNameError } from '../errors.js'
 import { f, } from '../helpers.js'
-import { FEATURE_EFFECTS as FEATURE_EFFECTS, DICES, SKILLS, WEAPON_CATEGORY, WEAPON_PROPERTY, CLASS_EFFECTS, ABILITY } from './common.js'
+import { EFFECT, DICES, SKILLS, WEAPON_CATEGORY, WEAPON_PROPERTY, ABILITY } from './common.js'
 
-const abilityScoreImprovement = (level) => ({
+const abilityScoreImprovement = (level) => ({ // TODO: Check apply `this` work on this arrowed fct
   name: 'abilityScoreImprovement', atLevel: level,
   effects: {
-    [FEATURE_EFFECTS.ImprovementChoose]: {},
-    [FEATURE_EFFECTS.AddAbility]: {
+    [EFFECT.ImprovementChooseEffect]: {},
+    [EFFECT.AddAbilityEffect]: {
       condition: () => { }, // TODO: If abilityChoose
       apply: () => { }, // TODO: Update Ability - 2 ability +1 OR 1 ability +2 no more 20
     },
-    [FEATURE_EFFECTS.AddFeat]: {
+    [EFFECT.AddFeatEffect]: {
       condition: () => { }, // TODO: If abilityChoose
       apply: () => { }, // TODO: Update Ability - Choose feat according to conditions
     },
@@ -18,9 +19,9 @@ const abilityScoreImprovement = (level) => ({
 
 const classes = f({
   barbarian: f({ // P.51
-    mainAbility: f([ABILITY.Strength]),
+    mainAbility: f([ABILITY.strength]),
     hitPointDice: 12, // TODO: +1 per level
-    saves: f([ABILITY.Strength, 'constitution']),
+    saves: f([ABILITY.strength, 'constitution']),
     authorizedNumberSkills: 2,
     authorizedSkills: f([SKILLS.animalHandling, SKILLS.athletics, SKILLS.intimidation, SKILLS.nature, SKILLS.perception, SKILLS.survival]),
     subClasses: f({
@@ -70,9 +71,9 @@ const classes = f({
     }),
   }),
   fighter: f({ // P.105
-    mainAbility: f([ABILITY.Strength, 'dexterity']), // TODO: choose
+    mainAbility: f([ABILITY.strength, 'dexterity']), // TODO: choose
     hitPointDice: 10, // TODO: +1 per level
-    saves: f([ABILITY.Strength, 'constitution']),
+    saves: f([ABILITY.strength, 'constitution']),
     authorizedNumberSkills: 2,
     authorizedSkills: f([SKILLS.acrobatics, SKILLS.animalHandling, SKILLS.athletics, SKILLS.history, SKILLS.insight, SKILLS.intimidation, SKILLS.persuasion, SKILLS.perception, SKILLS.survival]),
     subClasses: f({
@@ -85,7 +86,7 @@ const classes = f({
   monk: f({ // P.127
     mainAbility: f(['dexterity', 'wisdom']), // TODO: twice
     hitPointDice: 8, // TODO: +1 per level
-    saves: f([ABILITY.Strength, 'dexterity']),
+    saves: f([ABILITY.strength, 'dexterity']),
     authorizedNumberSkills: 2,
     authorizedSkills: f([SKILLS.acrobatics, SKILLS.athletics, SKILLS.history, SKILLS.insight, SKILLS.religion, SKILLS.stealth]),
     weaponProfciencies: f({}), // TODO: Used to display masteries ?
@@ -93,9 +94,13 @@ const classes = f({
       ([WEAPON_CATEGORY.martialMelee, WEAPON_CATEGORY.martialRanged].includes(weapon.category) && weapon.properties.includes(WEAPON_PROPERTY.Light)),
     hasArmorProficiency: armor => { },
     effects: {
-      [CLASS_EFFECTS.SpeedModifier]: {
-        condition: function ({ hasArmor, hasShield }) { return !hasArmor && !hasShield },
-        apply: function ({ speciesSpeed: speed, }) { return this.specificProps.speedModifier(this.level, speed) },
+      [EFFECT.SpeedModifierEffect]: {
+        condition: function ({ equipedArmor, equipedShield }) {
+          return !equipedArmor && !equipedShield
+        },
+        apply: function () {
+          return this.specificProps.speedModifier(this.level)
+        },
       },
     },
     features: f([
@@ -103,13 +108,11 @@ const classes = f({
       f({
         name: 'unarmoredDefense', atLevel: 1,
         effects: {
-          [FEATURE_EFFECTS.ACOverride]: {
-            condition: ({ hasArmor, hasShield, }) => !hasArmor && !hasShield,
-            apply: ({ modifiers: { dexterity, wisdom } }) => 10 + dexterity + wisdom,
+          [EFFECT.ACOverrideEffect]: {
+            condition: function ({ equipedArmor, equipedShield, }) { return !equipedArmor && !equipedShield },
+            apply: function ({ modifiers }) { return 10 + modifiers[ABILITY.dexterity] + modifiers[ABILITY.wisdom] },
           }
         },
-        condition: (inputs) => !inputs.hasArmor && !inputs.hasShield,
-        apply: ({ modifiers }) => 10 + modifiers['dexterity'] + modifiers['wisdom'],
       }),
       f({ name: 'monksFocus', atLevel: 2, }),
       f({ name: 'unarmoredMovement', atLevel: 2, }),
@@ -117,7 +120,7 @@ const classes = f({
       f({ name: 'deflectAttacks', atLevel: 3, }),
       f({
         name: 'monkSubClass', atLevel: 3, effects: {
-          [FEATURE_EFFECTS.SubClassChoose]: {
+          [EFFECT.SubClassChooseEffect]: {
             apply: () => { }
           },
         }
@@ -128,7 +131,7 @@ const classes = f({
       f(abilityScoreImprovement(16)),
       f({
         name: 'slowFall', atLevel: 4, effects: {
-          [FEATURE_EFFECTS.ReduceFallDamage]: {
+          [EFFECT.ReduceFallDamageEffect]: {
             apply: () => { } // TODO: level * 5
           }
         }
@@ -145,7 +148,6 @@ const classes = f({
       f({
         name: 'evasion', atLevel: 7,
       }),
-
       f({
         name: 'acrobaticMovement', atLevel: 9,
       }),
@@ -170,7 +172,7 @@ const classes = f({
       f({
         name: 'epicBoon', atLevel: 19,
         effects: {
-          [FEATURE_EFFECTS.AddFeat]: { // TODO: Epic
+          [EFFECT.AddFeatEffect]: { // TODO: Epic
             condition: () => { },
             apply: () => { },
           },
@@ -203,11 +205,11 @@ const classes = f({
           ])) { if (level <= item.max) return item }
         }
       )().value,
-      speedModifier: (level, speed) => speed + (level === 1 ? 0 : (Math.floor((level - 2) / 4) + 2) * 1.5) // TODO: uncapped after level 20 ?
+      speedModifier: level => level === 1 ? 0 : (Math.floor((level - 2) / 4) + 2) * 1.5 // TODO: uncapped after level 20 ?
     }
   }),
   paladin: f({ // P.147
-    mainAbility: f([ABILITY.Strength, 'charisma']), // TODO: twice
+    mainAbility: f([ABILITY.strength, 'charisma']), // TODO: twice
     hitPointDice: 10, // TODO: +1 per level
     saves: f(['wisdom', 'charisma']), // TODO: choose
     authorizedNumberSkills: 2,
@@ -222,7 +224,7 @@ const classes = f({
   ranger: f({ // P.157
     mainAbility: f(['dexterity', 'wisdom']), // TODO: twice
     hitPointDice: 10, // TODO: +1 per level
-    saves: f([ABILITY.Strength, 'dexterity']),
+    saves: f([ABILITY.strength, 'dexterity']),
     authorizedNumberSkills: 3,
     authorizedSkills: f([SKILLS.animalHandling, SKILLS.athletics, SKILLS.insight, SKILLS.investigation, SKILLS.nature, SKILLS.perception, SKILLS.stealth, SKILLS.survival]),
     subClasses: f({
@@ -289,11 +291,28 @@ const classes = f({
 export function getList() { return Object.keys(classes) }
 export function getSubClasses(className) { return Object.keys(classes[className].subClasses) }
 export default function get(className, subClassName, level) {
-  const { subClasses, ...classBase } = classes[className]
-  const subClass = subClasses?.[subClassName]
-  if (subClassName && !subClass) {
-    console.warn(`Subclass ${subClassName} invalid for ${className}`)
+  if (!classes[className]) {
+    throw InvalidClassNameError(className)
   }
+  if (subClassName && !Object.keys(classes[className]?.subClasses)?.includes?.(subClassName)) {
+    throw InvalidSubClassNameError(subClassName, className)
+  }
+
+  const {
+    features,
+    hasWeaponProficiency,
+    hasArmorProficiency,
+    subClasses,
+    ...classBase
+  } = classes[className]
+
+
+  const {
+    features: subClassFeatures,
+    hasWeaponProficiency: subClassHasWeaponProficiency,
+    hasArmorProficiency: subClassHasArmorProficiency,
+    ...subClass
+  } = subClasses[subClassName] || {}
 
   return f({
     level,
@@ -301,7 +320,8 @@ export default function get(className, subClassName, level) {
     ...subClass || {},
     // traits: [...(classBase?.traits || []), ...(subClass?.traits?.filter(trait => trait.atLevel >= level) || []),],
     // spells: [...(classBase?.spells || []), ...(subClass?.spells?.filter(spell => spell.atLevel >= level) || []),],
-    features: [...(classBase?.features || []), ...(subClass?.features || [])].filter(({ atLevel }) => atLevel <= level),
-    hasWeaponProficiency: () => classBase?.hasWeaponProficiency() || subClass?.hasWeaponProficiency?.()
+    features: [...(features || []), ...(subClassFeatures || [])].filter(({ atLevel }) => atLevel <= level),
+    hasWeaponProficiency: (...params) => hasWeaponProficiency?.(...params) || subClassHasWeaponProficiency?.(...params),
+    hasArmorProficiency: (...params) => hasArmorProficiency?.(...params) || subClassHasArmorProficiency?.(...params),
   })
 }

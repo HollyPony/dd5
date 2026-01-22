@@ -301,6 +301,8 @@ Vous ne pouvez avoir qu'une créature à la fois sous l'effet de cette aptitude.
       'elf-high': 'Haut-Elfe',
       'elf-wood': 'Elfe sylvestre',
       gnome: 'Gnome',
+      'gnome-forest': `Gnome des Forêts`,
+      'gnome-rock': `Gnome des Roches`,
       goliath: 'Goliath',
       'goliath-cloud': 'Géant des Nuages',
       'goliath-fire': 'Géant du Feu',
@@ -351,10 +353,12 @@ Vous ne pouvez avoir qu'une créature à la fois sous l'effet de cette aptitude.
       otherworldlyPresence: `Présence d'outre-monde`,
     },
     weaponCategories: {
-      simpleMelee: 'Armes courantes de corps à corps',
-      simpleRanged: 'Armes courantes à distance',
-      martialMelee: 'Armes de guerre de corps à corps',
-      martialRanged: 'Armes de guerre à distance',
+      WEAPON_CATEGORY: {
+        simpleMelee: 'Armes courantes de corps à corps',
+        simpleRanged: 'Armes courantes à distance',
+        martialMelee: 'Armes de guerre de corps à corps',
+        martialRanged: 'Armes de guerre à distance',
+      },
     },
     weaponNames: {
       quarterstaff: 'Bâton de combat',
