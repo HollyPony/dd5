@@ -13,38 +13,38 @@
 </head>
 
 <body translate="no">
+  <a id="exportCharLink" download="data.json" href="">Download</a>
   <div class="d-flex flex-nowrap">
     <main class="container">
       <form>
         <div class="d-flex flex-row mt-2">
-          <div class="w-100 p-2 border common-informations">
-            <div class="d-flex">
-              <div class="w-100 charName">
-                <input name="charName" class="form-control border-0 border-bottom rounded-0 px-0"
-                  placeholder="Thoradin Fireforge" />
-                <label for="charName" class="form-text mt-0" data-i18n="charName.label"></label>
+          <div class="common-informations">
+            <div class="block-group">
+              <div class="form-control-group charName">
+                <input name="charName" class="form-control-input" placeholder="Thoradin Fireforge" />
+                <label for="charName" class="form-control-label" data-i18n="charName.label"></label>
               </div>
             </div>
-            <div class="d-flex gap-3 mb-2">
-              <div class="w-100 charOrigin">
-                <select name="charOrigin" class="form-select border-0 border-bottom rounded-0 p-0"></select>
-                <label for="charOrigin" class="form-text mt-0" data-i18n="origins.label"></label>
+            <div class="block-group">
+              <div class="form-control-group charOrigin">
+                <select name="charOrigin" class="form-control-select"></select>
+                <label for="charOrigin" class="form-control-label" data-i18n="origins.label"></label>
               </div>
-              <div class="w-100 charClass">
-                <select name="charClass" class="form-select border-0 border-bottom rounded-0 p-0"></select>
-                <label for="charClass" class="form-text mt-0" data-i18n="classes.label"></label>
+              <div class="form-control-group charClass">
+                <select name="charClass" class="form-control-select"></select>
+                <label for="charClass" class="form-control-label" data-i18n="classes.label"></label>
               </div>
             </div>
-            <div class="d-flex gap-3">
-              <div class="w-100 charRace">
-                <select name="charRace" class="form-select border-0 border-bottom rounded-0 p-0"></select>
-                <label for="charRace" class="form-text" data-i18n="species.label"></label>
+            <div class="block-group">
+              <div class="form-control-group charSpecies">
+                <select name="charSpecies" class="form-control-select"></select>
+                <label for="charSpecies" class="form-control-label" data-i18n="species.label"></label>
               </div>
-              <div class="w-100 charSubClass">
-                <select name="charSubClass" class="form-select border-0 border-bottom rounded-0 p-0">
-                  <option>Select class first</option>
+              <div class="form-control-group charSubClass">
+                <select name="charSubClass" class="form-control-select" disabled>
+                  <option data-i18n="">Select class first</option>
                 </select>
-                <label for="charSubClass" class="form-text mt-0" data-i18n="subClasses.label"></label>
+                <label for="charSubClass" class="form-control-label" data-i18n="subClasses.label"></label>
               </div>
             </div>
           </div>
@@ -72,17 +72,17 @@
               <span class="text-center title">Hit Points</span>
               <div class="d-flex align-items-stretch">
                 <div class="d-flex flex-column">
-                  <input name="currentHp" class="flex-fill form-control border-0 border-bottom rounded-0" />
-                  <label for="currentHp" class="form-text">Current</label>
+                  <input name="hitPointCurrent" class="flex-fill form-control border-0 border-bottom rounded-0" />
+                  <label for="hitPointCurrent" class="form-text">Current</label>
                 </div>
 
                 <div class="vr mx-2"></div>
 
                 <div class="d-flex flex-column">
-                  <input name="tempHp" class="form-control border-0 border-bottom rounded-0" />
-                  <label for="tempHp" class="form-text">Temp</label>
-                  <input name="maxHp" class="form-control border-0 border-bottom rounded-0" />
-                  <label for="maxHp" class="form-text">Max</label>
+                  <input name="hitPointTemp" class="form-control border-0 border-bottom rounded-0" />
+                  <label for="hitPointTemp" class="form-text">Temp</label>
+                  <input name="hitPointMax" class="form-control border-0 border-bottom rounded-0" />
+                  <label for="hitPointMax" class="form-text">Max</label>
                 </div>
               </div>
             </div>
@@ -91,10 +91,10 @@
 
             <div class="d-flex flex-column m-2 hit-dice">
               <span class="text-center title">Hit Dice</span>
-              <input name="spentHd" class="form-control border-0 border-bottom rounded-0" />
-              <label for="spentHd" class="form-text">Spent</label>
-              <input name="maxHd" class="form-control border-0 border-bottom rounded-0" />
-              <label for="maxHd" class="form-text">Max</label>
+              <input name="hitDiceSpent" class="form-control border-0 border-bottom rounded-0" />
+              <label for="hitDiceSpent" class="form-text">Spent</label>
+              <input name="hitDiceMax" class="form-control border-0 border-bottom rounded-0" />
+              <label for="hitDiceMax" class="form-text">Max</label>
             </div>
 
             <div class="vr"></div>

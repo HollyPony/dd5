@@ -1,6 +1,6 @@
 export function createElement(type, children, attributes = {}) {
   const element = document.createElement(type)
-  Object.entries(attributes).forEach(([name, value]) => element.setAttribute(name, value))
+  Object.entries(attributes).forEach(([name, value]) => (value !== undefined) && element.setAttribute(name, value))
   if (children && Array.isArray(children)) {
     children.forEach(child => element.appendChild(typeof child === 'string' ? document.createTextNode(child) : child))
   }
@@ -23,11 +23,11 @@ export function populateSelect(selectElement, items, options = {}) {
     if (item.isGroup) {
       fragment.appendChild(createElement(
         'optgroup',
-        item.options.map(optItem => createElement('option', [optItem.text], { value: optItem.value })),
+        item.options.map(optItem => createElement('option', [optItem.text], { value: optItem.value, disabled: item.disabled })),
         { label: item.label }
       ))
     } else {
-      fragment.appendChild(createElement('option', [item.text], { value: item.value }))
+      fragment.appendChild(createElement('option', [item.text], { value: item.value, disabled: item.disabled }))
     }
   })
 

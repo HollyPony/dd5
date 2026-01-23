@@ -1,69 +1,70 @@
 // P.178
 import { f, } from '../helpers.js'
+import { SKILLS } from './common.js'
 
 export const origins = f({
   acolyte: f({
-    skills: ['insight', 'religion'],
+    skills: [SKILLS.insight, SKILLS.religion],
     feat: 'magicInitiate',
   }),
   artisan: f({
-    skills: ['investigation', 'persuasion'],
+    skills: [SKILLS.investigation, SKILLS.persuasion],
     feat: 'crafter',
   }),
   charlatan: f({
-    skills: ['deception', 'sleightOfHand'],
+    skills: [SKILLS.deception, SKILLS.sleightOfHand],
     feat: 'skilled',
   }),
   criminal: f({
-    skills: ['sleightOfHand', 'stealth'],
+    skills: [SKILLS.sleightOfHand, SKILLS.stealth],
     feat: 'alert',
   }),
   entertainer: f({
-    skills: ['acrobatics', 'performance'],
+    skills: [SKILLS.acrobatics, SKILLS.performance],
     feat: 'musician',
   }),
   farmer: f({
-    skills: ['animalHandling', 'nature'],
+    skills: [SKILLS.animalHandling, SKILLS.nature],
     feat: 'tough',
   }),
   guard: f({
-    skills: ['athletics', 'perception'],
+    skills: [SKILLS.athletics, SKILLS.perception],
     feat: 'alert',
   }),
   guide: f({
-    skills: ['stealth', 'survival'],
+    skills: [SKILLS.stealth, SKILLS.survival],
     feat: 'magicInitiate',
   }),
   hermit: f({
-    skills: ['medicine', 'religion'],
+    skills: [SKILLS.medicine, SKILLS.religion],
     feat: 'healer',
   }),
   merchant: f({
-    skills: ['animalHandling', 'persuasion'],
+    skills: [SKILLS.animalHandling, SKILLS.persuasion],
     feat: 'lucky',
   }),
   noble: f({
-    skills: ['history', 'persuasion'],
+    skills: [SKILLS.history, SKILLS.persuasion],
     feat: 'skilled',
   }),
   sage: f({
-    skills: ['arcana', 'history'],
+    skills: [SKILLS.arcana, SKILLS.history],
     feat: 'magicInitiate',
   }),
   sailor: f({
-    skills: ['acrobatics', 'perception'],
+    skills: [SKILLS.acrobatics, SKILLS.perception],
     feat: 'tavernBrawler',
   }),
   scribe: f({
-    skills: ['investigation', 'perception'],
+    skills: [SKILLS.investigation, SKILLS.perception],
     feat: 'skilled',
   }),
   soldier: f({
-    skills: ['athletics', 'intimidation'],
+    skills: [SKILLS.athletics, SKILLS.intimidation],
     feat: 'savage',
   }),
   wayfarer: f({
-    skills: ['insight', 'stealth'],
+    skills: [SKILLS.insight, SKILLS.stealth],
     feat: 'lucky',
   }),
 })

@@ -3,6 +3,13 @@
 @import 'styles/ability-card.css';
 @import 'styles/block.css';
 
+:root {
+  --background-color: #fff;
+
+  --border-width: 1px;
+  --border-color: #dee2e6;
+}
+
 .flex-basis-0 {
   flex-basis: 0;
 }
@@ -19,6 +26,61 @@
 input[disabled] ~ label,
 input[disabled] ~ span {
   color: gray;
+}
+
+.form-control-group {
+  width: 100%;
+}
+
+.form-control-input,
+.form-control-select {
+  --y-padding: 0.1em;
+
+  display: block;
+  width: 100%;
+  border: none;
+  padding: var(--y-padding) 0;
+}
+
+.form-control-select {
+  --background-size: 1em;
+  --background-x-padding: 0.1em;
+
+  padding-right: calc(var(--background-size) + var(--background-x-padding) * 2);
+  /* border-radius: 0; */
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 8'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 1 6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-size: 1em; /*14px 8px;*/
+  background-position: right var(--background-x-padding) center;
+  background-color: var(--background-color);
+}
+
+.form-control-label {
+  --color: rgba(33, 37, 41, 0.75);
+
+  display: block;
+  margin-top: 0;
+  width: 100%;
+  line-height: 1;
+  color: var(--color);
+  font-size: 0.875em;
+  border-top: var(--border-width) solid var(--border-color);
+}
+
+.common-informations {
+  border: var(--border-width) solid var(--border-color);
+  padding: 0.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  width: 100%;
+
+  .block-group {
+    display: flex;
+    gap: 1em;
+  }
 }
 
 .save-score,

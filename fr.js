@@ -7,11 +7,16 @@ const fr = {
   },
   classes: {
     label: 'Classe',
+    select: {
+      chooseOne: 'Choisir une classe',
+    },
   },
   subClasses: {
     label: 'Sous-classe',
-    _select: 'Choisir une sous-classe',
-    _unavailable: 'Dispo au niveau 3',
+    select: {
+      chooseOne: 'Choisir une sous-classe',
+      unavailable: 'Dispo au niveau 3',
+    },
   },
   level: {
     label: 'Niveau',

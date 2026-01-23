@@ -1,10 +1,10 @@
-import { getAbilityFromSkill, } from './data/abilities.js'
 import getClass from './data/classes.js'
-import { EFFECT, ABILITY, EQUIPED_CATEGORY, } from './data/common.js'
+import { EFFECT, ABILITY, EQUIPED_CATEGORY, DICES, SKILLS, EQUIPMENT_TYPE, } from './data/common.js'
 import { getEquipment, } from './data/equipments.js'
 import { origins, } from './data/origins.js'
 import getSpecies from './data/species.js'
 import { s } from './helpers.js'
+import * as storeManager from './storeManager.js'
 
 const charsheet = s({
   charName: '',
@@ -37,13 +37,13 @@ const charsheet = s({
   }),
   skillChoosed: [],
   feats: [],
+  equipments: [],
   equiped: s({
-    [EQUIPED_CATEGORY.WEAPON]: null,
+    [EQUIPED_CATEGORY.WEAPON]: [],
     [EQUIPED_CATEGORY.ARMOR]: null,
     [EQUIPED_CATEGORY.SHIELD]: null,
-    [EQUIPED_CATEGORY.MAGIC_ITEM]: null,
+    [EQUIPED_CATEGORY.OTHER]: [],
   }),
-  equipments: [],
 })
 
 // ACCESSORS
@@ -76,6 +76,19 @@ function abilityScoreToModifier(score) {
 
 // HELPERS
 
+function diceToString(dice) {
+  switch (dice) {
+    case DICES.D4: return 'd4'
+    case DICES.D6: return 'd6'
+    case DICES.D8: return 'd8'
+    case DICES.D10: return 'd10'
+    case DICES.D12: return 'd12'
+    case DICES.D20: return 'd20'
+    case DICES.D100: return 'd100'
+    default: return 'err'
+  }
+}
+
 function applyEffect(item, effect, options, callback) {
   if (item?.effects?.[effect]
     && (item.effects[effect]?.condition?.call(item, options ?? true))) {
@@ -105,10 +118,10 @@ export function getArmorClass() {
   const equipedArmor = getEquiped(EQUIPED_CATEGORY.ARMOR)
   const equipedShield = getEquiped(EQUIPED_CATEGORY.SHIELD)
 
-  const overrideFeaturesEffects = getCharClass().features
+  const overrideFeaturesEffects = getCharClass()?.features
     ?.filter(feature => feature.effects?.[EFFECT.ACOverrideEffect])
     ?.filter(feature => feature.effects[EFFECT.ACOverrideEffect]?.condition?.call(feature, { equipedArmor, equipedShield }) ?? true)
-    .flatMap(feature => feature.effects[EFFECT.ACOverrideEffect])
+    .flatMap(feature => feature.effects[EFFECT.ACOverrideEffect]) ?? []
 
   if (overrideFeaturesEffects.length > 1) { // TODO: user must choose one
     console.error('too much features overrides')
@@ -129,7 +142,7 @@ export function getArmorClass() {
   })
   // si armure - char has feat (don P.210) Defense = +1
 
-  applyEffects(getEquiped(EQUIPED_CATEGORY.MAGIC_ITEM), EFFECT.ACModifierEffect, armor, { equipedArmor, equipedShield }, result => {
+  applyEffects(getEquiped(EQUIPED_CATEGORY.OTHER), EFFECT.ACModifierEffect, { equipedArmor, equipedShield }, result => {
     armor += result
   })
 
@@ -137,12 +150,21 @@ export function getArmorClass() {
   return armor
 }
 
+export function getHitPointMax() {
+  return (getCharClass()?.hitPointMax.base + getAbilityModifier(ABILITY.constitution)) // P.41
+    + ((getCharClass()?.hitPointMax.addPerLevel + getAbilityModifier(ABILITY.constitution)) * (getCharLevel() - 1)) // P.43
+}
+
+export function getHitDiceMax() {
+  return `${getCharLevel()}${diceToString(getCharClass()?.hitDice)}`
+}
+
 export function getProficencyBonus() {
   let proficiencyBonus = Math.floor(getCharLevel() / 4) + 2
 
   // TODO: update on equipped / unequipped / attuned / on scores changes
   // TODO: test application
-  applyEffects(getEquiped(EQUIPED_CATEGORY.MAGIC_ITEM), EFFECT.PBModifierEffect, {}, result => {
+  applyEffects(getEquiped(EQUIPED_CATEGORY.OTHER), EFFECT.PBModifierEffect, {}, result => {
     proficiencyBonus += result
   })
 
@@ -174,17 +196,19 @@ export function getAbilitySave(ability) {
     ? getAbilityModifier(ability) + getProficencyBonus()
     : getAbilityModifier(ability)
 }
-export function isAuthorizedSkill(skill) {
+function isAuthorizedSkill(skill) {
   return getCharClass()?.authorizedSkills?.includes(skill)
 }
 export function isCheckedSkill(skill) { // TODO: get from class features + get from feats
   return origins[getCharOrigin()]?.skills?.includes(skill) || getSkillChoosed().includes(skill)
 }
 export function isDisabledSkill(skill) {
-  return (!isAuthorizedSkill(skill)) || origins[getCharOrigin()]?.skills?.includes(skill) || !getSkillChoosed().includes(skill) && (getSkillChoosed().length >= getCharClass()?.authorizedNumberSkills ?? 0)
+  return (!isAuthorizedSkill(skill))
+    || origins[getCharOrigin()]?.skills?.includes(skill)
+    || !getSkillChoosed().includes(skill) && (getSkillChoosed().length >= getCharClass()?.authorizedNumberSkills ?? 0)
 }
 export function getSkillScore(skill) {
-  return getAbilityModifier(getAbilityFromSkill(skill)) + (isCheckedSkill(skill) ? getProficencyBonus() : 0)
+  return getAbilityModifier(skill.ability) + (isCheckedSkill(skill) ? getProficencyBonus() : 0)
 }
 
 // SETTERS - user interactions to character
@@ -219,6 +243,7 @@ export function skillChoosedClear() { getSkillChoosed().lentgh = 0 }
 // INITIALIZER
 
 export function init(source) {
+  // Values set from source
   charsheet.charName = source.charName
   charsheet.charOrigin = source.charOrigin
   charsheet.charClassName = source.charClassName
@@ -235,37 +260,43 @@ export function init(source) {
   charsheet.attributes[ABILITY.wisdom] = source.attributes[ABILITY.wisdom]
   charsheet.attributes[ABILITY.intelligence] = source.attributes[ABILITY.intelligence]
   charsheet.attributes[ABILITY.charisma] = source.attributes[ABILITY.charisma]
-  charsheet.skillChoosed = source.skillChoosed
-  charsheet.equiped[EQUIPED_CATEGORY.WEAPON] = source.equiped[EQUIPED_CATEGORY.WEAPON]?.map(weapon => ({
-    ...getEquipment(weapon.name), ...weapon
-  }))
-  charsheet.equiped[EQUIPED_CATEGORY.ARMOR] = source.equiped[EQUIPED_CATEGORY.ARMOR] ? {
-    ...getEquipment(source.equiped[EQUIPED_CATEGORY.ARMOR]?.name), ...source.equiped[EQUIPED_CATEGORY.ARMOR]
-  } : null
-  charsheet.equiped[EQUIPED_CATEGORY.SHIELD] = source.equiped[EQUIPED_CATEGORY.SHIELD] ? {
-    ...getEquipment(source.equiped[EQUIPED_CATEGORY.SHIELD]?.name), ...source.equiped[EQUIPED_CATEGORY.SHIELD]
-  } : null
-  charsheet.equiped[EQUIPED_CATEGORY.MAGIC_ITEM] = source.equiped[EQUIPED_CATEGORY.MAGIC_ITEM]?.map(magicItem => ({
-    ...getEquipment(magicItem.name), ...magicItem
-  }))
+  charsheet.skillChoosed = source.skillChoosed.map(skill => SKILLS[skill])
+
   charsheet.equipments = source.equipments
 
-  // Object.keys(charsheet.modifiers)
-  charsheet.modifiers[ABILITY.strength] = abilityScoreToModifier(charsheet.attributes[ABILITY.strength])
-  charsheet.modifiers[ABILITY.dexterity] = abilityScoreToModifier(charsheet.attributes[ABILITY.dexterity])
-  charsheet.modifiers[ABILITY.constitution] = abilityScoreToModifier(charsheet.attributes[ABILITY.constitution])
-  charsheet.modifiers[ABILITY.wisdom] = abilityScoreToModifier(charsheet.attributes[ABILITY.wisdom])
-  charsheet.modifiers[ABILITY.intelligence] = abilityScoreToModifier(charsheet.attributes[ABILITY.intelligence])
-  charsheet.modifiers[ABILITY.charisma] = abilityScoreToModifier(charsheet.attributes[ABILITY.charisma])
-
+  // Values set from charsheet
+  Object.keys(charsheet.modifiers).forEach(ability => {
+    charsheet.modifiers[ability] = abilityScoreToModifier(charsheet.attributes[ability])
+  })
 
   charsheet.charClass = getClass(getCharClassName(), getCharSubClassName(), getCharLevel())
   charsheet.charSpecies = getSpecies(getCharSpeciesName())
+
+  charsheet.equipments?.filter?.(equipment => equipment.equiped).forEach(equipment => {
+    const _equipment = { ...getEquipment(equipment.name), ...equipment }
+
+    switch (_equipment.type) {
+      case EQUIPMENT_TYPE.WEAPON: charsheet.equiped[EQUIPED_CATEGORY.WEAPON].push(_equipment); break;
+      case EQUIPMENT_TYPE.ARMOR: charsheet.equiped[EQUIPED_CATEGORY.ARMOR] = _equipment; break;
+      case EQUIPMENT_TYPE.SHIELD: charsheet.equiped[EQUIPED_CATEGORY.SHIELD] = _equipment; break;
+      case EQUIPMENT_TYPE.MAGIC_ITEM: (equipment => {
+        switch (equipment.equipOn) {
+          case EQUIPED_CATEGORY.WEAPON: charsheet.equiped[EQUIPED_CATEGORY.WEAPON].push(equipment); break;
+          case EQUIPED_CATEGORY.ARMOR: charsheet.equiped[EQUIPED_CATEGORY.WEAPON] = equipment; break;
+          case EQUIPED_CATEGORY.SHIELD: charsheet.equiped[EQUIPED_CATEGORY.SHIELD] = equipment; break;
+          case EQUIPED_CATEGORY.OTHER: charsheet.equiped[EQUIPED_CATEGORY.OTHER].push(equipment); break;
+        }
+      })(_equipment); break;
+    }
+  })
 
   // TODO: init species traits
 
   // TODO: init class features
 
   // TODO: init feats
-
 }
+
+// STORAGE
+
+export function toJSON() { return storeManager.toJSON(charsheet) }

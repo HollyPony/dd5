@@ -38,24 +38,24 @@ export const EFFECT = Of({
 export const SKILLS = Of({
   // Warning: keys used as html className
   // TODO : use another enum for html binding name ?
-  acrobatics: 'SKILLS.acrobatics',
-  animalHandling: 'SKILLS.animalHandling',
-  arcana: 'SKILLS.arcana',
-  athletics: 'SKILLS.athletics',
-  deception: 'SKILLS.deception',
-  history: 'SKILLS.history',
-  insight: 'SKILLS.insight',
-  intimidation: 'SKILLS.intimidation',
-  investigation: 'SKILLS.investigation',
-  medicine: 'SKILLS.medicine',
-  nature: 'SKILLS.nature',
-  perception: 'SKILLS.perception',
-  performance: 'SKILLS.performance',
-  persuasion: 'SKILLS.persuasion',
-  religion: 'SKILLS.religion',
-  sleightOfHand: 'SKILLS.sleightOfHand',
-  stealth: 'SKILLS.stealth',
-  survival: 'SKILLS.survival',
+  acrobatics: { name: 'SKILLS.acrobatics', ability: ABILITY.dexterity, },
+  animalHandling: { name: 'SKILLS.animalHandling', ability: ABILITY.wisdom, },
+  arcana: { name: 'SKILLS.arcana', ability: ABILITY.intelligence, },
+  athletics: { name: 'SKILLS.athletics', ability: ABILITY.strength, },
+  deception: { name: 'SKILLS.deception', ability: ABILITY.charisma, },
+  history: { name: 'SKILLS.history', ability: ABILITY.intelligence, },
+  insight: { name: 'SKILLS.insight', ability: ABILITY.wisdom, },
+  intimidation: { name: 'SKILLS.intimidation', ability: ABILITY.charisma, },
+  investigation: { name: 'SKILLS.investigation', ability: ABILITY.intelligence, },
+  medicine: { name: 'SKILLS.medicine', ability: ABILITY.wisdom, },
+  nature: { name: 'SKILLS.nature', ability: ABILITY.intelligence, },
+  perception: { name: 'SKILLS.perception', ability: ABILITY.wisdom, },
+  performance: { name: 'SKILLS.performance', ability: ABILITY.charisma, },
+  persuasion: { name: 'SKILLS.persuasion', ability: ABILITY.charisma, },
+  religion: { name: 'SKILLS.religion', ability: ABILITY.intelligence, },
+  sleightOfHand: { name: 'SKILLS.sleightOfHand', ability: ABILITY.dexterity, },
+  stealth: { name: 'SKILLS.stealth', ability: ABILITY.dexterity, },
+  survival: { name: 'SKILLS.survival', ability: ABILITY.wisdom, },
 })
 
 export const EQUIPMENT_TYPE = Of({
@@ -71,7 +71,6 @@ export const EQUIPED_CATEGORY = Of({
   WEAPON: 'EQUIPED_CATEGORY.WEAPON',
   ARMOR: 'EQUIPED_CATEGORY.ARMOR',
   SHIELD: 'EQUIPED_CATEGORY.SHIELD',
-  MAGIC_ITEM: 'EQUIPED_CATEGORY.MAGIC_ITEM',
   OTHER: 'EQUIPED_CATEGORY.OTHER',
 })
 

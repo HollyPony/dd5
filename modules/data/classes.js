@@ -20,8 +20,9 @@ const abilityScoreImprovement = (level) => ({ // TODO: Check apply `this` work o
 const classes = f({
   barbarian: f({ // P.51
     mainAbility: f([ABILITY.strength]),
-    hitPointDice: 12, // TODO: +1 per level
-    saves: f([ABILITY.strength, 'constitution']),
+    hitDice: DICES.D12, // TODO: +1 per level
+    hitPointMax: { base: 12, addPerLevel: 7, },
+    saves: f([ABILITY.strength, ABILITY.constitution]),
     authorizedNumberSkills: 2,
     authorizedSkills: f([SKILLS.animalHandling, SKILLS.athletics, SKILLS.intimidation, SKILLS.nature, SKILLS.perception, SKILLS.survival]),
     subClasses: f({
@@ -32,9 +33,10 @@ const classes = f({
     }),
   }),
   bard: f({ // P.57
-    mainAbility: f(['charisma']),
-    hitPointDice: 8, // TODO: +1 per level
-    saves: f(['dexterity', 'charisma']),
+    mainAbility: f([ABILITY.charisma]),
+    hitDice: DICES.D8, // TODO: +1 per level
+    hitPointMax: { base: 8, addPerLevel: 5, },
+    saves: f([ABILITY.dexterity, ABILITY.charisma]),
     authorizedNumberSkills: 3,
     authorizedSkills: f([SKILLS.acrobatics, SKILLS.animalHandling, SKILLS.arcana, SKILLS.athletics, SKILLS.deception, SKILLS.history, SKILLS.insight, SKILLS.intimidation, SKILLS.investigation, SKILLS.medicine, SKILLS.nature, SKILLS.perception, SKILLS.performance, SKILLS.persuasion, SKILLS.religion, SKILLS.sleightOfHand, SKILLS.stealth, SKILLS.survival]),
     subClasses: f({
@@ -45,9 +47,10 @@ const classes = f({
     }),
   }),
   cleric: f({
-    mainAbility: f(['wisdom']),
-    hitPointDice: 8, // TODO: +1 per level
-    saves: f(['wisdom', 'charisma']),
+    mainAbility: f([ABILITY.wisdom]),
+    hitDice: DICES.D8, // TODO: +1 per level
+    hitPointMax: { base: 8, addPerLevel: 5, },
+    saves: f([ABILITY.wisdom, ABILITY.charisma]),
     authorizedNumberSkills: 2,
     authorizedSkills: f([SKILLS.history, SKILLS.insight, SKILLS.medicine, SKILLS.persuasion, SKILLS.religion]),
     subClasses: f({
@@ -58,9 +61,10 @@ const classes = f({
     }),
   }),
   druid: f({ // P.79
-    mainAbility: f(['wisdom']),
-    hitPointDice: 8, // TODO: +1 per level
-    saves: f(['intelligence', 'wisdom']),
+    mainAbility: f([ABILITY.wisdom]),
+    hitDice: DICES.D8, // TODO: +1 per level
+    hitPointMax: { base: 8, addPerLevel: 5, },
+    saves: f([ABILITY.intelligence, ABILITY.wisdom]),
     authorizedNumberSkills: 2,
     authorizedSkills: f([SKILLS.animalHandling, SKILLS.insight, SKILLS.medicine, SKILLS.nature, SKILLS.perception, SKILLS.religion, SKILLS.survival]),
     subClasses: f({
@@ -71,9 +75,10 @@ const classes = f({
     }),
   }),
   fighter: f({ // P.105
-    mainAbility: f([ABILITY.strength, 'dexterity']), // TODO: choose
-    hitPointDice: 10, // TODO: +1 per level
-    saves: f([ABILITY.strength, 'constitution']),
+    mainAbility: f([ABILITY.strength, ABILITY.dexterity]), // TODO: choose
+    hitDice: DICES.D10, // TODO: +1 per level
+    hitPointMax: { base: 10, addPerLevel: 6, },
+    saves: f([ABILITY.strength, ABILITY.constitution]),
     authorizedNumberSkills: 2,
     authorizedSkills: f([SKILLS.acrobatics, SKILLS.animalHandling, SKILLS.athletics, SKILLS.history, SKILLS.insight, SKILLS.intimidation, SKILLS.persuasion, SKILLS.perception, SKILLS.survival]),
     subClasses: f({
@@ -84,9 +89,10 @@ const classes = f({
     }),
   }),
   monk: f({ // P.127
-    mainAbility: f(['dexterity', 'wisdom']), // TODO: twice
-    hitPointDice: 8, // TODO: +1 per level
-    saves: f([ABILITY.strength, 'dexterity']),
+    mainAbility: f([ABILITY.dexterity, ABILITY.wisdom]), // TODO: twice
+    hitDice: DICES.D8, // TODO: +1 per level
+    hitPointMax: { base: 8, addPerLevel: 5, },
+    saves: f([ABILITY.strength, ABILITY.dexterity]),
     authorizedNumberSkills: 2,
     authorizedSkills: f([SKILLS.acrobatics, SKILLS.athletics, SKILLS.history, SKILLS.insight, SKILLS.religion, SKILLS.stealth]),
     weaponProfciencies: f({}), // TODO: Used to display masteries ?
@@ -209,9 +215,10 @@ const classes = f({
     }
   }),
   paladin: f({ // P.147
-    mainAbility: f([ABILITY.strength, 'charisma']), // TODO: twice
-    hitPointDice: 10, // TODO: +1 per level
-    saves: f(['wisdom', 'charisma']), // TODO: choose
+    mainAbility: f([ABILITY.strength, ABILITY.charisma]), // TODO: twice
+    hitDice: DICES.D10, // TODO: +1 per level
+    hitPointMax: { base: 10, addPerLevel: 6, },
+    saves: f([ABILITY.wisdom, ABILITY.charisma]), // TODO: choose
     authorizedNumberSkills: 2,
     authorizedSkills: f([SKILLS.athletics, SKILLS.insight, SKILLS.intimidation, SKILLS.medicine, SKILLS.persuasion, SKILLS.religion]),
     subClasses: f({
@@ -222,9 +229,10 @@ const classes = f({
     }),
   }),
   ranger: f({ // P.157
-    mainAbility: f(['dexterity', 'wisdom']), // TODO: twice
-    hitPointDice: 10, // TODO: +1 per level
-    saves: f([ABILITY.strength, 'dexterity']),
+    mainAbility: f([ABILITY.dexterity, ABILITY.wisdom]), // TODO: twice
+    hitDice: DICES.D10, // TODO: +1 per level
+    hitPointMax: { base: 10, addPerLevel: 6, },
+    saves: f([ABILITY.strength, ABILITY.dexterity]),
     authorizedNumberSkills: 3,
     authorizedSkills: f([SKILLS.animalHandling, SKILLS.athletics, SKILLS.insight, SKILLS.investigation, SKILLS.nature, SKILLS.perception, SKILLS.stealth, SKILLS.survival]),
     subClasses: f({
@@ -235,9 +243,10 @@ const classes = f({
     }),
   }),
   rogue: f({ // P.167
-    mainAbility: f(['dexterity']),
-    hitPointDice: 8, // TODO: +1 per level
-    saves: f(['dexterity', 'intelligence']),
+    mainAbility: f([ABILITY.dexterity]),
+    hitDice: DICES.D8, // TODO: +1 per level
+    hitPointMax: { base: 8, addPerLevel: 5, },
+    saves: f([ABILITY.dexterity, ABILITY.intelligence]),
     authorizedNumberSkills: 4,
     authorizedSkills: f([SKILLS.acrobatics, SKILLS.athletics, SKILLS.deception, SKILLS.insight, SKILLS.intimidation, SKILLS.investigation, SKILLS.perception, SKILLS.persuasion, SKILLS.sleightOfHand, SKILLS.stealth]),
     subClasses: f({
@@ -248,9 +257,10 @@ const classes = f({
     }),
   }),
   sorcerer: f({ // P. 91
-    mainAbility: f(['charisma']),
-    hitPointDice: 6, // TODO: +1 per level
-    saves: f(['constitution', 'charisma']),
+    mainAbility: f([ABILITY.charisma]),
+    hitDice: DICES.D6, // TODO: +1 per level
+    hitPointMax: { base: 6, addPerLevel: 4, },
+    saves: f([ABILITY.constitution, ABILITY.charisma]),
     authorizedNumberSkills: 2,
     authorizedSkills: f([SKILLS.arcana, SKILLS.deception, SKILLS.insight, SKILLS.intimidation, SKILLS.persuasion, SKILLS.religion]),
     subClasses: f({
@@ -261,9 +271,10 @@ const classes = f({
     }),
   }),
   warlock: f({ // P.135
-    mainAbility: f(['charisma']),
-    hitPointDice: 8, // TODO: +1 per level
-    saves: f(['wisdom', 'charisma']),
+    mainAbility: f([ABILITY.charisma]),
+    hitDice: DICES.D8, // TODO: +1 per level
+    hitPointMax: { base: 8, addPerLevel: 5, },
+    saves: f([ABILITY.wisdom, ABILITY.charisma]),
     authorizedNumberSkills: 2,
     authorizedSkills: f([SKILLS.arcana, SKILLS.deception, SKILLS.history, SKILLS.intimidation, SKILLS.investigation, SKILLS.nature, SKILLS.religion]),
     subClasses: f({
@@ -274,9 +285,10 @@ const classes = f({
     }),
   }),
   wizard: f({ // P.115
-    mainAbility: f(['intelligence']),
-    hitPointDice: 6, // TODO: +1 per level
-    saves: f(['intelligence', 'wisdom']),
+    mainAbility: f([ABILITY.intelligence]),
+    hitDice: DICES.D6, // TODO: +1 per level
+    hitPointMax: { base: 6, addPerLevel: 4, },
+    saves: f([ABILITY.intelligence, ABILITY.wisdom]),
     authorizedNumberSkills: 2,
     authorizedSkills: f([SKILLS.arcana, SKILLS.history, SKILLS.insight, SKILLS.medicine, SKILLS.nature, SKILLS.religion]),
     subClasses: f({
@@ -289,8 +301,11 @@ const classes = f({
 })
 
 export function getList() { return Object.keys(classes) }
-export function getSubClasses(className) { return Object.keys(classes[className].subClasses) }
+export function getSubClasses(className) { return Object.keys(classes?.[className]?.subClasses ?? {}) }
 export default function get(className, subClassName, level) {
+  if (className === null) {
+    return null
+  }
   if (!classes[className]) {
     throw InvalidClassNameError(className)
   }

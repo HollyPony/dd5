@@ -1,4 +1,4 @@
-import { ABILITY, EQUIPED_CATEGORY, EQUIPMENT_TYPE, } from './data/common.js'
+import { ABILITY, EQUIPED_CATEGORY, EQUIPMENT_TYPE, SKILLS, } from './data/common.js'
 
 export const mock = {
   charName: 'Doudou McDoubidou',
@@ -20,27 +20,22 @@ export const mock = {
     [ABILITY.charisma]: 12,
   },
   skillChoosed: ['athletics', 'acrobatics'],
-  equiped: {
-    [EQUIPED_CATEGORY.WEAPON]: null,
-    [EQUIPED_CATEGORY.ARMOR]: null,
-    [EQUIPED_CATEGORY.SHIELD]: null, //{ name: 'shield' },
-    [EQUIPED_CATEGORY.MAGIC_ITEM]: [
-      // { name: 'cloakOfProtection', hasAttunement: true, }
-    ],
-
-  },
   equipments: [
+    {
+      name: 'shield',
+      equiped: false,
+    },
     {
       name: 'cloakOfProtection',
       hasAttunement: true,
-      category: EQUIPMENT_TYPE.MAGIC_ITEM,
+      equiped: false,
     }
   ],
 }
 
 export function fromJSON(jsonData) {
   // TODO: See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#the_replacer_parameter
-  const replacer = (key, value, context) => {
+  const replacer = (key, value) => {
     if (key === 'type') {
       if (value === ENUMM_TYPE.X.qsd) return ENUMM_TYPE.X
     }
@@ -51,11 +46,20 @@ export function fromJSON(jsonData) {
 
 export function toJSON(jsData) {
   // TODO: See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse?the_reviver_parameter
-  const reviver = (key, value, context) => {
-    if (key === 'type') {
-      if (value === ENUMM_TYPE.X.qsd) return ENUMM_TYPE.X
+  const reviver = (key, value) => {
+    if (key === 'attributes') {
+      console.log(key, value)
     }
-    return value
+    // console.log(key, value)
+
+    // if (Object.values(SKILLS).find(_ => _ === key)) {
+    //   console.log(key, value)
+    // }
+
+    switch (key) {
+      case 'skillChoosed': return Object.keys(SKILLS).filter(key => value.includes(SKILLS[key]))
+      default: return value
+    }
   }
 
   return JSON.stringify({
@@ -69,23 +73,16 @@ export function toJSON(jsData) {
     charAlignment: jsData.charAlignment,
     charSizeCategory: jsData.charSizeCategory,
     charSize: jsData.charSize,
-    attributes: {
-      [ABILITY.strength]: jsData.attributes.strength,
-      [ABILITY.dexterity]: jsData.attributes.dexterity,
-      [ABILITY.constitution]: jsData.attributes.constitution,
-      [ABILITY.wisdom]: jsData.attributes.wisdom,
-      [ABILITY.intelligence]: jsData.attributes.intelligence,
-      [ABILITY.charisma]: jsData.attributes.charisma,
-    },
+    attributes: jsData.attributes,
+    // attributes: {
+    //   [ABILITY.strength]: jsData.attributes[ABILITY.strength],
+    //   [ABILITY.dexterity]: jsData.attributes[ABILITY.dexterity],
+    //   [ABILITY.constitution]: jsData.attributes[ABILITY.constitution],
+    //   [ABILITY.wisdom]: jsData.attributes[ABILITY.wisdom],
+    //   [ABILITY.intelligence]: jsData.attributes[ABILITY.intelligence],
+    //   [ABILITY.charisma]: jsData.attributes[ABILITY.charisma],
+    // },
     skillChoosed: jsData.skillChoosed,
-    equiped: {
-      weapons: jsData.equiped.weapons,
-      armor: jsData.equiped.armor,
-      shield: jsData.equiped.shield,
-      tools: jsData.equiped.tools,
-      gears: jsData.equiped.gears,
-      magicItems: jsData.equiped.magicItems,
-    },
     equipments: jsData.equipments
-  }, reviver)
+  }, reviver, 2)
 }
