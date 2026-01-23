@@ -137,7 +137,6 @@ function refreshAbilityModifier(ability) {
 }
 
 function refreshSkillScore(skill) {
-  console.log(skillAsText(userData.getSkillScore(skill)), skill.name, userData.getSkillScore(skill))
   skillElements[skill.name].score.textContent = skillAsText(userData.getSkillScore(skill))
 }
 
