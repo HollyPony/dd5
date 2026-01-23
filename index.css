@@ -85,6 +85,7 @@ input[disabled] ~ span {
 
 .save-score,
 .ability-card {
+  .save-score,
   .skill-score {
     display: inline-block;
     min-width: 20px;
