@@ -22,7 +22,6 @@ const charSpeciesElement = document.getElementsByName('charSpecies')[0]
 
 // TODO: Update level with experience ?
 const charExperienceElement = document.getElementsByName('experiencepoints')[0]
-const charAlignmentElement = document.getElementsByName('alignment')[0]
 
 const exportCharLink = document.getElementById("exportCharLink")
 
@@ -49,7 +48,6 @@ const skillElements = Object.entries(SKILLS).reduce((acc, [key, value]) => {
   })
 }, {})
 
-const classFeaturesElement = document.getElementsByClassName('class-features')[0]
 const weaponSelectElement = document.getElementsByName('weapons')[0]
 
 //////////////////////////////////////////////////////////////////////
@@ -63,55 +61,44 @@ function skillAsText(score) { return score > 0 ? `+${score}` : `${score}` }
 function reloadClassData() { }
 
 function refreshCharName() {
-  const charNameElement = document.getElementsByName('charName')[0]
-  charNameElement.value = userData.getCharName()
+  document.getElementsByName('charName')[0].value = userData.getCharName()
 }
 
 function refreshArmorClass() {
-  const armorClassElement = document.getElementsByName('armorClass')[0]
-  armorClassElement.value = userData.getArmorClass()
+  document.getElementsByName('armorClass')[0].value = userData.getArmorClass()
 }
 
 function refreshProficiencyBonus() {
-  const proficiencyBonus = document.getElementsByName('proficiencybonus')[0]
-  proficiencyBonus.value = skillAsText(userData.getProficencyBonus())
+  document.getElementsByName('proficiencybonus')[0].value = skillAsText(userData.getProficencyBonus())
 }
 
 function refreshHitPointMax() {
-  const hitPointMaxElement = document.getElementsByName('hitPointMax')[0]
-  hitPointMaxElement.value = userData.getHitPointMax()
+  document.getElementsByName('hitPointMax')[0].value = userData.getHitPointMax()
 }
 
 function refreshHitDiceMax() {
-  const hitDiceMaxElement = document.getElementsByName('hitDiceMax')[0]
-  hitDiceMaxElement.value = userData.getHitDiceMax()
+  document.getElementsByName('hitDiceMax')[0].value = userData.getHitDiceMax()
 }
 
 function refreshInitiative() {
-  const initiative = document.getElementsByName('specs.initiative')[0]
-  initiative.value = userData.getAbilityModifier(ABILITY.dexterity)
+  document.getElementsByName('specs.initiative')[0].value = userData.getAbilityModifier(ABILITY.dexterity)
 }
 
 function refreshSpeed() {
-  const speed = document.getElementsByName('specs.speed')[0]
-  speed.value = userData.getCharSpeed()
+  document.getElementsByName('specs.speed')[0].value = userData.getCharSpeed()
 }
 
 function refreshSize() {
-  const sizeCategory = document.getElementsByClassName('size-category')[0]
-  const size = document.getElementsByName('specs.size')[0]
-
-  sizeCategory.value = userData.getSizeCategory()
-  size.value = userData.getSize() || ''
+  document.getElementsByClassName('size-category')[0].value = userData.getSizeCategory()
+  document.getElementsByName('specs.size')[0].value = userData.getSize() || ''
 }
 
 function refreshPassivePerception() {
-  const passivePerception = document.getElementsByName('specs.passivePerception')[0]
-  passivePerception.value = userData.getSkillScore(SKILLS.perception) + 10
+  document.getElementsByName('specs.passivePerception')[0].value = userData.getSkillScore(SKILLS.perception) + 10
 }
 
 function refreshCharAlignment() {
-  charAlignmentElement.value = userData.getCharAlignment()
+  document.getElementsByName('alignment')[0].value = userData.getCharAlignment()
 }
 
 function refreshClassList() {
@@ -150,7 +137,8 @@ function refreshAbilityModifier(ability) {
 }
 
 function refreshSkillScore(skill) {
-  skillElements[skill.name].score = skillAsText(userData.getSkillScore(skill))
+  console.log(skillAsText(userData.getSkillScore(skill)), skill.name, userData.getSkillScore(skill))
+  skillElements[skill.name].score.textContent = skillAsText(userData.getSkillScore(skill))
 }
 
 function refreshAbilities() {
@@ -160,60 +148,47 @@ function refreshAbilities() {
   })
 }
 
+function refreshAbilitySave(ability) {
+  abilityElements[ability].saveScore.textContent = skillAsText(userData.getAbilitySave(ability))
+  abilityElements[ability].saveCheck.checked = userData.getCharClass()?.saves?.includes(ability)
+}
+
 function refreshClassFeatures() {
-  // TODO: trigger on classChange & subClassChange & levelChange
+  const classFeaturesElement = document.getElementsByClassName('class-features')[0]
   while (classFeaturesElement.firstChild) {
     classFeaturesElement.removeChild(classFeaturesElement.firstChild);
   }
 
   userData.getCharClass()?.features?.forEach(feature => {
-    const featureElement = createElement('div', null, { class: 'accordion-item' })
-    const header = featureElement.appendChild(createElement('div',
-      [createElement('span',
-        [document.createTextNode('Lv.' + feature.atLevel + ' - ' + i18n._(`statics.class-features.${userData.getCharClassName()}.${feature.name}.name`))],
-        { class: 'input-group-text flex-grow-1', }
-      )],
-      { class: 'accordion-header input-group' },
-    ))
-    header.appendChild(createElement('button', ['btn'], { // TODO: translate btn
-      class: 'btn btn-outline-secondary',
-      type: 'button',
-      'data-bs-toggle': 'collapse',
-      'data-bs-target': `#collapse-class-features-${userData.getCharClassName()}-${feature.name}`,
-      role: 'button',
-    }))
-
-    featureElement.appendChild(header)
-    featureElement.appendChild(createElement('div',
-      [parseMarkdown(i18n._(`statics.class-features.${userData.getCharClassName()}.${feature.name}.description`))],
-      {
-        id: `collapse-class-features-${userData.getCharClassName()}-${feature.name}`,
-        class: 'accordion-collapse collapse',
-        'data-bs-parent': '#class-features-accordion',
-      },
-    ))
+    const featureElement = createElement('div', [
+      createElement('div',
+        [
+          createElement('span',
+            document.createTextNode('Lv.' + feature.atLevel + ' - ' + i18n._(`statics.class-features.${userData.getCharClassName()}.${feature.name}.name`)),
+            { class: 'input-group-text flex-grow-1', }
+          ),
+          createElement('button', 'btn', { // TODO: translate btn
+            class: 'btn btn-outline-secondary',
+            type: 'button',
+            'data-bs-toggle': 'collapse',
+            'data-bs-target': `#collapse-class-features-${userData.getCharClassName()}-${feature.name}`,
+            role: 'button',
+          }),
+        ],
+        { class: 'accordion-header input-group' },
+      ),
+      createElement('div',
+        parseMarkdown(i18n._(`statics.class-features.${userData.getCharClassName()}.${feature.name}.description`)),
+        {
+          id: `collapse-class-features-${userData.getCharClassName()}-${feature.name}`,
+          class: 'accordion-collapse collapse',
+          'data-bs-parent': '#class-features-accordion',
+        },
+      ),
+    ], { class: 'accordion-item' })
 
     classFeaturesElement.appendChild(featureElement)
   })
-}
-
-
-function updateAbilityScore(ability) {
-  refreshAbilityScore(ability)
-
-  updateAbilityModifier(ability)
-  updateAbilitySave(ability)
-}
-
-function updateAbilityModifier(ability) {
-  refreshAbilityModifier(ability)
-
-  Object.values(SKILLS).filter(skill => ability === skill.ability).forEach(skill => refreshSkillScore(skill))
-}
-
-function updateAbilitySave(ability) {
-  abilityElements[ability].saveScore.textContent = skillAsText(userData.getAbilitySave(ability))
-  abilityElements[ability].saveCheck.checked = userData.getCharClass()?.saves?.includes(ability)
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -225,6 +200,14 @@ function charClassChanged({ currentTarget }) {
   refreshSubClassList()
   reloadClassData()
   refreshClassFeatures()
+}
+
+function charSubClassChanged({ currentTarget: { value } }) {
+  userData.setCharSubClassName(currentTarget.value)
+
+  reloadClassData()
+  refreshClassFeatures()
+  // TODO:
 }
 
 function charOriginChanged({ currentTarget }) {
@@ -240,13 +223,6 @@ function charSpeciesChanged({ currentTarget }) {
   // TODO
 }
 
-function charSubClassChanged({ currentTarget: { value } }) {
-  userData.setCharSubClassName(currentTarget.value)
-
-  reloadClassData()
-  // TODO:
-}
-
 function charLevelChanged({ currentTarget: { value } }) {
   userData.setCharLevel(value)
 
@@ -254,13 +230,17 @@ function charLevelChanged({ currentTarget: { value } }) {
   refreshHitPointMax()
   refreshHitDiceMax()
   refreshProficiencyBonus()
-  Object.keys(ABILITY).forEach(updateAbilityModifier)
-  Object.keys(ABILITY).forEach(updateAbilitySave)
+
+  Object.keys(ABILITY).forEach(ability => {
+    refreshAbilitySave(ability)
+    refreshAbilityModifier(ability)
+  })
+
+  Object.values(SKILLS).forEach(skill => refreshSkillScore(skill))
 
   refreshClassFeatures()
   // Update species abilities / spells etc ...
 
-  // TODO: userData.reloadClass
   // TODO: userData.reloadSpecies
 }
 
@@ -270,7 +250,14 @@ function abilityScoreChanged({ currentTarget }) {
 
   userData.setAttribute(ability, score)
 
-  updateAbilityScore(ability)
+  refreshAbilityScore(ability)
+
+
+  refreshAbilityModifier(ability)
+
+  Object.values(SKILLS).filter(skill => ability === skill.ability).forEach(skill => refreshSkillScore(skill))
+
+  refreshAbilitySave(ability)
 }
 
 function skillChecked({ currentTarget: { name } }) {
@@ -316,11 +303,14 @@ function exportJSON() {
 function init() {
   const charsheet = storedData
 
-  // Set Origins list 
-  populateSelect(
-    charOriginElement,
-    Object.keys(origins).map((originName) => ({ value: originName, text: i18n._(`statics.origins.${originName}`), }))
-  )
+  function refreshCharOriginList() {
+    // Set Origins list 
+    populateSelect(
+      charOriginElement,
+      Object.keys(origins).map(originName => ({ value: originName, text: i18n._(`statics.origins.${originName}`), }))
+    )
+  }
+  refreshCharOriginList()
 
   // Set Races list
   populateSelect(
@@ -379,7 +369,12 @@ function init() {
   refreshPassivePerception()
   refreshCharAlignment()
 
-  Object.values(ABILITY).forEach(updateAbilityScore)
+  Object.values(ABILITY).forEach(ability => {
+    refreshAbilityScore(ability)
+    refreshAbilityModifier(ability)
+    refreshAbilitySave(ability)
+  })
+  Object.values(SKILLS).forEach(skill => refreshSkillScore(skill))
 
   refreshSubClassList()
   refreshArmorClass()
