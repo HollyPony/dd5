@@ -1,22 +1,44 @@
+/**
+ * Create an HTMLElement
+ * @param {string} type the name of the element to create. e.g. div
+ * @param {null|undefined|string|HTMLElement|string[]|HTMLElement[]} children if provided, append all children as textContext or direct as Element
+ * @param {object} attributes tag attributes for the HTMLElement `type`
+ * @returns 
+ */
 export function createElement(type, children, attributes = {}) {
   const element = document.createElement(type)
   Object.entries(attributes).forEach(([name, value]) => (value !== undefined) && element.setAttribute(name, value))
-  if (children && Array.isArray(children)) {
-    children.forEach(child => element.appendChild(typeof child === 'string' ? document.createTextNode(child) : child))
-  }
+  children && [].concat(children).forEach(child => element.appendChild(typeof child === 'string' ? document.createTextNode(child) : child))
   return element
 }
 
-export function clearSelect(selectElement) {
-  while (selectElement.firstChild) {
-    selectElement.removeChild(selectElement.firstChild);
+/**
+ * Remove every child of an element
+ * @param {HTMLElement} element The element to process
+ * @returns undefined
+ */
+export function removeAllChildren(element) {
+  while (element.firstChild) {
+    element.removeChild(element.firstChild);
   }
 }
 
-export function populateSelect(selectElement, items, options = {}) {
+/**
+ * Append options / optgroups from `items` to the provided `selectElement`
+ * @param {HTMLSelectElement} selectElement The <select> Element to append the <option> elements
+ * @param {object[]} items the element to append
+ * @param {object} params Some params...
+ * @param {boolean} [params.clear=false] `true` to clear previous content. Call `removeAllChildren` on `selectElement`
+ * @param {string} [params.placeholder=null] Append an `<option>` as first element with this `placeholder` as textContent and value to `''` (empty string)
+ * @returns the selectElement for chaining or re-use
+ */
+export function populateSelect(selectElement, items, params = {
+  clear: false,
+  placeholder: null
+}) {
   const fragment = document.createDocumentFragment()
-  if (options.clear) {
-    clearSelect(selectElement)
+  if (params.clear) {
+    removeAllChildren(selectElement)
   }
 
   items.forEach(item => {
@@ -27,7 +49,7 @@ export function populateSelect(selectElement, items, options = {}) {
         { label: item.label }
       ))
     } else {
-      fragment.appendChild(createElement('option', [item.text], { value: item.value, disabled: item.disabled }))
+      fragment.appendChild(createElement('option', item.text, { value: item.value, disabled: item.disabled }))
     }
   })
 

@@ -24,7 +24,7 @@ export default function markdownToElement(markdown) {
   function flushParagraph() {
     if (buffer.length === 0) return
 
-    root.appendChild(createElement("p", [parseInlineWithBreaks(buffer.join('\n'))]))
+    root.appendChild(createElement("p", parseInlineWithBreaks(buffer.join('\n'))))
     buffer = [];
   }
 
@@ -48,7 +48,7 @@ export default function markdownToElement(markdown) {
         root.appendChild(currentList)
       }
 
-      currentList.appendChild(createElement('li', [parseInlineWithBreaks(listMatch[2])]))
+      currentList.appendChild(createElement('li', parseInlineWithBreaks(listMatch[2])))
       continue
     }
 
@@ -58,7 +58,7 @@ export default function markdownToElement(markdown) {
       flushParagraph()
       currentList = null
 
-      root.appendChild(createElement(`h${headingMatch[1].length}`, [parseInlineWithBreaks(headingMatch[2])]))
+      root.appendChild(createElement(`h${headingMatch[1].length}`, parseInlineWithBreaks(headingMatch[2])))
       continue
     }
 
@@ -119,7 +119,7 @@ function parseInline(text) {
 
       if (endText !== -1 && startUrl === endText + 1 && endUrl !== -1) {
         flush()
-        fragment.appendChild(createElement('a', [text.slice(cursorEnd + 1, endText), { href: text.slice(startUrl + 1, endUrl) }]));
+        fragment.appendChild(createElement('a', text.slice(cursorEnd + 1, endText), { href: text.slice(startUrl + 1, endUrl) }));
         cursorEnd = endUrl + 1
         cursorStart = cursorEnd
         continue;
@@ -131,7 +131,7 @@ function parseInline(text) {
       const end = text.indexOf("**", cursorEnd + 2);
       if (end !== -1) {
         flush()
-        fragment.appendChild(createElement('strong', [text.slice(cursorEnd + 2, end)]));
+        fragment.appendChild(createElement('strong', text.slice(cursorEnd + 2, end)));
         cursorEnd = end + 2
         cursorStart = cursorEnd
         continue
@@ -143,7 +143,7 @@ function parseInline(text) {
       const end = text.indexOf("*", cursorEnd + 1);
       if (end !== -1) {
         flush()
-        fragment.appendChild(createElement('em', [text.slice(cursorEnd + 1, end)]));
+        fragment.appendChild(createElement('em', text.slice(cursorEnd + 1, end)));
         cursorEnd = end + 1
         cursorStart = cursorEnd
         continue
