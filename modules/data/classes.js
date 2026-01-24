@@ -96,9 +96,11 @@ const classes = f({
     authorizedNumberSkills: 2,
     authorizedSkills: f([SKILLS.acrobatics, SKILLS.athletics, SKILLS.history, SKILLS.insight, SKILLS.religion, SKILLS.stealth]),
     weaponProfciencies: f({}), // TODO: Used to display masteries ?
-    hasWeaponProficiency: weapon => [WEAPON_CATEGORY.simpleMelee, WEAPON_CATEGORY.simpleRanged].includes(weapon.category) ||
+    getWeaponProficiencies: () => [WEAPON_CATEGORY.simpleMelee, WEAPON_CATEGORY.simpleRanged],
+    getWeaponProficienciesFilter: (armor) => [WEAPON_CATEGORY.simpleMelee, WEAPON_CATEGORY.simpleRanged].includes(weapon.category) ||
       ([WEAPON_CATEGORY.martialMelee, WEAPON_CATEGORY.martialRanged].includes(weapon.category) && weapon.properties.includes(WEAPON_PROPERTY.Light)),
-    hasArmorProficiency: armor => { },
+    getArmorProficiencies: () => [],
+    getShieldProficiency: () => true,
     effects: {
       [EFFECT.SpeedModifierEffect]: {
         condition: function ({ equipedArmor, equipedShield }) {
@@ -315,8 +317,9 @@ export default function get(className, subClassName, level) {
 
   const {
     features,
-    hasWeaponProficiency,
-    hasArmorProficiency,
+    getWeaponProficiencies,
+    getArmorProficiencies,
+    getShieldProficiency,
     subClasses,
     ...classBase
   } = classes[className]
@@ -324,8 +327,9 @@ export default function get(className, subClassName, level) {
 
   const {
     features: subClassFeatures,
-    hasWeaponProficiency: subClassHasWeaponProficiency,
-    hasArmorProficiency: subClassHasArmorProficiency,
+    getWeaponProficiencies: subClassHasWeaponProficiencies,
+    getArmorProficiencies: subClassHasArmorProficiencies,
+    getShieldProficiency: subClassHasShieldProficiency,
     ...subClass
   } = subClasses[subClassName] || {}
 
@@ -336,7 +340,8 @@ export default function get(className, subClassName, level) {
     // traits: [...(classBase?.traits || []), ...(subClass?.traits?.filter(trait => trait.atLevel >= level) || []),],
     // spells: [...(classBase?.spells || []), ...(subClass?.spells?.filter(spell => spell.atLevel >= level) || []),],
     features: [...(features || []), ...(subClassFeatures || [])].filter(({ atLevel }) => atLevel <= level),
-    hasWeaponProficiency: (...params) => hasWeaponProficiency?.(...params) || subClassHasWeaponProficiency?.(...params),
-    hasArmorProficiency: (...params) => hasArmorProficiency?.(...params) || subClassHasArmorProficiency?.(...params),
+    getWeaponProficiencies: (...params) => getWeaponProficiencies?.(...params) || subClassHasWeaponProficiencies?.(...params),
+    getArmorProficiencies: (...params) => getArmorProficiencies?.(...params) || subClassHasArmorProficiencies?.(...params),
+    getShieldProficiency: (...params) => getShieldProficiency?.(...params) || subClassHasShieldProficiency?.(...params),
   })
 }

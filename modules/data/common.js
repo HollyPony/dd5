@@ -33,6 +33,8 @@ export const EFFECT = Of({
   AddFeatEffect: 'EFFECT.ImproveFeat',
   ReduceFallDamageEffect: 'EFFECT.ReducedFallDamage',
   ByPassArmorStrengthRequirement: 'EFFECT.ByPassArmorStrengthRequirement',
+  HasArmorProficiencyEffect: 'EFFECT.HasArmorProficiencyEffect',
+  HasShieldProficiencyEffect: 'EFFECT.HasShieldProficiencyEffect',
 })
 
 export const SKILLS = Of({
@@ -85,6 +87,11 @@ export const WEAPON_CATEGORY = Of({
   simpleRanged: 'WEAPON_CATEGORY.simpleRanged', // Armes courantes à distance
   martialMelee: 'WEAPON_CATEGORY.martialMelee', // Armes de guerre de corps à corps
   martialRanged: 'WEAPON_CATEGORY.martialRanged', // Armes de guerre à distance
+})
+
+export const WEAPON_PROFCIENCY = Of({
+  simples: [WEAPON_CATEGORY.simpleMelee, WEAPON_CATEGORY.simpleRanged],
+  martialLight: [WEAPON_CATEGORY.martialMelee]
 })
 
 export const WEAPON_PROPERTY = Of({ // P.214 - Botte

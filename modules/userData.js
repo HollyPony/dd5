@@ -62,12 +62,6 @@ export function getAbilityScore(attributeName) { return charsheet.attributes[att
 export function getSkillChoosed() { return charsheet.skillChoosed }
 export function getEquiped(category = null) { return category ? charsheet.equiped[category] : charsheet.equiped }
 export function getEquipments() { return charsheet.equipments }
-// -- COMPUTED VALUES
-export function getCharClass() { return charsheet.charClass }
-export function getCharSpecies() { return charsheet.charSpecies }
-export function getCharModifiers() { return charsheet.modifiers }
-export function getCharFeats() { return charsheet.feats } // TODO: get from class + species human?
-export function getWeaponProficiency() { } // TODO: maitrise d'armes
 
 // COMPUTE VALUE
 function abilityScoreToModifier(score) {
@@ -105,6 +99,25 @@ function applyEffects(list, effect, options, callback) {
 
 // COMPUTED VALUES
 
+
+export function getCharClass() { return charsheet.charClass }
+export function getCharSpecies() { return charsheet.charSpecies }
+export function getCharModifiers() { return charsheet.modifiers }
+export function getCharFeats() { return charsheet.feats } // TODO: get from class + species human?
+export function getWeaponProficiency() { } // TODO: maitrise d'armes
+export function getArmorProficiencies() {
+  // TODO: armor category check ?
+  // TODO: amor has malus effect if equiped without proficiency
+  return getCharFeats()?.filter(feat => feat?.[EFFECT.HasArmorProficiencyEffect]?.reduce((acc, effect) => {
+    if (effect?.condition?.() ?? true) { acc.concat(effect?.values) }
+    return acc
+  }, (getCharClass()?.getArmorProficiencies() ?? [])))
+}
+export function getShieldProficiency() {
+  return (getCharClass()?.getShieldProficiency() ?? false)
+    || (getCharFeats()?.includes(feat => feat?.[EFFECT.HasShieldProficiencyEffect]))
+}
+
 /* TODO: update if
  *  - armor equipped
  *  - Shield equipped
@@ -136,17 +149,24 @@ export function getArmorClass() {
       ? equipedArmor.effects?.[EFFECT.ACModifierEffect]?.apply?.call(equipedArmor, { modifiers }) // TODO: Test armor without override feature
       : 10 + modifiers[ABILITY.dexterity] // Armors P.220 || Basic AC without armors P.42
 
+  // Apply feats modifier
   // TODO: Never tested
+  // si armure - char has feat (don P.210) Defense = +1
   applyEffects(getCharFeats(), EFFECT.ACModifierEffect, { equipedArmor, equipedShield, ac: armor }, result => {
     armor += result
   })
-  // si armure - char has feat (don P.210) Defense = +1
 
+  // Apply Shield modifier
+  // TODO: Test it
+  applyEffect(equipedShield, EFFECT.ACModifierEffect, { ac: armor, hasArmorProficiency: getShieldProficiency() }, result => {
+    armor += result
+  })
+
+  // Apply other equiped effect
   applyEffects(getEquiped(EQUIPED_CATEGORY.OTHER), EFFECT.ACModifierEffect, { equipedArmor, equipedShield }, result => {
     armor += result
   })
 
-  armor = equipedShield?.effects?.[EFFECT.ACModifierEffect]?.apply?.call(equipedShield, { ac: armor }) ?? armor
   return armor
 }
 
