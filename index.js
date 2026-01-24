@@ -230,7 +230,7 @@ function charLevelChanged({ currentTarget: { value } }) {
   refreshHitDiceMax()
   refreshProficiencyBonus()
 
-  Object.keys(ABILITY).forEach(ability => {
+  Object.values(ABILITY).forEach(ability => {
     refreshAbilitySave(ability)
     refreshAbilityModifier(ability)
   })
