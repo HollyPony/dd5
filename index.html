@@ -10,120 +10,150 @@
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
   <!-- Inner lib -->
   <link rel="stylesheet" href="index.css" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
 </head>
 
-<body translate="no">
-  <a id="exportCharLink" download="data.json" href="">Download</a>
+<body translate="no" data-bs-theme="dark">
+  <a id="exportCharLink" class="btn-nobs" download="data.json" href="">Download</a>
   <div class="d-flex flex-nowrap">
     <main class="container">
-      <form>
-        <div class="d-flex flex-row mt-2">
-          <div class="common-informations">
-            <div class="block-group">
-              <div class="form-control-group charName">
-                <input name="charName" class="form-control-input" placeholder="Thoradin Fireforge" />
-                <label for="charName" class="form-control-label" data-i18n="charName.label"></label>
+      <form method="post">
+        <div class="row g-3">
+          <div class="col-12 col-md common-informations">
+            <div class="border p-2">
+              <div class="row">
+                <div class="col d-flex flex-column charName">
+                  <input name="charName" class="form-control-input" placeholder="Thoradin Fireforge" />
+                  <label for="charName" class="form-control-label" data-i18n="charName.label"></label>
+                </div>
               </div>
-            </div>
-            <div class="block-group">
-              <div class="form-control-group charOrigin">
-                <select name="charOrigin" class="form-control-select"></select>
-                <label for="charOrigin" class="form-control-label" data-i18n="origins.label"></label>
+              <div class="row">
+                <div class="col-6 d-flex flex-column charOrigin">
+                  <select name="charOrigin" class="form-control-select"></select>
+                  <label for="charOrigin" class="form-control-label" data-i18n="origins.label"></label>
+                </div>
+                <div class="col-6 d-flex flex-column charClass">
+                  <select name="charClass" class="form-control-select"></select>
+                  <label for="charClass" class="form-control-label" data-i18n="classes.label"></label>
+                </div>
               </div>
-              <div class="form-control-group charClass">
-                <select name="charClass" class="form-control-select"></select>
-                <label for="charClass" class="form-control-label" data-i18n="classes.label"></label>
-              </div>
-            </div>
-            <div class="block-group">
-              <div class="form-control-group charSpecies">
-                <select name="charSpecies" class="form-control-select"></select>
-                <label for="charSpecies" class="form-control-label" data-i18n="species.label"></label>
-              </div>
-              <div class="form-control-group charSubClass">
-                <select name="charSubClass" class="form-control-select" disabled>
-                  <option data-i18n="">Select class first</option>
-                </select>
-                <label for="charSubClass" class="form-control-label" data-i18n="subClasses.label"></label>
+              <div class="row">
+                <div class="col-6 d-flex flex-column charSpecies">
+                  <select name="charSpecies" class="form-control-select"></select>
+                  <label for="charSpecies" class="form-control-label" data-i18n="species.label"></label>
+                </div>
+                <div class="col-6 d-flex flex-column charSubClass">
+                  <select name="charSubClass" class="form-control-select" disabled>
+                    <option data-i18n="">Select class first</option>
+                  </select>
+                  <label for="charSubClass" class="form-control-label" data-i18n="subClasses.label"></label>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="d-flex">
-            <div class="d-flex flex-column align-items-center border rounded-circle justify-content-center level-block">
-              <input name="charLevel" class="form-control border-0 border-bottom rounded-0 px-0 text-center level"
-                placeholder="0" />
-              <label for="charLevel" class="form-text text-center level" data-i18n="level.label"></label>
-              <input name="experiencepoints"
-                class="form-control border-0 border-bottom rounded-0 px-0 text-center level" placeholder="0" />
-              <label for="experiencepoints" class="form-text text-center xp" data-i18n="experiencepoints.label"></label>
-            </div>
-            <div class="d-flex flex-column align-items-center armorclass-block">
-              <label for="armorClass" class="form-text text-center title" data-i18n="armorclass.label"></label>
-              <input name="armorClass" class="form-control border-0 border-bottom rounded-0 px-0 text-center armorclass"
-                placeholder="0" />
-              <label for="shield" class="form-text text-center">Shield</label>
-              <input name="shield" type="checkbox" class="form-check-input shield-check" />
+          <div class="col-12 col-md-auto d-flex justify-content-center">
+            <div class="row">
+              <div
+                class="col-6 d-flex flex-column justify-content-center align-items-center border rounded-circle level-block">
+                <input name="charLevel"
+                  class="form-control border-0 border-bottom rounded-0 text-center bg-transparent p-0 lh-1 fs-1 level"
+                  placeholder="0" />
+                <label for="charLevel" class="form-text text-center mt-0 level" data-i18n="level.label"></label>
+                <input name="experiencepoints"
+                  class="form-control border-0 border-bottom rounded-0 px-0 text-center bg-transparent pb-0 xp"
+                  placeholder="0" />
+                <label for="experiencepoints" class="form-text text-center mt-0 xp"
+                  data-i18n="experiencepoints.label"></label>
+              </div>
+              <div class="col-6 d-flex flex-column justify-content-center align-items-center armorclass-block">
+                <label for="armorClass" class="form-text text-center title" data-i18n="armorclass.label"></label>
+                <input name="armorClass"
+                  class="form-control border-0 border-bottom rounded-0 text-center p-0 lh-1 fs-1 armorclass"
+                  placeholder="0" />
+                <label for="shield" class="form-text text-center">Shield</label>
+                <input name="shield" type="checkbox" class="form-check-input shield-check" />
+              </div>
             </div>
           </div>
 
-          <div class="w-100 d-flex border misc">
-            <div class="d-flex flex-column m-2 hit-points">
-              <span class="text-center title">Hit Points</span>
-              <div class="d-flex align-items-stretch">
-                <div class="d-flex flex-column">
-                  <input name="hitPointCurrent" class="flex-fill form-control border-0 border-bottom rounded-0" />
-                  <label for="hitPointCurrent" class="form-text">Current</label>
-                </div>
+          <div class="col-12 col-md misc">
+            <div class="row g-0">
+              <div class="col d-flex align-items-stretch">
+                <div class="border border-end-0">
+                  <div class="d-flex flex-column p-2 hit-points">
+                    <span class="text-center title">Hit Points</span>
+                    <div class="d-flex align-items-stretch">
+                      <div class="d-flex flex-column">
+                        <input name="hitPointCurrent"
+                          class="flex-fill form-control border-0 border-bottom rounded-0 p-0 text-center" />
+                        <label for="hitPointCurrent" class="form-text mt-0">Current</label>
+                      </div>
 
-                <div class="vr mx-2"></div>
+                      <div class="vr mx-2"></div>
 
-                <div class="d-flex flex-column">
-                  <input name="hitPointTemp" class="form-control border-0 border-bottom rounded-0" />
-                  <label for="hitPointTemp" class="form-text">Temp</label>
-                  <input name="hitPointMax" class="form-control border-0 border-bottom rounded-0" />
-                  <label for="hitPointMax" class="form-text">Max</label>
+                      <div class="d-flex flex-column">
+                        <input name="hitPointTemp"
+                          class="form-control border-0 border-bottom rounded-0 p-0 text-center" />
+                        <label for="hitPointTemp" class="form-text mt-0">Temp</label>
+                        <input name="hitPointMax"
+                          class="form-control border-0 border-bottom rounded-0 p-0 text-center" />
+                        <label for="hitPointMax" class="form-text mt-0">Max</label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div class="vr"></div>
+              <div class="col d-flex align-items-stretch">
+                <div class="border border-end-0">
+                  <div class="d-flex flex-column p-2 hit-dice">
+                    <span class="text-center title">Hit Dice</span>
+                    <input name="hitDiceSpent" class="form-control border-0 border-bottom rounded-0 p-0 text-center" />
+                    <label for="hitDiceSpent" class="form-text mt-0">Spent</label>
+                    <input name="hitDiceMax" class="form-control border-0 border-bottom rounded-0 p-0 text-center" />
+                    <label for="hitDiceMax" class="form-text mt-0">Max</label>
+                  </div>
+                </div>
+              </div>
 
-            <div class="d-flex flex-column m-2 hit-dice">
-              <span class="text-center title">Hit Dice</span>
-              <input name="hitDiceSpent" class="form-control border-0 border-bottom rounded-0" />
-              <label for="hitDiceSpent" class="form-text">Spent</label>
-              <input name="hitDiceMax" class="form-control border-0 border-bottom rounded-0" />
-              <label for="hitDiceMax" class="form-text">Max</label>
-            </div>
-
-            <div class="vr"></div>
-
-            <div class="m-2 death-saves">
-              <span class="text-center title">Death Saves</span>
-              <input type="checkbox" class="form-check-input" />
-              <input type="checkbox" class="form-check-input" />
-              <input type="checkbox" class="form-check-input" />
-              <label>Successes</label>
-              <input type="checkbox" class="form-check-input" />
-              <input type="checkbox" class="form-check-input" />
-              <input type="checkbox" class="form-check-input" />
-              <label>Failures</label>
+              <div class="col d-flex align-items-stretch">
+                <div class="border">
+                  <div class="m-2 death-saves">
+                    <span class="text-center title">Death Saves</span>
+                    <div>
+                      <input type="checkbox" class="form-check-input" />
+                      <input type="checkbox" class="form-check-input" />
+                      <input type="checkbox" class="form-check-input" />
+                      <label>Successes</label>
+                    </div>
+                    <div>
+                      <input type="checkbox" class="form-check-input" />
+                      <input type="checkbox" class="form-check-input" />
+                      <input type="checkbox" class="form-check-input" />
+                      <label>Failures</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         <hr />
 
-        <div class="row">
-          <div class="col-4 d-flex flex-column gap-2">
-            <div class="d-flex gap-1">
-              <div class="d-flex flex-column gap-2">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="row gx-2">
+              <div class="col-6 d-flex flex-column gap-2">
                 <div class="block proficiency">
                   <label for="proficiencybonus" class="text-center w-100 title"
                     data-i18n="stats.proficiencyBonus"></label>
-                  <input disabled name="proficiencybonus" class="form-control p-0 border-0 border-bottom text-center"
-                    placeholder="+2">
+                  <hr class="m-0 border-2 w-100" />
+                  <input disabled name="proficiencybonus"
+                    class="form-control p-0 border-top-0 rounded-top-0 text-center" placeholder="+2">
                 </div>
                 <div class="ability-card strength">
                   <div class="ability-card-header"></div>
@@ -219,10 +249,12 @@
                 </div>
                 <div class="block inspiration">
                   <label for="inspiration" class="text-center w-100 title">Inspiration</label>
-                  <input name="inspiration" type="checkbox" class="form-check-input inspiration-check" />
+                  <hr class="m-0 border-2 w-100" />
+                  <input name="inspiration" type="checkbox"
+                    class="form-check-input inspiration-check mt-0 rounded-top-0 border-top-0" />
                 </div>
               </div>
-              <div class="d-flex flex-column gap-3">
+              <div class="col-6 d-flex flex-column gap-3">
                 <div class="ability-card intelligence">
                   <div class="ability-card-header"></div>
                   <div class="ability-card-content">
@@ -371,78 +403,102 @@
                 </div>
               </div>
             </div>
-            <div class="block">
-              <div class="text-center title" data-i18n="stats.trainings.title"></div>
-              <div class="armors">
-                <span data-i18n="stats.trainings.armor.title"></span>
-                <input name="armor-light" type="checkbox" class="form-check-input" />
-                <label for="armor-light" data-i18n="stats.trainings.armor.light"></label>
-                <input name="armor-medium" type="checkbox" class="form-check-input" />
-                <label for="armor-medium" data-i18n="stats.trainings.armor.medium"></label>
-                <input name="armor-heavy" type="checkbox" class="form-check-input" />
-                <label for="armor-heavy" data-i18n="stats.trainings.armor.heavy"></label>
-                <input name="armor-shields" type="checkbox" class="form-check-input" />
-                <label for="armor-shields" data-i18n="stats.trainings.armor.shields"></label>
-              </div>
-              <div class="weapons">
-                <span data-i18n="stats.trainings.weapon.title"></span>
-              </div>
-              <div class="tools">
-                <span data-i18n="stats.trainings.tool.title"></span>
+            <div class="row mt-3">
+              <div class="col">
+                <div class="block">
+                  <div class="text-center title" data-i18n="stats.trainings.title"></div>
+                  <div class="armors">
+                    <span data-i18n="stats.trainings.armor.title"></span>
+                    <input name="armor-light" type="checkbox" class="form-check-input" />
+                    <label for="armor-light" data-i18n="stats.trainings.armor.light"></label>
+                    <input name="armor-medium" type="checkbox" class="form-check-input" />
+                    <label for="armor-medium" data-i18n="stats.trainings.armor.medium"></label>
+                    <input name="armor-heavy" type="checkbox" class="form-check-input" />
+                    <label for="armor-heavy" data-i18n="stats.trainings.armor.heavy"></label>
+                    <input name="armor-shields" type="checkbox" class="form-check-input" />
+                    <label for="armor-shields" data-i18n="stats.trainings.armor.shields"></label>
+                  </div>
+                  <div class="weapons">
+                    <span data-i18n="stats.trainings.weapon.title"></span>
+                  </div>
+                  <div class="tools">
+                    <span data-i18n="stats.trainings.tool.title"></span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="col d-flex flex-column gap-3">
-            <div class="d-flex gap-2 specs">
-              <div class="flex-grow-1 flex-basis-0 block">
-                <label for="specs.initiative" class="text-center title" data-i18n="specs.initiative"></label>
-                <input disabled name="specs.initiative" class="form-control p-0 border-0 border-bottom text-center"
-                  placeholder="+2">
-              </div>
-              <div class="flex-grow-1 flex-basis-0 block">
-                <label for="specs.speed" class="text-center title" data-i18n="specs.speed"></label>
-                <input disabled name="specs.speed" class="form-control p-0 border-0 border-bottom text-center">
-              </div>
-              <div class="flex-grow-1 flex-basis-0 block">
-                <label for="specs.size" class="text-center title" data-i18n="specs.size"></label>
-                <div class="input-group">
-                  <select
-                    class="form-select border-0 border-bottom rounded-0 p-0 pe-5 w-auto flex-grow-0 size-category">
-                    <option value="small" data-i18n="sizeCategory.small"></option>
-                    <option value="medium" data-i18n="sizeCategory.medium"></option>
-                  </select>
-                  <input type="text" name="specs.size" class="form-control p-0 border-0 border-bottom text-end"
-                    placeholder="175 cm" size="3">
-                  <span class="input-group-text border-0 border-bottom p-0 ps-2 rounded-0" id="basic-addon2">cm</span>
+          <div class="col">
+            <div class="row row-cols-1 g-3">
+              <div class="col">
+                <div class="row g-2 specs">
+                  <div class="col-6 col-sm-3">
+                    <div class="block">
+                      <label for="specs.initiative" class="text-center title" data-i18n="specs.initiative"></label>
+                      <input disabled name="specs.initiative"
+                        class="form-control p-0 border-0 border-bottom text-center" placeholder="+2">
+                    </div>
+                  </div>
+                  <div class="col-6 col-sm-3">
+                    <div class="block">
+                      <label for="specs.speed" class="text-center title" data-i18n="specs.speed"></label>
+                      <input disabled name="specs.speed" class="form-control p-0 border-0 border-bottom text-center">
+                    </div>
+                  </div>
+                  <div class="col-6 col-sm-3">
+                    <div class="block">
+                      <label for="specs.size" class="text-center title" data-i18n="specs.size"></label>
+                      <div class="input-group">
+                        <select
+                          class="form-select border-0 border-bottom rounded-0 p-0 pe-5 w-auto flex-grow-0 size-category">
+                          <option value="small" data-i18n="sizeCategory.small"></option>
+                          <option value="medium" data-i18n="sizeCategory.medium"></option>
+                        </select>
+                        <input type="text" name="specs.size" class="form-control p-0 border-0 border-bottom text-end"
+                          placeholder="175 cm" size="3">
+                        <span class="input-group-text border-0 border-bottom p-0 ps-2 rounded-0"
+                          id="basic-addon2">cm</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6 col-sm-3">
+                    <div class="block">
+                      <label for="specs.passivePerception" class="text-center title"
+                        data-i18n="specs.passivePerception"></label>
+                      <input disabled name="specs.passivePerception"
+                        class="form-control p-0 border-0 border-bottom text-center">
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="flex-grow-1 flex-basis-0 block">
-                <label for="specs.passivePerception" class="text-center title"
-                  data-i18n="specs.passivePerception"></label>
-                <input disabled name="specs.passivePerception"
-                  class="form-control p-0 border-0 border-bottom text-center">
+              <div class="col">
+                <div class="block weaponscantrip-block">
+                  <div class="text-center title" data-i18n="weaponscantrip.title"></div>
+                  <ul class="list-group">
+                    <!-- <li class="list-group-item"></li> -->
+                  </ul>
+                  <select name="weapons" class="form-select border-0 border-bottom rounded-0 p-0"></select>
+                </div>
               </div>
-            </div>
-            <div class="block weaponscantrip-block">
-              <div class="text-center title" data-i18n="weaponscantrip.title"></div>
-              <ul class="list-group">
-                <!-- <li class="list-group-item"></li> -->
-              </ul>
-              <select name="weapons" class="form-select border-0 border-bottom rounded-0 p-0"></select>
-            </div>
-            <div class="block class-features-block">
-              <div class="text-center title" data-i18n="class-features.title"></div>
-              <div class="accordion accordion-flush class-features" id="class-features-accordion"></div>
-            </div>
-            <div class="d-flex gap-2">
-              <div class="flex-grow-1 flex-basis-0 block species-traits">
-                <div class="text-center title" data-i18n="species.title"></div>
-                <ul class="list-group species-traits"></ul>
-                <div id="osef"></div>
+              <div class="col">
+                <div class="block class-features-block">
+                  <div class="text-center title" data-i18n="class-features.title"></div>
+                  <hr class="mt-0 border-3" />
+                  <div class="accordion accordion-flush class-features" id="class-features-accordion"></div>
+                </div>
               </div>
-              <div class="flex-grow-1 flex-basis-0 block feats">
-                <div class="text-center title" data-i18n="feats.title">
-                  <ul class="list-group feats"></ul>
+              <div class="col">
+                <div class="d-flex gap-2">
+                  <div class="flex-grow-1 flex-basis-0 block species-traits">
+                    <div class="text-center title" data-i18n="species.title"></div>
+                    <ul class="list-group species-traits"></ul>
+                    <div id="osef"></div>
+                  </div>
+                  <div class="flex-grow-1 flex-basis-0 block feats">
+                    <div class="text-center title" data-i18n="feats.title">
+                      <ul class="list-group feats"></ul>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

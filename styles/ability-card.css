@@ -89,16 +89,10 @@
     }
 
     .ability-score {
-      /* --p: 50px;
-      height: 180px;
-      aspect-ratio: 3/2;
-      clip-path: polygon(
-        var(--p) 0,
-        calc(100% - var(--p)) 0,
-        100% 100%,
-        0 100%
-      );
-      background: #542437; */
+      width: 3rem;
+      text-align: center;
+      padding-left: 0;
+      padding-right: 0;
     }
   }
 }
