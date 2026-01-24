@@ -2,13 +2,16 @@
  * Create an HTMLElement
  * @param {string} type the name of the element to create. e.g. div
  * @param {null|undefined|string|HTMLElement|string[]|HTMLElement[]} children if provided, append all children as textContext or direct as Element
- * @param {object} attributes tag attributes for the HTMLElement `type`
+ * @param {object} props 
+ * @param {object} props.eventListeners { [eventType]: callbackFunction } element
+ * @param {attributes} ...props Rest of props used as element attributes
  * @returns 
  */
-export function createElement(type, children, attributes = {}) {
+export function createElement(type, children, { eventListeners = {}, ...attributes } = {}) {
   const element = document.createElement(type)
   Object.entries(attributes).forEach(([name, value]) => (value !== undefined) && element.setAttribute(name, value))
   children && [].concat(children).forEach(child => element.appendChild(typeof child === 'string' ? document.createTextNode(child) : child))
+  Object.entries(eventListeners).forEach(params => element.addEventListener(...params))
   return element
 }
 
@@ -18,9 +21,7 @@ export function createElement(type, children, attributes = {}) {
  * @returns undefined
  */
 export function removeAllChildren(element) {
-  while (element.firstChild) {
-    element.removeChild(element.firstChild);
-  }
+  while (element.firstChild) { element.removeChild(element.firstChild) }
 }
 
 /**
