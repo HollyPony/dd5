@@ -590,6 +590,7 @@ const shields = f([ // P.220
     name: `shield`,
     effects: f({
       [EFFECT.ACModifierEffect]: {
+        condition: ({ hasArmorProficiency }) => hasArmorProficiency,
         apply: ({ ac }) => ac + 2,
       },
     }), strength: null,
