@@ -1,6 +1,6 @@
 // P.178
 import { f, } from '../helpers.js'
-import { SKILLS } from './common.js'
+import { SKILLS } from '../common.js'
 
 export const origins = f({
   acolyte: f({

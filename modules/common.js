@@ -1,13 +1,18 @@
-import { f as Of, } from '../helpers.js' // TODO: Of break completion
+import { f as Of, } from './helpers.js' // TODO: Of break completion
 
-export const DICES = Of({
-  D4: 'DICES.d4',
-  D6: 'DICES.d6',
-  D8: 'DICES.d8',
-  D10: 'DICES.d10',
-  D100: 'DICES.d100',
-  D12: 'DICES.d12',
-  D20: 'DICES.d20',
+export function DICE(number, dice,) {
+  if (!D[dice]) throw new Error('kjh')
+  return { number, dice, }
+}
+
+export const D = Of({
+  4: 4,
+  6: 6,
+  8: 8,
+  10: 10,
+  12: 12,
+  20: 20,
+  100: 100,
 })
 
 export const ABILITY = Of({
@@ -22,17 +27,17 @@ export const ABILITY = Of({
 })
 
 export const EFFECT = Of({
-  SpeedModifierEffect: 'EFFECT.SpeedModifier',
-  ACOverrideEffect: 'EFFECT.ACOverride',
+  SpeedModifierEffect: 'EFFECT.SpeedModifierEffect',
+  ACOverrideEffect: 'EFFECT.ACOverrideEffect',
   ACModifierEffect: 'EFFECT.ACModifierEffect',
   PBModifierEffect: 'EFFECT.PBModifierEffect',
   SavesModifierEffect: 'EFFECT.SavesModifierEffect',
-  SubClassChooseEffect: 'EFFECT.SubClassChoose',
-  ImprovementChooseEffect: 'EFFECT.ImprovementChoose',
-  AddAbilityEffect: 'EFFECT.ImproveAbility',
-  AddFeatEffect: 'EFFECT.ImproveFeat',
-  ReduceFallDamageEffect: 'EFFECT.ReducedFallDamage',
-  ByPassArmorStrengthRequirement: 'EFFECT.ByPassArmorStrengthRequirement',
+  SubClassChooseEffect: 'EFFECT.SubClassChooseEffect',
+  ImprovementChooseEffect: 'EFFECT.ImprovementChooseEffect',
+  AddAbilityEffect: 'EFFECT.ImproveAbilityEffect',
+  AddFeatEffect: 'EFFECT.ImproveFeatEffect',
+  ReduceFallDamageEffect: 'EFFECT.ReducedFallDamageEffect',
+  ByPassArmorStrengthRequirementEffect: 'EFFECT.ByPassArmorStrengthRequirementEffect',
   HasArmorProficiencyEffect: 'EFFECT.HasArmorProficiencyEffect',
   HasShieldProficiencyEffect: 'EFFECT.HasShieldProficiencyEffect',
 })
@@ -89,23 +94,49 @@ export const WEAPON_CATEGORY = Of({
   martialRanged: 'WEAPON_CATEGORY.martialRanged', // Armes de guerre à distance
 })
 
-export const WEAPON_PROFCIENCY = Of({
-  simples: [WEAPON_CATEGORY.simpleMelee, WEAPON_CATEGORY.simpleRanged],
-  martialLight: [WEAPON_CATEGORY.martialMelee]
+export const WEAPON_PROFICIENCY = Of({
+  simple: {
+    melee: {},
+    ranged: {},
+  },
+  martial: {
+    melee: {},
+    ranged: {},
+  },
 })
 
-export const WEAPON_PROPERTY = Of({ // P.214 - Botte
-  Amunition: 'WEAPON_PROPERTY.Amunition',
+export const WEAPON_MASTERY = Of({
+  Cleave: 'WEAPON_MASTERY.Cleave',
+  Graze: 'WEAPON_MASTERY.Graze',
+  Nick: 'WEAPON_MASTERY.Nick',
+  Push: 'WEAPON_MASTERY.Push',
+  Sap: 'WEAPON_MASTERY.Sap',
+  Slow: 'WEAPON_MASTERY.Slow',
+  Topple: 'WEAPON_MASTERY.Topple',
+  Vex: 'WEAPON_MASTERY.Vex',
+})
+
+export const WEAPON_PROPERTY = Of({ // P.214 - Propriété
+  Ammunition: 'WEAPON_PROPERTY.Ammunition',
   Finesse: 'WEAPON_PROPERTY.Finesse',
   Heavy: 'WEAPON_PROPERTY.Heavy',
   Light: 'WEAPON_PROPERTY.Light',
+  Loading: 'WEAPON_PROPERTY.Loading',
   Range: 'WEAPON_PROPERTY.Range',
+  Reach: 'WEAPON_PROPERTY.Reach',
   Thrown: 'WEAPON_PROPERTY.Thrown',
   TwoHanded: 'WEAPON_PROPERTY.TwoHanded',
   Versatile: 'WEAPON_PROPERTY.Versatile',
 })
 
-export const WEAPON_MASTERY_PROPERTY = Of({ // P.215 - Botte
+export const WEAPON_AMMUNITION = Of({
+  Arrows: 'WEAPON_AMMUNITION.Arrow',
+  Bolts: 'WEAPON_AMMUNITION.Bolt',
+  Bullets: 'WEAPON_AMMUNITION.SlingBullets',
+  Needles: 'WEAPON_AMMUNITION.Needle',
+})
+
+export const WEAPON_MASTERY_PROPERTY = Of({ // P.215 - Propriété Botte
   Cleave: 'WEAPON_MASTERY_PROPERTY.Cleave',
   Graze: 'WEAPON_MASTERY_PROPERTY.Graze',
   Nick: 'WEAPON_MASTERY_PROPERTY.Nick',

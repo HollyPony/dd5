@@ -1,5 +1,10 @@
 import { f, } from '../helpers.js'
-import { ABILITY, ARMOR_CATEGORY, EFFECT, EQUIPED_CATEGORY, EQUIPMENT_TYPE, MAGIC_ITEM_TYPE, WEAPON_CATEGORY, WEAPON_DAMAGE_TYPE } from './common.js'
+import {
+  ABILITY, ARMOR_CATEGORY, D, DICE, EFFECT, EQUIPED_CATEGORY, EQUIPMENT_TYPE,
+  MAGIC_ITEM_TYPE, WEAPON_AMMUNITION, WEAPON_CATEGORY,
+  WEAPON_DAMAGE_TYPE, WEAPON_MASTERY, WEAPON_PROPERTY
+}
+  from '../common.js'
 
 // mastery: Botte
 
@@ -8,421 +13,573 @@ import { ABILITY, ARMOR_CATEGORY, EFFECT, EQUIPED_CATEGORY, EQUIPMENT_TYPE, MAGI
 const weapons = f([ // P.214
   f({
     name: 'quarterstaff',
-    damage: `1d6`,
+    damage: DICE(1, D[6]),
     damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
     category: WEAPON_CATEGORY.simpleMelee,
-    properties: f([`Polyvalente (1d8)`]),
-    mastery: `Renversement`,
-    weight: `2 kg`,
-    cost: '20 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Versatile]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Versatile]: {
+        // TODO: test
+        condition: weapons => weapons?.length && (weapons?.[0] === this ?? false),
+        damage: DICE(1, D[8]),
+      },
+    },
+    mastery: WEAPON_MASTERY.Topple,
+    weight: 2000,
+    cost: 20,
   }),
   f({
     name: 'dagger',
-    damage: `1d4`,
+    damage: DICE(1, D[4]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.simpleMelee,
-    properties: f([`Finesse`, `Lancer (portée 6/18)`, `Légère`]),
-    mastery: `Coup double`,
-    weight: `0,5 kg`,
-    cost: '200 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Finesse, WEAPON_PROPERTY.Thrown, WEAPON_PROPERTY.Light]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Thrown]: {
+        // TODO: test
+        range: {
+          normal: 6,
+          max: 18, // TODO: Display malus if more than range - P.215
+        },
+      },
+    },
+    mastery: WEAPON_MASTERY.Nick,
+    weight: 500,
+    cost: 200,
   }),
   f({
     name: 'club',
-    damage: `1d4`,
+    damage: DICE(1, D[4]),
     damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
     category: WEAPON_CATEGORY.simpleMelee,
-    properties: f([`Légère`]),
-    mastery: `Ralentissement`,
-    weight: `1 kg`,
-    cost: '10 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Light]),
+    mastery: WEAPON_MASTERY.Slow,
+    weight: 1000,
+    cost: 10,
   }),
   f({
     name: 'handaxe',
-    damage: `1d6`,
+    damage: DICE(1, D[6]),
     damageType: WEAPON_DAMAGE_TYPE.slashing,
     category: WEAPON_CATEGORY.simpleMelee,
-    properties: f([`Lancer (portée 6/18)`, `Légère`]),
-    mastery: `Ouverture`,
-    weight: `1 kg`,
-    cost: '500 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Thrown, WEAPON_PROPERTY.Light]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Thrown]: {
+        // TODO: test
+        range: {
+          normal: 6,
+          max: 18, // TODO: Display malus if more than range - P.215
+        },
+      },
+    },
+    mastery: WEAPON_MASTERY.Vex,
+    weight: 1000,
+    cost: 500,
   }),
   f({
     name: 'javelin',
-    damage: `1d6`,
+    damage: DICE(1, D[6]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.simpleMelee,
-    properties: f([`Lancer (portée 9/36)`]),
-    mastery: `Ralentissement`,
-    weight: `1 kg`,
-    cost: '50 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Thrown]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Thrown]: {
+        // TODO: test
+        range: {
+          normal: 9,
+          max: 36, // TODO: Display malus if more than range - P.215
+        },
+      },
+    },
+    mastery: WEAPON_MASTERY.Slow,
+    weight: 1000,
+    cost: 50,
   }),
   f({
     name: 'spear',
-    damage: `1d6`,
+    damage: DICE(1, D[6]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.simpleMelee,
-    properties: f([`Lancer (portée 6/18)`, `Polyvalente (1d8)`]),
-    mastery: `Sape`,
-    weight: `1,5 kg`,
-    cost: '100 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Thrown, WEAPON_PROPERTY.Versatile]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Thrown]: {
+        // TODO: test
+        range: {
+          normal: 6,
+          max: 18, // TODO: Display malus if more than range - P.215
+        },
+      },
+      [WEAPON_PROPERTY.Versatile]: {
+        // TODO: test
+        condition: weapons => weapons?.length && (weapons?.[0] === this ?? false),
+        damage: DICE(1, D[8]),
+      },
+    },
+    mastery: WEAPON_MASTERY.Sap,
+    weight: 1500,
+    cost: 100,
   }),
   f({
     name: 'lightHammer',
-    damage: `1d4`,
+    damage: DICE(1, D[4]),
     damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
     category: WEAPON_CATEGORY.simpleMelee,
-    properties: f([`Lancer (portée 6/18)`, `Légère`]),
-    mastery: `Coup double`,
-    weight: `1 kg`,
-    cost: '200 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Thrown, WEAPON_PROPERTY.Light]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Thrown]: {
+        // TODO: test
+        range: {
+          normal: 6,
+          max: 18, // TODO: Display malus if more than range - P.215
+        },
+      },
+    },
+    mastery: WEAPON_MASTERY.Nick,
+    weight: 1000,
+    cost: 200,
   }),
   f({
     name: 'mace',
-    damage: `1d6`,
+    damage: DICE(1, D[6]),
     damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
     category: WEAPON_CATEGORY.simpleMelee,
-    properties: f([`—`]),
-    mastery: `Sape`,
-    weight: `2 kg`,
-    cost: '500 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([]),
+    mastery: WEAPON_MASTERY.Sap,
+    weight: 2000,
+    cost: 500,
   }),
   f({
     name: 'greatclub',
-    damage: `1d8`,
+    damage: DICE(1, D[8]),
     damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
     category: WEAPON_CATEGORY.simpleMelee,
-    properties: f([`Deux mains`]),
-    mastery: `Poussée`,
-    weight: `5 kg`,
-    cost: '20 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.TwoHanded]),
+    mastery: WEAPON_MASTERY.Push,
+    weight: 5000,
+    cost: 20,
   }),
   f({
     name: 'sickle',
-    damage: `1d4`,
+    damage: DICE(1, D[4]),
     damageType: WEAPON_DAMAGE_TYPE.slashing,
     category: WEAPON_CATEGORY.simpleMelee,
-    properties: f([`Légère`]),
-    mastery: `Coup double`,
-    weight: `1 kg`,
-    cost: '100 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Light]),
+    mastery: WEAPON_MASTERY.Nick,
+    weight: 1000,
+    cost: 100,
   }),
   f({
     name: 'lightCrossbow',
-    damage: `1d8`,
+    damage: DICE(1, D[8]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.simpleRanged,
-    properties: f([`Chargement`, `Deux mains`, `Munitions (portée 24/96 ; carreaux)`]),
-    mastery: `Ralentissement`,
-    weight: `2,5 kg`,
-    cost: '2500 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Loading, WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Ammunition]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Ammunition]: {
+        type: WEAPON_AMMUNITION.Bolt,
+        range: {
+          normal: 24,
+          max: 96,
+        }
+      }
+    },
+    mastery: WEAPON_MASTERY.Slow,
+    weight: 2500,
+    cost: 2500,
   }),
   f({
     name: 'shortbow',
-    damage: `1d6`,
+    damage: DICE(1, D[6]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.simpleRanged,
-    properties: f([`Deux mains`, `Munitions (portée 24/96 ; flèches)`]),
-    mastery: `Ouverture`,
-    weight: `1 kg`,
-    cost: '2500 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Ammunition]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Ammunition]: {
+        type: WEAPON_AMMUNITION.Arrow,
+        range: {
+          normal: 24,
+          max: 96,
+        }
+      }
+    },
+    mastery: WEAPON_MASTERY.Vex,
+    weight: 1000,
+    cost: 2500,
   }),
   f({
     name: 'dart',
-    damage: `1d4`,
+    damage: DICE(1, D[4]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.simpleRanged,
-    properties: f([`Finesse`, `Lancer (portée 6/18)`]),
-    mastery: `Ouverture`,
-    weight: `125 g`,
-    cost: `5 pc`,
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Finesse, WEAPON_PROPERTY.Thrown]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Thrown]: {
+        // TODO: test
+        range: {
+          normal: 6,
+          max: 18, // TODO: Display malus if more than range - P.215
+        },
+      },
+    },
+    mastery: WEAPON_MASTERY.Vex,
+    weight: 125,
+    cost: 5,
   }),
   f({
     name: 'sling',
-    damage: `1d4`,
+    damage: DICE(1, D[4]),
     damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
     category: WEAPON_CATEGORY.simpleRanged,
-    properties: f([`Munitions (portée 9/36 ; billes)`]),
-    mastery: `Ralentissement`,
-    weight: `—`,
-    cost: '10 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Ammunition]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Ammunition]: {
+        type: WEAPON_AMMUNITION.Bullets,
+        range: {
+          normal: 9,
+          max: 36,
+        }
+      }
+    },
+    mastery: WEAPON_MASTERY.Slow,
+    weight: 0,
+    cost: 10,
   }),
   f({
     name: 'scimitar',
-    damage: `1d6`,
+    damage: DICE(1, D[6]),
     damageType: WEAPON_DAMAGE_TYPE.slashing,
     category: WEAPON_CATEGORY.martialMelee,
-    properties: f([`Finesse`, `Légère`]),
-    mastery: `Coup double`,
-    weight: `1,5 kg`,
-    cost: '2500 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Finesse, WEAPON_PROPERTY.Light]),
+    mastery: WEAPON_MASTERY.Nick,
+    weight: 1500,
+    cost: 2500,
   }),
   f({
     name: 'glaive',
-    damage: `1d10`,
+    damage: DICE(1, D[10]),
     damageType: WEAPON_DAMAGE_TYPE.slashing,
     category: WEAPON_CATEGORY.martialMelee,
-    properties: f([`Allonge`, `Deux mains`, `Lourde`]),
-    mastery: `Écorchure`,
-    weight: `3 kg`,
-    cost: '2000 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Reach, WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Heavy]),
+    mastery: WEAPON_MASTERY.Graze,
+    weight: 3000,
+    cost: 2000,
   }),
   f({
     name: 'greatSword',
-    damage: `2d6`,
+    damage: DICE(2, D[6]),
     damageType: WEAPON_DAMAGE_TYPE.slashing,
     category: WEAPON_CATEGORY.martialMelee,
-    properties: f([`Deux mains`, `Lourde`]),
-    mastery: `Écorchure`,
-    weight: `3 kg`,
-    cost: '5000 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Heavy]),
+    mastery: WEAPON_MASTERY.Graze,
+    weight: 3000,
+    cost: 5000,
   }),
   f({
     name: 'shortSword',
-    damage: `1d6`,
+    damage: DICE(1, D[6]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialMelee,
-    properties: f([`Finesse`, `Légère`]),
-    mastery: `Ouverture`,
-    weight: `1 kg`,
-    cost: '1000 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Finesse, WEAPON_PROPERTY.Light]),
+    mastery: WEAPON_MASTERY.Vex,
+    weight: 1000,
+    cost: 1000,
   }),
   f({
     name: 'longSword',
-    damage: `1d8`,
+    damage: DICE(1, D[8]),
     damageType: WEAPON_DAMAGE_TYPE.slashing,
     category: WEAPON_CATEGORY.martialMelee,
-    properties: f([`Polyvalente (1d10)`]),
-    mastery: `Sape`,
-    weight: `1,5 kg`,
-    cost: '1500 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Versatile]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Versatile]: {
+        // TODO: test
+        condition: weapons => weapons?.length && (weapons?.[0] === this ?? false),
+        damage: DICE(1, D[10]),
+      },
+    },
+    mastery: WEAPON_MASTERY.Sap,
+    weight: 1500,
+    cost: 1500,
   }),
   f({
     name: 'flail',
-    damage: `1d8`,
+    damage: DICE(1, D[8]),
     damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
     category: WEAPON_CATEGORY.martialMelee,
-    properties: f([`—`]),
-    mastery: `Sape`,
-    weight: `1 kg`,
-    cost: '1000 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([]),
+    mastery: WEAPON_MASTERY.Sap,
+    weight: 1000,
+    cost: 1000,
   }),
   f({
     name: 'whip',
-    damage: `1d4`,
+    damage: DICE(1, D[4]),
     damageType: WEAPON_DAMAGE_TYPE.slashing,
     category: WEAPON_CATEGORY.martialMelee,
-    properties: f([`Allonge`, `Finesse`]),
-    mastery: `Ralentissement`,
-    weight: `1,5 kg`,
-    cost: '200 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Reach, WEAPON_PROPERTY.Finesse]),
+    mastery: WEAPON_MASTERY.Slow,
+    weight: 1500,
+    cost: 200,
   }),
   f({
     name: 'gretAxe',
-    damage: `1d12`,
+    damage: DICE(1, D[12]),
     damageType: WEAPON_DAMAGE_TYPE.slashing,
     category: WEAPON_CATEGORY.martialMelee,
-    properties: f([`Deux mains`, `Lourde`]),
-    mastery: `Enchaînement`,
-    weight: `3,5 kg`,
-    cost: '3000 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Heavy]),
+    mastery: WEAPON_MASTERY.Cleave,
+    weight: 3500,
+    cost: 3000,
   }),
   f({
     name: 'battleAxe',
-    damage: `1d8`,
+    damage: DICE(1, D[8]),
     damageType: WEAPON_DAMAGE_TYPE.slashing,
     category: WEAPON_CATEGORY.martialMelee,
-    properties: f([`Polyvalente (1d10)`]),
-    mastery: `Renversement`,
-    weight: `2 kg`,
-    cost: '1000 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Versatile]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Versatile]: {
+        // TODO: test
+        condition: weapons => weapons?.length && (weapons?.[0] === this ?? false),
+        damage: DICE(1, D[10]),
+      },
+    },
+    mastery: WEAPON_MASTERY.Topple,
+    weight: 2000,
+    cost: 1000,
   }),
   f({
     name: 'halberd',
-    damage: `1d10`,
+    damage: DICE(1, D[10]),
     damageType: WEAPON_DAMAGE_TYPE.slashing,
     category: WEAPON_CATEGORY.martialMelee,
-    properties: f([`Allonge`, `Deux mains`, `Lourde`]),
-    mastery: `Enchaînement`,
-    weight: `3 kg`,
-    cost: '2000 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Reach, WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Heavy]),
+    mastery: WEAPON_MASTERY.Cleave,
+    weight: 3000,
+    cost: 2000,
   }),
   f({
     name: 'lance',
-    damage: `1d10`,
+    damage: DICE(1, D[10]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialMelee,
-    properties: f([`Allonge`, `Deux mains (sauf à cheval)`, `Lourde`]),
-    mastery: `Renversement`,
-    weight: `3 kg`,
-    cost: '1000 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    // TODO: execpt on horse
+    properties: f([WEAPON_PROPERTY.Reach, `Deux mains (sauf à cheval)`, WEAPON_PROPERTY.Heavy]),
+    mastery: WEAPON_MASTERY.Topple,
+    weight: 3000,
+    cost: 1000,
   }),
   f({
     name: 'maul',
-    damage: `2d6`,
+    damage: DICE(2, D[6]),
     damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
     category: WEAPON_CATEGORY.martialMelee,
-    properties: f([`Deux mains`, `Lourde`]),
-    mastery: `Renversement`,
-    weight: `5 kg`,
-    cost: '1000 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Heavy]),
+    mastery: WEAPON_MASTERY.Topple,
+    weight: 5000,
+    cost: 1000,
   }),
   f({
     name: 'warhammer',
-    damage: `1d8`,
+    damage: DICE(1, D[8]),
     damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
     category: WEAPON_CATEGORY.martialMelee,
-    properties: f([`Polyvalente (1d10)`]),
-    mastery: `Poussée`,
-    weight: `2,5 kg`,
-    cost: '1500 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Versatile]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Versatile]: {
+        // TODO: test
+        condition: weapons => weapons?.length && (weapons?.[0] === this ?? false),
+        damage: DICE(1, D[10]),
+      },
+    },
+    mastery: WEAPON_MASTERY.Push,
+    weight: 2500,
+    cost: 1500,
   }),
   f({
     name: 'morningstar',
-    damage: `1d8`,
+    damage: DICE(1, D[8]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialMelee,
-    properties: f([`—`]),
-    mastery: `Sape`,
-    weight: `2 kg`,
-    cost: '1500 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([]),
+    mastery: WEAPON_MASTERY.Sap,
+    weight: 2000,
+    cost: 1500,
   }),
   f({
     name: 'warPick',
-    damage: `1d8`,
+    damage: DICE(1, D[8]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialMelee,
-    properties: f([`Polyvalente (1d10)`]),
-    mastery: `Sape`,
-    weight: `1 kg`,
-    cost: '500 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Versatile]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Versatile]: {
+        // TODO: test
+        condition: weapons => weapons?.length && (weapons?.[0] === this ?? false),
+        damage: DICE(1, D[10]),
+      },
+    },
+    mastery: WEAPON_MASTERY.Sap,
+    weight: 1000,
+    cost: 500,
   }),
   f({
     name: 'pike',
-    damage: `1d10`,
+    damage: DICE(1, D[10]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialMelee,
-    properties: f([`Allonge`, `Deux mains, Lourde`]),
-    mastery: `Poussée`,
-    weight: `9 kg`,
-    cost: '500 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Reach, WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Heavy]),
+    mastery: WEAPON_MASTERY.Push,
+    weight: 9000,
+    cost: 500,
   }),
   f({
     name: 'rapier',
-    damage: `1d8`,
+    damage: DICE(1, D[8]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialMelee,
-    properties: f([`Finesse`]),
-    mastery: `Ouverture`,
-    weight: `1 kg`,
-    cost: '2500 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Finesse]),
+    mastery: WEAPON_MASTERY.Vex,
+    weight: 1000,
+    cost: 2500,
   }),
   f({
     name: 'trident',
-    damage: `1d8`,
+    damage: DICE(1, D[8]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialMelee,
-    properties: f([`Lancer (portée 6/18)`, `Polyvalente (1d10)`]),
-    mastery: `Renversement`,
-    weight: `2 kg`,
-    cost: '500 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Thrown, WEAPON_PROPERTY.Versatile]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Thrown]: {
+        // TODO: test
+        range: {
+          normal: 6,
+          max: 18, // TODO: Display malus if more than range - P.215
+        },
+      },
+      [WEAPON_PROPERTY.Versatile]: {
+        // TODO: test
+        condition: weapons => weapons?.length && (weapons?.[0] === this ?? false),
+        damage: DICE(1, D[10]),
+      },
+    },
+    mastery: WEAPON_MASTERY.Topple,
+    weight: 2000,
+    cost: 500,
   }),
   f({
     name: 'handCrossbow',
-    damage: `1d6`,
+    damage: DICE(1, D[6]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialRanged,
-    properties: f([`Chargement`, `Légère`, `Munitions (portée 9/36 ; carreaux)`]),
-    mastery: `Ouverture`,
-    weight: `1,5 kg`,
-    cost: '7500 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Loading, WEAPON_PROPERTY.Light, WEAPON_PROPERTY.Ammunition]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Ammunition]: {
+        type: WEAPON_AMMUNITION.Bolt,
+        range: {
+          normal: 9,
+          max: 36,
+        }
+      }
+    },
+    mastery: WEAPON_MASTERY.Vex,
+    weight: 1500,
+    cost: 7500,
   }),
   f({
     name: 'heavyCrossbow',
-    damage: `1d10`,
+    damage: DICE(1, D[10]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialRanged,
-    properties: f([`Chargement`, `Deux mains`, `Lourde`, `Munitions(portée 30/ 120; carreaux)`]),
-    mastery: `Poussée`,
-    weight: `9 kg`,
-    cost: '5000 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Loading, WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Heavy, WEAPON_PROPERTY.Ammunition]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Ammunition]: {
+        type: WEAPON_AMMUNITION.Bolt,
+        range: {
+          normal: 30,
+          max: 120,
+        }
+      }
+    },
+    mastery: WEAPON_MASTERY.Push,
+    weight: 9000,
+    cost: 5000,
   }),
   f({
     name: 'longbow',
-    damage: `1d8`,
+    damage: DICE(1, D[8]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialRanged,
-    properties: f([`Deux mains`, `Lourde`, `Munitions (portée 45/180 ; flèches)`]),
-    mastery: `Ralentissement`,
-    weight: `1 kg`,
-    cost: '5000 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Heavy, WEAPON_PROPERTY.Ammunition]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Ammunition]: {
+        type: WEAPON_AMMUNITION.Arrows,
+        range: {
+          normal: 45,
+          max: 180,
+        }
+      }
+    },
+    mastery: WEAPON_MASTERY.Slow,
+    weight: 1000,
+    cost: 5000,
   }),
   f({
     name: 'musket',
-    damage: `1d12`,
+    damage: DICE(1, D[12]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialRanged,
-    properties: f([`Chargement`, `Deux mains`, `Munitions (portée 12/36 ; balles)`]),
-    mastery: `Ralentissement`,
-    weight: `5 kg`,
-    cost: '50000 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Loading, WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Ammunition]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Ammunition]: {
+        type: WEAPON_AMMUNITION.Bullets,
+        range: {
+          normal: 12,
+          max: 32,
+        }
+      }
+    },
+    mastery: WEAPON_MASTERY.Slow,
+    weight: 5000,
+    cost: 50000,
   }),
   f({
     name: 'pistol',
-    damage: `1d10`,
+    damage: DICE(1, D[10]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialRanged,
-    properties: f([`Chargement`, `Munitions (portée 9/27 ; balles)`]),
-    mastery: `Ouverture`,
-    weight: `1,5 kg`,
-    cost: '25000 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Loading, WEAPON_PROPERTY.Ammunition]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Ammunition]: {
+        type: WEAPON_AMMUNITION.Bullets,
+        range: {
+          normal: 9,
+          max: 27,
+        }
+      }
+    },
+    mastery: WEAPON_MASTERY.Vex,
+    weight: 1500,
+    cost: 25000,
   }),
   f({
     name: 'blowgun',
     damage: `1`,
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialRanged,
-    properties: f([`Chargement`, `Munitions (portée 7,50/30 ; dards)`]),
-    mastery: `Ouverture`,
-    weight: `0,5 kg`,
-    cost: '1000 pc',
-    type: EQUIPMENT_TYPE.WEAPON,
+    properties: f([WEAPON_PROPERTY.Loading, WEAPON_PROPERTY.Ammunition]),
+    propertiesValues: {
+      [WEAPON_PROPERTY.Ammunition]: {
+        type: WEAPON_AMMUNITION.Needles,
+        range: {
+          normal: 7.50,
+          max: 30,
+        }
+      }
+    },
+    mastery: WEAPON_MASTERY.Vex,
+    weight: 500,
+    cost: 1000,
   }),
 ])
 
@@ -430,158 +587,146 @@ const armors = f([ // P.220
   f({
     name: 'padded',
     effects: f({
-      [EFFECT.ACModifierEffect]: {
-        apply: ({ modifiers }) => 11 + modifiers[ABILITY.dexterity],
+      [EFFECT.ACOverrideEffect]: {
+        apply: ({ modifiers, }) => 11 + modifiers[ABILITY.dexterity],
       },
     }), strength: null,
     stealthMalus: true,
-    weight: `4 kg`, // TODO: Weight
-    cost: `5 po`,
+    weight: 4000, // TODO: Weight
+    cost: 500,
     category: ARMOR_CATEGORY.Light,
-    type: EQUIPMENT_TYPE.ARMOR,
   }),
   f({
     name: 'leather',
     effects: f({
-      [EFFECT.ACModifierEffect]: {
-        apply: ({ modifiers }) => 11 + modifiers[ABILITY.dexterity],
+      [EFFECT.ACOverrideEffect]: {
+        apply: ({ modifiers, }) => 11 + modifiers[ABILITY.dexterity],
       },
     }), strength: null,
     stealthMalus: false,
-    weight: `5 kg`,
-    cost: `10 po`,
+    weight: 5000,
+    cost: 1000,
     category: ARMOR_CATEGORY.Light,
-    type: EQUIPMENT_TYPE.ARMOR,
   }),
   f({
     name: 'studdedLeather',
     effects: f({
-      [EFFECT.ACModifierEffect]: {
-        apply: ({ modifiers }) => 12 + modifiers[ABILITY.dexterity],
+      [EFFECT.ACOverrideEffect]: {
+        apply: ({ modifiers, }) => 12 + modifiers[ABILITY.dexterity],
       },
     }), strength: null,
     stealthMalus: false,
-    weight: `6,5 kg`,
-    cost: `45 po`,
+    weight: 6500,
+    cost: 4500,
     category: ARMOR_CATEGORY.Light,
-    type: EQUIPMENT_TYPE.ARMOR,
   }),
   f({
     name: 'hideArmor',
     effects: f({
-      [EFFECT.ACModifierEffect]: {
-        apply: ({ modifiers }) => 12 + Math.min(modifiers[ABILITY.dexterity], 2),
+      [EFFECT.ACOverrideEffect]: {
+        apply: ({ modifiers, }) => 12 + Math.min(modifiers[ABILITY.dexterity], 2),
       },
     }), strength: null,
     stealthMalus: false,
-    weight: `6 kg`,
-    cost: `10 po`,
+    weight: 6000,
+    cost: 1000,
     category: ARMOR_CATEGORY.Medium,
-    type: EQUIPMENT_TYPE.ARMOR,
   }),
   f({
     name: 'chainShirt',
     effects: f({
-      [EFFECT.ACModifierEffect]: {
-        apply: ({ modifiers }) => 13 + Math.min(modifiers[ABILITY.dexterity], 2),
+      [EFFECT.ACOverrideEffect]: {
+        apply: ({ modifiers, }) => 13 + Math.min(modifiers[ABILITY.dexterity], 2),
       },
     }), strength: null,
     stealthMalus: false,
-    weight: `10 kg`,
-    cost: `50 po`,
+    weight: 10000,
+    cost: 5000,
     category: ARMOR_CATEGORY.Medium,
-    type: EQUIPMENT_TYPE.ARMOR,
   }),
   f({
     name: 'scaleMail',
     effects: f({
-      [EFFECT.ACModifierEffect]: {
-        apply: ({ modifiers }) => 14 + Math.min(modifiers[ABILITY.dexterity], 2),
+      [EFFECT.ACOverrideEffect]: {
+        apply: ({ modifiers, }) => 14 + Math.min(modifiers[ABILITY.dexterity], 2),
       },
     }), strength: null,
     stealthMalus: true,
-    weight: `22,5 kg`,
-    cost: `50 po`,
+    weight: 22500,
+    cost: 5000,
     category: ARMOR_CATEGORY.Medium,
-    type: EQUIPMENT_TYPE.ARMOR,
   }),
   f({
     name: 'breastplate',
     effects: f({
-      [EFFECT.ACModifierEffect]: {
-        apply: ({ modifiers }) => 14 + Math.min(modifiers[ABILITY.dexterity], 2),
+      [EFFECT.ACOverrideEffect]: {
+        apply: ({ modifiers, }) => 14 + Math.min(modifiers[ABILITY.dexterity], 2),
       },
     }), strength: null,
     stealthMalus: false,
-    weight: `10 kg`,
-    cost: `400 po`,
+    weight: 10000,
+    cost: 40000,
     category: ARMOR_CATEGORY.Medium,
-    type: EQUIPMENT_TYPE.ARMOR,
   }),
   f({
     name: 'halfPlate',
     effects: f({
-      [EFFECT.ACModifierEffect]: {
-        apply: ({ modifiers }) => 15 + Math.min(modifiers[ABILITY.dexterity], 2),
+      [EFFECT.ACOverrideEffect]: {
+        apply: ({ modifiers, }) => 15 + Math.min(modifiers[ABILITY.dexterity], 2),
       },
     }), strength: null,
     stealthMalus: true,
-    weight: `20 kg`,
-    cost: `750 po`,
+    weight: 20000,
+    cost: 75000,
     category: ARMOR_CATEGORY.Medium,
-    type: EQUIPMENT_TYPE.ARMOR,
   }),
   f({
     name: 'ringMail',
     effects: f({
-      [EFFECT.ACModifierEffect]: {
+      [EFFECT.ACOverrideEffect]: {
         apply: () => 14,
       },
     }), strength: null,
     stealthMalus: true,
-    weight: `20 kg`,
-    cost: `30 po`,
+    weight: 20000,
+    cost: 3000,
     category: ARMOR_CATEGORY.Heavy,
-    type: EQUIPMENT_TYPE.ARMOR,
   }),
   f({
     name: 'chainMail',
     effects: f({
-      [EFFECT.ACModifierEffect]: {
+      [EFFECT.ACOverrideEffect]: {
         apply: () => 16,
       },
     }), strength: 13,
     stealthMalus: true,
-    weight: `27,5 kg`,
-    cost: `75 po`,
+    weight: 27500,
+    cost: 7500,
     category: ARMOR_CATEGORY.Heavy,
-    type: EQUIPMENT_TYPE.ARMOR,
   }),
   f({
     name: 'splint',
     effects: f({
-      [EFFECT.ACModifierEffect]: {
+      [EFFECT.ACOverrideEffect]: {
         apply: () => 17,
       },
     }), strength: 15,
     stealthMalus: true,
-    weight: `30 kg`,
-    cost: `200 po`,
+    weight: 30000,
+    cost: 20000,
     category: ARMOR_CATEGORY.Heavy,
-    type: EQUIPMENT_TYPE.ARMOR,
   }),
   f({
     name: 'plate',
     effects: f({
-      [EFFECT.ACModifierEffect]: {
+      [EFFECT.ACOverrideEffect]: {
         apply: () => 18,
       },
     }), strength: 15,
     stealthMalus: true,
-    weight: `32,5 kg`,
-    cost: `1500 po`,
+    weight: 32500,
+    cost: 150000,
     category: ARMOR_CATEGORY.Heavy,
-    type: EQUIPMENT_TYPE.ARMOR,
   }),
 ])
 
@@ -590,14 +735,13 @@ const shields = f([ // P.220
     name: `shield`,
     effects: f({
       [EFFECT.ACModifierEffect]: {
-        condition: ({ hasArmorProficiency }) => hasArmorProficiency,
+        condition: ({ hasShieldProficiency }) => hasShieldProficiency,
         apply: ({ ac }) => ac + 2,
       },
     }), strength: null,
     stealthMalus: false,
-    weight: `3 kg`,
-    cost: `10 po`,
-    type: EQUIPMENT_TYPE.SHIELD,
+    weight: 3000,
+    cost: 1000,
   }),
 ])
 
@@ -605,89 +749,90 @@ const tools = f([ // P.221
   // TODO: Implement tools
 ])
 
+// TODO: Handle weight / cost variables
 const gears = f([ // P.223
-  { name: 'acid', weight: '0,5 kg', cost: '25 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'antitoxin', weight: '—', cost: '50 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'clothesFine', weight: '3 kg', cost: '15 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'ramPortable', weight: '17,5 kg', cost: '4 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'ballBearings', weight: '1 kg', cost: '1 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'tinderbox', weight: '0,5 kg', cost: '5 pa', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'candle', weight: '—', cost: '1 pc', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'bottleGlass', weight: '1 kg', cost: '2 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'lock', weight: '0,5 kg', cost: '10 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'quiver', weight: '0,5 kg', cost: '1 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'map', weight: '—', cost: '1 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'chain', weight: '5 kg', cost: '5 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'caltrops', weight: '1 kg', cost: '1 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'bell', weight: '—', cost: '1 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'chest', weight: '12,5 kg', cost: '5 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'rope', weight: '2,5 kg', cost: '1 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'costume', weight: '2 kg', cost: '5 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'blanket', weight: '1,5 kg', cost: '5 pa', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'jug', weight: '2 kg', cost: '2 pc', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'holyWater', weight: '0,5 kg', cost: '25 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'ladder', weight: '12,5 kg', cost: '1 pa', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'ink', weight: '—', cost: '10 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'caseMapOrScroll', weight: '0,5 kg', cost: '1 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'caseCrossbowBolt', weight: '0,5 kg', cost: '1 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'alchemistsFire', weight: '0,5 kg', cost: '50 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'string', weight: '—', cost: '1 pa', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'net', weight: '1,5 kg', cost: '1 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'vial', weight: '—', cost: '1 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'flask', weight: '0,5 kg', cost: '2 pc', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'arcaneFocus', weight: 'Variable', cost: 'Variable', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'druidicFocus', weight: 'Variable', cost: 'Variable', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'grapplingHook', weight: '2 kg', cost: '2 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'oil', weight: '0,5 kg', cost: '1 pa', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'lamp', weight: '0,5 kg', cost: '5 pa', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'lanternHooded', weight: '1 kg', cost: '5 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'lanternBullseye', weight: '1 kg', cost: '10 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'book', weight: '2,5 kg', cost: '25 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'spyglass', weight: '0,5 kg', cost: '1000 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'magnifyingGlass', weight: '—', cost: '100 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'climbersKit', weight: '6 kg', cost: '25 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'manacles', weight: '3 kg', cost: '2 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'mirror', weight: '250 g', cost: '5 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'ammunition', weight: 'Variable', cost: 'Variable', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'waterskin', weight: '2,5 kg', cost: '2 pa', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'blockAndTackle', weight: '2,5 kg', cost: '1 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'basket', weight: '1 kg', cost: '4 pa', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'paper', weight: '—', cost: '2 pa', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'burglarsPack', weight: '21 kg', cost: '16 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'diplomatsPack', weight: '19,5 kg', cost: '39 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'entertainersPack', weight: '29 kg', cost: '40 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'priestsPack', weight: '14,5 kg', cost: '33 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'scholarsPack', weight: '11 kg', cost: '40 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'explorersPack', weight: '27,5 kg', cost: '10 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'dungeoneersPack', weight: '27,5 kg', cost: '12 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'parchment', weight: '—', cost: '1 pa', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'spellScrollLevel1', weight: '—', cost: '50 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'spellScrollCantrip', weight: '—', cost: '30 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'perfume', weight: '—', cost: '5 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'shovel', weight: '2,5 kg', cost: '2 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'pole', weight: '3,5 kg', cost: '5 pc', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'crowbar', weight: '2,5 kg', cost: '2 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'huntingTrap', weight: '12,5 kg', cost: '5 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'spikesIron', weight: '2,5 kg', cost: '1 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'poisonBasic', weight: '—', cost: '100 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'inkPen', weight: '—', cost: '2 pc', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'potIron', weight: '5 kg', cost: '2 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'potionOfHealing', weight: '250 g', cost: '50 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'rations', weight: '1 kg', cost: '5 pa', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'robe', weight: '2 kg', cost: '1 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'sack', weight: '250 g', cost: '1 pc', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'backpack', weight: '2,5 kg', cost: '2 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'bedroll', weight: '3,5 kg', cost: '1 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'pouch', weight: '0,5 kg', cost: '5 pa', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'componentPouch', weight: '1 kg', cost: '25 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'bucket', weight: '1 kg', cost: '5 pc', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'signalWhistle', weight: '—', cost: '5 pc', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'holySymbol', weight: 'Variable', cost: 'Variable', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'tent', weight: '10 kg', cost: '2 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'clothesTravelers', weight: '2 kg', cost: '2 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'barrel', weight: '35 kg', cost: '2 po', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'torch', weight: '0,5 kg', cost: '1 pc', type: EQUIPMENT_TYPE.GEAR, },
-  { name: 'healersKit', weight: '1,5 kg', cost: '5 po', type: EQUIPMENT_TYPE.GEAR, },
+  { name: 'acid', weight: 500, cost: 2500, },
+  { name: 'antitoxin', weight: 0, cost: 5000, },
+  { name: 'clothesFine', weight: 3000, cost: 1500, },
+  { name: 'ramPortable', weight: 17500, cost: 400, },
+  { name: 'ballBearings', weight: 1000, cost: 100, },
+  { name: 'tinderbox', weight: 500, cost: 50, },
+  { name: 'candle', weight: 0, cost: 1, },
+  { name: 'bottleGlass', weight: 1000, cost: 200, },
+  { name: 'lock', weight: 500, cost: 1000, },
+  { name: 'quiver', weight: 500, cost: 100, },
+  { name: 'map', weight: 0, cost: 100, },
+  { name: 'chain', weight: 5000, cost: 500, },
+  { name: 'caltrops', weight: 1000, cost: 100, },
+  { name: 'bell', weight: 0, cost: 100, },
+  { name: 'chest', weight: 12500, cost: 500, },
+  { name: 'rope', weight: 2500, cost: 100, },
+  { name: 'costume', weight: 2000, cost: 500, },
+  { name: 'blanket', weight: 1500, cost: 50, },
+  { name: 'jug', weight: 2000, cost: 2, },
+  { name: 'holyWater', weight: 500, cost: 2500, },
+  { name: 'ladder', weight: 12500, cost: 10, },
+  { name: 'ink', weight: 0, cost: 1000, },
+  { name: 'caseMapOrScroll', weight: 500, cost: 100, },
+  { name: 'caseCrossbowBolt', weight: 500, cost: 100, },
+  { name: 'alchemistsFire', weight: 500, cost: 5000, },
+  { name: 'string', weight: 0, cost: 10, },
+  { name: 'net', weight: 1500, cost: 100, },
+  { name: 'vial', weight: 0, cost: 100, },
+  { name: 'flask', weight: 500, cost: 2, },
+  { name: 'arcaneFocus', weight: 'Variable', cost: 'Variable', },
+  { name: 'druidicFocus', weight: 'Variable', cost: 'Variable', },
+  { name: 'grapplingHook', weight: 2000, cost: 200, },
+  { name: 'oil', weight: 500, cost: 10, },
+  { name: 'lamp', weight: 500, cost: 50, },
+  { name: 'lanternHooded', weight: 1000, cost: 500, },
+  { name: 'lanternBullseye', weight: 1000, cost: 1000, },
+  { name: 'book', weight: 2500, cost: 2500, },
+  { name: 'spyglass', weight: 500, cost: 100000, },
+  { name: 'magnifyingGlass', weight: 0, cost: 10000, },
+  { name: 'climbersKit', weight: 6000, cost: 2500, },
+  { name: 'manacles', weight: 3000, cost: 200, },
+  { name: 'mirror', weight: 250, cost: 500, },
+  { name: 'ammunition', weight: 'Variable', cost: 'Variable', },
+  { name: 'waterskin', weight: 2500, cost: 20, },
+  { name: 'blockAndTackle', weight: 2500, cost: 100, },
+  { name: 'basket', weight: 1000, cost: 40, },
+  { name: 'paper', weight: 0, cost: 20, },
+  { name: 'burglarsPack', weight: 21000, cost: 1600, },
+  { name: 'diplomatsPack', weight: 19500, cost: 3900, },
+  { name: 'entertainersPack', weight: 29000, cost: 4000, },
+  { name: 'priestsPack', weight: 14500, cost: 3300, },
+  { name: 'scholarsPack', weight: 11000, cost: 4000, },
+  { name: 'explorersPack', weight: 27500, cost: 1000, },
+  { name: 'dungeoneersPack', weight: 27500, cost: 1200, },
+  { name: 'parchment', weight: 0, cost: 10, },
+  { name: 'spellScrollLevel1', weight: 0, cost: 5000, },
+  { name: 'spellScrollCantrip', weight: 0, cost: 3000, },
+  { name: 'perfume', weight: 0, cost: 500, },
+  { name: 'shovel', weight: 2500, cost: 200, },
+  { name: 'pole', weight: 3500, cost: 5, },
+  { name: 'crowbar', weight: 2500, cost: 200, },
+  { name: 'huntingTrap', weight: 12500, cost: 500, },
+  { name: 'spikesIron', weight: 2500, cost: 100, },
+  { name: 'poisonBasic', weight: 0, cost: 10000, },
+  { name: 'inkPen', weight: 0, cost: 2, },
+  { name: 'potIron', weight: 5000, cost: 200, },
+  { name: 'potionOfHealing', weight: 250, cost: 5000, },
+  { name: 'rations', weight: 1000, cost: 50, },
+  { name: 'robe', weight: 2000, cost: 100, },
+  { name: 'sack', weight: 250, cost: 1, },
+  { name: 'backpack', weight: 2500, cost: 200, },
+  { name: 'bedroll', weight: 3500, cost: 100, },
+  { name: 'pouch', weight: 500, cost: 50, },
+  { name: 'componentPouch', weight: 1000, cost: 2500, },
+  { name: 'bucket', weight: 1000, cost: 5, },
+  { name: 'signalWhistle', weight: 0, cost: 5, },
+  { name: 'holySymbol', weight: 'Variable', cost: 'Variable', },
+  { name: 'tent', weight: 10000, cost: 200, },
+  { name: 'clothesTravelers', weight: 2000, cost: 200, },
+  { name: 'barrel', weight: 35000, cost: 200, },
+  { name: 'torch', weight: 500, cost: 1, },
+  { name: 'healersKit', weight: 1500, cost: 500, },
 ])
 
 const magicItems = f([
@@ -706,9 +851,9 @@ const magicItems = f([
    *    modifiers: {
    *      [EFFECT.ACModifierEffect]: { // TODO: add to common
    *        condition: function (props) { }, // To apply effect
-   *        apply: function (props) { }
+   *        apply: function (props) { },
    *      },
-   *    }
+   *    },
    *  }),
    */
   f({
@@ -716,33 +861,30 @@ const magicItems = f([
     requireAttunement: true,
     hasAttunement: false,
     condition: function () { true }, // TODO: can equip
-    type: EQUIPMENT_TYPE.MAGIC_ITEM,
     category: MAGIC_ITEM_TYPE.wondrousItem,
     equipOn: EQUIPED_CATEGORY.OTHER,
     effects: {
       [EFFECT.ACModifierEffect]: {
         condition: function () { return !this.requireAttunement || this.hasAttunement }, // To apply effect
-        apply: function () { return 1 }
+        apply: ({ ac }) => ac + 1,
       },
-      [EFFECT.SavesModifierEffect]: { apply: ({ modifiers }) => Object.entries(modifiers).reduce((acc, [name, modifier]) => ({ ...acc, [name]: modifier + 1 }), {}) }
-    }
+      [EFFECT.SavesModifierEffect]: { apply: ({ modifiers }) => Object.entries(modifiers).reduce((acc, [name, modifier]) => ({ ...acc, [name]: modifier + 1 }), {}) },
+    },
   }),
 ])
 
 const equipments = []
-  .concat(weapons)
-  .concat(armors)
-  .concat(shields)
-  .concat(tools)
-  .concat(gears)
-  .concat(magicItems)
+  .concat(weapons.map(item => Object.assign({}, item, { type: EQUIPMENT_TYPE.WEAPON })))
+  .concat(armors.map(item => Object.assign({}, item, { type: EQUIPMENT_TYPE.ARMOR })))
+  .concat(shields.map(item => Object.assign({}, item, { type: EQUIPMENT_TYPE.SHIELD })))
+  .concat(tools.map(item => Object.assign({}, item, { type: EQUIPMENT_TYPE.TOOL })))
+  .concat(gears.map(item => Object.assign({}, item, { type: EQUIPMENT_TYPE.GEAR })))
+  .concat(magicItems.map(item => Object.assign({}, item, { type: EQUIPMENT_TYPE.MAGIC_ITEM })))
 
-export function getEquipments({ type }) {
-  return equipments.filter(equipment => equipment.type === type)
-}
-
+export function getEquipments({ type }) { return equipments.filter(equipment => equipment.type === type) }
 export function getWeapons() { return getEquipments({ type: EQUIPMENT_TYPE.WEAPON }) }
+export function getEquipment(name) { return equipments.find(equipment => equipment.name === name) }
 
-export function getEquipment(name) {
-  return equipments.find(equipment => equipment.name === name)
-}
+weapons.filter(weapon => weapon.properties.filter(prop => prop === undefined || !Object.values(WEAPON_PROPERTY).includes(prop)).length > 0)
+  // weapons.filter(weapon => weapon.properties.includes(prop => prop))
+  .forEach(weapon => console.log('-- equipments', weapon.name, weapon.properties))

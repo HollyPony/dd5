@@ -1,4 +1,4 @@
-import { createElement, populateSelect, } from './modules/domlib.js'
+import { createElement, populateSelect, removeAllChildren, } from './modules/domlib.js'
 import * as userData from './modules/userData.js'
 import { getList as getClassesList, getSubClasses, } from './modules/data/classes.js'
 import { origins, } from './modules/data/origins.js'
@@ -8,7 +8,7 @@ import parseMarkdown from './modules/markdown.js'
 
 // TODO: remove mock
 import { mock as storedData } from './modules/storeManager.js'
-import { ABILITY, SKILLS } from './modules/data/common.js'
+import { ABILITY, ARMOR_CATEGORY, D, SKILLS } from './modules/common.js'
 
 /////////////////////////////////////////////////////////////////////////
 // INPUTS ///////////////////////////////////////////////////////////////
@@ -48,6 +48,15 @@ const skillElements = Object.entries(SKILLS).reduce((acc, [key, value]) => {
   })
 }, {})
 
+const trainingsElements = {
+  armorLight: document.getElementsByName('trainings-armor-light')[0],
+  armorMedium: document.getElementsByName('trainings-armor-medium')[0],
+  armorHeavy: document.getElementsByName('trainings-armor-heavy')[0],
+  shield: document.getElementsByName('trainings-shield')[0],
+  weaponsList: document.getElementsByClassName('trainings-weapons-list')[0],
+  toolsList: document.getElementsByClassName('trainings-tools-list')[0],
+}
+
 const weaponSelectElement = document.getElementsByName('weapons')[0]
 
 //////////////////////////////////////////////////////////////////////
@@ -55,6 +64,10 @@ const weaponSelectElement = document.getElementsByName('weapons')[0]
 //////////////////////////////////////////////////////////////////////
 
 function skillAsText(score) { return score > 0 ? `+${score}` : `${score}` }
+
+function diceToString({ number, dice }) {
+  return D[dice] ? `${number}d${dice}` : 'err' // TODO:
+}
 
 // DISPLAY UPDATES
 
@@ -77,7 +90,7 @@ function refreshHitPointMax() {
 }
 
 function refreshHitDiceMax() {
-  document.getElementsByName('hitDiceMax')[0].value = userData.getHitDiceMax()
+  document.getElementsByName('hitDiceMax')[0].value = diceToString(userData.getHitDiceMax())
 }
 
 function refreshInitiative() {
@@ -99,6 +112,24 @@ function refreshPassivePerception() {
 
 function refreshCharAlignment() {
   document.getElementsByName('alignment')[0].value = userData.getCharAlignment()
+}
+
+function refreshTrainings() {
+  const armorProficiencies = userData.getArmorProficiencies()
+  trainingsElements.armorLight.checked = armorProficiencies.includes(ARMOR_CATEGORY.Light)
+  trainingsElements.armorMedium.checked = armorProficiencies.includes(ARMOR_CATEGORY.Medium)
+  trainingsElements.armorHeavy.checked = armorProficiencies.includes(ARMOR_CATEGORY.Heavy)
+  trainingsElements.shield.checked = userData.getShieldProficiency()
+  removeAllChildren(trainingsElements.weaponsList)
+  userData.getWeaponProficiencies().forEach(proficiency => {
+    const proficiencySplitted = proficiency.split('.').filter(_ => !['WEAPON_CATEGORY', 'WEAPON_PROPERTY'].includes(_))
+    return trainingsElements.weaponsList.appendChild(createElement('p', i18n._(['stats.trainings.weapons']
+      .concat(proficiencySplitted, proficiencySplitted.length === 1 ? 'all' : [])
+      .join('.')
+    )))
+  })
+
+  removeAllChildren(trainingsElements.toolsList)
 }
 
 function refreshClassList() {
@@ -340,7 +371,7 @@ function init() {
           }, {})
       ).map(([category, weapons]) => ({
         isGroup: true,
-        label: i18n._(`statics.weaponCategories.${category}`),
+        label: i18n._(`statics.${category}`),
         options: weapons.map(weapon => ({
           value: weapon, text: i18n._(`statics.weaponNames.${weapon.name}`)
         })),
@@ -367,6 +398,7 @@ function init() {
   refreshSize()
   refreshPassivePerception()
   refreshCharAlignment()
+  refreshTrainings()
 
   Object.values(ABILITY).forEach(ability => {
     refreshAbilityScore(ability)

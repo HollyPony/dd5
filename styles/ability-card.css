@@ -20,8 +20,43 @@
   }
 
   .ability-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 0.5em calc(var(--margin) + var(--inner-width) + 0.5em);
     border-top: var(--inner-width) solid var(--border-color);
+
+    label.title {
+      width: 100%;
+      position: relative;
+      padding: 2px 12px 3px 12px;
+
+      &:before {
+        --border-width: 1px;
+        --corner-width: 11px;
+
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+
+        width: calc(100% + 20px);
+        left: -10px;
+
+        background: var(--bs-border-color);
+        mask: radial-gradient(
+              var(--corner-width) at var(--corner-width) var(--corner-width),
+              #0000 calc(98% - var(--border-width)),
+              #000 calc(100% - var(--border-width)) 98%,
+              #0000
+            )
+            calc(0px - var(--corner-width)) calc(0px - var(--corner-width)),
+          linear-gradient(#000 calc(var(--border-width) * 2), #0000 0) 50%
+            calc(0px - var(--border-width)) /
+            calc(100% - calc(var(--corner-width) * 2) + var(--border-width))
+            100% repeat-y;
+      }
+    }
 
     &:last-child {
       border-bottom: var(--inner-width) solid var(--border-color);
@@ -68,6 +103,7 @@
   }
 
   .form-check {
+    width: 100%;
     margin: 0;
     font-size: 0.9em;
     display: flex;

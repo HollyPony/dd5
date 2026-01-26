@@ -87,6 +87,34 @@ input[disabled] ~ span {
     height: 55px;
     width: 55px;
   }
+
+  .title {
+    --corner-size: 30px;
+    --border-size: 2px;
+
+    position: relative;
+    overflow: hidden;
+
+    &:before,
+    &:after {
+      content: '';
+      position: absolute;
+      width: var(--corner-size);
+      height: var(--corner-size);
+      border-radius: 50%;
+      border-top: var(--border-size) solid var(--bs-border-color);
+      box-sizing: border-box;
+      bottom: calc(0px - (var(--corner-size) / 2));
+    }
+
+    &:before {
+      left: calc(0px - (var(--corner-size) / 2));
+    }
+
+    &:after {
+      right: calc(0px - (var(--corner-size) / 2));
+    }
+  }
 }
 
 .inspiration {
@@ -101,17 +129,20 @@ input[disabled] ~ span {
 }
 
 .block {
-  .armors {
-    padding-bottom: 7px;
-
+  .trainings-armors {
     label {
       font-size: 0.9em;
     }
   }
 
-  .weapons,
-  .tools {
+  .trainings-weapons,
+  .trainings-tools {
     border-top: 2px solid black;
+    overflow: hidden;
+  }
+
+  .trainings-weapons-list p {
+    margin-bottom: 0;
   }
 }
 

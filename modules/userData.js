@@ -1,5 +1,5 @@
 import getClass from './data/classes.js'
-import { EFFECT, ABILITY, EQUIPED_CATEGORY, DICES, SKILLS, EQUIPMENT_TYPE, } from './data/common.js'
+import { EFFECT, ABILITY, EQUIPED_CATEGORY, D, SKILLS, EQUIPMENT_TYPE, DICE, } from './common.js'
 import { getEquipment, } from './data/equipments.js'
 import { origins, } from './data/origins.js'
 import getSpecies from './data/species.js'
@@ -70,19 +70,6 @@ function abilityScoreToModifier(score) {
 
 // HELPERS
 
-function diceToString(dice) {
-  switch (dice) {
-    case DICES.D4: return 'd4'
-    case DICES.D6: return 'd6'
-    case DICES.D8: return 'd8'
-    case DICES.D10: return 'd10'
-    case DICES.D12: return 'd12'
-    case DICES.D20: return 'd20'
-    case DICES.D100: return 'd100'
-    default: return 'err'
-  }
-}
-
 function applyEffect(item, effect, options, callback) {
   if (item?.effects?.[effect]
     && (item.effects[effect]?.condition?.call(item, options ?? true))) {
@@ -92,9 +79,6 @@ function applyEffect(item, effect, options, callback) {
 
 function applyEffects(list, effect, options, callback) {
   list.forEach(item => applyEffect(item, effect, options, callback))
-  // ?.filter(item => item?.effects?.[effect])
-  // .filter(item => item.effects[effect]?.condition?.call(item, options) ?? true)
-  // .forEach(item => callback(item.effects[effect].apply.call(item, options)))
 }
 
 // COMPUTED VALUES
@@ -104,18 +88,27 @@ export function getCharClass() { return charsheet.charClass }
 export function getCharSpecies() { return charsheet.charSpecies }
 export function getCharModifiers() { return charsheet.modifiers }
 export function getCharFeats() { return charsheet.feats } // TODO: get from class + species human?
-export function getWeaponProficiency() { } // TODO: maitrise d'armes
+export function getWeaponProficiencies() { // TODO: maitrise d'armes
+  return Object.entries(getCharClass().weaponProficiencies).map(([category, properties]) =>
+    [].concat(category, properties).join('.')
+  )
+}
+
 export function getArmorProficiencies() {
   // TODO: armor category check ?
-  // TODO: amor has malus effect if equiped without proficiency
-  return getCharFeats()?.filter(feat => feat?.[EFFECT.HasArmorProficiencyEffect]?.reduce((acc, effect) => {
-    if (effect?.condition?.() ?? true) { acc.concat(effect?.values) }
-    return acc
-  }, (getCharClass()?.getArmorProficiencies() ?? [])))
+  // TODO: armor has malus effect if equiped without proficiency - display it
+  const classArmorProficiencies = getCharClass()?.armorProficiencies
+  applyEffects(getCharFeats(), EFFECT.HasArmorProficiencyEffect, {}, result => classArmorProficiencies.concat(result))
+  return classArmorProficiencies
 }
+
 export function getShieldProficiency() {
-  return (getCharClass()?.getShieldProficiency() ?? false)
+  return (getCharClass()?.shieldProficiency ?? false)
     || (getCharFeats()?.includes(feat => feat?.[EFFECT.HasShieldProficiencyEffect]))
+}
+
+export function getToolProficiencies() {
+  return getCharClass()?.toolProficiencies
 }
 
 /* TODO: update if
@@ -130,44 +123,31 @@ export function getArmorClass() {
   const modifiers = getCharModifiers()
   const equipedArmor = getEquiped(EQUIPED_CATEGORY.ARMOR)
   const equipedShield = getEquiped(EQUIPED_CATEGORY.SHIELD)
+  const hasShieldProficiency = getShieldProficiency()
 
-  const overrideFeaturesEffects = getCharClass()?.features
-    ?.filter(feature => feature.effects?.[EFFECT.ACOverrideEffect])
-    ?.filter(feature => feature.effects[EFFECT.ACOverrideEffect]?.condition?.call(feature, { equipedArmor, equipedShield }) ?? true)
-    .flatMap(feature => feature.effects[EFFECT.ACOverrideEffect]) ?? []
+  // Set default AC P.42
+  let ac = 10 + modifiers[ABILITY.dexterity]
 
-  if (overrideFeaturesEffects.length > 1) { // TODO: user must choose one
-    console.error('too much features overrides')
-    return 'err'
-  }
+  // Apply Armors P.220
+  // TODO: Test armor without override feature
+  applyEffect(equipedArmor, EFFECT.ACOverride, { modifiers }, result => ac = result)
 
-  // si pas armure ni bouclier - monk 10+dex+sag P.128
-  // si pas armure - barbarian 10+dex+con - sorcerer/draconic 10+dex+cha P.99
-  let armor = overrideFeaturesEffects.length > 0
-    ? overrideFeaturesEffects[0]?.apply?.call(overrideFeaturesEffects[0], { equipedArmor, equipedShield, modifiers })
-    : equipedArmor
-      ? equipedArmor.effects?.[EFFECT.ACModifierEffect]?.apply?.call(equipedArmor, { modifiers }) // TODO: Test armor without override feature
-      : 10 + modifiers[ABILITY.dexterity] // Armors P.220 || Basic AC without armors P.42
+  // Apply class features effects
+  applyEffects(getCharClass()?.features, EFFECT.ACOverrideEffect, { ac, equipedArmor, equipedShield, modifiers }, result => ac = result)
 
   // Apply feats modifier
   // TODO: Never tested
   // si armure - char has feat (don P.210) Defense = +1
-  applyEffects(getCharFeats(), EFFECT.ACModifierEffect, { equipedArmor, equipedShield, ac: armor }, result => {
-    armor += result
-  })
+  applyEffects(getCharFeats(), EFFECT.ACModifierEffect, { ac, equipedArmor, equipedShield, }, result => ac = result)
 
   // Apply Shield modifier
   // TODO: Test it
-  applyEffect(equipedShield, EFFECT.ACModifierEffect, { ac: armor, hasArmorProficiency: getShieldProficiency() }, result => {
-    armor += result
-  })
+  applyEffect(equipedShield, EFFECT.ACModifierEffect, { ac, hasShieldProficiency, }, result => ac = result)
 
   // Apply other equiped effect
-  applyEffects(getEquiped(EQUIPED_CATEGORY.OTHER), EFFECT.ACModifierEffect, { equipedArmor, equipedShield }, result => {
-    armor += result
-  })
+  applyEffects(getEquiped(EQUIPED_CATEGORY.OTHER), EFFECT.ACModifierEffect, { ac, equipedArmor, equipedShield, }, result => ac = result)
 
-  return armor
+  return ac
 }
 
 export function getHitPointMax() {
@@ -176,7 +156,7 @@ export function getHitPointMax() {
 }
 
 export function getHitDiceMax() {
-  return `${getCharLevel()}${diceToString(getCharClass()?.hitDice)}`
+  return DICE(getCharLevel(), getCharClass()?.hitDice)
 }
 
 export function getProficencyBonus() {
@@ -184,22 +164,19 @@ export function getProficencyBonus() {
 
   // TODO: update on equipped / unequipped / attuned / on scores changes
   // TODO: test application
-  applyEffects(getEquiped(EQUIPED_CATEGORY.OTHER), EFFECT.PBModifierEffect, {}, result => {
-    proficiencyBonus += result
-  })
+  applyEffects(getEquiped(EQUIPED_CATEGORY.OTHER), EFFECT.PBModifierEffect, { proficiencyBonus }, result => proficiencyBonus = result)
 
   return proficiencyBonus
 }
 
-export function getCharSpeed() { // TODO: take armor strength + update on armor change
+// TODO: take armor strength + update on armor change
+export function getCharSpeed() {
   let speed = getCharSpecies()?.speed || 0
 
   const equipedArmor = getEquiped(EQUIPED_CATEGORY.ARMOR)
   const equipedShield = getEquiped(EQUIPED_CATEGORY.SHIELD)
 
-  applyEffect(getCharClass(), EFFECT.SpeedModifierEffect, { equipedArmor, equipedShield }, result => {
-    speed += result
-  })
+  applyEffect(getCharClass(), EFFECT.SpeedModifierEffect, { speed, equipedArmor, equipedShield }, result => speed = result)
 
   // Heavy rule
   if (equipedArmor?.strength
@@ -216,17 +193,21 @@ export function getAbilitySave(ability) {
     ? getAbilityModifier(ability) + getProficencyBonus()
     : getAbilityModifier(ability)
 }
+
 function isAuthorizedSkill(skill) {
   return getCharClass()?.authorizedSkills?.includes(skill)
 }
+
 export function isCheckedSkill(skill) { // TODO: get from class features + get from feats
   return origins[getCharOrigin()]?.skills?.includes(skill) || getSkillChoosed().includes(skill)
 }
+
 export function isDisabledSkill(skill) {
   return (!isAuthorizedSkill(skill))
     || origins[getCharOrigin()]?.skills?.includes(skill)
     || !getSkillChoosed().includes(skill) && (getSkillChoosed().length >= getCharClass()?.authorizedNumberSkills ?? 0)
 }
+
 export function getSkillScore(skill) {
   return getAbilityModifier(skill.ability) + (isCheckedSkill(skill) ? getProficencyBonus() : 0)
 }
@@ -293,20 +274,20 @@ export function init(source) {
   charsheet.charSpecies = getSpecies(getCharSpeciesName())
 
   charsheet.equipments?.filter?.(equipment => equipment.equiped).forEach(equipment => {
-    const _equipment = { ...getEquipment(equipment.name), ...equipment }
+    const equipmentComputed = Object.assign({}, getEquipment(equipment.name), equipment)
 
-    switch (_equipment.type) {
-      case EQUIPMENT_TYPE.WEAPON: charsheet.equiped[EQUIPED_CATEGORY.WEAPON].push(_equipment); break;
-      case EQUIPMENT_TYPE.ARMOR: charsheet.equiped[EQUIPED_CATEGORY.ARMOR] = _equipment; break;
-      case EQUIPMENT_TYPE.SHIELD: charsheet.equiped[EQUIPED_CATEGORY.SHIELD] = _equipment; break;
-      case EQUIPMENT_TYPE.MAGIC_ITEM: (equipment => {
-        switch (equipment.equipOn) {
-          case EQUIPED_CATEGORY.WEAPON: charsheet.equiped[EQUIPED_CATEGORY.WEAPON].push(equipment); break;
-          case EQUIPED_CATEGORY.ARMOR: charsheet.equiped[EQUIPED_CATEGORY.WEAPON] = equipment; break;
-          case EQUIPED_CATEGORY.SHIELD: charsheet.equiped[EQUIPED_CATEGORY.SHIELD] = equipment; break;
-          case EQUIPED_CATEGORY.OTHER: charsheet.equiped[EQUIPED_CATEGORY.OTHER].push(equipment); break;
+    switch (equipmentComputed.type) {
+      case EQUIPMENT_TYPE.WEAPON: charsheet.equiped[EQUIPED_CATEGORY.WEAPON].push(equipmentComputed); break;
+      case EQUIPMENT_TYPE.ARMOR: charsheet.equiped[EQUIPED_CATEGORY.ARMOR] = equipmentComputed; break;
+      case EQUIPMENT_TYPE.SHIELD: charsheet.equiped[EQUIPED_CATEGORY.SHIELD] = equipmentComputed; break;
+      case EQUIPMENT_TYPE.MAGIC_ITEM: (magicItem => {
+        switch (magicItem.equipOn) {
+          case EQUIPED_CATEGORY.WEAPON: charsheet.equiped[EQUIPED_CATEGORY.WEAPON].push(magicItem); break;
+          case EQUIPED_CATEGORY.ARMOR: charsheet.equiped[EQUIPED_CATEGORY.WEAPON] = magicItem; break;
+          case EQUIPED_CATEGORY.SHIELD: charsheet.equiped[EQUIPED_CATEGORY.SHIELD] = magicItem; break;
+          case EQUIPED_CATEGORY.OTHER: charsheet.equiped[EQUIPED_CATEGORY.OTHER].push(magicItem); break;
         }
-      })(_equipment); break;
+      })(equipmentComputed); break;
     }
   })
 

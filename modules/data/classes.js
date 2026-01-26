@@ -1,6 +1,6 @@
 import { InvalidClassNameError, InvalidSubClassNameError } from '../errors.js'
 import { f, } from '../helpers.js'
-import { EFFECT, DICES, SKILLS, WEAPON_CATEGORY, WEAPON_PROPERTY, ABILITY } from './common.js'
+import { EFFECT, D, SKILLS, WEAPON_CATEGORY, WEAPON_PROPERTY, ABILITY, ARMOR_CATEGORY } from '../common.js'
 
 const abilityScoreImprovement = (level) => ({ // TODO: Check apply `this` work on this arrowed fct
   name: 'abilityScoreImprovement', atLevel: level,
@@ -20,7 +20,7 @@ const abilityScoreImprovement = (level) => ({ // TODO: Check apply `this` work o
 const classes = f({
   barbarian: f({ // P.51
     mainAbility: f([ABILITY.strength]),
-    hitDice: DICES.D12, // TODO: +1 per level
+    hitDice: D[12],
     hitPointMax: { base: 12, addPerLevel: 7, },
     saves: f([ABILITY.strength, ABILITY.constitution]),
     authorizedNumberSkills: 2,
@@ -34,7 +34,7 @@ const classes = f({
   }),
   bard: f({ // P.57
     mainAbility: f([ABILITY.charisma]),
-    hitDice: DICES.D8, // TODO: +1 per level
+    hitDice: D[8],
     hitPointMax: { base: 8, addPerLevel: 5, },
     saves: f([ABILITY.dexterity, ABILITY.charisma]),
     authorizedNumberSkills: 3,
@@ -48,7 +48,7 @@ const classes = f({
   }),
   cleric: f({
     mainAbility: f([ABILITY.wisdom]),
-    hitDice: DICES.D8, // TODO: +1 per level
+    hitDice: D[8],
     hitPointMax: { base: 8, addPerLevel: 5, },
     saves: f([ABILITY.wisdom, ABILITY.charisma]),
     authorizedNumberSkills: 2,
@@ -62,7 +62,7 @@ const classes = f({
   }),
   druid: f({ // P.79
     mainAbility: f([ABILITY.wisdom]),
-    hitDice: DICES.D8, // TODO: +1 per level
+    hitDice: D[8],
     hitPointMax: { base: 8, addPerLevel: 5, },
     saves: f([ABILITY.intelligence, ABILITY.wisdom]),
     authorizedNumberSkills: 2,
@@ -76,7 +76,7 @@ const classes = f({
   }),
   fighter: f({ // P.105
     mainAbility: f([ABILITY.strength, ABILITY.dexterity]), // TODO: choose
-    hitDice: DICES.D10, // TODO: +1 per level
+    hitDice: D[10],
     hitPointMax: { base: 10, addPerLevel: 6, },
     saves: f([ABILITY.strength, ABILITY.constitution]),
     authorizedNumberSkills: 2,
@@ -90,25 +90,26 @@ const classes = f({
   }),
   monk: f({ // P.127
     mainAbility: f([ABILITY.dexterity, ABILITY.wisdom]), // TODO: twice
-    hitDice: DICES.D8, // TODO: +1 per level
+    hitDice: D[8],
     hitPointMax: { base: 8, addPerLevel: 5, },
     saves: f([ABILITY.strength, ABILITY.dexterity]),
     authorizedNumberSkills: 2,
     authorizedSkills: f([SKILLS.acrobatics, SKILLS.athletics, SKILLS.history, SKILLS.insight, SKILLS.religion, SKILLS.stealth]),
-    weaponProfciencies: f({}), // TODO: Used to display masteries ?
-    getWeaponProficiencies: () => [WEAPON_CATEGORY.simpleMelee, WEAPON_CATEGORY.simpleRanged],
+    weaponProficiencies: f({ // TODO: Used to display masteries ?
+      [WEAPON_CATEGORY.simpleMelee]: [],
+      [WEAPON_CATEGORY.simpleRanged]: [],
+      [WEAPON_CATEGORY.martialMelee]: [WEAPON_PROPERTY.Light],
+      [WEAPON_CATEGORY.martialRanged]: [WEAPON_PROPERTY.Light],
+    }),
     getWeaponProficienciesFilter: (armor) => [WEAPON_CATEGORY.simpleMelee, WEAPON_CATEGORY.simpleRanged].includes(weapon.category) ||
       ([WEAPON_CATEGORY.martialMelee, WEAPON_CATEGORY.martialRanged].includes(weapon.category) && weapon.properties.includes(WEAPON_PROPERTY.Light)),
-    getArmorProficiencies: () => [],
-    getShieldProficiency: () => true,
+    armorProficiencies: [],
+    shieldProficiency: false,
+    toolProficiencies: [], // TODO: select one function
     effects: {
       [EFFECT.SpeedModifierEffect]: {
-        condition: function ({ equipedArmor, equipedShield }) {
-          return !equipedArmor && !equipedShield
-        },
-        apply: function () {
-          return this.specificProps.speedModifier(this.level)
-        },
+        condition: function ({ equipedArmor, equipedShield }) { return !equipedArmor && !equipedShield },
+        apply: function ({ speed }) { return speed + this.specificProps.speedModifier(this.level) },
       },
     },
     features: f([
@@ -209,7 +210,7 @@ const classes = f({
       martialArtsPoints: level => (
         () => {
           for (let item of new Set([
-            { max: 4, value: DICES.D6 }, { max: 10, value: DICES.D8 }, { max: 16, value: DICES.D10 }, { max: Infinity, value: DICES.D12 }
+            { max: 4, value: D[6] }, { max: 10, value: D[8] }, { max: 16, value: D[10] }, { max: Infinity, value: D[12] }
           ])) { if (level <= item.max) return item }
         }
       )().value,
@@ -218,7 +219,7 @@ const classes = f({
   }),
   paladin: f({ // P.147
     mainAbility: f([ABILITY.strength, ABILITY.charisma]), // TODO: twice
-    hitDice: DICES.D10, // TODO: +1 per level
+    hitDice: D[10],
     hitPointMax: { base: 10, addPerLevel: 6, },
     saves: f([ABILITY.wisdom, ABILITY.charisma]), // TODO: choose
     authorizedNumberSkills: 2,
@@ -232,7 +233,7 @@ const classes = f({
   }),
   ranger: f({ // P.157
     mainAbility: f([ABILITY.dexterity, ABILITY.wisdom]), // TODO: twice
-    hitDice: DICES.D10, // TODO: +1 per level
+    hitDice: D[10],
     hitPointMax: { base: 10, addPerLevel: 6, },
     saves: f([ABILITY.strength, ABILITY.dexterity]),
     authorizedNumberSkills: 3,
@@ -246,7 +247,7 @@ const classes = f({
   }),
   rogue: f({ // P.167
     mainAbility: f([ABILITY.dexterity]),
-    hitDice: DICES.D8, // TODO: +1 per level
+    hitDice: D[8],
     hitPointMax: { base: 8, addPerLevel: 5, },
     saves: f([ABILITY.dexterity, ABILITY.intelligence]),
     authorizedNumberSkills: 4,
@@ -260,7 +261,7 @@ const classes = f({
   }),
   sorcerer: f({ // P. 91
     mainAbility: f([ABILITY.charisma]),
-    hitDice: DICES.D6, // TODO: +1 per level
+    hitDice: D[6],
     hitPointMax: { base: 6, addPerLevel: 4, },
     saves: f([ABILITY.constitution, ABILITY.charisma]),
     authorizedNumberSkills: 2,
@@ -274,7 +275,7 @@ const classes = f({
   }),
   warlock: f({ // P.135
     mainAbility: f([ABILITY.charisma]),
-    hitDice: DICES.D8, // TODO: +1 per level
+    hitDice: D[8],
     hitPointMax: { base: 8, addPerLevel: 5, },
     saves: f([ABILITY.wisdom, ABILITY.charisma]),
     authorizedNumberSkills: 2,
@@ -288,7 +289,7 @@ const classes = f({
   }),
   wizard: f({ // P.115
     mainAbility: f([ABILITY.intelligence]),
-    hitDice: DICES.D6, // TODO: +1 per level
+    hitDice: D[6],
     hitPointMax: { base: 6, addPerLevel: 4, },
     saves: f([ABILITY.intelligence, ABILITY.wisdom]),
     authorizedNumberSkills: 2,
@@ -317,9 +318,9 @@ export default function get(className, subClassName, level) {
 
   const {
     features,
-    getWeaponProficiencies,
-    getArmorProficiencies,
-    getShieldProficiency,
+    weaponProficiencies,
+    armorProficiencies,
+    shieldProficiency,
     subClasses,
     ...classBase
   } = classes[className]
@@ -327,9 +328,9 @@ export default function get(className, subClassName, level) {
 
   const {
     features: subClassFeatures,
-    getWeaponProficiencies: subClassHasWeaponProficiencies,
-    getArmorProficiencies: subClassHasArmorProficiencies,
-    getShieldProficiency: subClassHasShieldProficiency,
+    weaponProficiencies: subClassWeaponProficiencies,
+    armorProficiencies: subClassArmorProficiencies,
+    shieldProficiency: subClassShieldProficiency,
     ...subClass
   } = subClasses[subClassName] || {}
 
@@ -339,9 +340,9 @@ export default function get(className, subClassName, level) {
     ...subClass || {},
     // traits: [...(classBase?.traits || []), ...(subClass?.traits?.filter(trait => trait.atLevel >= level) || []),],
     // spells: [...(classBase?.spells || []), ...(subClass?.spells?.filter(spell => spell.atLevel >= level) || []),],
-    features: [...(features || []), ...(subClassFeatures || [])].filter(({ atLevel }) => atLevel <= level),
-    getWeaponProficiencies: (...params) => getWeaponProficiencies?.(...params) || subClassHasWeaponProficiencies?.(...params),
-    getArmorProficiencies: (...params) => getArmorProficiencies?.(...params) || subClassHasArmorProficiencies?.(...params),
-    getShieldProficiency: (...params) => getShieldProficiency?.(...params) || subClassHasShieldProficiency?.(...params),
+    features: (features ?? []).concat(subClassFeatures ?? []).filter(({ atLevel }) => atLevel <= level),
+    weaponProficiencies: Object.assign({}, weaponProficiencies, subClassWeaponProficiencies ?? {}),
+    armorProficiencies: (armorProficiencies ?? []).concat(subClassArmorProficiencies ?? []),
+    shieldProficiency: (shieldProficiency || subClassShieldProficiency) ?? false,
   })
 }

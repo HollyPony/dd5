@@ -1,4 +1,9 @@
 const fr = {
+  navbar: {
+    appTitle: 'Création de personnage',
+    exportChar: 'Télécharger',
+    importChar: 'Importer',
+  },
   charName: {
     label: 'Nom du personnage',
   },
@@ -43,12 +48,26 @@ const fr = {
         light: 'Légères',
         medium: 'Intermed.',
         heavy: 'Lourdes',
-        shields: 'Boucliers',
       },
-      weapon: {
+      shield: 'Boucliers',
+      weapons: {
         title: 'Armes',
+        simpleMelee: {
+          all: 'Armes courantes de corps à corps',
+        },
+        simpleRanged: {
+          all: 'Armes courantes à distance',
+        },
+        martialMelee: {
+          all: 'Armes de guerre de corps à corps',
+          Light: 'Armes de guerre de corps à corps (Légères)',
+        },
+        martialRanged: {
+          all: 'Armes de guerre à distance',
+          Light: 'Armes de guerre à distance (Légères)',
+        },
       },
-      tool: {
+      tools: {
         title: 'Outils',
       }
     },
@@ -357,12 +376,64 @@ Vous ne pouvez avoir qu'une créature à la fois sous l'effet de cette aptitude.
       fiendishLegacy: `Héritage fiélon`,
       otherworldlyPresence: `Présence d'outre-monde`,
     },
-    weaponCategories: {
-      WEAPON_CATEGORY: {
-        simpleMelee: 'Armes courantes de corps à corps',
-        simpleRanged: 'Armes courantes à distance',
-        martialMelee: 'Armes de guerre de corps à corps',
-        martialRanged: 'Armes de guerre à distance',
+    WEAPON_CATEGORY: {
+      simpleMelee: 'Armes courantes de corps à corps',
+      simpleRanged: 'Armes courantes à distance',
+      martialMelee: 'Armes de guerre de corps à corps',
+      martialRanged: 'Armes de guerre à distance',
+    },
+    WEAPON_PROPERTY: {
+      Ammunition: { name: 'Munitions', description: `` }, // TODO:
+      Finesse: { name: 'Finesse', description: `` }, // TODO:
+      Heavy: { name: 'Lourde', description: `` }, // TODO:
+      Light: { name: 'Légère', description: `` }, // TODO:
+      Loading: { name: 'Chargement', description: `` },
+
+      Range: { name: '', description: `` }, // TODO:
+
+      Reach: { name: 'Allonge', description: `` }, // TODO:
+      Thrown: { name: 'Lancer', description: `` }, // TODO:
+      TwoHanded: { name: 'Deux mains', description: `` }, // TODO:
+      Versatile: { name: 'Polyvalente', description: `` }, // TODO:
+    },
+    WEAPON_AMMUNITION: {
+      Arrows: 'flèche',
+      Bolts: 'carreau',
+      Bullets: 'Billes de fronde',
+      Needles: 'dard',
+    },
+    WEAPON_MASTERY: {
+      Cleave: {
+        name: 'Enchaînement',
+        description: ``, // TODO: 
+      },
+      Graze: {
+        name: 'Écorchure',
+        description: ``,
+      },
+      Nick: {
+        name: 'Coup double',
+        description: ``,
+      },
+      Push: {
+        name: 'Poussée',
+        description: ``,
+      },
+      Sap: {
+        name: 'Sape',
+        description: ``,
+      },
+      Slow: {
+        name: 'Ralentissement',
+        description: ``,
+      },
+      Topple: {
+        name: 'Renversement',
+        description: ``,
+      },
+      Vex: {
+        name: 'Ouverture',
+        description: ``,
       },
     },
     weaponNames: {

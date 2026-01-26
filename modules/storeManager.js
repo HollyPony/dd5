@@ -1,4 +1,4 @@
-import { ABILITY, EQUIPED_CATEGORY, EQUIPMENT_TYPE, SKILLS, } from './data/common.js'
+import { ABILITY, EQUIPED_CATEGORY, EQUIPMENT_TYPE, SKILLS, } from './common.js'
 
 export const mock = {
   charName: 'Doudou McDoubidou',
@@ -47,15 +47,6 @@ export function fromJSON(jsonData) {
 export function toJSON(jsData) {
   // TODO: See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse?the_reviver_parameter
   const reviver = (key, value) => {
-    if (key === 'attributes') {
-      console.log(key, value)
-    }
-    // console.log(key, value)
-
-    // if (Object.values(SKILLS).find(_ => _ === key)) {
-    //   console.log(key, value)
-    // }
-
     switch (key) {
       case 'skillChoosed': return Object.keys(SKILLS).filter(key => value.includes(SKILLS[key]))
       default: return value
@@ -74,14 +65,14 @@ export function toJSON(jsData) {
     charSizeCategory: jsData.charSizeCategory,
     charSize: jsData.charSize,
     attributes: jsData.attributes,
-    // attributes: {
-    //   [ABILITY.strength]: jsData.attributes[ABILITY.strength],
-    //   [ABILITY.dexterity]: jsData.attributes[ABILITY.dexterity],
-    //   [ABILITY.constitution]: jsData.attributes[ABILITY.constitution],
-    //   [ABILITY.wisdom]: jsData.attributes[ABILITY.wisdom],
-    //   [ABILITY.intelligence]: jsData.attributes[ABILITY.intelligence],
-    //   [ABILITY.charisma]: jsData.attributes[ABILITY.charisma],
-    // },
+    attributes: {
+      strength: jsData.attributes[ABILITY.strength],
+      dexterity: jsData.attributes[ABILITY.dexterity],
+      constitution: jsData.attributes[ABILITY.constitution],
+      wisdom: jsData.attributes[ABILITY.wisdom],
+      intelligence: jsData.attributes[ABILITY.intelligence],
+      charisma: jsData.attributes[ABILITY.charisma],
+    },
     skillChoosed: jsData.skillChoosed,
     equipments: jsData.equipments
   }, reviver, 2)
