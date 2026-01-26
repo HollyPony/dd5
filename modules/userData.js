@@ -1,6 +1,6 @@
 import getClass from './data/classes.js'
-import { EFFECT, ABILITY, EQUIPED_CATEGORY, D, SKILLS, EQUIPMENT_TYPE, DICE, } from './common.js'
-import { getEquipment, } from './data/equipments.js'
+import { EFFECT, ABILITY, SKILLS, DICE, } from './common.js'
+import { EQUIPED_CATEGORY, EQUIPMENT_TYPE, getEquipment, } from './data/equipments.js'
 import { origins, } from './data/origins.js'
 import getSpecies from './data/species.js'
 import { s } from './helpers.js'

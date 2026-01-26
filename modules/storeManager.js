@@ -1,4 +1,4 @@
-import { ABILITY, EQUIPED_CATEGORY, EQUIPMENT_TYPE, SKILLS, } from './common.js'
+import { ABILITY, SKILLS, } from './common.js'
 
 export const mock = {
   charName: 'Doudou McDoubidou',

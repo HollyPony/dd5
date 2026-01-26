@@ -1,14 +1,14 @@
+import { ABILITY, D, SKILLS } from './modules/common.js'
 import { createElement, populateSelect, removeAllChildren, } from './modules/domlib.js'
 import * as userData from './modules/userData.js'
 import { getList as getClassesList, getSubClasses, } from './modules/data/classes.js'
 import { origins, } from './modules/data/origins.js'
 import { getSpeciesList, } from './modules/data/species.js'
-import { getWeapons, } from './modules/data/equipments.js'
+import { ARMOR_CATEGORY, getWeapons, } from './modules/data/equipments.js'
 import parseMarkdown from './modules/markdown.js'
 
 // TODO: remove mock
 import { mock as storedData } from './modules/storeManager.js'
-import { ABILITY, ARMOR_CATEGORY, D, SKILLS } from './modules/common.js'
 
 /////////////////////////////////////////////////////////////////////////
 // INPUTS ///////////////////////////////////////////////////////////////

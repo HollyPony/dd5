@@ -4,7 +4,9 @@ export const f = Object.freeze
 export const s = Object.seal
 
 // Shortcut for f + O functions
-export const Of = _ => O(f(_))
+// TODO:
+export const Enum = f
+// export const Enum = _ => O(f(_))
 
 // Proxy object to trigger Error accessing unspecified property
 export const O = target => {

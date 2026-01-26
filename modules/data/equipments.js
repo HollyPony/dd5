@@ -1,14 +1,86 @@
-import { f, } from '../helpers.js'
+import { f, Enum, } from '../helpers.js'
 import {
-  ABILITY, ARMOR_CATEGORY, D, DICE, EFFECT, EQUIPED_CATEGORY, EQUIPMENT_TYPE,
-  MAGIC_ITEM_TYPE, WEAPON_AMMUNITION, WEAPON_CATEGORY,
-  WEAPON_DAMAGE_TYPE, WEAPON_MASTERY, WEAPON_PROPERTY
+  ABILITY, D, DICE, EFFECT,
 }
   from '../common.js'
 
-// mastery: Botte
+export const EQUIPMENT_TYPE = Enum({
+  WEAPON: 'EQUIPMENT_TYPE.WEAPON',
+  ARMOR: 'EQUIPMENT_TYPE.ARMOR',
+  SHIELD: 'EQUIPMENT_TYPE.SHIELD',
+  TOOL: 'EQUIPMENT_TYPE.TOOL',
+  GEAR: 'EQUIPMENT_TYPE.GEAR',
+  MAGIC_ITEM: 'EQUIPMENT_TYPE.MAGIC_ITEM',
+})
 
-// P.214
+export const EQUIPED_CATEGORY = Enum({
+  WEAPON: 'EQUIPED_CATEGORY.WEAPON',
+  ARMOR: 'EQUIPED_CATEGORY.ARMOR',
+  SHIELD: 'EQUIPED_CATEGORY.SHIELD',
+  OTHER: 'EQUIPED_CATEGORY.OTHER',
+})
+
+export const WEAPON_CATEGORY = Enum({
+  simpleMelee: 'WEAPON_CATEGORY.simpleMelee', // Armes courantes de corps à corps
+  simpleRanged: 'WEAPON_CATEGORY.simpleRanged', // Armes courantes à distance
+  martialMelee: 'WEAPON_CATEGORY.martialMelee', // Armes de guerre de corps à corps
+  martialRanged: 'WEAPON_CATEGORY.martialRanged', // Armes de guerre à distance
+})
+
+export const WEAPON_DAMAGE_TYPE = Enum({
+  piercing: 'WEAPON_DAMAGE_TYPE.piercing', // Perforant
+  slashing: 'WEAPON_DAMAGE_TYPE.slashing', // Tranchant
+  bludgeoning: 'WEAPON_DAMAGE_TYPE.bludgeoning', // Contondant
+})
+
+export const WEAPON_PROPERTY = Enum({ // P.214 - Propriété
+  Ammunition: 'WEAPON_PROPERTY.Ammunition',
+  Finesse: 'WEAPON_PROPERTY.Finesse',
+  Heavy: 'WEAPON_PROPERTY.Heavy',
+  Light: 'WEAPON_PROPERTY.Light',
+  Loading: 'WEAPON_PROPERTY.Loading',
+  Range: 'WEAPON_PROPERTY.Range',
+  Reach: 'WEAPON_PROPERTY.Reach',
+  Thrown: 'WEAPON_PROPERTY.Thrown',
+  TwoHanded: 'WEAPON_PROPERTY.TwoHanded',
+  Versatile: 'WEAPON_PROPERTY.Versatile',
+})
+
+export const WEAPON_AMMUNITION = Enum({
+  Arrows: 'WEAPON_AMMUNITION.Arrow',
+  Bolts: 'WEAPON_AMMUNITION.Bolt',
+  Bullets: 'WEAPON_AMMUNITION.SlingBullets',
+  Needles: 'WEAPON_AMMUNITION.Needle',
+})
+
+export const WEAPON_MASTERY = Enum({ // Bottes P.215
+  Cleave: 'WEAPON_MASTERY.Cleave',
+  Graze: 'WEAPON_MASTERY.Graze',
+  Nick: 'WEAPON_MASTERY.Nick',
+  Push: 'WEAPON_MASTERY.Push',
+  Sap: 'WEAPON_MASTERY.Sap',
+  Slow: 'WEAPON_MASTERY.Slow',
+  Topple: 'WEAPON_MASTERY.Topple',
+  Vex: 'WEAPON_MASTERY.Vex',
+})
+
+export const ARMOR_CATEGORY = Enum({ // P.220
+  Light: 'ARMOR_CATEGORY.Light',
+  Medium: 'ARMOR_CATEGORY.Medium',
+  Heavy: 'ARMOR_CATEGORY.Heavy',
+})
+
+export const MAGIC_ITEM_TYPE = Enum({
+  armor: 'MAGIC_ITEM_TYPE.armor', // Armure
+  potion: 'MAGIC_ITEM_TYPE.potion', // Potion
+  ring: 'MAGIC_ITEM_TYPE.ring', // Anneau
+  scroll: 'MAGIC_ITEM_TYPE.scroll', // Parchemin
+  staff: 'MAGIC_ITEM_TYPE.staff', // Bâton
+  wand: 'MAGIC_ITEM_TYPE.wand', // Baguette
+  weapon: 'MAGIC_ITEM_TYPE.weapon', // Arme
+  wondrousItem: 'MAGIC_ITEM_TYPE.wondrousItem', // Objet merveilleux
+  rod: 'MAGIC_ITEM_TYPE.rod', // Sceptre
+})
 
 const weapons = f([ // P.214
   f({

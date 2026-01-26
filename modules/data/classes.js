@@ -1,6 +1,7 @@
 import { InvalidClassNameError, InvalidSubClassNameError } from '../errors.js'
 import { f, } from '../helpers.js'
-import { EFFECT, D, SKILLS, WEAPON_CATEGORY, WEAPON_PROPERTY, ABILITY, ARMOR_CATEGORY } from '../common.js'
+import { EFFECT, D, SKILLS, ABILITY, } from '../common.js'
+import { WEAPON_CATEGORY, WEAPON_PROPERTY } from './equipments.js'
 
 const abilityScoreImprovement = (level) => ({ // TODO: Check apply `this` work on this arrowed fct
   name: 'abilityScoreImprovement', atLevel: level,
@@ -105,7 +106,9 @@ const classes = f({
       ([WEAPON_CATEGORY.martialMelee, WEAPON_CATEGORY.martialRanged].includes(weapon.category) && weapon.properties.includes(WEAPON_PROPERTY.Light)),
     armorProficiencies: [],
     shieldProficiency: false,
-    toolProficiencies: [], // TODO: select one function
+    toolProficiencies: [ // TODO: select one function
+      { max: 1, filterBy: [] } // TODO
+    ],
     effects: {
       [EFFECT.SpeedModifierEffect]: {
         condition: function ({ equipedArmor, equipedShield }) { return !equipedArmor && !equipedShield },

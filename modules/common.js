@@ -1,11 +1,11 @@
-import { f as Of, } from './helpers.js' // TODO: Of break completion
+import { Enum, } from './helpers.js' // TODO: Of break completion
 
 export function DICE(number, dice,) {
   if (!D[dice]) throw new Error('kjh')
   return { number, dice, }
 }
 
-export const D = Of({
+export const D = Enum({
   4: 4,
   6: 6,
   8: 8,
@@ -15,7 +15,7 @@ export const D = Of({
   100: 100,
 })
 
-export const ABILITY = Of({
+export const ABILITY = Enum({
   // Warning: keys used as html className
   // TODO : use another enum for html binding name ?
   strength: 'ABILITY.strength',
@@ -26,7 +26,7 @@ export const ABILITY = Of({
   charisma: 'ABILITY.charisma',
 })
 
-export const EFFECT = Of({
+export const EFFECT = Enum({
   SpeedModifierEffect: 'EFFECT.SpeedModifierEffect',
   ACOverrideEffect: 'EFFECT.ACOverrideEffect',
   ACModifierEffect: 'EFFECT.ACModifierEffect',
@@ -42,7 +42,7 @@ export const EFFECT = Of({
   HasShieldProficiencyEffect: 'EFFECT.HasShieldProficiencyEffect',
 })
 
-export const SKILLS = Of({
+export const SKILLS = Enum({
   // Warning: keys used as html className
   // TODO : use another enum for html binding name ?
   acrobatics: { name: 'SKILLS.acrobatics', ability: ABILITY.dexterity, },
@@ -63,104 +63,4 @@ export const SKILLS = Of({
   sleightOfHand: { name: 'SKILLS.sleightOfHand', ability: ABILITY.dexterity, },
   stealth: { name: 'SKILLS.stealth', ability: ABILITY.dexterity, },
   survival: { name: 'SKILLS.survival', ability: ABILITY.wisdom, },
-})
-
-export const EQUIPMENT_TYPE = Of({
-  WEAPON: 'EQUIPMENT_TYPE.WEAPON',
-  ARMOR: 'EQUIPMENT_TYPE.ARMOR',
-  SHIELD: 'EQUIPMENT_TYPE.SHIELD',
-  TOOL: 'EQUIPMENT_TYPE.TOOL',
-  GEAR: 'EQUIPMENT_TYPE.GEAR',
-  MAGIC_ITEM: 'EQUIPMENT_TYPE.MAGIC_ITEM',
-})
-
-export const EQUIPED_CATEGORY = Of({
-  WEAPON: 'EQUIPED_CATEGORY.WEAPON',
-  ARMOR: 'EQUIPED_CATEGORY.ARMOR',
-  SHIELD: 'EQUIPED_CATEGORY.SHIELD',
-  OTHER: 'EQUIPED_CATEGORY.OTHER',
-})
-
-export const WEAPON_DAMAGE_TYPE = Of({
-  piercing: 'WEAPON_DAMAGE_TYPE.piercing', // Perforant
-  slashing: 'WEAPON_DAMAGE_TYPE.slashing', // Tranchant
-  bludgeoning: 'WEAPON_DAMAGE_TYPE.bludgeoning', // Contondant
-})
-
-export const WEAPON_CATEGORY = Of({
-  simpleMelee: 'WEAPON_CATEGORY.simpleMelee', // Armes courantes de corps à corps
-  simpleRanged: 'WEAPON_CATEGORY.simpleRanged', // Armes courantes à distance
-  martialMelee: 'WEAPON_CATEGORY.martialMelee', // Armes de guerre de corps à corps
-  martialRanged: 'WEAPON_CATEGORY.martialRanged', // Armes de guerre à distance
-})
-
-export const WEAPON_PROFICIENCY = Of({
-  simple: {
-    melee: {},
-    ranged: {},
-  },
-  martial: {
-    melee: {},
-    ranged: {},
-  },
-})
-
-export const WEAPON_MASTERY = Of({
-  Cleave: 'WEAPON_MASTERY.Cleave',
-  Graze: 'WEAPON_MASTERY.Graze',
-  Nick: 'WEAPON_MASTERY.Nick',
-  Push: 'WEAPON_MASTERY.Push',
-  Sap: 'WEAPON_MASTERY.Sap',
-  Slow: 'WEAPON_MASTERY.Slow',
-  Topple: 'WEAPON_MASTERY.Topple',
-  Vex: 'WEAPON_MASTERY.Vex',
-})
-
-export const WEAPON_PROPERTY = Of({ // P.214 - Propriété
-  Ammunition: 'WEAPON_PROPERTY.Ammunition',
-  Finesse: 'WEAPON_PROPERTY.Finesse',
-  Heavy: 'WEAPON_PROPERTY.Heavy',
-  Light: 'WEAPON_PROPERTY.Light',
-  Loading: 'WEAPON_PROPERTY.Loading',
-  Range: 'WEAPON_PROPERTY.Range',
-  Reach: 'WEAPON_PROPERTY.Reach',
-  Thrown: 'WEAPON_PROPERTY.Thrown',
-  TwoHanded: 'WEAPON_PROPERTY.TwoHanded',
-  Versatile: 'WEAPON_PROPERTY.Versatile',
-})
-
-export const WEAPON_AMMUNITION = Of({
-  Arrows: 'WEAPON_AMMUNITION.Arrow',
-  Bolts: 'WEAPON_AMMUNITION.Bolt',
-  Bullets: 'WEAPON_AMMUNITION.SlingBullets',
-  Needles: 'WEAPON_AMMUNITION.Needle',
-})
-
-export const WEAPON_MASTERY_PROPERTY = Of({ // P.215 - Propriété Botte
-  Cleave: 'WEAPON_MASTERY_PROPERTY.Cleave',
-  Graze: 'WEAPON_MASTERY_PROPERTY.Graze',
-  Nick: 'WEAPON_MASTERY_PROPERTY.Nick',
-  Sap: 'WEAPON_MASTERY_PROPERTY.Sap',
-  Slow: 'WEAPON_MASTERY_PROPERTY.Slow',
-  Topple: 'WEAPON_MASTERY_PROPERTY.Topple',
-  Vex: 'WEAPON_MASTERY_PROPERTY.Vex',
-})
-
-export const ARMOR_CATEGORY = Of({ // P.220
-  Light: 'ARMOR_CATEGORY.Light',
-  Medium: 'ARMOR_CATEGORY.Medium',
-  Heavy: 'ARMOR_CATEGORY.Heavy',
-})
-
-
-export const MAGIC_ITEM_TYPE = Of({
-  armor: 'MAGIC_ITEM_TYPE.armor', // Armure
-  potion: 'MAGIC_ITEM_TYPE.potion', // Potion
-  ring: 'MAGIC_ITEM_TYPE.ring', // Anneau
-  scroll: 'MAGIC_ITEM_TYPE.scroll', // Parchemin
-  staff: 'MAGIC_ITEM_TYPE.staff', // Bâton
-  wand: 'MAGIC_ITEM_TYPE.wand', // Baguette
-  weapon: 'MAGIC_ITEM_TYPE.weapon', // Arme
-  wondrousItem: 'MAGIC_ITEM_TYPE.wondrousItem', // Objet merveilleux
-  rod: 'MAGIC_ITEM_TYPE.rod', // Sceptre
 })
