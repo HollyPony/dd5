@@ -20,3 +20,14 @@ export function InvalidSubClassNameError(subClassName, className, ...props) {
   return err
 }
 InvalidSubClassNameError.prototype = Object.create(Error.prototype, { constructor: { value: InvalidSubClassNameError, } })
+
+export function BadDiceError(dice, ...props) {
+  const message = `Dice '${dice}' is not does not exist`
+  const err = new Error(message, ...props)
+  Object.setPrototypeOf(err, BadDiceError.prototype)
+  err.name = "BadDiceError"
+  err.dice = dice
+
+  return err
+}
+BadDiceError.prototype = Object.create(Error.prototype, { constructor: { value: BadDiceError, } })
