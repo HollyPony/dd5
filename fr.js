@@ -497,79 +497,55 @@ Vous ne pouvez avoir qu'une créature à la fois sous l'effet de cette aptitude.
       plate: `Harnois`,
       shield: `Bouclier`,
     },
-    subClasses: {
-      barbarian: {
-        berserker: 'Voie du Berserker',
-        wildHeart: 'Voie du Coeur sauvage',
-        worldTree: 'Voie de l\'Arbre-Monde',
-        zealot: 'Voie du Zélateur',
+    tools: {
+      alchemistsSupplies: { name: `Matériel d'Alchemiste`, usage: ``, },
+      brewersSupplies: { name: `Matériel de brasseur`, usage: ``, },
+      calligraphersSupplies: { name: `Matériel de calligraphe`, usage: ``, },
+      carpentersTools: { name: `Outils de charpentier`, usage: ``, },
+      cartographersToolTools: { name: `Outils de cartographe`, usage: ``, },
+      cobblersTools: { name: `Outils cordonnier`, usage: ``, },
+      cooksTools: { name: `Ustensiles de cuisinier`, usage: ``, },
+      glassblowersTools: { name: `Outils de souffleur de verre`, usage: ``, },
+      jewelersTools: { name: `Outils joaillier`, usage: ``, },
+      leatherworkersTools: { name: `Outils de tanneur`, usage: ``, },
+      masonsTools: { name: `Outils de maçon`, usage: ``, },
+      paintersTools: { name: `Matériel de peintre`, usage: ``, },
+      pottersTools: { name: `Outils de potier`, usage: ``, },
+      smithsTools: { name: `Outils de forgeron`, usage: ``, },
+      tinkersTools: { name: `Outils de bricoleur`, usage: ``, },
+      weaversTools: { name: `Outils de tisserand`, usage: ``, },
+      woodcarversTools: { name: `Outils de menuisier`, usage: ``, },
+
+      disguiseKit: { name: `Accessoires de déguisement`, usage: ``, },
+      forgeryKit: { name: `Matériel de contrefaçon`, usage: ``, },
+      gamingSet: {
+        name: `Boîte de jeux`, usage: ``,
+        variants: {
+          dice: 'Dés',
+          dragonChess: 'Échecs draconiques',
+          playingCards: 'Cartes à jouer',
+          threeDragonAnte: 'Jeu des dragons',
+        }
       },
-      bard: {
-        dance: 'Collège de la Danse',
-        glamour: 'Collège de la Séduction',
-        lore: 'Collège du Savoir',
-        valor: 'Collège de la Vaillance',
+      herbalismKit: { name: `Matériel d'herboriste`, usage: ``, },
+      musicalInstrument: {
+        name: `Instrument de musique`, usage: ``,
+        variants: {
+          bagpipes: 'Cornemuse',
+          drum: 'Tambour',
+          dulcimer: 'Tympanon',
+          flute: 'Flûte',
+          horn: 'Cor',
+          lute: 'Luth',
+          lyre: 'Lyre',
+          panFlute: 'Flûte de Pan',
+          shawm: 'Chalemie',
+          viol: 'Viole',
+        },
       },
-      cleric: {
-        life: 'Domaine de la Vie',
-        light: 'Domaine de la Lumière',
-        trickery: 'Domaine de la Ruse',
-        war: 'Domaine de la Guerre',
-      },
-      druid: {
-        land: 'Cercle de la Terre',
-        moon: 'Cercle de la Lune',
-        sea: 'Cercle des Mers',
-        stars: 'Cercle des Astres',
-      },
-      fighter: {
-        battleMaster: 'Maître de Guerre',
-        champion: 'Champion',
-        eldritchKnight: 'Chevalier Occulte',
-        psiWarrior: 'Soldat Psi',
-      },
-      monk: {
-        mercy: 'Credo de la Miséricorde',
-        shadow: 'Credo de l\'Ombre',
-        elements: 'Credo des éléments',
-        openHand: 'Credo de la Paume',
-      },
-      paladin: {
-        devotion: 'Serment de Dévotion',
-        glory: 'Serment de la Gloire',
-        ancients: 'Serment des Anciens',
-        vengeance: 'Serment de Vengeance',
-      },
-      ranger: {
-        beast: 'Belluaire',
-        fey: 'Vagabond Féérique',
-        stalker: 'Traqueur des Ténèbres',
-        hunter: 'Chasseur',
-      },
-      rogue: {
-        arcana: 'Arnaqueur Arcanique',
-        assassin: 'Assassin',
-        soulknife: 'Âme acérée',
-        thief: 'Voleur',
-      },
-      sorcerer: {
-        aberrant: 'Sorcellerie Aberrante',
-        clockwork: 'Sorcellerie Mécanique',
-        draconic: 'Sorcellerie Draconique',
-        wild: 'Sorcellerie Sauvage',
-      },
-      warlock: {
-        archfey: 'Protecteur Archifée',
-        celestial: 'Protecteur Céleste',
-        fiend: 'Protecteur Fiélon',
-        old: 'Protecteur Grand Ancien',
-      },
-      wizard: {
-        abjureur: 'Abjurateur',
-        diviner: 'Devin',
-        evoker: 'Evocateur',
-        illusionist: 'Illusioniste',
-      },
+      navigatorsTools: { name: `Instruments de navigateur`, usage: ``, },
+      poisonersKit: { name: `Matériel d'empoisonneur'`, usage: ``, },
+      thievesTools: { name: `Outils de voleur`, usage: ``, },
     },
     gears: {
       acid: {
@@ -605,7 +581,7 @@ Vous ne pouvez avoir qu'une créature à la fois sous l'effet de cette aptitude.
         description: `Une bouteille en verre peut contenir jusqu'à 75 cl.`
       },
       lock: {
-        name: `Cadenas`,
+        name: `Serrure`,
         description: `Un cadenas est livré avec une clef. Sans cette clef, une créature peut crocheter le cadenas à condition de réussir un jet de Dextérité (Escamotage) DD 15 avec des outils de voleur.`
       },
       quiver: {
@@ -692,21 +668,23 @@ Pour être libérée, la cible (ou une créature dans un rayon de 1,50 m d’ell
       },
       arcaneFocus: {
         name: 'Focaliseur arcanique',
-        description: `Un focaliseur arcanique prend l’une des formes de la table ci-dessous et il est incrusté de pierreries ou sculpté afin de canaliser la magie arcanique. Un personnage Ensorceleur, Magicien ou Occultiste peut se servir d’un tel objet comme focaliseur d’incantation.
-Focaliseur 	Poids 	Prix
-Baguette 	0,5 kg 	10 po
-Bâton (également bâton de combat) 	2 kg 	5 po
-Cristal 	0,5 kg 	10 po
-Orbe 	1,5 kg 	20 po
-Sceptre 	1 kg 	10 po`,
+        description: `Un focaliseur arcanique prend l’une des formes de la table ci-dessous et il est incrusté de pierreries ou sculpté afin de canaliser la magie arcanique. Un personnage Ensorceleur, Magicien ou Occultiste peut se servir d’un tel objet comme focaliseur d’incantation.`,
+        variants: {
+          crystal: 'Cristal',
+          orb: 'Orbe',
+          rod: 'Baguette',
+          staff: 'Bâton (également bâton de combat)',
+          wand: 'Sceptre',
+        }
       },
       druidicFocus: {
         name: 'Focaliseur druidique',
-        description: `Un focaliseur druidique prend l’une des formes proposées dans la table ci-dessous et il est sculpté, attaché avec un ruban ou peint de façon à canaliser la magie primitive. Un Druide ou un Rôdeur peut se servir d’un tel objet comme focaliseur d’incantation.
-Focaliseur 	Poids 	Prix
-Baguette d’if 	0,5 kg 	10 po
-Bâton en bois (également bâton de combat) 	2 kg 	5 po
-Branche de houx 	— 	1 po`,
+        description: `Un focaliseur druidique prend l’une des formes proposées dans la table ci-dessous et il est sculpté, attaché avec un ruban ou peint de façon à canaliser la magie primitive. Un Druide ou un Rôdeur peut se servir d’un tel objet comme focaliseur d’incantation.`,
+        variants: {
+          sprigOfMistletoe: `Branche de houx`,
+          woodenStaff: `Bâton en bois (également bâton de combat)`,
+          yewWand: `Baguette d'if`,
+        },
       },
       grapplingHook: {
         name: `Grappin`,
@@ -762,13 +740,16 @@ Chaque paire de menottes est fournie avec une clef. Sans cette clef, une créatu
       },
       ammunition: {
         name: 'Munitions',
-        description: `Les munitions sont nécessaires pour toute arme dotée de la propriété Munitions. Le descriptif de l’arme indique le type de munitions qu’elle utilise. La table ci-dessous répertorie les différents types de munitions et la quantité que vous obtenez lorsque vous en achetez. Figure en outre l’objet généralement utilisé pour ranger chaque type de munitions, qui doit être acheté séparément.
-Type 	Quantité 	Rangement 	Poids 	Prix
-Balles d’arme à feu 	10 	Sacoche 	1 kg 	3 po
-Billes de fronde 	20 	Sacoche 	750 g 	4 pc
-Carreaux 	20 	Étui 	750 g 	1 po
-Dards 	50 	Sacoche 	0,5 kg 	1 po
-Flèches 	20 	Carquois 	0,5 kg 	1 po`
+        description: `Les munitions sont nécessaires pour toute arme dotée de la propriété Munitions. Le descriptif de l’arme indique le type de munitions qu’elle utilise. La table ci-dessous répertorie les différents types de munitions et la quantité que vous obtenez lorsque vous en achetez. Figure en outre l’objet généralement utilisé pour ranger chaque type de munitions, qui doit être acheté séparément.`,
+        variants: {
+          WEAPON_AMMUNITION: {
+            Arrows: `Flèches`,
+            Bolts: `Carreaux`,
+            SlingBullet: `Billes de fronde`,
+            FirearmBullets: `Balles d'arme à feu`,
+            Needles: `Dards`,
+          }
+        }
       },
       waterskin: {
         name: `Outre`,
@@ -818,17 +799,15 @@ Flèches 	20 	Carquois 	0,5 kg 	1 po`
         name: `Parchemin`,
         description: `Une feuille de parchemin peut contenir environ 250 mots écrits à la main.`,
       },
-      spellScrollLevel1: {
-        name: 'Parchemin de sort (1er niveau)',
+      spellScroll: {
+        name: 'Parchemin de sort',
         description: `Un parchemin de sort (sort mineur) ou parchemin de sort (1er niveau) est un objet magique qui porte la formule d’un sort mineur ou d’un sort du 1er niveau, respectivement, tel que défini par le créateur du parchemin. Si ce sort figure dans votre liste de sorts de classe, vous pouvez lire le parchemin pour en lancer le sort avec son temps d’incantation habituel et sans en fournir les éventuelles composantes matérielles.
     
-    Si le sort nécessite un jet de sauvegarde ou un jet d’attaque, le DD de sauvegarde est de 13 et le bonus à l’attaque est de +5. Le parchemin se désintègre lorsque l’incantation est terminée.`
-      },
-      spellScrollCantrip: {
-        name: 'Parchemin de sort (mineur)',
-        description: `Un parchemin de sort (sort mineur) ou parchemin de sort (1er niveau) est un objet magique qui porte la formule d’un sort mineur ou d’un sort du 1er niveau, respectivement, tel que défini par le créateur du parchemin. Si ce sort figure dans votre liste de sorts de classe, vous pouvez lire le parchemin pour en lancer le sort avec son temps d’incantation habituel et sans en fournir les éventuelles composantes matérielles.
-    
-    Si le sort nécessite un jet de sauvegarde ou un jet d’attaque, le DD de sauvegarde est de 13 et le bonus à l’attaque est de +5. Le parchemin se désintègre lorsque l’incantation est terminée.`
+Si le sort nécessite un jet de sauvegarde ou un jet d’attaque, le DD de sauvegarde est de 13 et le bonus à l’attaque est de +5. Le parchemin se désintègre lorsque l’incantation est terminée.`,
+        options: {
+          level1: '1er niveau',
+          canTrip: 'mineur',
+        },
       },
       perfume: {
         name: `Parfum`,
@@ -935,6 +914,80 @@ Reliquaire (tenu) 	1 kg 	5 po`
       healersKit: {
         name: `Trousse de soins`,
         description: `Une trousse de soins dispose de dix charges. Par une action Utilisation, dépenser une charge permet de stabiliser une créature avec l’état Inconscient et tombée à 0 point de vie sans passer par un jet de Sagesse (Médecine).`
+      },
+    },
+    subClasses: {
+      barbarian: {
+        berserker: 'Voie du Berserker',
+        wildHeart: 'Voie du Coeur sauvage',
+        worldTree: 'Voie de l\'Arbre-Monde',
+        zealot: 'Voie du Zélateur',
+      },
+      bard: {
+        dance: 'Collège de la Danse',
+        glamour: 'Collège de la Séduction',
+        lore: 'Collège du Savoir',
+        valor: 'Collège de la Vaillance',
+      },
+      cleric: {
+        life: 'Domaine de la Vie',
+        light: 'Domaine de la Lumière',
+        trickery: 'Domaine de la Ruse',
+        war: 'Domaine de la Guerre',
+      },
+      druid: {
+        land: 'Cercle de la Terre',
+        moon: 'Cercle de la Lune',
+        sea: 'Cercle des Mers',
+        stars: 'Cercle des Astres',
+      },
+      fighter: {
+        battleMaster: 'Maître de Guerre',
+        champion: 'Champion',
+        eldritchKnight: 'Chevalier Occulte',
+        psiWarrior: 'Soldat Psi',
+      },
+      monk: {
+        mercy: 'Credo de la Miséricorde',
+        shadow: 'Credo de l\'Ombre',
+        elements: 'Credo des éléments',
+        openHand: 'Credo de la Paume',
+      },
+      paladin: {
+        devotion: 'Serment de Dévotion',
+        glory: 'Serment de la Gloire',
+        ancients: 'Serment des Anciens',
+        vengeance: 'Serment de Vengeance',
+      },
+      ranger: {
+        beast: 'Belluaire',
+        fey: 'Vagabond Féérique',
+        stalker: 'Traqueur des Ténèbres',
+        hunter: 'Chasseur',
+      },
+      rogue: {
+        arcana: 'Arnaqueur Arcanique',
+        assassin: 'Assassin',
+        soulknife: 'Âme acérée',
+        thief: 'Voleur',
+      },
+      sorcerer: {
+        aberrant: 'Sorcellerie Aberrante',
+        clockwork: 'Sorcellerie Mécanique',
+        draconic: 'Sorcellerie Draconique',
+        wild: 'Sorcellerie Sauvage',
+      },
+      warlock: {
+        archfey: 'Protecteur Archifée',
+        celestial: 'Protecteur Céleste',
+        fiend: 'Protecteur Fiélon',
+        old: 'Protecteur Grand Ancien',
+      },
+      wizard: {
+        abjureur: 'Abjurateur',
+        diviner: 'Devin',
+        evoker: 'Evocateur',
+        illusionist: 'Illusioniste',
       },
     },
     spells: {
