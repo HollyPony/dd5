@@ -29,6 +29,11 @@ const fr = {
   experiencepoints: {
     label: "XP",
   },
+  ability: {
+    save: {
+      label: 'Sauvegarde',
+    }
+  },
   armorclass: {
     label: "Classe d'armure",
   },
@@ -41,6 +46,7 @@ const fr = {
   },
   stats: {
     proficiencyBonus: 'Bonus de maîtrise',
+    inspiration: 'Inspiration',
     trainings: {
       title: 'Entraînements & Maîtrises',
       armor: {
@@ -86,6 +92,17 @@ const fr = {
   },
   'class-features': {
     title: 'Capacités de classe',
+    base: {
+      title: `{class}`,
+      skills: {
+        title: `Maîtrises de compétence`,
+      },
+      tools: {
+        title: `Maîtrises d'outils`
+      }
+    },
+    expandBtn: 'Infos',
+    featureLevel: 'Nv.{level}',
   },
   species: {
     label: 'Race',
@@ -110,7 +127,7 @@ const fr = {
       soldier: 'Soldat',
       wayfarer: 'Voyageur',
     },
-    skills: {
+    SKILLS: {
       'acrobatics': 'Acrobaties', // Rester debout lorsque l'équilibre ou accomplir un exercice acrobatique
       'animalHandling': 'Dressage', // Apaiser ou dresser un animal, ou lui faire adopter un certain comportement
       'arcana': 'Arcanes', // Se souvenir de détails concernant des sorts, des objets magiques ou les plans d'existence
@@ -298,7 +315,7 @@ Vous ne pouvez avoir qu'une créature à la fois sous l'effet de cette aptitude.
         },
       },
     },
-    ability: {
+    ABILITY: {
       strength: 'Force',
       dexterity: 'Dextérité',
       constitution: 'Constitution',

@@ -1,7 +1,12 @@
 import { InvalidClassNameError, InvalidSubClassNameError } from '../errors.js'
-import { f, } from '../helpers.js'
+import { Enum, f, } from '../helpers.js'
 import { EFFECT, D, SKILLS, ABILITY, } from '../common.js'
-import { WEAPON_CATEGORY, WEAPON_PROPERTY } from './equipments.js'
+import { ARMOR_CATEGORY, INSTRUMENTS, TOOL_CATEGORY, TOOLS, WEAPON_CATEGORY, WEAPON_PROPERTY } from './equipments.js'
+
+const INSERTION_TYPE = Enum({
+  forced: 'INSERTION_TYPE.forced',
+  select: 'INSERTION_TYPE.select',
+})
 
 const abilityScoreImprovement = (level) => ({ // TODO: Check apply `this` work on this arrowed fct
   name: 'abilityScoreImprovement', atLevel: level,
@@ -25,7 +30,16 @@ const classes = f({
     hitPointMax: { base: 12, addPerLevel: 7, },
     saves: f([ABILITY.strength, ABILITY.constitution]),
     authorizedNumberSkills: 2,
-    authorizedSkills: f([SKILLS.animalHandling, SKILLS.athletics, SKILLS.intimidation, SKILLS.nature, SKILLS.perception, SKILLS.survival]),
+    skillProficiencies: f([SKILLS.animalHandling, SKILLS.athletics, SKILLS.intimidation, SKILLS.nature, SKILLS.perception, SKILLS.survival]),
+    weaponProficiencies: f({
+      [WEAPON_CATEGORY.simpleMelee]: [],
+      [WEAPON_CATEGORY.simpleRanged]: [],
+      [WEAPON_CATEGORY.martialMelee]: [],
+      [WEAPON_CATEGORY.martialRanged]: [],
+    }),
+    toolProficiencies: f([]),
+    armorProficiencies: f([ARMOR_CATEGORY.Light, ARMOR_CATEGORY.Medium,]),
+    shieldProficiency: true,
     subClasses: f({
       berserker: f({}),
       wildHeart: f({}),
@@ -39,7 +53,16 @@ const classes = f({
     hitPointMax: { base: 8, addPerLevel: 5, },
     saves: f([ABILITY.dexterity, ABILITY.charisma]),
     authorizedNumberSkills: 3,
-    authorizedSkills: f([SKILLS.acrobatics, SKILLS.animalHandling, SKILLS.arcana, SKILLS.athletics, SKILLS.deception, SKILLS.history, SKILLS.insight, SKILLS.intimidation, SKILLS.investigation, SKILLS.medicine, SKILLS.nature, SKILLS.perception, SKILLS.performance, SKILLS.persuasion, SKILLS.religion, SKILLS.sleightOfHand, SKILLS.stealth, SKILLS.survival]),
+    skillProficiencies: f([SKILLS.acrobatics, SKILLS.animalHandling, SKILLS.arcana, SKILLS.athletics, SKILLS.deception, SKILLS.history, SKILLS.insight, SKILLS.intimidation, SKILLS.investigation, SKILLS.medicine, SKILLS.nature, SKILLS.perception, SKILLS.performance, SKILLS.persuasion, SKILLS.religion, SKILLS.sleightOfHand, SKILLS.stealth, SKILLS.survival]),
+    weaponProficiencies: f({
+      [WEAPON_CATEGORY.simpleMelee]: [],
+      [WEAPON_CATEGORY.simpleRanged]: [],
+    }),
+    toolProficiencies: f([
+      { type: INSERTION_TYPE.select, count: 3, from: INSTRUMENTS, }
+    ]),
+    armorProficiencies: f([ARMOR_CATEGORY.Light,]),
+    shieldProficiency: false,
     subClasses: f({
       dance: f({}),
       glamour: f({}),
@@ -53,7 +76,13 @@ const classes = f({
     hitPointMax: { base: 8, addPerLevel: 5, },
     saves: f([ABILITY.wisdom, ABILITY.charisma]),
     authorizedNumberSkills: 2,
-    authorizedSkills: f([SKILLS.history, SKILLS.insight, SKILLS.medicine, SKILLS.persuasion, SKILLS.religion]),
+    skillProficiencies: f([SKILLS.history, SKILLS.insight, SKILLS.medicine, SKILLS.persuasion, SKILLS.religion]),
+    weaponProficiencies: f({
+      [WEAPON_CATEGORY.simpleMelee]: [],
+      [WEAPON_CATEGORY.simpleRanged]: [],
+    }),
+    armorProficiencies: [ARMOR_CATEGORY.Light, ARMOR_CATEGORY.Medium],
+    shieldProficiency: true,
     subClasses: f({
       life: f({}),
       light: f({}),
@@ -67,7 +96,16 @@ const classes = f({
     hitPointMax: { base: 8, addPerLevel: 5, },
     saves: f([ABILITY.intelligence, ABILITY.wisdom]),
     authorizedNumberSkills: 2,
-    authorizedSkills: f([SKILLS.animalHandling, SKILLS.insight, SKILLS.medicine, SKILLS.nature, SKILLS.perception, SKILLS.religion, SKILLS.survival]),
+    skillProficiencies: f([SKILLS.animalHandling, SKILLS.insight, SKILLS.medicine, SKILLS.nature, SKILLS.perception, SKILLS.religion, SKILLS.survival]),
+    weaponProficiencies: f({
+      [WEAPON_CATEGORY.simpleMelee]: [],
+      [WEAPON_CATEGORY.simpleRanged]: [],
+    }),
+    toolProficiencies: f([
+      { type: INSERTION_TYPE.forced, value: TOOLS.herbalismKit }
+    ]),
+    armorProficiencies: f([ARMOR_CATEGORY.Light,]),
+    shieldProficiency: true,
     subClasses: f({
       land: f({}),
       moon: f({}),
@@ -81,7 +119,16 @@ const classes = f({
     hitPointMax: { base: 10, addPerLevel: 6, },
     saves: f([ABILITY.strength, ABILITY.constitution]),
     authorizedNumberSkills: 2,
-    authorizedSkills: f([SKILLS.acrobatics, SKILLS.animalHandling, SKILLS.athletics, SKILLS.history, SKILLS.insight, SKILLS.intimidation, SKILLS.persuasion, SKILLS.perception, SKILLS.survival]),
+    skillProficiencies: f([SKILLS.acrobatics, SKILLS.animalHandling, SKILLS.athletics, SKILLS.history, SKILLS.insight, SKILLS.intimidation, SKILLS.persuasion, SKILLS.perception, SKILLS.survival]),
+    weaponProficiencies: f({
+      [WEAPON_CATEGORY.simpleMelee]: [],
+      [WEAPON_CATEGORY.simpleRanged]: [],
+      [WEAPON_CATEGORY.martialMelee]: [],
+      [WEAPON_CATEGORY.martialRanged]: [],
+    }),
+    toolProficiencies: f([]),
+    armorProficiencies: f([ARMOR_CATEGORY.Light, ARMOR_CATEGORY.Medium, ARMOR_CATEGORY.Heavy,]),
+    shieldProficiency: true,
     subClasses: f({
       battleMaster: f({}),
       champion: f({}),
@@ -95,20 +142,21 @@ const classes = f({
     hitPointMax: { base: 8, addPerLevel: 5, },
     saves: f([ABILITY.strength, ABILITY.dexterity]),
     authorizedNumberSkills: 2,
-    authorizedSkills: f([SKILLS.acrobatics, SKILLS.athletics, SKILLS.history, SKILLS.insight, SKILLS.religion, SKILLS.stealth]),
-    weaponProficiencies: f({ // TODO: Used to display masteries ?
-      [WEAPON_CATEGORY.simpleMelee]: [],
+    skillProficiencies: f([SKILLS.acrobatics, SKILLS.athletics, SKILLS.history, SKILLS.insight, SKILLS.religion, SKILLS.stealth]),
+    weaponProficiencies: f({
+      [WEAPON_CATEGORY.simpleMelee]: [], // TODO: is all weapons with Finesse and Light or just martials ?
       [WEAPON_CATEGORY.simpleRanged]: [],
       [WEAPON_CATEGORY.martialMelee]: [WEAPON_PROPERTY.Light],
       [WEAPON_CATEGORY.martialRanged]: [WEAPON_PROPERTY.Light],
     }),
-    getWeaponProficienciesFilter: (armor) => [WEAPON_CATEGORY.simpleMelee, WEAPON_CATEGORY.simpleRanged].includes(weapon.category) ||
-      ([WEAPON_CATEGORY.martialMelee, WEAPON_CATEGORY.martialRanged].includes(weapon.category) && weapon.properties.includes(WEAPON_PROPERTY.Light)),
-    armorProficiencies: [],
+    // TODO: remove ?
+    // getWeaponProficienciesFilter: (armor) => [WEAPON_CATEGORY.simpleMelee, WEAPON_CATEGORY.simpleRanged].includes(weapon.category) ||
+    //   ([WEAPON_CATEGORY.martialMelee, WEAPON_CATEGORY.martialRanged].includes(weapon.category) && weapon.properties.includes(WEAPON_PROPERTY.Light)),
+    toolProficiencies: f([ // TODO: select one function
+      { type: INSERTION_TYPE.select, max: 1, from: TOOL_CATEGORY.Artisan, } // TODO
+    ]),
+    armorProficiencies: f([]),
     shieldProficiency: false,
-    toolProficiencies: [ // TODO: select one function
-      { max: 1, filterBy: [] } // TODO
-    ],
     effects: {
       [EFFECT.SpeedModifierEffect]: {
         condition: function ({ equipedArmor, equipedShield }) { return !equipedArmor && !equipedShield },
@@ -226,7 +274,16 @@ const classes = f({
     hitPointMax: { base: 10, addPerLevel: 6, },
     saves: f([ABILITY.wisdom, ABILITY.charisma]), // TODO: choose
     authorizedNumberSkills: 2,
-    authorizedSkills: f([SKILLS.athletics, SKILLS.insight, SKILLS.intimidation, SKILLS.medicine, SKILLS.persuasion, SKILLS.religion]),
+    skillProficiencies: f([SKILLS.athletics, SKILLS.insight, SKILLS.intimidation, SKILLS.medicine, SKILLS.persuasion, SKILLS.religion]),
+    weaponProficiencies: f({
+      [WEAPON_CATEGORY.simpleMelee]: [],
+      [WEAPON_CATEGORY.simpleRanged]: [],
+      [WEAPON_CATEGORY.martialMelee]: [],
+      [WEAPON_CATEGORY.martialRanged]: [],
+    }),
+    toolProficiencies: f([]),
+    armorProficiencies: f([ARMOR_CATEGORY.Light, ARMOR_CATEGORY.Medium, ARMOR_CATEGORY.Heavy,]),
+    shieldProficiency: true,
     subClasses: f({
       devotion: f({}),
       glory: f({}),
@@ -240,7 +297,16 @@ const classes = f({
     hitPointMax: { base: 10, addPerLevel: 6, },
     saves: f([ABILITY.strength, ABILITY.dexterity]),
     authorizedNumberSkills: 3,
-    authorizedSkills: f([SKILLS.animalHandling, SKILLS.athletics, SKILLS.insight, SKILLS.investigation, SKILLS.nature, SKILLS.perception, SKILLS.stealth, SKILLS.survival]),
+    skillProficiencies: f([SKILLS.animalHandling, SKILLS.athletics, SKILLS.insight, SKILLS.investigation, SKILLS.nature, SKILLS.perception, SKILLS.stealth, SKILLS.survival]),
+    weaponProficiencies: f({
+      [WEAPON_CATEGORY.simpleMelee]: [],
+      [WEAPON_CATEGORY.simpleRanged]: [],
+      [WEAPON_CATEGORY.martialMelee]: [],
+      [WEAPON_CATEGORY.martialRanged]: [],
+    }),
+    toolProficiencies: f([]),
+    armorProficiencies: f([ARMOR_CATEGORY.Light, ARMOR_CATEGORY.Medium,]),
+    shieldProficiency: true,
     subClasses: f({
       beast: f({}),
       fey: f({}),
@@ -254,7 +320,18 @@ const classes = f({
     hitPointMax: { base: 8, addPerLevel: 5, },
     saves: f([ABILITY.dexterity, ABILITY.intelligence]),
     authorizedNumberSkills: 4,
-    authorizedSkills: f([SKILLS.acrobatics, SKILLS.athletics, SKILLS.deception, SKILLS.insight, SKILLS.intimidation, SKILLS.investigation, SKILLS.perception, SKILLS.persuasion, SKILLS.sleightOfHand, SKILLS.stealth]),
+    skillProficiencies: f([SKILLS.acrobatics, SKILLS.athletics, SKILLS.deception, SKILLS.insight, SKILLS.intimidation, SKILLS.investigation, SKILLS.perception, SKILLS.persuasion, SKILLS.sleightOfHand, SKILLS.stealth]),
+    weaponProficiencies: f({
+      [WEAPON_CATEGORY.simpleMelee]: [], // TODO: is all weapons with Finesse and Light or just martials ?
+      [WEAPON_CATEGORY.simpleRanged]: [],
+      [WEAPON_CATEGORY.martialMelee]: [WEAPON_PROPERTY.Finesse, WEAPON_PROPERTY.Light],
+      [WEAPON_CATEGORY.martialRanged]: [WEAPON_PROPERTY.Finesse, WEAPON_PROPERTY.Light],
+    }),
+    toolProficiencies: f([
+      { type: INSERTION_TYPE.forced, value: TOOLS.thievesTools, }
+    ]),
+    armorProficiencies: f([ARMOR_CATEGORY.Light,]),
+    shieldProficiency: false,
     subClasses: f({
       arcana: f({}),
       assassin: f({}),
@@ -268,7 +345,14 @@ const classes = f({
     hitPointMax: { base: 6, addPerLevel: 4, },
     saves: f([ABILITY.constitution, ABILITY.charisma]),
     authorizedNumberSkills: 2,
-    authorizedSkills: f([SKILLS.arcana, SKILLS.deception, SKILLS.insight, SKILLS.intimidation, SKILLS.persuasion, SKILLS.religion]),
+    skillProficiencies: f([SKILLS.arcana, SKILLS.deception, SKILLS.insight, SKILLS.intimidation, SKILLS.persuasion, SKILLS.religion]),
+    weaponProficiencies: f({
+      [WEAPON_CATEGORY.simpleMelee]: [],
+      [WEAPON_CATEGORY.simpleRanged]: [],
+    }),
+    toolProficiencies: f({}),
+    armorProficiencies: f([]),
+    shieldProficiency: false,
     subClasses: f({
       aberrant: f({}),
       clockwork: f({}),
@@ -282,7 +366,14 @@ const classes = f({
     hitPointMax: { base: 8, addPerLevel: 5, },
     saves: f([ABILITY.wisdom, ABILITY.charisma]),
     authorizedNumberSkills: 2,
-    authorizedSkills: f([SKILLS.arcana, SKILLS.deception, SKILLS.history, SKILLS.intimidation, SKILLS.investigation, SKILLS.nature, SKILLS.religion]),
+    skillProficiencies: f([SKILLS.arcana, SKILLS.deception, SKILLS.history, SKILLS.intimidation, SKILLS.investigation, SKILLS.nature, SKILLS.religion]),
+    weaponProficiencies: f({
+      [WEAPON_CATEGORY.simpleMelee]: [],
+      [WEAPON_CATEGORY.simpleRanged]: [],
+    }),
+    toolProficiencies: f({}),
+    armorProficiencies: f([ARMOR_CATEGORY.Light,]),
+    shieldProficiency: false,
     subClasses: f({
       archfey: f({}),
       celestial: f({}),
@@ -296,7 +387,14 @@ const classes = f({
     hitPointMax: { base: 6, addPerLevel: 4, },
     saves: f([ABILITY.intelligence, ABILITY.wisdom]),
     authorizedNumberSkills: 2,
-    authorizedSkills: f([SKILLS.arcana, SKILLS.history, SKILLS.insight, SKILLS.medicine, SKILLS.nature, SKILLS.religion]),
+    skillProficiencies: f([SKILLS.arcana, SKILLS.history, SKILLS.insight, SKILLS.medicine, SKILLS.nature, SKILLS.religion]),
+    weaponProficiencies: f({
+      [WEAPON_CATEGORY.simpleMelee]: [],
+      [WEAPON_CATEGORY.simpleRanged]: [],
+    }),
+    toolProficiencies: f({}),
+    armorProficiencies: f([]),
+    shieldProficiency: false,
     subClasses: f({
       abjureur: f({}),
       diviner: f({}),

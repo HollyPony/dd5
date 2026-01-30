@@ -1,52 +1,29 @@
+import { Ability } from './components/Ability/index.js'
+import { OriginSelect } from './components/OriginSelect/index.js'
+import { SpeciesSelect } from './components/SpeciesSelect/index.js'
+import { ClassSelect } from './components/ClassSelect/index.js'
+
 import { ABILITY, D, SKILLS } from './modules/common.js'
 import { createElement, populateSelect, removeAllChildren, } from './modules/domlib.js'
+import { i18n } from '/modules/i18n.js'
 import * as userData from './modules/userData.js'
-import { getList as getClassesList, getSubClasses, } from './modules/data/classes.js'
-import { origins, } from './modules/data/origins.js'
-import { getSpeciesList, } from './modules/data/species.js'
 import { ARMOR_CATEGORY, getWeapons, } from './modules/data/equipments.js'
-import parseMarkdown from './modules/markdown.js'
+
 
 // TODO: remove mock
 import { mock as storedData } from './modules/storeManager.js'
+import { SubClassSelect } from './components/SubClassSelect/index.js'
 
 /////////////////////////////////////////////////////////////////////////
 // INPUTS ///////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
-const charClassElement = document.getElementsByName('charClass')[0]
-const charSubClassElement = document.getElementsByName('charSubClass')[0]
 const charLevelElement = document.getElementsByName('charLevel')[0]
-const charOriginElement = document.getElementsByName('charOrigin')[0]
-const charSpeciesElement = document.getElementsByName('charSpecies')[0]
 
 // TODO: Update level with experience ?
 const charExperienceElement = document.getElementsByName('experiencepoints')[0]
 
 const exportCharLink = document.getElementById("exportCharLink")
-
-const abilityElements = Object.entries(ABILITY).reduce((acc, [key, value]) => {
-  const abilityElement = document.getElementsByClassName(`${key.toLowerCase()}`)[0]
-
-  return Object.assign(acc, {
-    [value]: {
-      root: abilityElement,
-      score: abilityElement.getElementsByClassName('ability-score')[0],
-      modifier: abilityElement.getElementsByClassName('ability-modifier')[0],
-      saveCheck: abilityElement.getElementsByClassName('save-check')[0],
-      saveScore: abilityElement.getElementsByClassName('save-score')[0],
-    }
-  })
-}, {})
-
-const skillElements = Object.entries(SKILLS).reduce((acc, [key, value]) => {
-  return Object.assign(acc, {
-    [value.name]: {
-      check: document.getElementsByClassName(`skill-check ${key}-check`)[0],
-      score: document.getElementsByClassName(`skill-score ${key}-score`)[0],
-    }
-  })
-}, {})
 
 const trainingsElements = {
   armorLight: document.getElementsByName('trainings-armor-light')[0],
@@ -71,10 +48,16 @@ function diceToString({ number, dice }) {
 
 // DISPLAY UPDATES
 
-function reloadClassData() { }
-
 function refreshCharName() {
   document.getElementsByName('charName')[0].value = userData.getCharName()
+}
+
+function refreshCharExperience() {
+  charExperienceElement.value = userData.getCharExperience()
+}
+
+function refreshCharLevel() {
+  charLevelElement.value = userData.getCharLevel()
 }
 
 function refreshArmorClass() {
@@ -132,57 +115,6 @@ function refreshTrainings() {
   removeAllChildren(trainingsElements.toolsList)
 }
 
-function refreshClassList() {
-  populateSelect(
-    charClassElement,
-    [
-      { value: '', text: i18n._('classes.select.chooseOne'), disabled: true },
-      ...getClassesList().map(className => ({ value: className, text: i18n._(`statics.classes.${className}`), }))
-    ]
-  )
-}
-
-function refreshSubClassList() {
-  populateSelect(
-    charSubClassElement,
-    [
-      { value: '', text: i18n._((userData.getCharLevel() < 3 || userData.getCharClassName()) ? `subClasses.select.unavailable` : `subClasses.select.chooseOne`), disabled: true },
-      ...getSubClasses(userData.getCharClassName()).map(subClassName => ({
-        value: subClassName,
-        text: i18n._(`statics.subClasses.${userData.getCharClassName()}.${subClassName}`),
-      })),
-    ],
-    { clear: true }
-  )
-
-  charSubClassElement.value = userData.getCharLevel() > 2 && userData.getCharSubClassName() || ''
-  charSubClassElement.disabled = userData.getCharLevel() < 3
-}
-
-function refreshAbilityScore(ability) {
-  abilityElements[ability].score.value = userData.getAbilityScore(ability)
-}
-
-function refreshAbilityModifier(ability) {
-  abilityElements[ability].modifier.value = skillAsText(userData.getAbilityModifier(ability))
-}
-
-function refreshSkillScore(skill) {
-  skillElements[skill.name].score.textContent = skillAsText(userData.getSkillScore(skill))
-}
-
-function refreshAbilities() {
-  Object.values(SKILLS).forEach(skill => {
-    skillElements[skill.name].check.disabled = userData.isDisabledSkill(skill)
-    skillElements[skill.name].check.checked = userData.isCheckedSkill(skill)
-  })
-}
-
-function refreshAbilitySave(ability) {
-  abilityElements[ability].saveScore.textContent = skillAsText(userData.getAbilitySave(ability))
-  abilityElements[ability].saveCheck.checked = userData.getCharClass()?.saves?.includes(ability)
-}
-
 function refreshClassFeatures() {
   const classFeaturesElement = document.getElementsByClassName('class-features')[0]
   while (classFeaturesElement.firstChild) {
@@ -193,22 +125,26 @@ function refreshClassFeatures() {
     const featureElement = createElement('div', [
       createElement('div',
         [
-          createElement('span',
-            document.createTextNode('Lv.' + feature.atLevel + ' - ' + i18n._(`statics.class-features.${userData.getCharClassName()}.${feature.name}.name`)),
-            { class: 'input-group-text flex-grow-1', }
-          ),
-          createElement('button', 'btn', { // TODO: translate btn
-            class: 'btn btn-outline-secondary',
+          createElement('span', [
+            createElement('strong', i18n._('class-features.featureLevel', { level: feature.atLevel })),
+            ' - ' + i18n._(`statics.class-features.${userData.getCharClassName()}.${feature.name}.name`)
+          ], { class: 'input-group-text flex-grow-1 border-0', }),
+          createElement('button', i18n._('class-features.expandBtn'), { // TODO: translate btn
+            class: 'btn btn-outline-secondary border-0',
             type: 'button',
+            role: 'button',
             'data-bs-toggle': 'collapse',
             'data-bs-target': `#collapse-class-features-${userData.getCharClassName()}-${feature.name}`,
-            role: 'button',
           }),
         ],
         { class: 'accordion-header input-group' },
       ),
       createElement('div',
-        parseMarkdown(i18n._(`statics.class-features.${userData.getCharClassName()}.${feature.name}.description`)),
+        createElement(
+          'div',
+          i18n.md(`statics.class-features.${userData.getCharClassName()}.${feature.name}.description`),
+          { class: 'accordion-body' }
+        ),
         {
           id: `collapse-class-features-${userData.getCharClassName()}-${feature.name}`,
           class: 'accordion-collapse collapse',
@@ -225,82 +161,17 @@ function refreshClassFeatures() {
 // EVENTS ///////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
-function charClassChanged({ currentTarget }) {
-  userData.setCharClassName(currentTarget.value)
-  refreshSubClassList()
-  reloadClassData()
-  refreshClassFeatures()
-}
-
-function charSubClassChanged({ currentTarget: { value } }) {
-  userData.setCharSubClassName(currentTarget.value)
-
-  reloadClassData()
-  refreshClassFeatures()
-  // TODO:
-}
-
-function charOriginChanged({ currentTarget }) {
-  // TODO: alert skills lost
-  userData.setCharOrigin(currentTarget.value)
-  userData.skillChoosedClear()
-
-  refreshAbilities()
-}
-
-function charSpeciesChanged({ currentTarget }) {
-  userData.setCharSpeciesName(currentTarget.value)
-  // TODO
-}
-
-function charLevelChanged({ currentTarget: { value } }) {
+function charLevelChanged({ target: { value } }) {
   userData.setCharLevel(value)
 
-  refreshSubClassList()
-  refreshHitPointMax()
-  refreshHitDiceMax()
-  refreshProficiencyBonus()
+  refreshHitPointMax() // TODO: from event ?
+  refreshHitDiceMax() // TODO: from event ?
+  refreshProficiencyBonus() // TODO: from event ?
 
-  Object.values(ABILITY).forEach(ability => {
-    refreshAbilitySave(ability)
-    refreshAbilityModifier(ability)
-  })
-
-  Object.values(SKILLS).forEach(skill => refreshSkillScore(skill))
-
-  refreshClassFeatures()
+  refreshClassFeatures() // TODO: from event ?
   // Update species abilities / spells etc ...
 
   // TODO: userData.reloadSpecies
-}
-
-function abilityScoreChanged({ currentTarget }) {
-  const score = currentTarget.value
-  const ability = ABILITY[currentTarget.dataset.ability]
-
-  userData.setAttribute(ability, score)
-
-  refreshAbilityScore(ability)
-
-
-  refreshAbilityModifier(ability)
-
-  Object.values(SKILLS).filter(skill => ability === skill.ability).forEach(skill => refreshSkillScore(skill))
-
-  refreshAbilitySave(ability)
-}
-
-function skillChecked({ currentTarget: { name } }) {
-  const skill = SKILLS[name]
-  const skillChecked = skillElements[skill.name].check.checked
-
-  userData[skillChecked ? 'skillChoosedAdd' : 'skillChoosedRemove'](skill)
-
-  refreshSkillScore(skill)
-
-  Object.values(SKILLS).forEach(skill => {
-    skillElements[skill.name].check.disabled = userData.isDisabledSkill(skill)
-  })
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -333,32 +204,6 @@ function exportJSON() {
 function init() {
   const charsheet = storedData
 
-  function refreshCharOriginList() {
-    // Set Origins list 
-    populateSelect(
-      charOriginElement,
-      Object.keys(origins).map(originName => ({ value: originName, text: i18n._(`statics.origins.${originName}`), }))
-    )
-  }
-  refreshCharOriginList()
-
-  // Set Races list
-  populateSelect(
-    charSpeciesElement,
-    getSpeciesList().map(species => (
-      species.lineages ? {
-        isGroup: true,
-        label: i18n._(`statics.species.${species.name}`),
-        options: species.lineages.map(lineage => ({
-          value: `${species.name}.${lineage}`,
-          text: i18n._(`statics.species.${species.name}-${lineage}`),
-        })),
-      } : {
-        value: species.name, text: i18n._(`statics.species.${species.name}`),
-      }
-    ))
-  )
-
   populateSelect(
     weaponSelectElement,
     [{ value: '', text: i18n._('weaponscantrip.weapons._select') }].concat(
@@ -382,14 +227,9 @@ function init() {
   userData.init(charsheet)
 
   refreshCharName()
-  refreshClassList()
-  charClassElement.value = userData.getCharClassName() || ''
 
-  charOriginElement.value = userData.getCharOrigin()
-  charSpeciesElement.value = userData.getCharSpeciesName()
-
-  charExperienceElement.value = userData.getCharExperience()
-  charLevelElement.value = userData.getCharLevel()
+  refreshCharExperience()
+  refreshCharLevel()
 
   refreshHitPointMax()
   refreshHitDiceMax()
@@ -400,34 +240,40 @@ function init() {
   refreshCharAlignment()
   refreshTrainings()
 
-  Object.values(ABILITY).forEach(ability => {
-    refreshAbilityScore(ability)
-    refreshAbilityModifier(ability)
-    refreshAbilitySave(ability)
-  })
-  Object.values(SKILLS).forEach(skill => refreshSkillScore(skill))
-
-  refreshSubClassList()
   refreshArmorClass()
-  refreshAbilities()
   refreshProficiencyBonus()
   refreshClassFeatures()
 
   setBindings()
+  registerCustomElements()
 
-  userData.toJSON()
+  // userData.toJSON()
+
+  i18n.applyTranslations()
 }
 
 function setBindings() {
   exportCharLink.addEventListener("click", exportJSON)
 
-  charOriginElement.addEventListener('change', charOriginChanged)
-  charClassElement.addEventListener('change', charClassChanged)
-  charSubClassElement.addEventListener('change', charSubClassChanged)
-  charSpeciesElement.addEventListener('change', charSpeciesChanged)
   charLevelElement.addEventListener('change', charLevelChanged)
-  for (element of Object.values(skillElements).map(_ => _.check)) { element.addEventListener('change', skillChecked) }
-  for (element of Object.values(abilityElements).map(_ => _.score)) { element.addEventListener('change', abilityScoreChanged) }
+
+  document.addEventListener('userData.charClassChanged', refreshClassFeatures)
+}
+
+function registerCustomElements() {
+  customElements.define('ability-card', Ability)
+  customElements.define('origin-select', OriginSelect)
+  customElements.define('species-select', SpeciesSelect)
+  customElements.define('class-select', ClassSelect)
+  customElements.define('sub-class-select', SubClassSelect)
+
+  // customElements
+  // .whenDefined('data-uint')
+  // .then((promise) => {
+  //   const x = document.body.children[0]; 
+  //   console.log(x.constructor.name);
+  //   x.value = 10;
+  // });
 }
 
 init()

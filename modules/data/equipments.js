@@ -78,6 +78,19 @@ export const TOOL_CATEGORY = Enum({ // P.221
   Other: 'TOOL_CATEGORY.Other', // P.222
 })
 
+export const INSTRUMENTS = Enum({
+  bagpipes: 'INSTRUMENTS.bagpipes',
+  drum: 'INSTRUMENTS.drum',
+  dulcimer: 'INSTRUMENTS.dulcimer',
+  flute: 'INSTRUMENTS.flute',
+  horn: 'INSTRUMENTS.horn',
+  lute: 'INSTRUMENTS.lute',
+  lyre: 'INSTRUMENTS.lyre',
+  panFlute: 'INSTRUMENTS.panFlute',
+  shawm: 'INSTRUMENTS.shawm',
+  viol: 'INSTRUMENTS.viol',
+})
+
 export const MAGIC_ITEM_TYPE = Enum({
   armor: 'MAGIC_ITEM_TYPE.armor', // Armure
   potion: 'MAGIC_ITEM_TYPE.potion', // Potion
@@ -150,7 +163,7 @@ const SHIELDS = Enum({
   shield: 'SHIELDS.shield',
 })
 
-const TOOLS = Enum({
+export const TOOLS = Enum({
   alchemistsSupplies: 'TOOLS.alchemistsSupplies',
   brewersSupplies: 'TOOLS.brewersSupplies',
   calligraphersSupplies: 'TOOLS.calligraphersSupplies',
@@ -1219,16 +1232,16 @@ const tools = f([ // P.221
     category: TOOL_CATEGORY.Other,
     ability: ABILITY.charisma,
     variants: [
-      { name: 'bagpipes', weight: Weight(3000), cost: Money(G(30)), },
-      { name: 'drum', weight: Weight(1500), cost: Money(G(6)), },
-      { name: 'dulcimer', weight: Weight(5000), cost: Money(G(25)), },
-      { name: 'flute', weight: Weight(500), cost: Money(G(2)), },
-      { name: 'horn', weight: Weight(1000), cost: Money(G(3)), },
-      { name: 'lute', weight: Weight(1000), cost: Money(G(35)), },
-      { name: 'lyre', weight: Weight(1000), cost: Money(G(30)), },
-      { name: 'panFlute', weight: Weight(1000), cost: Money(G(12)), },
-      { name: 'shawm', weight: Weight(500), cost: Money(G(2)), },
-      { name: 'viol', weight: Weight(500), cost: Money(G(30)), },
+      { name: INSTRUMENTS.bagpipes, weight: Weight(3000), cost: Money(G(30)), },
+      { name: INSTRUMENTS.drum, weight: Weight(1500), cost: Money(G(6)), },
+      { name: INSTRUMENTS.dulcimer, weight: Weight(5000), cost: Money(G(25)), },
+      { name: INSTRUMENTS.flute, weight: Weight(500), cost: Money(G(2)), },
+      { name: INSTRUMENTS.horn, weight: Weight(1000), cost: Money(G(3)), },
+      { name: INSTRUMENTS.lute, weight: Weight(1000), cost: Money(G(35)), },
+      { name: INSTRUMENTS.lyre, weight: Weight(1000), cost: Money(G(30)), },
+      { name: INSTRUMENTS.panFlute, weight: Weight(1000), cost: Money(G(12)), },
+      { name: INSTRUMENTS.shawm, weight: Weight(500), cost: Money(G(2)), },
+      { name: INSTRUMENTS.viol, weight: Weight(500), cost: Money(G(30)), },
     ],
   },
   {
@@ -1417,6 +1430,3 @@ const equipments = []
 export function getEquipments({ type }) { return equipments.filter(equipment => equipment.type === type) }
 export function getWeapons() { return getEquipments({ type: EQUIPMENT_TYPE.WEAPON }) }
 export function getEquipment(name) { return equipments.find(equipment => equipment.name === name) }
-
-weapons.filter(weapon => weapon.properties.filter(prop => prop === undefined || !Object.values(WEAPON_PROPERTY).includes(prop)).length > 0)
-  .forEach(weapon => console.log('-- equipments', weapon.name, weapon.properties))

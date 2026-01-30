@@ -20,3 +20,9 @@ export const O = target => {
     },
   })
 }
+
+const nfWithSign = new Intl.NumberFormat(undefined, {
+  signDisplay: "exceptZero"
+})
+
+export function signDisplay(score) { return nfWithSign.format(score) }

@@ -1,0 +1,19 @@
+select.form-control-select {
+  --y-padding: 0.1em;
+  --background-size: 1em;
+  --background-x-padding: 0.1em;
+
+  display: block;
+  border: none;
+  padding: var(--y-padding) 0;
+  width: 100%;
+
+  padding-right: calc(var(--background-size) + var(--background-x-padding) * 2);
+  /* border-radius: 0; */
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 8'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 1 6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-size: 1em; /*14px 8px;*/
+  background-position: right var(--background-x-padding) center;
+  background-color: var(--bs-body-bg);
+}

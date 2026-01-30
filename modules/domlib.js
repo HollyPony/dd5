@@ -9,7 +9,13 @@
  */
 export function createElement(type, children, { eventListeners = {}, ...attributes } = {}) {
   const element = document.createElement(type)
-  Object.entries(attributes).forEach(([name, value]) => (value !== undefined) && element.setAttribute(name, value))
+  Object.entries(attributes).forEach(([name, value]) => {
+    switch (name) {
+      case 'checked':
+      case 'disabled': return value ? element.setAttribute(name, 'true') : element.removeAttribute(name)
+      default: return (value !== undefined) && element.setAttribute(name, value)
+    }
+  })
   children && [].concat(children).forEach(child => element.appendChild(typeof child === 'string' ? document.createTextNode(child) : child))
   Object.entries(eventListeners).forEach(params => element.addEventListener(...params))
   return element

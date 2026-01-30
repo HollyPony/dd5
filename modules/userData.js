@@ -195,7 +195,7 @@ export function getAbilitySave(ability) {
 }
 
 function isAuthorizedSkill(skill) {
-  return getCharClass()?.authorizedSkills?.includes(skill)
+  return getCharClass()?.skillProficiencies?.includes(skill)
 }
 
 export function isCheckedSkill(skill) { // TODO: get from class features + get from feats
@@ -219,18 +219,42 @@ export function setCharClassName(charClassName) {
   charsheet.charClassName = charClassName
   charsheet.charSubClassName = undefined
   charsheet.charClass = getClass(getCharClassName(), getCharSubClassName(), getCharLevel())
+
+  document.dispatchEvent(new CustomEvent('userData.charClassChanged'))
+
+  // TODO: refresh this datas with event
+  // refreshSubClassList()
+  // reloadClassData()
+  // refreshClassFeatures()
 }
 export function setCharSubClassName(charSubClassName) {
   charsheet.charSubClassName = charSubClassName
   charsheet.charClass = getClass(getCharClassName(), getCharSubClassName(), getCharLevel())
+
+  document.dispatchEvent(new CustomEvent('userData.charSubClassChanged'))
+
+  // TODO: refresh this datas with event
+  // reloadClassData()
+  // refreshClassFeatures()
 }
 export function setCharLevel(charLevel) {
   charsheet.charLevel = charLevel
   charsheet.charClass = getClass(getCharClassName(), getCharSubClassName(), getCharLevel())
   charsheet.charSpecies = getSpecies(getCharSpeciesName(), getCharLevel())
+
+  document.dispatchEvent(new CustomEvent('userData.charLevelChanged'))
 }
-export function setCharOrigin(charOrigin) { charsheet.charOrigin = charOrigin }
-export function setCharSpeciesName(charSpecies) { charsheet.charSpeciesName = charSpecies }
+export function setCharOrigin(charOrigin) {
+  charsheet.charOrigin = charOrigin
+  document.dispatchEvent(new CustomEvent('userData.charOriginChanged')) // TODO: maybe useless
+  // TODO: Clear skillChoosed from origin
+}
+export function setCharSpeciesName(charSpecies) {
+  charsheet.charSpeciesName = charSpecies
+
+  document.dispatchEvent(new CustomEvent('userData.charSpeciesChanged'))
+  // TODO: Handle what changed on species changed
+}
 export function setCharAlignment(charAlignment) { charsheet.charAlignment = charAlignment }
 export function setCharExperience(charExperience) { charsheet.charExperience = charExperience }
 export function setAttribute(attributeName, score) {

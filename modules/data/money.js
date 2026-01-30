@@ -1,5 +1,7 @@
 import { Enum, } from '../helpers.js'
 
+// TODO: use NumberFormat https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#currency_2
+
 const GOLD_SYMBOL = Symbol('GOLD')
 export function GOLD(amount) { return { amount, [GOLD_SYMBOL]: true } }
 const SILVER_SYMBOL = Symbol('SILVER')

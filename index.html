@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <title>Character</title>
   <!-- External lib -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" /> -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
   <!-- Inner lib -->
@@ -97,23 +97,21 @@
             </div>
             <div class="row">
               <div class="col-6 d-flex flex-column charOrigin">
-                <select name="charOrigin" class="form-control-select"></select>
+                <origin-select></origin-select>
                 <label for="charOrigin" class="form-control-label" data-i18n="origins.label"></label>
               </div>
               <div class="col-6 d-flex flex-column charClass">
-                <select name="charClass" class="form-control-select"></select>
+                <class-select></class-select>
                 <label for="charClass" class="form-control-label" data-i18n="classes.label"></label>
               </div>
             </div>
             <div class="row">
               <div class="col-6 d-flex flex-column charSpecies">
-                <select name="charSpecies" class="form-control-select"></select>
+                <species-select></species-select>
                 <label for="charSpecies" class="form-control-label" data-i18n="species.label"></label>
               </div>
               <div class="col-6 d-flex flex-column charSubClass">
-                <select name="charSubClass" class="form-control-select" disabled>
-                  <option data-i18n="">Select class first</option>
-                </select>
+                <sub-class-select></sub-class-select>
                 <label for="charSubClass" class="form-control-label" data-i18n="subClasses.label"></label>
               </div>
             </div>
@@ -225,245 +223,21 @@
                 <input disabled name="proficiencybonus" class="form-control p-0 border-top-0 rounded-top-0 text-center"
                   placeholder="+2">
               </div>
-              <div class="ability-card strength">
-                <div class="ability-card-header"></div>
-                <div class="ability-card-content">
-                  <label for="strength-score" class="text-center title" data-i18n="statics.ability.strength"></label>
-                  <div class="values">
-                    <input disabled name="strength-modifier" class="form-control ability-modifier" placeholder="+0"
-                      data-ability="strength" />
-                    <input name="strength-score" class="form-control border-start-0 rounded-0 rounded-end ability-score"
-                      placeholder="10" data-ability="strength" />
-                  </div>
-                </div>
-                <div class="ability-card-content">
-                  <div class="form-check">
-                    <input disabled name="strength-save-check" type="checkbox" class="form-check-input save-check" />
-                    <span class="save-score"></span>
-                    <label for="strength-save">Save</label>
-                  </div>
-                </div>
-                <div class="ability-card-content">
-                  <div class="form-check">
-                    <input name="athletics" type="checkbox" class="form-check-input skill-check athletics-check" />
-                    <span class="skill-score athletics-score"></span>
-                    <label for="athletics" data-i18n="statics.skills.athletics"></label>
-                  </div>
-                </div>
-                <div class="ability-card-footer"></div>
-              </div>
-              <div class="ability-card dexterity">
-                <div class="ability-card-header"></div>
-                <div class="ability-card-content">
-                  <label for="dexterity-score" class="text-center title" data-i18n="statics.ability.dexterity"></label>
-                  <div class="values">
-                    <input disabled name="dexterity-modifier" class="form-control ability-modifier" placeholder="+0"
-                      data-ability="dexterity" />
-                    <input name="dexterity-score"
-                      class="form-control border-start-0 rounded-0 rounded-end ability-score" placeholder="10"
-                      data-ability="dexterity" />
-                  </div>
-                </div>
-                <div class="ability-card-content">
-                  <div class="form-check">
-                    <input disabled name="dexterity-save-check" type="checkbox" class="form-check-input save-check" />
-                    <span class="save-score"></span>
-                    <label for="dexterity-save">Save</label>
-                  </div>
-                </div>
-                <div class="ability-card-content">
-                  <div class="form-check">
-                    <input name="acrobatics" type="checkbox" class="form-check-input skill-check acrobatics-check" />
-                    <span class="skill-score acrobatics-score"></span>
-                    <label for="acrobatics" data-i18n="statics.skills.acrobatics"></label>
-                  </div>
-                  <div class="form-check">
-                    <input name="sleightOfHand" type="checkbox"
-                      class="form-check-input skill-check sleightOfHand-check" />
-                    <span class="skill-score sleightOfHand-score"></span>
-                    <label for="sleightOfHand" data-i18n="statics.skills.sleightOfHand"></label>
-                  </div>
-                  <div class="form-check">
-                    <input name="stealth" type="checkbox" class="form-check-input skill-check stealth-check" />
-                    <span class="skill-score stealth-score"></span>
-                    <label for="stealth" data-i18n="statics.skills.stealth"></label>
-                  </div>
-                </div>
-                <div class="ability-card-footer"></div>
-              </div>
-              <div class="ability-card constitution">
-                <div class="ability-card-header"></div>
-                <div class="ability-card-content">
-                  <label for="constitution-score" class="text-center title"
-                    data-i18n="statics.ability.constitution"></label>
-                  <div class="values">
-                    <input disabled name="constitution-modifier" class="form-control ability-modifier" placeholder="+0"
-                      data-ability="constitution">
-                    <input name="constitution-score"
-                      class="form-control border-start-0 rounded-0 rounded-end ability-score" placeholder="10"
-                      data-ability="constitution" />
-                  </div>
-                </div>
-                <div class="ability-card-content">
-                  <div class="form-check">
-                    <input disabled name="constitution-save-check" type="checkbox"
-                      class="form-check-input save-check" />
-                    <span class="save-score"></span>
-                    <label for="constitution-save">Save</label>
-                  </div>
-                </div>
-                <div class="ability-card-footer"></div>
-              </div>
+              <ability-card data-ability="strength"></ability-card>
+              <ability-card data-ability="dexterity"></ability-card>
+              <ability-card data-ability="constitution"></ability-card>
+
               <div class="block inspiration">
-                <label for="inspiration" class="text-center w-100 title">Inspiration</label>
+                <label for="inspiration" class="text-center w-100 title" data-i18n="stats.inspiration"></label>
                 <hr class="m-0 border-2 w-100" />
                 <input name="inspiration" type="checkbox"
                   class="form-check-input inspiration-check mt-0 rounded-top-0 border-top-0" />
               </div>
             </div>
             <div class="col-6 d-flex flex-column gap-3">
-              <div class="ability-card intelligence">
-                <div class="ability-card-header"></div>
-                <div class="ability-card-content">
-                  <label for="intelligence-score" class="text-center title"
-                    data-i18n="statics.ability.intelligence"></label>
-                  <div class="values">
-                    <input disabled name="intelligence-modifier" class="form-control ability-modifier" placeholder="+0"
-                      data-ability="intelligence">
-                    <input name="intelligence-score"
-                      class="form-control border-start-0 rounded-0 rounded-end ability-score" placeholder="10"
-                      data-ability="intelligence" />
-                  </div>
-                </div>
-                <div class="ability-card-content">
-                  <div class="form-check">
-                    <input disabled name="intelligence-save-check" type="checkbox"
-                      class="form-check-input save-check" />
-                    <span class="save-score"></span>
-                    <label for="intelligence-save">Save</label>
-                  </div>
-                </div>
-                <div class="ability-card-content">
-                  <div class="form-check">
-                    <input name="arcana" type="checkbox" class="form-check-input skill-check arcana-check" />
-                    <span class="skill-score arcana-score"></span>
-                    <label for="arcana" data-i18n="statics.skills.arcana"></label>
-                  </div>
-                  <div class="form-check">
-                    <input name="history" type="checkbox" class="form-check-input skill-check history-check" />
-                    <span class="skill-score history-score"></span>
-                    <label for="history" data-i18n="statics.skills.history"></label>
-                  </div>
-                  <div class="form-check">
-                    <input name="investigation" type="checkbox"
-                      class="form-check-input skill-check investigation-check" />
-                    <span class="skill-score investigation-score"></span>
-                    <label for="investigation" data-i18n="statics.skills.investigation"></label>
-                  </div>
-                  <div class="form-check">
-                    <input name="nature" type="checkbox" class="form-check-input skill-check nature-check" />
-                    <span class="skill-score nature-score"></span>
-                    <label for="nature" data-i18n="statics.skills.nature"></label>
-                  </div>
-                  <div class="form-check">
-                    <input name="religion" type="checkbox" class="form-check-input skill-check religion-check" />
-                    <span class="skill-score religion-score"></span>
-                    <label for="religion" data-i18n="statics.skills.religion"></label>
-                  </div>
-                </div>
-                <div class="ability-card-footer"></div>
-              </div>
-              <div class="ability-card wisdom">
-                <div class="ability-card-header"></div>
-                <div class="ability-card-content">
-                  <label for="wisdom-score" class="text-center title" data-i18n="statics.ability.wisdom"></label>
-                  <div class="values">
-                    <input disabled name="wisdom-modifier" class="form-control ability-modifier" placeholder="+0"
-                      data-ability="wisdom" />
-                    <input name="wisdom-score" class="form-control border-start-0 rounded-0 rounded-end ability-score"
-                      placeholder="10" data-ability="wisdom" />
-                  </div>
-                </div>
-                <div class="ability-card-content">
-                  <div class="form-check">
-                    <input disabled name="wisdom-save-check" type="checkbox" class="form-check-input save-check" />
-                    <span class="save-score"></span>
-                    <label for="wisdom-save">Save</label>
-                  </div>
-                </div>
-                <div class="ability-card-content">
-                  <div class="form-check">
-                    <input name="animalHandling" type="checkbox"
-                      class="form-check-input skill-check animalHandling-check" />
-                    <span class="skill-score animalHandling-score"></span>
-                    <label for="animalHandling" data-i18n="statics.skills.animalHandling"></label>
-                  </div>
-                  <div class="form-check">
-                    <input name="insight" type="checkbox" class="form-check-input skill-check insight-check" />
-                    <span class="skill-score insight-score"></span>
-                    <label for="insight" data-i18n="statics.skills.insight"></label>
-                  </div>
-                  <div class="form-check">
-                    <input name="medicine" type="checkbox" class="form-check-input skill-check medicine-check" />
-                    <span class="skill-score medicine-score"></span>
-                    <label for="medicine" data-i18n="statics.skills.medicine"></label>
-                  </div>
-                  <div class="form-check">
-                    <input name="perception" type="checkbox" class="form-check-input skill-check perception-check" />
-                    <span class="skill-score perception-score"></span>
-                    <label for="perception" data-i18n="statics.skills.perception"></label>
-                  </div>
-                  <div class="form-check">
-                    <input name="survival" type="checkbox" class="form-check-input skill-check survival-check" />
-                    <span class="skill-score survival-score"></span>
-                    <label for="survival" data-i18n="statics.skills.survival"></label>
-                  </div>
-                </div>
-                <div class="ability-card-footer"></div>
-              </div>
-              <div class="ability-card charisma">
-                <div class="ability-card-header"></div>
-                <div class="ability-card-content">
-                  <label for="charisma-score" class="text-center title" data-i18n="statics.ability.charisma"></label>
-                  <div class="values">
-                    <input disabled name="charisma-modifier" class="form-control ability-modifier" placeholder="+0"
-                      data-ability="charisma" />
-                    <input name="charisma-score" class="form-control border-start-0 rounded-0 rounded-end ability-score"
-                      placeholder="10" data-ability="charisma" />
-                  </div>
-                </div>
-                <div class="ability-card-content">
-                  <div class="form-check">
-                    <input disabled name="charisma-save-check" type="checkbox" class="form-check-input save-check" />
-                    <span class="save-score"></span>
-                    <label for="charisma-save">Save</label>
-                  </div>
-                </div>
-                <div class="ability-card-content">
-                  <div class="form-check">
-                    <input name="deception" type="checkbox" class="form-check-input skill-check deception-check" />
-                    <span class="skill-score deception-score"></span>
-                    <label for="deception" data-i18n="statics.skills.deception"></label>
-                  </div>
-                  <div class="form-check">
-                    <input name="intimidation" type="checkbox"
-                      class="form-check-input skill-check intimidation-check" />
-                    <span class="skill-score intimidation-score"></span>
-                    <label for="intimidation" data-i18n="statics.skills.intimidation"></label>
-                  </div>
-                  <div class="form-check">
-                    <input name="performance" type="checkbox" class="form-check-input skill-check performance-check" />
-                    <span class="skill-score performance-score"></span>
-                    <label for="performance" data-i18n="statics.skills.performance"></label>
-                  </div>
-                  <div class="form-check">
-                    <input name="persuasion" type="checkbox" class="form-check-input skill-check persuasion-check" />
-                    <span class="skill-score persuasion-score"></span>
-                    <label for="persuasion" data-i18n="statics.skills.persuasion"></label>
-                  </div>
-                </div>
-                <div class="ability-card-footer"></div>
-              </div>
+              <ability-card data-ability="intelligence"></ability-card>
+              <ability-card data-ability="wisdom"></ability-card>
+              <ability-card data-ability="charisma"></ability-card>
             </div>
           </div>
           <div class="row mt-3">
@@ -548,9 +322,79 @@
             </div>
             <div class="col">
               <div class="block class-features-block">
+                <span class="position-absolute top-0 start-0 translate-middle p-2 bg-danger border rounded-circle z-1">
+                </span>
+
+
                 <div class="text-center title" data-i18n="class-features.title"></div>
                 <hr class="mt-0 border-3" />
-                <div class="accordion accordion-flush class-features" id="class-features-accordion"></div>
+                <div id="class-features-accordion-base" class="accordion class-features-base mb-3">
+                  <div class="accordion-item">
+                    <div class="accordion-header d-flex align-items-center position-relative">
+                      <span
+                        class="position-absolute top-0 start-0 translate-middle p-2 bg-danger border rounded-circle z-4">
+                      </span>
+
+                      <button class="accordion-button shadow-none py-2 collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#collapse-class-features-base"
+                        data-i18n="class-features.expandBtn">
+                        <strong>Base</strong> - sd
+                      </button>
+
+                    </div>
+                    <div id="collapse-class-features-base" class="accordion-collapse collapse"
+                      data-bs-parent="#class-features-accordion-base">
+                      <div class="accordion-body p-0">
+                        <div class="card border-0">
+                          <div class="card-header align-center">
+                            <span class="d-flex red-circle" data-i18n="class-features.base.skills.title"></span>
+                          </div>
+                          <div class="card-body">
+                            <div class="card-text mb-3">
+                              <span>Il y a N compétences à choisir</span>
+                            </div>
+
+                            <div class="d-flex flex-wrap gap-3">
+                              <input type="checkbox" class="btn-check" id="btn-check" autocomplete="off">
+                              <label class="btn btn-outline-primary" for="btn-check">Single toggle</label>
+
+                              <input type="checkbox" class="btn-check" id="btn-check" autocomplete="off">
+                              <label class="btn btn-outline-primary" for="btn-check">Single toggle</label>
+
+                              <input type="checkbox" class="btn-check" id="btn-check" autocomplete="off">
+                              <label class="btn btn-outline-primary" for="btn-check">Single toggle</label>
+
+                              <input type="checkbox" class="btn-check" id="btn-check" autocomplete="off">
+                              <label class="btn btn-outline-primary" for="btn-check">Single toggle</label>
+
+                              <input type="checkbox" class="btn-check" id="btn-check" autocomplete="off">
+                              <label class="btn btn-outline-primary" for="btn-check">Single toggle</label>
+
+                              <input type="checkbox" class="btn-check" id="btn-check" autocomplete="off">
+                              <label class="btn btn-outline-primary" for="btn-check">Single toggle</label>
+
+                              <input type="checkbox" class="btn-check" id="btn-check" autocomplete="off">
+                              <label class="btn btn-outline-primary" for="btn-check">Single toggle</label>
+
+                              <input type="checkbox" class="btn-check" id="btn-check" autocomplete="off">
+                              <label class="btn btn-outline-primary" for="btn-check">Single toggle</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card border-0">
+                        <div class="card-header" data-i18n="class-features.base.tools.title"></div>
+                        <div class="card-body">
+                          <div class="card-text">card text</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <hr class="border-3" />
+
+                <div id="class-features-accordion" class="accordion class-features"></div>
               </div>
             </div>
             <div class="col">
@@ -558,7 +402,6 @@
                 <div class="flex-grow-1 flex-basis-0 block species-traits">
                   <div class="text-center title" data-i18n="species.title"></div>
                   <ul class="list-group species-traits"></ul>
-                  <div id="osef"></div>
                 </div>
                 <div class="flex-grow-1 flex-basis-0 block feats">
                   <div class="text-center title" data-i18n="feats.title">
@@ -569,6 +412,7 @@
             </div>
           </div>
         </div>
+      </div>
       </div>
 
       <label for="alignment" class="form-text" data-i18n="alignment.title"></label>
@@ -582,7 +426,6 @@
     crossorigin="anonymous"></script>
   <!-- Inner lib -->
   <script src="fr.js"></script>
-  <script src="i18n.js"></script>
   <script type="module" src="index.js"></script>
 </body>
 

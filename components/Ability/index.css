@@ -30,6 +30,7 @@
       width: 100%;
       position: relative;
       padding: 2px 12px 3px 12px;
+      text-align: center;
 
       &:before {
         --border-width: 1px;

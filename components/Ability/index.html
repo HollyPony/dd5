@@ -1,0 +1,28 @@
+<template>
+  <div class="ability-card strength">
+    <div class="ability-card-header"></div>
+
+    <div class="ability-card-content">
+      <label data-wc-id="label" class="text-center title"></label>
+      <div class="values">
+        <input disabled name="strength-modifier" class="form-control ability-modifier" placeholder="+0"
+          data-ability="strength" />
+        <input name="strength-score" class="form-control border-start-0 rounded-0 rounded-end ability-score"
+          placeholder="10" data-ability="strength" />
+      </div>
+    </div>
+
+    <div class="ability-card-content">
+      <div class="form-check">
+        <input disabled name="strength-save-check" type="checkbox" class="form-check-input save-check" />
+        <span class="save-score"></span>
+        <label for="strength-save" class="save-label"></label>
+      </div>
+    </div>
+
+    <!-- TODO: Use slot ? -->
+    <div class="skills"></div>
+
+    <div class="ability-card-footer"></div>
+  </div>
+</template>
