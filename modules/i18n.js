@@ -81,6 +81,7 @@ export const i18n = {
 
     const result = i18n[markdown ? 'md' : 'tn'](key, interpolations)
     if (result) {
+      while (element.firstChild) { element.removeChild(element.firstChild) }
       element.appendChild(result)
     }
   },
@@ -88,8 +89,8 @@ export const i18n = {
   /**
    * Compute all dom translations attributes : data-i18n
    */
-  applyTranslations() {
-    for (const element of document.querySelectorAll('[data-i18n]')) {
+  applyTranslations(rootElement = document) {
+    for (const element of rootElement.querySelectorAll('[data-i18n]')) {
       const key = element.dataset.i18n
       const markdown = element.dataset.i18nMd === 'true'
       const interpolations = element.dataset.i18nValues ? JSON.parse(element.dataset.i18nValues) : undefined

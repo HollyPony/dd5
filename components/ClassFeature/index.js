@@ -18,9 +18,9 @@ export class ClassFeature extends AbstractComponent {
 
     const title = this.querySelector('.accordion-header > .feature-title')
     const content = this.querySelector('.accordion-collapse')
-    const description = content.querySelector('.accordion-body')
+    const description = content.querySelector('.accordion-body > .description > .card-body')
 
-    title.appendChild(i18n.md('class-features.feature.title', {
+    title.appendChild(i18n.md('components.ClassFeature.name', {
       level: this.#feature.atLevel,
       featureName: i18n._(`statics.class-features.${userData.getCharClassName()}.${this.#feature.name}.name`)
     }))
@@ -33,6 +33,7 @@ export class ClassFeature extends AbstractComponent {
       i18n.md(`statics.class-features.${userData.getCharClassName()}.${this.#feature.name}.description`)
     )
 
+    i18n.applyTranslations(this)
     this.#registerEvents()
   }
 
@@ -42,13 +43,11 @@ export class ClassFeature extends AbstractComponent {
 
   #registerEvents() {
     // this.#scoreElement.addEventListener('change', this.#scoreChanged)
-
     // document.addEventListener("userData.charLevelChanged", this.#refreshScore)
   }
 
   #unregisterEvents() {
     // this.#scoreElement.removeEventListener('change', this.#scoreChanged)
-
     // document.removeEventListener("userData.charLevelChanged", this.#refreshScore)
   }
 }

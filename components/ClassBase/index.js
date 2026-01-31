@@ -19,10 +19,10 @@ export class ClassBase extends AbstractComponent {
 
     baseFeatureElement.id = baseAccordionId
     baseFeatureButtonElement.dataset.bsTarget = `#${baseAccordionItemId}`
-    baseFeatureButtonElement.appendChild(i18n.md('class-features.base.title'))
     baseFeatureAccordionElement.id = baseAccordionItemId
     baseFeatureAccordionElement.dataset.bsParent = `#${baseAccordionId}`
 
+    i18n.applyTranslations(this)
     this.#registerEvents()
   }
 

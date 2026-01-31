@@ -24,9 +24,6 @@ export class ClassFeatures extends AbstractComponent {
     // TODO: toggle it
     this.#mainRequiredBadgeElement = this.querySelector('main-required-badge')
 
-    const title = this.querySelector('.block > .title')
-    title.appendChild(i18n.tn('class-features.title'))
-
     this.#featuresElement = this.querySelector('.class-features')
     this.#featuresElement.id = `accordion-features-${this._id}`
 

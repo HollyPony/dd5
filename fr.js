@@ -90,24 +90,29 @@ const fr = {
       _select: 'Ajouter une arme',
     },
   },
-  'class-features': {
-    title: 'Capacités de classe',
-    base: {
-      title: `Caractéristiques de classe`,
-      skills: {
-        title: `Maîtrises de compétence`,
-      },
-      tools: {
-        title: `Maîtrises d'outils`
-      }
-    },
-    feature: {
-      title: `**Nv.{level}** - {featureName}`,
-    },
-  },
   species: {
     label: 'Race',
     title: `Traits d'espèce`,
+  },
+  components: {
+    ClassFeatures: {
+      title: `Capacités de classe`
+    },
+    ClassBase: {
+      title: `Caractéristiques de classe`,
+      skills: {
+        title: `Maîtrises de compétence`
+      },
+      tools: {
+        title: `Maîtrises d'outils`
+      },
+    },
+    ClassFeature: {
+      name: `**Nv.{level}** - {featureName}`,
+      description: {
+        title: `Description`
+      }
+    },
   },
   statics: {
     origins: {
