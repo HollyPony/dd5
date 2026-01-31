@@ -64,7 +64,7 @@ input[disabled] ~ span {
   width: 100%;
   color: var(--color);
   font-size: 0.875em;
-  border-top: var(--border-width) solid var(--border-color);
+  border-top: var(--border-width) solid var(--bs-border-color);
 }
 
 .save-score,
