@@ -9,9 +9,8 @@ import * as userData from '../../modules/userData.js'
 // const ModifierChangedEvent = new CustomEvent(ModifierChangedEventName)
 
 export class Ability extends AbstractComponent {
-  static get _componentPath() {
-    return '/components/Ability'
-  }
+  static get tagName() { return 'ability-card' }
+  static get _componentPath() { return '/components/Ability' }
 
   #scoreElement
   #modifierElement

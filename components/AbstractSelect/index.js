@@ -1,9 +1,7 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
 
 export class AbstractSelect extends AbstractComponent {
-  static get _componentPath() {
-    return '/components/AbstractSelect'
-  }
+  static get _componentPath() { return '/components/AbstractSelect' }
 
   _selectElement
 

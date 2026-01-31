@@ -2,9 +2,10 @@ import { AbstractSelect } from '../AbstractSelect/index.js'
 import { getWeapons } from '../../modules/data/equipments.js'
 import { populateSelect, } from '../../modules/domlib.js'
 import { i18n } from '../../modules/i18n.js'
-import * as userData from '../../modules/userData.js'
 
 export class WeaponSelect extends AbstractSelect {
+  static get tagName() { return 'weapon-select' }
+
   // async connectedCallback() {
   //   await super.connectedCallback()
   // }

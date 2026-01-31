@@ -198,15 +198,15 @@ function setBindings() {
 }
 
 function registerCustomElements() {
-  customElements.define('ability-card', Ability)
-  customElements.define('origin-select', OriginSelect)
-  customElements.define('species-select', SpeciesSelect)
-  customElements.define('class-select', ClassSelect)
-  customElements.define('sub-class-select', SubClassSelect)
-  customElements.define('class-features', ClassFeatures)
-  customElements.define('class-base', ClassBase)
-  customElements.define('class-feature', ClassFeature)
-  customElements.define('weapon-select', WeaponSelect)
+  Ability.register()
+  OriginSelect.register()
+  SpeciesSelect.register()
+  ClassSelect.register()
+  SubClassSelect.register()
+  ClassFeatures.register()
+  ClassBase.register()
+  ClassFeature.register()
+  WeaponSelect.register()
 
   // customElements
   // .whenDefined('data-uint')

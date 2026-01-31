@@ -4,9 +4,8 @@ import { i18n } from '../../modules/i18n.js'
 import * as userData from '../../modules/userData.js'
 
 export class ClassFeatures extends AbstractComponent {
-  static get _componentPath() {
-    return '/components/ClassFeatures'
-  }
+  static get tagName() { return 'class-features' }
+  static get _componentPath() { return '/components/ClassFeatures' }
 
   #mainRequiredBadgeElement
 

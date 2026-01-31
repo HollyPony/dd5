@@ -5,6 +5,8 @@ import { i18n } from '../../modules/i18n.js'
 import * as userData from '../../modules/userData.js'
 
 export class SubClassSelect extends AbstractSelect {
+  static get tagName() { return 'sub-class-select' }
+
   // async connectedCallback() {
   //   await super.connectedCallback()
   // }

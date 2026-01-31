@@ -3,9 +3,8 @@ import { i18n } from '../../modules/i18n.js'
 import * as userData from '../../modules/userData.js'
 
 export class ClassFeature extends AbstractComponent {
-  static get _componentPath() {
-    return '/components/ClassFeature'
-  }
+  static get tagName() { return 'class-feature' }
+  static get _componentPath() { return '/components/ClassFeature' }
 
   #accordionParent
   #feature

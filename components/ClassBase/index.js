@@ -3,9 +3,8 @@ import { i18n } from '../../modules/i18n.js'
 import * as userData from '../../modules/userData.js'
 
 export class ClassBase extends AbstractComponent {
-  static get _componentPath() {
-    return '/components/ClassBase'
-  }
+  static get tagName() { return 'class-base' }
+  static get _componentPath() { return '/components/ClassBase' }
 
   async connectedCallback() {
     await super.connectedCallback()

@@ -1,7 +1,9 @@
 export class AbstractComponent extends HTMLElement {
   _id
 
+  static get tagName() { return null }
   static get _componentPath() { return undefined }
+  static register({ tagName, ...options } = {}) { customElements.define(tagName ?? this.tagName, this, options) }
 
   static _templatePromise
   static get _template() {
