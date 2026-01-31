@@ -27,7 +27,9 @@ export function createElement(type, children, { eventListeners = {}, ...attribut
  * @returns undefined
  */
 export function removeAllChildren(element) {
-  while (element.firstChild) { element.removeChild(element.firstChild) }
+  if (element) {
+    while (element.firstChild) { element.removeChild(element.firstChild) }
+  }
 }
 
 /**
