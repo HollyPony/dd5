@@ -93,7 +93,7 @@ const fr = {
   'class-features': {
     title: 'Capacités de classe',
     base: {
-      title: `{class}`,
+      title: `Caractéristiques de classe`,
       skills: {
         title: `Maîtrises de compétence`,
       },
@@ -101,8 +101,9 @@ const fr = {
         title: `Maîtrises d'outils`
       }
     },
-    expandBtn: 'Infos',
-    featureLevel: 'Nv.{level}',
+    feature: {
+      title: `**Nv.{level}** - {featureName}`,
+    },
   },
   species: {
     label: 'Race',
@@ -453,7 +454,7 @@ Vous ne pouvez avoir qu'une créature à la fois sous l'effet de cette aptitude.
         description: ``,
       },
     },
-    weaponNames: {
+    WEAPONS: {
       quarterstaff: 'Bâton de combat',
       dagger: 'Dague',
       club: 'Gourdin',
