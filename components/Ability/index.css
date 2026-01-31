@@ -1,4 +1,4 @@
-.ability-card {
+ability-card .ability-card {
   --inner-width: 2px;
   --outer-width: 1px;
   --margin: 10px; /* profondeur des décrochements */

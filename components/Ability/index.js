@@ -1,5 +1,5 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
-import { createElement } from '../../modules/domlib.js'
+import { createElement, removeAllChildren } from '../../modules/domlib.js'
 import { ABILITY, SKILLS, } from '../../modules/common.js'
 import { signDisplay, } from '../../modules/helpers.js'
 import { i18n } from '../../modules/i18n.js'
@@ -58,15 +58,14 @@ export class Ability extends AbstractComponent {
     // TODO: trigger per input ?
     this.#scoreElement.addEventListener('change', this.#scoreChanged)
 
-    document.addEventListener("userData.charLevelChanged", this.#refreshScore)
+    document.addEventListener("userData.charLevelChanged", this.#levelChanged)
   }
 
   #unregisterEvents() {
     this.#scoreElement.removeEventListener('change', this.#scoreChanged)
 
-    document.removeEventListener("userData.charLevelChanged", this.#refreshScore)
+    document.removeEventListener("userData.charLevelChanged", this.#levelChanged)
   }
-
 
   #refreshScore = () => {
     console.info('-- Ability.#refreshScore', this.ability)
@@ -75,6 +74,31 @@ export class Ability extends AbstractComponent {
     this.#scoreElement.value = score
 
     this.#scoreElement.dispatchEvent(new Event('change'))
+  }
+
+  #refreshSave() {
+    console.info('-- Ability.#refreshSave', this.ability)
+    this.#save.score.textContent = signDisplay(userData.getAbilitySave(this.ability))
+    this.#save.check.checked = userData.getCharClass()?.saves?.includes(this.ability)
+  }
+
+  #refreshSkills() {
+    console.info('-- Ability.#refreshSkills', this.ability)
+    removeAllChildren(this.#skillsContainer)
+    this.#skills.forEach(this.#appendSkill)
+  }
+
+  #appendSkill = (skill) => {
+    console.info('-- Ability.#appendSkill', this.ability)
+    this.#skillsContainer.appendChild(createElement('div', [
+      createElement('input', null, {
+        type: 'checkbox', class: 'form-check-input skill-check',
+        disabled: userData.isDisabledSkill(skill), // TODO: Should be all disable
+        checked: userData.isCheckedSkill(skill),
+      }),
+      createElement('span', signDisplay(userData.getAbilitySave(this.ability)), { class: 'skill-score' }),
+      createElement('label', i18n._(`statics.${skill.name}`)),
+    ], { class: 'form-check' }))
   }
 
   #scoreChanged = ({ target: { value }, isTrusted }) => {
@@ -92,28 +116,9 @@ export class Ability extends AbstractComponent {
     this.#refreshSkills()
   }
 
-  #refreshSave() {
-    console.info('-- Ability.#refreshSave', this.ability)
-    this.#save.score.textContent = signDisplay(userData.getAbilitySave(this.ability))
-    this.#save.check.checked = userData.getCharClass()?.saves?.includes(this.ability)
-  }
-
-  #refreshSkills() {
-    console.info('-- Ability.#refreshSkills', this.ability)
-    this.#skills.forEach(this.#appendSkill)
-  }
-
-  #appendSkill = (skill) => {
-    console.info('-- Ability.#appendSkill', this.ability)
-    this.#skillsContainer.appendChild(createElement('div', [
-      createElement('input', null, {
-        type: 'checkbox', class: 'form-check-input skill-check',
-        disabled: userData.isDisabledSkill(skill), // TODO: Should be all disable
-        checked: userData.isCheckedSkill(skill),
-      }),
-      createElement('span', signDisplay(userData.getAbilitySave(this.ability)), { class: 'skill-score' }),
-      createElement('label', i18n._(`statics.${skill.name}`)),
-    ], { class: 'form-check' }))
+  #levelChanged = () => {
+    console.info('-- Ability.#levelChanged', this.ability)
+    this.#refreshScore()
   }
 
   // static get observedAttributes() {

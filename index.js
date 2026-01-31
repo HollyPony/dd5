@@ -2,6 +2,11 @@ import { Ability } from './components/Ability/index.js'
 import { OriginSelect } from './components/OriginSelect/index.js'
 import { SpeciesSelect } from './components/SpeciesSelect/index.js'
 import { ClassSelect } from './components/ClassSelect/index.js'
+import { SubClassSelect } from './components/SubClassSelect/index.js'
+import { ClassFeatures } from './components/ClassFeatures/index.js'
+import { ClassBase } from './components/ClassBase/index.js'
+import { ClassFeature } from './components/ClassFeature/index.js'
+import { WeaponSelect } from './components/WeaponSelect/index.js'
 
 import { ABILITY, D, SKILLS } from './modules/common.js'
 import { createElement, populateSelect, removeAllChildren, } from './modules/domlib.js'
@@ -12,7 +17,6 @@ import { ARMOR_CATEGORY, getWeapons, } from './modules/data/equipments.js'
 
 // TODO: remove mock
 import { mock as storedData } from './modules/storeManager.js'
-import { SubClassSelect } from './components/SubClassSelect/index.js'
 
 /////////////////////////////////////////////////////////////////////////
 // INPUTS ///////////////////////////////////////////////////////////////
@@ -33,8 +37,6 @@ const trainingsElements = {
   weaponsList: document.getElementsByClassName('trainings-weapons-list')[0],
   toolsList: document.getElementsByClassName('trainings-tools-list')[0],
 }
-
-const weaponSelectElement = document.getElementsByName('weapons')[0]
 
 //////////////////////////////////////////////////////////////////////
 // DISPLAY HELPERS //////////////////////////////////////////////////////
@@ -115,48 +117,6 @@ function refreshTrainings() {
   removeAllChildren(trainingsElements.toolsList)
 }
 
-function refreshClassFeatures() {
-  const classFeaturesElement = document.getElementsByClassName('class-features')[0]
-  while (classFeaturesElement.firstChild) {
-    classFeaturesElement.removeChild(classFeaturesElement.firstChild);
-  }
-
-  userData.getCharClass()?.features?.forEach(feature => {
-    const featureElement = createElement('div', [
-      createElement('div',
-        [
-          createElement('span', [
-            createElement('strong', i18n._('class-features.featureLevel', { level: feature.atLevel })),
-            ' - ' + i18n._(`statics.class-features.${userData.getCharClassName()}.${feature.name}.name`)
-          ], { class: 'input-group-text flex-grow-1 border-0', }),
-          createElement('button', i18n._('class-features.expandBtn'), { // TODO: translate btn
-            class: 'btn btn-outline-secondary border-0',
-            type: 'button',
-            role: 'button',
-            'data-bs-toggle': 'collapse',
-            'data-bs-target': `#collapse-class-features-${userData.getCharClassName()}-${feature.name}`,
-          }),
-        ],
-        { class: 'accordion-header input-group' },
-      ),
-      createElement('div',
-        createElement(
-          'div',
-          i18n.md(`statics.class-features.${userData.getCharClassName()}.${feature.name}.description`),
-          { class: 'accordion-body' }
-        ),
-        {
-          id: `collapse-class-features-${userData.getCharClassName()}-${feature.name}`,
-          class: 'accordion-collapse collapse',
-          'data-bs-parent': '#class-features-accordion',
-        },
-      ),
-    ], { class: 'accordion-item' })
-
-    classFeaturesElement.appendChild(featureElement)
-  })
-}
-
 /////////////////////////////////////////////////////////////////////////
 // EVENTS ///////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
@@ -168,7 +128,6 @@ function charLevelChanged({ target: { value } }) {
   refreshHitDiceMax() // TODO: from event ?
   refreshProficiencyBonus() // TODO: from event ?
 
-  refreshClassFeatures() // TODO: from event ?
   // Update species abilities / spells etc ...
 
   // TODO: userData.reloadSpecies
@@ -204,25 +163,6 @@ function exportJSON() {
 function init() {
   const charsheet = storedData
 
-  populateSelect(
-    weaponSelectElement,
-    [{ value: '', text: i18n._('weaponscantrip.weapons._select') }].concat(
-      Object.entries(
-        getWeapons()
-          .reduce((acc, weapon) => {
-            if (!acc[weapon.category]) acc[weapon.category] = []
-            acc[weapon.category].push(weapon)
-            return acc
-          }, {})
-      ).map(([category, weapons]) => ({
-        isGroup: true,
-        label: i18n._(`statics.${category}`),
-        options: weapons.map(weapon => ({
-          value: weapon, text: i18n._(`statics.weaponNames.${weapon.name}`)
-        })),
-      }))
-    ))
-
   // Init data
   userData.init(charsheet)
 
@@ -242,7 +182,6 @@ function init() {
 
   refreshArmorClass()
   refreshProficiencyBonus()
-  refreshClassFeatures()
 
   setBindings()
   registerCustomElements()
@@ -256,8 +195,6 @@ function setBindings() {
   exportCharLink.addEventListener("click", exportJSON)
 
   charLevelElement.addEventListener('change', charLevelChanged)
-
-  document.addEventListener('userData.charClassChanged', refreshClassFeatures)
 }
 
 function registerCustomElements() {
@@ -266,6 +203,10 @@ function registerCustomElements() {
   customElements.define('species-select', SpeciesSelect)
   customElements.define('class-select', ClassSelect)
   customElements.define('sub-class-select', SubClassSelect)
+  customElements.define('class-features', ClassFeatures)
+  customElements.define('class-base', ClassBase)
+  customElements.define('class-feature', ClassFeature)
+  customElements.define('weapon-select', WeaponSelect)
 
   // customElements
   // .whenDefined('data-uint')

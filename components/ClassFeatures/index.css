@@ -1,0 +1,7 @@
+class-features {
+  .accordion-header > .accordion-button {
+    p {
+      margin-bottom: 0;
+    }
+  }
+}
