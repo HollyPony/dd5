@@ -11,7 +11,7 @@ export class AbstractSelect extends AbstractComponent {
     await super.connectedCallback()
     console.info('-- AbstractSelect.connectedCallback')
 
-    // console.log('1', this._id)
+    this.setAttribute('data-abstract-select', '')
 
     this._selectElement = this.querySelector('select')
 

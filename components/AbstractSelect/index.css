@@ -1,4 +1,4 @@
-select.form-control-select {
+[data-abstract-select] select.form-control-select {
   --y-padding: 0.1em;
   --background-size: 1em;
   --background-x-padding: 0.1em;
