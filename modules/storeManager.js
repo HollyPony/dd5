@@ -19,7 +19,7 @@ export const mock = {
     intelligence: 8,
     charisma: 12,
   },
-  skillChoosed: ['athletics', 'acrobatics'],
+  classSkills: ['athletics', 'acrobatics'],
   equipments: [
     {
       name: 'shield',
@@ -53,7 +53,7 @@ export function toCharsheet(jsSource) {
       [ABILITY.intelligence]: jsSource.attributes.intelligence,
       [ABILITY.charisma]: jsSource.attributes.charisma,
     },
-    skillChoosed: jsSource.skillChoosed.map(skill => SKILLS[skill]),
+    classSkills: jsSource.classSkills.map(skill => SKILLS[skill]),
     equipments: jsSource.equipments,
   }
 }
@@ -73,7 +73,7 @@ export function toJSON(jsData) {
   // TODO: See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse?the_reviver_parameter
   const reviver = (key, value) => {
     switch (key) {
-      case 'skillChoosed': return Object.keys(SKILLS).filter(key => value.includes(SKILLS[key]))
+      case 'classSkills': return Object.keys(SKILLS).filter(key => value.includes(SKILLS[key]))
       default: return value
     }
   }
@@ -96,7 +96,7 @@ export function toJSON(jsData) {
       intelligence: jsData.attributes[ABILITY.intelligence],
       charisma: jsData.attributes[ABILITY.charisma],
     },
-    skillChoosed: jsData.skillChoosed,
+    classSkills: jsData.classSkills,
     equipments: jsData.equipments
   }, reviver, 2)
 }

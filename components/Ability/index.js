@@ -57,14 +57,14 @@ export class Ability extends AbstractComponent {
     this.#scoreElement.addEventListener('change', this.#scoreChanged)
 
     document.addEventListener('userData.charLevelChanged', this.#levelChanged)
-    document.addEventListener('userData.skillChoosedChanged', this.#skillChosedChanged)
+    document.addEventListener('CharSheet.skillsChanged', this.#skillsChanged)
   }
 
   #unregisterEvents() {
     this.#scoreElement.removeEventListener('change', this.#scoreChanged)
 
     document.removeEventListener('userData.charLevelChanged', this.#levelChanged)
-    document.removeEventListener('userData.skillChoosedChanged', this.#skillChosedChanged)
+    document.removeEventListener('CharSheet.skillsChanged', this.#skillsChanged)
   }
 
   #refreshScore = () => {
@@ -124,7 +124,7 @@ export class Ability extends AbstractComponent {
     this.#refreshScore()
   }
 
-  #skillChosedChanged = () => {
+  #skillsChanged = () => {
     this.#refreshSkills()
   }
 

@@ -44,7 +44,7 @@ export class CharSheet {
     [ABILITY.intelligence]: 0,
     [ABILITY.charisma]: 0,
   })
-  skillChoosed = []
+  classSkills = []
   feats = []
   equipments = []
   equiped = s({
@@ -232,13 +232,13 @@ export class CharSheet {
   getEquiped(category = null) { return category ? this.equiped[category] : this.equiped }
 
   isCheckedSkill(skill) { // TODO: get from class features + get from feats
-    return this.charOrigin?.skills?.includes(skill) || this.skillChoosed.includes(skill)
+    return this.charOrigin?.skills?.includes(skill) || this.classSkills.includes(skill)
   }
 
   isDisabledSkill(skill) {
-    return (!this.charClass?.skillProficiencies?.includes(skill))
+    return (!this.charClass?.skills?.list.includes(skill))
       || this.charOrigin?.skills?.includes(skill)
-      || !this.skillChoosed.includes(skill) && (this.skillChoosed.length >= this.charClass?.authorizedNumberSkills ?? 0)
+      || !this.classSkills.includes(skill) && (this.classSkills.length >= this.charClass?.skills?.nb ?? 0)
   }
 
   getSkillScore(skill) {
@@ -300,17 +300,17 @@ export class CharSheet {
     this.attributes[attributeName] = parseInt(score)
     this.modifiers[attributeName] = CharSheet.abilityScoreToModifier(this.attributes[attributeName])
   }
-  skillChoosedAdd(skill) {
-    this.skillChoosed.push(skill)
-    document.dispatchEvent(new CustomEvent('userData.skillChoosedChanged'))
+  classSkillsAdd(skill) {
+    this.classSkills.push(skill)
+    document.dispatchEvent(new CustomEvent('CharSheet.skillsChanged'))
   }
-  skillChoosedRemove(skill) {
-    this.skillChoosed.splice(this.skillChoosed.indexOf(skill), 1)
-    document.dispatchEvent(new CustomEvent('userData.skillChoosedChanged'))
+  classSkillsRemove(skill) {
+    this.classSkills.splice(this.classSkills.indexOf(skill), 1)
+    document.dispatchEvent(new CustomEvent('CharSheet.skillsChanged'))
   }
-  skillChoosedClear() {
-    this.skillChoosed.lentgh = 0
-    document.dispatchEvent(new CustomEvent('userData.skillChoosedChanged'))
+  classSkillsClear() {
+    this.classSkills.lentgh = 0
+    document.dispatchEvent(new CustomEvent('CharSheet.skillsChanged'))
   }
   // STORAGE
 

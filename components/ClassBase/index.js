@@ -50,7 +50,7 @@ export class ClassBase extends AbstractComponent {
 
     // document.addEventListener("userData.charLevelChanged", this.#refreshScore)
 
-    document.addEventListener('userData.skillChoosedChanged', this.#skillChoosedChanged)
+    document.addEventListener('CharSheet.skillsChanged', this.#skillsChanged)
   }
 
   #unregisterEvents() {
@@ -61,7 +61,7 @@ export class ClassBase extends AbstractComponent {
 
   #refreshActionsRequired() {
     const actionsRequired = {
-      skills: (ClassBase.charsheet.charClass.authorizedNumberSkills - ClassBase.charsheet.skillChoosed.length) > 0
+      skills: (ClassBase.charsheet.charClass.skills.nb - ClassBase.charsheet.classSkills.length) > 0
     }
 
     this.#skillsActionRequiredElement.classList[actionsRequired.skills ? 'add' : 'remove']('show')
@@ -75,25 +75,25 @@ export class ClassBase extends AbstractComponent {
 
   #refreshSkillsChooseLabel() {
     fillElement(this.#skillsChooseLabel, i18n.tn('components.ClassBase.skills.remaining', {
-      remaining: ClassBase.charsheet.charClass.authorizedNumberSkills - ClassBase.charsheet.skillChoosed.length
+      remaining: ClassBase.charsheet.charClass.skills.nb - ClassBase.charsheet.classSkills.length
     }))
   }
 
   #refreshSkillsList() {
-    fillElement(this.#skillsList, ClassBase.charsheet.charClass.skillProficiencies.map(skill => createElement(null, [
+    fillElement(this.#skillsList, ClassBase.charsheet.charClass.skills.list.map(skill => createElement(null, [
       createElement('input', null, {
         type: 'checkbox', class: 'btn-check', id: `${skill.name}.${this._id}`,
-        checked: ClassBase.charsheet.skillChoosed.includes(skill),
+        checked: ClassBase.charsheet.classSkills.includes(skill),
         disabled: ClassBase.charsheet.isDisabledSkill(skill),
         eventListeners: {
-          change: ({ target: { checked } }) => ClassBase.charsheet[checked ? 'skillChoosedAdd' : 'skillChoosedRemove'](skill)
+          change: ({ target: { checked } }) => ClassBase.charsheet[checked ? 'classSkillsAdd' : 'classSkillsRemove'](skill)
         }
       }),
       createElement('label', i18n._(`statics.${skill.name}`), { class: 'btn btn-outline-primary', for: `${skill.name}.${this._id}` }),
     ])))
   }
 
-  #skillChoosedChanged = () => {
+  #skillsChanged = () => {
     this.#refreshActionsRequired()
     this.#refreshSkillsChooseLabel()
     this.#refreshSkillsList()
