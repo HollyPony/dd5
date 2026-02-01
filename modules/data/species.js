@@ -228,7 +228,7 @@ const species = f({
   }),
 })
 
-export function getSpeciesList() {
+export function getList() {
   return Object.entries(species).map(([speciesName, speciesValue]) => ({
     name: speciesName,
     lineages: speciesValue.lineages ? Object.keys(speciesValue.lineages) : null

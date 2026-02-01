@@ -9,10 +9,10 @@ import { ClassFeature } from './components/ClassFeature/index.js'
 import { WeaponSelect } from './components/WeaponSelect/index.js'
 
 import { ABILITY, D, SKILLS } from './modules/common.js'
-import { createElement, populateSelect, removeAllChildren, } from './modules/domlib.js'
+import { createElement, removeAllChildren, } from './modules/domlib.js'
 import { i18n } from '/modules/i18n.js'
 import * as userData from './modules/userData.js'
-import { ARMOR_CATEGORY, getWeapons, } from './modules/data/equipments.js'
+import { ARMOR_CATEGORY, } from './modules/data/equipments.js'
 
 
 // TODO: remove mock

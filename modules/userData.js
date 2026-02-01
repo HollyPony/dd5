@@ -1,7 +1,7 @@
 import getClass from './data/classes.js'
 import { EFFECT, ABILITY, SKILLS, DICE, } from './common.js'
 import { EQUIPED_CATEGORY, EQUIPMENT_TYPE, getEquipment, } from './data/equipments.js'
-import { origins, } from './data/origins.js'
+import { getOrigin, } from './data/origins.js'
 import getSpecies from './data/species.js'
 import { s } from './helpers.js'
 import * as storeManager from './storeManager.js'
@@ -12,7 +12,8 @@ const charsheet = s({
   charClassName: '',
   charSubClassName: null,
   charLevel: 1,
-  charOrigin: '',
+  charOrigin: null,
+  charOriginName: '',
   charSpecies: null,
   charSpeciesName: '',
   charAlignment: '',
@@ -49,7 +50,7 @@ const charsheet = s({
 // ACCESSORS
 
 export function getCharName() { return charsheet.charName }
-export function getCharOrigin() { return charsheet.charOrigin }
+export function getCharOriginName() { return charsheet.charOriginName }
 export function getCharClassName() { return charsheet.charClassName }
 export function getCharSubClassName() { return charsheet.charSubClassName }
 export function getCharSpeciesName() { return charsheet.charSpeciesName }
@@ -84,6 +85,7 @@ function applyEffects(list, effect, options, callback) {
 // COMPUTED VALUES
 
 
+export function getCharOrigin() { return charsheet.charOrigin }
 export function getCharClass() { return charsheet.charClass }
 export function getCharSpecies() { return charsheet.charSpecies }
 export function getCharModifiers() { return charsheet.modifiers }
@@ -194,17 +196,13 @@ export function getAbilitySave(ability) {
     : getAbilityModifier(ability)
 }
 
-function isAuthorizedSkill(skill) {
-  return getCharClass()?.skillProficiencies?.includes(skill)
-}
-
 export function isCheckedSkill(skill) { // TODO: get from class features + get from feats
-  return origins[getCharOrigin()]?.skills?.includes(skill) || getSkillChoosed().includes(skill)
+  return getCharOrigin()?.skills?.includes(skill) || getSkillChoosed().includes(skill)
 }
 
 export function isDisabledSkill(skill) {
-  return (!isAuthorizedSkill(skill))
-    || origins[getCharOrigin()]?.skills?.includes(skill)
+  return (!getCharClass()?.skillProficiencies?.includes(skill))
+    || getCharOrigin()?.skills?.includes(skill)
     || !getSkillChoosed().includes(skill) && (getSkillChoosed().length >= getCharClass()?.authorizedNumberSkills ?? 0)
 }
 
@@ -223,6 +221,7 @@ export function setCharClassName(charClassName) {
   document.dispatchEvent(new CustomEvent('userData.charClassChanged'))
 
   // TODO: refresh this datas with event
+  // clear choose skill
   // refreshSubClassList()
   // reloadClassData()
   // refreshClassFeatures()
@@ -244,10 +243,12 @@ export function setCharLevel(charLevel) {
 
   document.dispatchEvent(new CustomEvent('userData.charLevelChanged'))
 }
-export function setCharOrigin(charOrigin) {
-  charsheet.charOrigin = charOrigin
+export function setCharOrigin(charOriginName) {
+  charsheet.charOriginName = charOriginName
+  charsheet.charOrigin = getOrigin(getCharOriginName())
   document.dispatchEvent(new CustomEvent('userData.charOriginChanged')) // TODO: maybe useless
-  // TODO: Clear skillChoosed from origin
+  // TODO: handle skill from origin ?
+  // TODO: remove also choosedSkill due to conflicts
 }
 export function setCharSpeciesName(charSpecies) {
   charsheet.charSpeciesName = charSpecies
@@ -261,41 +262,34 @@ export function setAttribute(attributeName, score) {
   charsheet.attributes[attributeName] = parseInt(score)
   charsheet.modifiers[attributeName] = abilityScoreToModifier(charsheet.attributes[attributeName])
 }
-export function skillChoosedAdd(skill) { getSkillChoosed().push(skill) }
-export function skillChoosedRemove(skill) { getSkillChoosed().splice(getSkillChoosed().indexOf(skill), 1) }
-export function skillChoosedClear() { getSkillChoosed().lentgh = 0 }
+export function skillChoosedAdd(skill) {
+  getSkillChoosed().push(skill)
+  document.dispatchEvent(new CustomEvent('userData.skillChoosedChanged'))
+}
+export function skillChoosedRemove(skill) {
+  getSkillChoosed().splice(getSkillChoosed().indexOf(skill), 1)
+  document.dispatchEvent(new CustomEvent('userData.skillChoosedChanged'))
+}
+export function skillChoosedClear() {
+  getSkillChoosed().lentgh = 0
+  document.dispatchEvent(new CustomEvent('userData.skillChoosedChanged'))
+}
 
 // INITIALIZER
 
 export function init(source) {
   // Values set from source
-  charsheet.charName = source.charName
-  charsheet.charOrigin = source.charOrigin
-  charsheet.charClassName = source.charClassName
-  charsheet.charSubClassName = source.charSubClassName
-  charsheet.charSpeciesName = source.charSpeciesName
-  charsheet.charLevel = source.charLevel
-  charsheet.charExperience = source.charExperience
-  charsheet.charAlignment = source.charAlignment
-  charsheet.charSizeCategory = source.charSizeCategory
-  charsheet.charSize = source.charSize
-  charsheet.attributes[ABILITY.strength] = source.attributes[ABILITY.strength]
-  charsheet.attributes[ABILITY.dexterity] = source.attributes[ABILITY.dexterity]
-  charsheet.attributes[ABILITY.constitution] = source.attributes[ABILITY.constitution]
-  charsheet.attributes[ABILITY.wisdom] = source.attributes[ABILITY.wisdom]
-  charsheet.attributes[ABILITY.intelligence] = source.attributes[ABILITY.intelligence]
-  charsheet.attributes[ABILITY.charisma] = source.attributes[ABILITY.charisma]
-  charsheet.skillChoosed = source.skillChoosed.map(skill => SKILLS[skill])
+  Object.assign(charsheet, storeManager.toCharsheet(source))
 
-  charsheet.equipments = source.equipments
 
   // Values set from charsheet
+  charsheet.charOrigin = getOrigin(getCharOriginName())
+  charsheet.charClass = getClass(getCharClassName(), getCharSubClassName(), getCharLevel())
+  charsheet.charSpecies = getSpecies(getCharSpeciesName())
+
   Object.keys(charsheet.modifiers).forEach(ability => {
     charsheet.modifiers[ability] = abilityScoreToModifier(charsheet.attributes[ability])
   })
-
-  charsheet.charClass = getClass(getCharClassName(), getCharSubClassName(), getCharLevel())
-  charsheet.charSpecies = getSpecies(getCharSpeciesName())
 
   charsheet.equipments?.filter?.(equipment => equipment.equiped).forEach(equipment => {
     const equipmentComputed = Object.assign({}, getEquipment(equipment.name), equipment)
@@ -315,9 +309,9 @@ export function init(source) {
     }
   })
 
-  // TODO: init species traits
-
   // TODO: init class features
+
+  // TODO: init species traits
 
   // TODO: init feats
 }

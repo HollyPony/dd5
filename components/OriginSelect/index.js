@@ -1,5 +1,5 @@
 import { AbstractSelect } from '../AbstractSelect/index.js'
-import { origins, } from '../../modules/data/origins.js'
+import { getList as getOriginList, } from '../../modules/data/origins.js'
 import { populateSelect, } from '../../modules/domlib.js'
 import { i18n } from '../../modules/i18n.js'
 import * as userData from '../../modules/userData.js'
@@ -27,7 +27,7 @@ export class OriginSelect extends AbstractSelect {
     console.info('-- OriginSelect.#refreshList')
     populateSelect(
       this._selectElement,
-      Object.keys(origins).map(originName => ({ value: originName, text: i18n._(`statics.origins.${originName}`), }))
+      getOriginList().map(originName => ({ value: originName, text: i18n._(`statics.origins.${originName}`), }))
     )
   }
 

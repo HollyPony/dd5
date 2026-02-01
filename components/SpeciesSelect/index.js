@@ -1,5 +1,5 @@
 import { AbstractSelect } from '../AbstractSelect/index.js'
-import { getSpeciesList, } from '../../modules/data/species.js'
+import { getList as getSpeciesList, } from '../../modules/data/species.js'
 import { populateSelect, } from '../../modules/domlib.js'
 import { i18n } from '../../modules/i18n.js'
 import * as userData from '../../modules/userData.js'

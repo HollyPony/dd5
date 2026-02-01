@@ -68,3 +68,6 @@ export const origins = f({
     feat: 'lucky',
   }),
 })
+
+export function getList() { return Object.keys(origins) }
+export function getOrigin(originName) { return origins[originName] }

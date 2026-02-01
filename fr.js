@@ -101,7 +101,8 @@ const fr = {
     ClassBase: {
       title: `Caractéristiques de classe`,
       skills: {
-        title: `Maîtrises de compétence`
+        title: `Maîtrises de compétence`,
+        remaining: `Il reste {remaining} compétence(s) à sélectionner`
       },
       tools: {
         title: `Maîtrises d'outils`

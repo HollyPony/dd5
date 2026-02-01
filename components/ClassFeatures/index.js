@@ -9,20 +9,14 @@ export class ClassFeatures extends AbstractComponent {
 
   #mainRequiredBadgeElement
 
-  #baseFeatureElement
-  #baseFeatureButtonElement
-  #baseFeatureAccordionElement
-
   #featuresElement
-
-  #features
 
   async connectedCallback() {
     await super.connectedCallback()
     console.info('-- ClassFeatures.connectedCallback')
 
     // TODO: toggle it
-    this.#mainRequiredBadgeElement = this.querySelector('main-required-badge')
+    this.#mainRequiredBadgeElement = this.querySelector('.class-features-block > span.action-required')
 
     this.#featuresElement = this.querySelector('.class-features')
     this.#featuresElement.id = `accordion-features-${this._id}`
@@ -30,6 +24,7 @@ export class ClassFeatures extends AbstractComponent {
     this.#refreshBaseFeature()
     this.#refreshFeatures()
 
+    i18n.applyTranslations(this)
     this.#registerEvents()
   }
 
@@ -38,20 +33,22 @@ export class ClassFeatures extends AbstractComponent {
   }
 
   #registerEvents() {
+    this.addEventListener('action-required-changed', this.#actionRequiredChanged)
     // this.#scoreElement.addEventListener('change', this.#classChanged)
 
     // TODO: had a class features changed ????
-    document.addEventListener("userData.charLevelChanged", this.#levelChanged)
-    document.addEventListener("userData.charClassChanged", this.#classChanged)
-    document.addEventListener("userData.charSubClassChanged", this.#subClassChanged)
+    document.addEventListener('userData.charLevelChanged', this.#levelChanged)
+    document.addEventListener('userData.charClassChanged', this.#classChanged)
+    document.addEventListener('userData.charSubClassChanged', this.#subClassChanged)
   }
 
   #unregisterEvents() {
+    this.removeEventListener('action-required-changed', this.#actionRequiredChanged)
     // this.#scoreElement.removeEventListener('change', this.#classChanged)
 
-    document.removeEventListener("userData.charLevelChanged", this.#classChanged)
-    document.removeEventListener("userData.charClassChanged", this.#classChanged)
-    document.removeEventListener("userData.charSubClassChanged", this.#classChanged)
+    document.removeEventListener('userData.charLevelChanged', this.#classChanged)
+    document.removeEventListener('userData.charClassChanged', this.#classChanged)
+    document.removeEventListener('userData.charSubClassChanged', this.#classChanged)
   }
 
   #refreshBaseFeature() {
@@ -75,6 +72,14 @@ export class ClassFeatures extends AbstractComponent {
       'data-accordion': this.#featuresElement.id,
       'data-feature': feature.name,
     }))
+  }
+
+  #actionRequiredChanged = () => {
+    const hasActionRequired = [
+      this.querySelector('class-base'),
+      ...this.querySelectorAll('class-feature')
+    ].map(element => element.hasActionRequired).some(x => x)
+    this.#mainRequiredBadgeElement.classList[hasActionRequired ? 'add' : 'remove']('show')
   }
 
   #levelChanged = () => {

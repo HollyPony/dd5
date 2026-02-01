@@ -1,23 +1,23 @@
 import { ABILITY, SKILLS, } from './common.js'
 
+// TODO: remove
 export const mock = {
-  charName: 'Doudou McDoubidou',
-  charOrigin: 'artisan',
-  charClassName: 'monk',
-  charSubClassName: undefined,
-  charSpeciesName: 'goliath.stone',
-  charLevel: 2,
-  charExperience: 300,
-  charAlignment: 'neutralGood',
-  charSizeCategory: 'medium',
-  charSize: '242',
+  name: 'Doudou McDoubidou',
+  origin: 'artisan',
+  class: 'monk',
+  species: 'goliath.stone',
+  level: 2,
+  experience: 300,
+  alignment: 'neutralGood',
+  sizeCategory: 'medium',
+  size: '242',
   attributes: {
-    [ABILITY.strength]: 12,
-    [ABILITY.dexterity]: 17,
-    [ABILITY.constitution]: 14,
-    [ABILITY.wisdom]: 12,
-    [ABILITY.intelligence]: 8,
-    [ABILITY.charisma]: 12,
+    strength: 12,
+    dexterity: 17,
+    constitution: 14,
+    wisdom: 12,
+    intelligence: 8,
+    charisma: 12,
   },
   skillChoosed: ['athletics', 'acrobatics'],
   equipments: [
@@ -33,11 +33,36 @@ export const mock = {
   ],
 }
 
+export function toCharsheet(jsSource) {
+  return {
+    charName: jsSource.name,
+    charOriginName: jsSource.origin,
+    charClassName: jsSource.class?.split('.')[0],
+    charSubClassName: jsSource.class?.split('.')[1],
+    charSpeciesName: jsSource.species,
+    charLevel: jsSource.level,
+    charExperience: jsSource.experience,
+    charAlignment: jsSource.alignment,
+    charSizeCategory: jsSource.sizeCategory,
+    charSize: jsSource.size,
+    attributes: {
+      [ABILITY.strength]: jsSource.attributes.strength,
+      [ABILITY.dexterity]: jsSource.attributes.dexterity,
+      [ABILITY.constitution]: jsSource.attributes.constitution,
+      [ABILITY.wisdom]: jsSource.attributes.wisdom,
+      [ABILITY.intelligence]: jsSource.attributes.intelligence,
+      [ABILITY.charisma]: jsSource.attributes.charisma,
+    },
+    skillChoosed: jsSource.skillChoosed.map(skill => SKILLS[skill]),
+    equipments: jsSource.equipments,
+  }
+}
+
 export function fromJSON(jsonData) {
   // TODO: See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#the_replacer_parameter
   const replacer = (key, value) => {
     if (key === 'type') {
-      if (value === ENUMM_TYPE.X.qsd) return ENUMM_TYPE.X
+      // if (value === ENUMM_TYPE.X.qsd) return ENUMM_TYPE.X
     }
     return value
   }
@@ -54,17 +79,15 @@ export function toJSON(jsData) {
   }
 
   return JSON.stringify({
-    charName: jsData.charName,
-    charOriginName: jsData.charOrigin,
-    charClassName: jsData.charClassName,
-    charSubClassName: jsData.charSubClassName,
-    charSpecies: jsData.charSpeciesName,
-    charLevel: jsData.charLevel,
-    charExperience: jsData.charExperience,
-    charAlignment: jsData.charAlignment,
-    charSizeCategory: jsData.charSizeCategory,
-    charSize: jsData.charSize,
-    attributes: jsData.attributes,
+    name: jsData.charName,
+    origin: jsData.charOriginName,
+    class: `${jsData.charClassName}.${jsData.charSubClassName}`,
+    species: jsData.charSpeciesName,
+    level: jsData.charLevel,
+    experience: jsData.charExperience,
+    alignment: jsData.charAlignment,
+    sizeCategory: jsData.charSizeCategory,
+    size: jsData.charSize,
     attributes: {
       strength: jsData.attributes[ABILITY.strength],
       dexterity: jsData.attributes[ABILITY.dexterity],

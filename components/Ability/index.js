@@ -57,13 +57,15 @@ export class Ability extends AbstractComponent {
     // TODO: trigger per input ?
     this.#scoreElement.addEventListener('change', this.#scoreChanged)
 
-    document.addEventListener("userData.charLevelChanged", this.#levelChanged)
+    document.addEventListener('userData.charLevelChanged', this.#levelChanged)
+    document.addEventListener('userData.skillChoosedChanged', this.#skillChosedChanged)
   }
 
   #unregisterEvents() {
     this.#scoreElement.removeEventListener('change', this.#scoreChanged)
 
-    document.removeEventListener("userData.charLevelChanged", this.#levelChanged)
+    document.removeEventListener('userData.charLevelChanged', this.#levelChanged)
+    document.removeEventListener('userData.skillChoosedChanged', this.#skillChosedChanged)
   }
 
   #refreshScore = () => {
@@ -91,12 +93,15 @@ export class Ability extends AbstractComponent {
     console.info('-- Ability.#appendSkill', this.ability)
     this.#skillsContainer.appendChild(createElement('div', [
       createElement('input', null, {
-        type: 'checkbox', class: 'form-check-input skill-check',
-        disabled: userData.isDisabledSkill(skill), // TODO: Should be all disable
+        name: `${skill.name}.${this._id}`,
+        type: 'checkbox', class: 'form-check-input checkbox-readonly skill-check',
+        tabindex: '-1',
         checked: userData.isCheckedSkill(skill),
       }),
-      createElement('span', signDisplay(userData.getAbilitySave(this.ability)), { class: 'skill-score' }),
-      createElement('label', i18n._(`statics.${skill.name}`)),
+      createElement('span', signDisplay(userData.getSkillScore(skill)), { class: 'skill-score' }),
+      createElement('label', i18n._(`statics.${skill.name}`), {
+        id: `${skill.name}.${this._id}`,
+      }),
     ], { class: 'form-check' }))
   }
 
@@ -118,6 +123,10 @@ export class Ability extends AbstractComponent {
   #levelChanged = () => {
     console.info('-- Ability.#levelChanged', this.ability)
     this.#refreshScore()
+  }
+
+  #skillChosedChanged = () => {
+    this.#refreshSkills()
   }
 
   // static get observedAttributes() {
