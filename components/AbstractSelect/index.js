@@ -29,5 +29,5 @@ export class AbstractSelect extends AbstractComponent {
 
   _refreshList = () => { }
 
-  _refreshValue = () => { }
+  // _refreshValue = () => { }
 }

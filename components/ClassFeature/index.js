@@ -1,6 +1,5 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
 import { i18n } from '../../modules/i18n.js'
-import * as userData from '../../modules/userData.js'
 
 export class ClassFeature extends AbstractComponent {
   static get tagName() { return 'class-feature' }
@@ -14,7 +13,7 @@ export class ClassFeature extends AbstractComponent {
     console.info('-- ClassFeature.connectedCallback')
 
     this.#accordionParent = this.dataset.accordion
-    this.#feature = userData.getCharClass()?.features.find(feature => feature.name === this.dataset.feature)
+    this.#feature = ClassFeature.charsheet.charClass?.features.find(feature => feature.name === this.dataset.feature)
 
     const title = this.querySelector('.accordion-header > .feature-title')
     const content = this.querySelector('.accordion-collapse')
@@ -22,7 +21,7 @@ export class ClassFeature extends AbstractComponent {
 
     title.appendChild(i18n.md('components.ClassFeature.name', {
       level: this.#feature.atLevel,
-      featureName: i18n._(`statics.class-features.${userData.getCharClassName()}.${this.#feature.name}.name`)
+      featureName: i18n._(`statics.class-features.${ClassFeature.charsheet.charClassName}.${this.#feature.name}.name`)
     }))
     title.dataset.bsTarget = `#${this._id}`
 
@@ -30,7 +29,7 @@ export class ClassFeature extends AbstractComponent {
     content.dataset.bsParent = `#${this.#accordionParent}`
 
     description.appendChild(
-      i18n.md(`statics.class-features.${userData.getCharClassName()}.${this.#feature.name}.description`)
+      i18n.md(`statics.class-features.${ClassFeature.charsheet.charClassName}.${this.#feature.name}.description`)
     )
 
     i18n.applyTranslations(this)

@@ -2,7 +2,6 @@ import { AbstractSelect } from '../AbstractSelect/index.js'
 import { getSubClasses, } from '../../modules/data/classes.js'
 import { populateSelect, } from '../../modules/domlib.js'
 import { i18n } from '../../modules/i18n.js'
-import * as userData from '../../modules/userData.js'
 
 export class SubClassSelect extends AbstractSelect {
   static get tagName() { return 'sub-class-select' }
@@ -22,6 +21,8 @@ export class SubClassSelect extends AbstractSelect {
   _unregisterEvents() {
     this._selectElement.removeEventListener('change', this._charClassChanged)
 
+    document.removeEventListener('userData.charLevelChanged', this._charLevelChanged)
+    document.removeEventListener('userData.charClassChanged', this._charClassChanged)
     document.removeEventListener('userData.charSubClassChanged', this._refreshValue)
   }
 
@@ -30,10 +31,10 @@ export class SubClassSelect extends AbstractSelect {
     populateSelect(
       this._selectElement,
       [
-        { value: '', text: i18n._((userData.getCharLevel() < 3 || !userData.getCharClassName()) ? `subClasses.select.unavailable` : `subClasses.select.chooseOne`), disabled: true },
-        ...getSubClasses(userData.getCharClassName()).map(subClassName => ({
+        { value: '', text: i18n._((SubClassSelect.charsheet.charLevel < 3 || !SubClassSelect.charsheet.charClassName) ? `subClasses.select.unavailable` : `subClasses.select.chooseOne`), disabled: true },
+        ...getSubClasses(SubClassSelect.charsheet.charClassName).map(subClassName => ({
           value: subClassName,
-          text: i18n._(`statics.subClasses.${userData.getCharClassName()}.${subClassName}`),
+          text: i18n._(`statics.subClasses.${SubClassSelect.charsheet.charClassName}.${subClassName}`),
         })),
       ],
       { clear: true }
@@ -42,14 +43,14 @@ export class SubClassSelect extends AbstractSelect {
 
   _refreshValue = () => {
     console.info('-- SubClassSelect.#refreshValue')
-    this._selectElement.value = userData.getCharLevel() > 2 && userData.getCharSubClassName() || ''
-    this._selectElement.disabled = userData.getCharLevel() < 3
+    this._selectElement.value = SubClassSelect.charsheet.charLevel > 2 && SubClassSelect.charsheet.charSubClassName || ''
+    this._selectElement.disabled = SubClassSelect.charsheet.charLevel < 3
   }
 
   _selectChanged = ({ target: { value } }) => {
     console.info('-- SubClassSelect.#selectChanged', value)
     // TODO: alert skills lost
-    userData.setCharSubClassName(value)
+    SubClassSelect.charsheet.charSubClassName = value
   }
 
   _charLevelChanged = () => {

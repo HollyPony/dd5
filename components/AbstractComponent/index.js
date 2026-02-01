@@ -1,5 +1,8 @@
+import { CharSheet } from '../../modules/CharSheet.js'
+
 export class AbstractComponent extends HTMLElement {
   _id
+  static charsheet
 
   static get tagName() { return null }
   static get _componentPath() { return undefined }
@@ -19,6 +22,8 @@ export class AbstractComponent extends HTMLElement {
 
   constructor() {
     super()
+
+    AbstractComponent.charsheet = CharSheet.getInstance()
   }
 
   async connectedCallback() {

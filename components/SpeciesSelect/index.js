@@ -2,7 +2,6 @@ import { AbstractSelect } from '../AbstractSelect/index.js'
 import { getList as getSpeciesList, } from '../../modules/data/species.js'
 import { populateSelect, } from '../../modules/domlib.js'
 import { i18n } from '../../modules/i18n.js'
-import * as userData from '../../modules/userData.js'
 
 export class SpeciesSelect extends AbstractSelect {
   static get tagName() { return 'species-select' }
@@ -44,12 +43,12 @@ export class SpeciesSelect extends AbstractSelect {
 
   _refreshValue = () => {
     console.info('-- SpeciesSelect.#refreshValue')
-    this._selectElement.value = userData.getCharSpeciesName() || ''
+    this._selectElement.value = SpeciesSelect.charsheet.charSpeciesName || ''
   }
 
   _selectChanged = ({ target: { value } }) => {
     console.info('-- SpeciesSelect.#selectChanged', value)
     // TODO: alert skills lost
-    userData.setCharSpeciesName(value)
+    SpeciesSelect.charsheet.charSpeciesName = value
   }
 }

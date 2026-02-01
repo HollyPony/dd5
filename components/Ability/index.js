@@ -3,7 +3,6 @@ import { createElement, removeAllChildren } from '../../modules/domlib.js'
 import { ABILITY, SKILLS, } from '../../modules/common.js'
 import { signDisplay, } from '../../modules/helpers.js'
 import { i18n } from '../../modules/i18n.js'
-import * as userData from '../../modules/userData.js'
 
 // const ModifierChangedEventName = 'Ability.modifierChanged'
 // const ModifierChangedEvent = new CustomEvent(ModifierChangedEventName)
@@ -71,7 +70,7 @@ export class Ability extends AbstractComponent {
   #refreshScore = () => {
     console.info('-- Ability.#refreshScore', this.ability)
 
-    const score = userData.getAbilityScore(this.ability)
+    const score = Ability.charsheet.getAbilityScore(this.ability)
     this.#scoreElement.value = score
 
     this.#scoreElement.dispatchEvent(new Event('change'))
@@ -79,8 +78,8 @@ export class Ability extends AbstractComponent {
 
   #refreshSave() {
     console.info('-- Ability.#refreshSave', this.ability)
-    this.#save.score.textContent = signDisplay(userData.getAbilitySave(this.ability))
-    this.#save.check.checked = userData.getCharClass()?.saves?.includes(this.ability)
+    this.#save.score.textContent = signDisplay(Ability.charsheet.getAbilitySave(this.ability))
+    this.#save.check.checked = Ability.charsheet.charClass?.saves?.includes(this.ability)
   }
 
   #refreshSkills() {
@@ -96,9 +95,9 @@ export class Ability extends AbstractComponent {
         name: `${skill.name}.${this._id}`,
         type: 'checkbox', class: 'form-check-input checkbox-readonly skill-check',
         tabindex: '-1',
-        checked: userData.isCheckedSkill(skill),
+        checked: Ability.charsheet.isCheckedSkill(skill),
       }),
-      createElement('span', signDisplay(userData.getSkillScore(skill)), { class: 'skill-score' }),
+      createElement('span', signDisplay(Ability.charsheet.getSkillScore(skill)), { class: 'skill-score' }),
       createElement('label', i18n._(`statics.${skill.name}`), {
         id: `${skill.name}.${this._id}`,
       }),
@@ -110,10 +109,10 @@ export class Ability extends AbstractComponent {
 
     if (isTrusted) {
       // TODO: Am I sure about that ?
-      userData.setAttribute(this.ability, value)
+      Ability.charsheet.setAttribute(this.ability, value)
     }
 
-    const modifier = userData.getAbilityModifier(this.ability)
+    const modifier = Ability.charsheet.getAbilityModifier(this.ability)
     this.#modifierElement.value = signDisplay(modifier)
 
     this.#refreshSave()

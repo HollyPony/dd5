@@ -2,7 +2,6 @@ import { AbstractSelect } from '../AbstractSelect/index.js'
 import { getList as getClassesList, } from '../../modules/data/classes.js'
 import { populateSelect, } from '../../modules/domlib.js'
 import { i18n } from '../../modules/i18n.js'
-import * as userData from '../../modules/userData.js'
 
 export class ClassSelect extends AbstractSelect {
   static get tagName() { return 'class-select' }
@@ -42,11 +41,11 @@ export class ClassSelect extends AbstractSelect {
 
   _refreshValue = () => {
     console.info('-- ClassSelect.#refreshValue')
-    this._selectElement.value = userData.getCharClassName() || ''
+    this._selectElement.value = ClassSelect.charsheet.charClassName || ''
   }
 
   _selectChanged = ({ target: { value } }) => {
     console.info('-- ClassSelect.#selectChanged', value)
-    userData.setCharClassName(value)
+    ClassSelect.charsheet.charClassName = value
   }
 }

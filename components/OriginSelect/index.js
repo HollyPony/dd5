@@ -2,13 +2,13 @@ import { AbstractSelect } from '../AbstractSelect/index.js'
 import { getList as getOriginList, } from '../../modules/data/origins.js'
 import { populateSelect, } from '../../modules/domlib.js'
 import { i18n } from '../../modules/i18n.js'
-import * as userData from '../../modules/userData.js'
 
 export class OriginSelect extends AbstractSelect {
   static get tagName() { return 'origin-select' }
 
   // async connectedCallback() {
   //   await super.connectedCallback()
+  //   console.info('-- OriginSelect.#connectedCallback')
   // }
 
   _registerEvents() {
@@ -33,12 +33,12 @@ export class OriginSelect extends AbstractSelect {
 
   _refreshValue = () => {
     console.info('-- OriginSelect.#refreshValue')
-    this._selectElement.value = userData.getCharOrigin() || ''
+    this._selectElement.value = OriginSelect.charsheet.charOrigin || ''
   }
 
   _selectChanged = ({ target: { value } }) => {
     console.info('-- OriginSelect.#selectChanged', value)
     // TODO: alert skills lost
-    userData.setCharOrigin(value)
+    OriginSelect.charsheet.charOrigin = value
   }
 }

@@ -1,7 +1,6 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
 import { createElement, removeAllChildren } from '../../modules/domlib.js'
 import { i18n } from '../../modules/i18n.js'
-import * as userData from '../../modules/userData.js'
 
 export class ClassFeatures extends AbstractComponent {
   static get tagName() { return 'class-features' }
@@ -59,7 +58,7 @@ export class ClassFeatures extends AbstractComponent {
     console.info('-- ClassFeatures.#refreshFeatures',)
 
     removeAllChildren(this.#featuresElement)
-    userData.getCharClass()?.features?.forEach(this.#appendFeature)
+    ClassFeatures.charsheet.charClass?.features?.forEach(this.#appendFeature)
   }
 
   #appendFeature = (feature) => {

@@ -1,7 +1,6 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
 import { i18n } from '../../modules/i18n.js'
 import { createElement, fillElement } from '../../modules/domlib.js'
-import * as userData from '../../modules/userData.js'
 
 export class ClassBase extends AbstractComponent {
   static get tagName() { return 'class-base' }
@@ -62,7 +61,7 @@ export class ClassBase extends AbstractComponent {
 
   #refreshActionsRequired() {
     const actionsRequired = {
-      skills: (userData.getCharClass().authorizedNumberSkills - userData.getSkillChoosed().length) > 0
+      skills: (ClassBase.charsheet.charClass.authorizedNumberSkills - ClassBase.charsheet.skillChoosed.length) > 0
     }
 
     this.#skillsActionRequiredElement.classList[actionsRequired.skills ? 'add' : 'remove']('show')
@@ -76,18 +75,18 @@ export class ClassBase extends AbstractComponent {
 
   #refreshSkillsChooseLabel() {
     fillElement(this.#skillsChooseLabel, i18n.tn('components.ClassBase.skills.remaining', {
-      remaining: userData.getCharClass().authorizedNumberSkills - userData.getSkillChoosed().length
+      remaining: ClassBase.charsheet.charClass.authorizedNumberSkills - ClassBase.charsheet.skillChoosed.length
     }))
   }
 
   #refreshSkillsList() {
-    fillElement(this.#skillsList, userData.getCharClass().skillProficiencies.map(skill => createElement(null, [
+    fillElement(this.#skillsList, ClassBase.charsheet.charClass.skillProficiencies.map(skill => createElement(null, [
       createElement('input', null, {
         type: 'checkbox', class: 'btn-check', id: `${skill.name}.${this._id}`,
-        checked: userData.getSkillChoosed().includes(skill),
-        disabled: userData.isDisabledSkill(skill),
+        checked: ClassBase.charsheet.skillChoosed.includes(skill),
+        disabled: ClassBase.charsheet.isDisabledSkill(skill),
         eventListeners: {
-          change: ({ target: { checked } }) => userData[checked ? 'skillChoosedAdd' : 'skillChoosedRemove'](skill)
+          change: ({ target: { checked } }) => ClassBase.charsheet[checked ? 'skillChoosedAdd' : 'skillChoosedRemove'](skill)
         }
       }),
       createElement('label', i18n._(`statics.${skill.name}`), { class: 'btn btn-outline-primary', for: `${skill.name}.${this._id}` }),
