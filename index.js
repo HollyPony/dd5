@@ -18,7 +18,13 @@ import { ARMOR_CATEGORY, } from './modules/data/equipments.js'
 // TODO: remove mock
 import { mock as storedData } from './modules/storeManager.js'
 
-let charsheet
+/////////////////////////////////////////////////////////////////////////
+// INIT /////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+const dataSource = storedData
+const charsheet = CharSheet.getInstance()
+charsheet.init(dataSource)
 
 /////////////////////////////////////////////////////////////////////////
 // INPUTS ///////////////////////////////////////////////////////////////
@@ -158,44 +164,8 @@ function exportJSON() {
   }, 0)
 }
 
-/////////////////////////////////////////////////////////////////////////
-// INITIALIZATION ///////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
-
-function init() {
-  const dataSource = storedData
-
-  // Init data
-  charsheet = CharSheet.getInstance()
-  charsheet.init(dataSource)
-
-  refreshCharName()
-
-  refreshCharExperience()
-  refreshCharLevel()
-
-  refreshHitPointMax()
-  refreshHitDiceMax()
-  refreshInitiative()
-  refreshSpeed()
-  refreshSize()
-  refreshPassivePerception()
-  refreshCharAlignment()
-  refreshTrainings()
-
-  refreshArmorClass()
-  refreshProficiencyBonus()
-
-  setBindings()
-  registerCustomElements()
-
-  // userData.toJSON()
-
-  i18n.applyTranslations()
-}
-
 function setBindings() {
-  exportCharLink.addEventListener("click", exportJSON)
+  exportCharLink.addEventListener('click', exportJSON)
 
   charLevelElement.addEventListener('change', charLevelChanged)
 }
@@ -210,14 +180,27 @@ function registerCustomElements() {
   ClassBase.register()
   ClassFeature.register()
   WeaponSelect.register()
-
-  // customElements
-  // .whenDefined('data-uint')
-  // .then((promise) => {
-  //   const x = document.body.children[0]; 
-  //   console.log(x.constructor.name);
-  //   x.value = 10;
-  // });
 }
 
-init()
+/////////////////////////////////////////////////////////////////////////
+// POPULATE /////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+refreshCharName()
+refreshCharExperience()
+refreshCharLevel()
+refreshHitPointMax()
+refreshHitDiceMax()
+refreshInitiative()
+refreshSpeed()
+refreshSize()
+refreshPassivePerception()
+refreshCharAlignment()
+refreshTrainings()
+refreshArmorClass()
+refreshProficiencyBonus()
+
+setBindings()
+registerCustomElements()
+
+i18n.applyTranslations()
