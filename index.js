@@ -8,7 +8,7 @@ import { ClassBase } from './components/ClassBase/index.js'
 import { ClassFeature } from './components/ClassFeature/index.js'
 import { WeaponSelect } from './components/WeaponSelect/index.js'
 
-import { ABILITY, D, SKILLS } from './modules/common.js'
+import { D, SKILLS } from './modules/common.js'
 import { createElement, removeAllChildren, } from './modules/domlib.js'
 import { i18n } from '/modules/i18n.js'
 import { CharSheet, } from './modules/CharSheet.js'
