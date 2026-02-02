@@ -260,12 +260,10 @@ const classes = f({
       elements: f({}),
       openHand: f({
         features: f([
-          f({
-            name: 'openHandTechnique', atLevel: 3,
-            name: 'wholenessOfBody', atLevel: 6,
-            name: 'fleetStep', atLevel: 11,
-            name: 'quiveringPalm', atLevel: 17,
-          }),
+          f({ name: 'openHandTechnique', atLevel: 3, }),
+          f({ name: 'wholenessOfBody', atLevel: 6, }),
+          f({ name: 'fleetStep', atLevel: 11, }),
+          f({ name: 'quiveringPalm', atLevel: 17, }),
         ]),
       }),
     }),
