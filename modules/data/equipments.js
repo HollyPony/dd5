@@ -1429,15 +1429,4 @@ const equipments = []
 
 export function getEquipments({ type }) { return equipments.filter(equipment => equipment.type === type) }
 export function getWeapons() { return getEquipments({ type: EQUIPMENT_TYPE.WEAPON }) }
-export function getEquipment(name) {
-  return equipments.find(equipment => {
-    switch (equipment.type) {
-      case EQUIPMENT_TYPE.WEAPON: return equipment.name === WEAPONS[name]
-      case EQUIPMENT_TYPE.ARMOR: return equipment.name === ARMORS[name]
-      case EQUIPMENT_TYPE.SHIELD: return equipment.name === SHIELDS[name]
-      case EQUIPMENT_TYPE.TOOL: return equipment.name === TOOLS[name]
-      case EQUIPMENT_TYPE.GEAR: return equipment.name === GEARS[name]
-      case EQUIPMENT_TYPE.MAGIC_ITEM: return equipment.name === name
-    }
-  })
-}
+export function getEquipment(name) { return equipments.find(equipment => equipment.name === name) }

@@ -22,7 +22,7 @@ export const mock = {
   classSkills: ['athletics', 'acrobatics'],
   equipments: [
     {
-      name: 'shield',
+      name: 'SHIELDS.shield',
       equiped: false,
     },
     {
