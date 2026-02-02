@@ -64,12 +64,16 @@ export function populateSelect(selectElement, items, params = {
   clear: false,
   placeholder: null
 }) {
-  return fillElement(selectElement, items.map(item => item.isGroup
-    ? createElement(
-      'optgroup',
-      item.options.map(optItem => createElement('option', [optItem.text], { value: optItem.value, disabled: item.disabled })),
-      { label: item.label }
-    )
-    : createElement('option', item.text, { value: item.value, disabled: item.disabled })
-  ), { clear: params.clear })
+  return fillElement(selectElement, Array()
+    .concat(params.placeholder && ({ value: '', text: params.placeholder, disabled: true }))
+    .concat(items)
+    .filter(item => item)
+    .map(item => item.isGroup
+      ? createElement(
+        'optgroup',
+        item.options.map(optItem => createElement('option', [optItem.text], { value: optItem.value, disabled: item.disabled })),
+        { label: item.label }
+      )
+      : createElement('option', item.text, { value: item.value, disabled: item.disabled })
+    ), { clear: params.clear })
 }

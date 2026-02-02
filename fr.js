@@ -12,9 +12,6 @@ const fr = {
   },
   classes: {
     label: 'Classe',
-    select: {
-      chooseOne: 'Choisir une classe',
-    },
   },
   subClasses: {
     label: 'Sous-classe',
@@ -114,6 +111,12 @@ const fr = {
         title: `Description`
       }
     },
+    ClassSelect: {
+      chooseOne: `Choisir une classe`,
+    },
+    OriginSelect: {
+      chooseOne: `Choisir une origine`,
+    }
   },
   statics: {
     origins: {
