@@ -33,7 +33,7 @@ export class OriginSelect extends AbstractSelect {
 
   _refreshValue = () => {
     console.info('-- OriginSelect.#refreshValue')
-    this._selectElement.value = OriginSelect.charsheet.charOrigin || ''
+    this._selectElement.value = OriginSelect.charsheet.charOriginName || ''
   }
 
   _selectChanged = ({ target: { value } }) => {
