@@ -270,16 +270,23 @@ function registerCustomElements() {
 // POPULATE /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
-charSheet.init()
+function initApp() {
+  charSheet.init()
 
-refreshAll()
+  refreshAll()
 
-setBindings()
-registerCustomElements()
-registerSubscriptions()
-window.addEventListener('beforeunload', () => {
+  setBindings()
+  registerCustomElements()
+  registerSubscriptions()
+  window.addEventListener('beforeunload', destroyApp)
+
+  i18n.applyTranslations()
+}
+
+function destroyApp() {
   unregisterSubscriptions()
   unregisterBindings()
-})
+  window.removeEventListener('beforeunload', destroyApp)
+}
 
-i18n.applyTranslations()
+initApp()
