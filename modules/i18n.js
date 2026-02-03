@@ -1,4 +1,4 @@
-import { objNavigate } from './helpers.js';
+import { resolvePath } from './helpers.js';
 import parseMarkdown from './markdown.js'
 
 const language = document.language ?? "fr";
@@ -31,7 +31,7 @@ export const i18n = {
   },
 
   _(path, interpolations) {
-    const value = objNavigate(i18n.translations[language], path) ?? path
+    const value = resolvePath(i18n.translations[language], path) ?? path
     return i18n.strObjInterpolation(value, interpolations)
   },
 

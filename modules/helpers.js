@@ -28,6 +28,16 @@ const nfWithSign = new Intl.NumberFormat(undefined, {
 export function signDisplay(score) { return nfWithSign.format(score) }
 
 /**
+ * Determine whether a value is a non-null plain object (i.e., typeof "object" and not an Array).
+ *
+ * @param {*} value - The value to test.
+ * @returns {boolean} True if the value is an object (excluding arrays and null), otherwise false.
+ */
+export function isObject(value) {
+  return value && typeof value === 'object' && !Array.isArray(value)
+}
+
+/**
  * Navigates inside `obj` with `path` string,
  *
  * Usage:
@@ -36,11 +46,19 @@ export function signDisplay(score) { return nfWithSign.format(score) }
  * Returns undefined if variable is not found.
  * Fails silently.
  */
-export function objNavigate(obj, path) {
+export function resolvePath(obj, path, { strict = false } = {}) {
   const parts = path.split('.')
   let current = obj
   for (const part of parts) {
-    if (current == null) return undefined
+    if (current == null) {
+      if (strict) {
+        throw new ReferenceError(`Path '${path}' is invalid at '${part}'`)
+      }
+      return undefined
+    }
+    if (strict && !(part in current)) {
+      throw new ReferenceError(`Path '${path}' is invalid at '${part}'`)
+    }
     current = current[part]
   }
   return current
