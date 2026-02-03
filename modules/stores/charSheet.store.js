@@ -80,8 +80,8 @@ function createCharSheetStore() {
 
   // Compute
 
-  function _computeProficiencyBonus() {
-    return Math.floor((get('charLevel') - 1) / 4) + 2
+  function _computeProficiencyBonus(level = get('charLevel')) {
+    return Math.floor((level - 1) / 4) + 2
   }
 
   function _computedAbilitySave(ability) {
