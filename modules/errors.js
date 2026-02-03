@@ -1,9 +1,12 @@
+import { showErrorToast } from './toast.js'
+
 export function InvalidClassNameError(className, ...props) {
   const message = `Invalid Class '${className}'`
   const err = new Error(message, ...props)
   Object.setPrototypeOf(err, InvalidClassNameError.prototype)
   err.name = "InvalidClassNameError"
   err.className = className
+  showErrorToast(err)
 
   return err
 }
@@ -16,6 +19,7 @@ export function InvalidSubClassNameError(subClassName, className, ...props) {
   err.name = "InvalidSubClassNameError"
   err.className = className
   err.subClassName = subClassName
+  showErrorToast(err)
 
   return err
 }
@@ -27,6 +31,7 @@ export function BadDiceError(dice, ...props) {
   Object.setPrototypeOf(err, BadDiceError.prototype)
   err.name = "BadDiceError"
   err.dice = dice
+  showErrorToast(err)
 
   return err
 }
@@ -37,6 +42,7 @@ export function MissingPathError(...props) {
   const err = new Error(message, ...props)
   Object.setPrototypeOf(err, MissingPathError.prototype)
   err.name = "MissingPathError"
+  showErrorToast(err)
 
   return err
 }

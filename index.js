@@ -13,6 +13,7 @@ import { createElement, removeAllChildren, } from './modules/domlib.js'
 import { i18n } from '/modules/i18n.js'
 import charSheet from './modules/stores/charSheet.store.js'
 import { ARMOR_CATEGORY, } from './modules/data/equipments.js'
+import { showToast } from './modules/toast.js'
 
 import { fromJSON } from './modules/storageManager.js'
 
@@ -164,6 +165,11 @@ function exportJSON(event) {
     json = charSheet.toJSON()
   } catch (error) {
     console.error('Export failed', error)
+    showToast({
+      title: 'Export failed',
+      message: error?.message ?? 'Unknown error',
+      variant: 'danger',
+    })
     return
   }
 
