@@ -15,7 +15,7 @@ import charSheet from './modules/stores/charSheet.store.js'
 import { ARMOR_CATEGORY, } from './modules/data/equipments.js'
 
 // TODO: remove mock
-import { mock as storedData } from './modules/storeManager.js'
+import { mock as storedData } from './modules/storageManager.js'
 
 /////////////////////////////////////////////////////////////////////////
 // INIT /////////////////////////////////////////////////////////////////

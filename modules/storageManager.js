@@ -1,6 +1,6 @@
 import { ABILITY, SKILLS, } from './common.js'
 
-// TODO: remove
+// TODO: remove once at least web storage imported
 export const mock = {
   name: 'Doudou McDoubidou',
   origin: 'artisan',

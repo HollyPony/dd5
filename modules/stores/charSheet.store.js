@@ -5,7 +5,7 @@ import { getOrigin, } from '../data/origins.js'
 import getSpecies from '../data/species.js'
 import { s } from '../helpers.js'
 import createObservableStore from './createObservableStore.js'
-import * as storeManager from '../storeManager.js'
+import * as storeManager from '../storageManager.js'
 
 function applyEffect(item, effect, options, callback) {
   if (item?.effects?.[effect]
