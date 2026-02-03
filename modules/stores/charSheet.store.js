@@ -301,12 +301,6 @@ function createCharSheetStore() {
       charSpecies: getSpecies(get('charSpeciesName'), level),
     })
   }
-  function setCharLevel(charLevel = 0) {
-    set({
-      charLevel: Number(charLevel),
-      proficiencyBonus: _computeProficiencyBonus(),
-    })
-  }
   function setCharOriginName(charOriginName) {
     set({
       charOriginName,
@@ -364,7 +358,6 @@ function createCharSheetStore() {
   const setters = {
     setCharName,
     setCharExperience,
-    setCharLevel,
     setCharOriginName,
     setCharClassName,
     setCharSubClassName,

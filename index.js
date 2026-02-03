@@ -126,26 +126,19 @@ function charNameChanged({ target: { value } }) {
   charSheet.setCharName(value)
 }
 
-function charLevelChanged({ target: { value } }) {
-  charSheet.setCharLevel(value)
+function charExperienceChanged({ target: { value } }) {
+  charSheet.setCharExperience(value)
 
-  refreshHitPointMax() // TODO: from event ?
-  refreshHitDiceMax() // TODO: from event ?
-  refreshProficiencyBonus() // TODO: from event ?
+  // TODO: Maybe it's better to refresh from Observable charSheet values ?
+  refreshCharExperience()
+  refreshCharLevel()
+  refreshHitPointMax()
+  refreshHitDiceMax()
+  refreshProficiencyBonus()
 
   // TODO: Update species abilities / spells etc ...
 
   // TODO: userData.reloadSpecies
-}
-
-function charExperienceChanged({ target: { value } }) {
-  charSheet.setCharExperience(value)
-
-  refreshCharExperience()
-  refreshCharLevel()
-  refreshHitPointMax() // TODO: from event ?
-  refreshHitDiceMax() // TODO: from event ?
-  refreshProficiencyBonus() // TODO: from event ?
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -175,7 +168,6 @@ function setBindings() {
   exportCharLink.addEventListener('click', exportJSON)
 
   charNameElement.addEventListener('change', charNameChanged)
-  charLevelElement.addEventListener('change', charLevelChanged)
   charExperienceElement.addEventListener('change', charExperienceChanged)
 }
 
