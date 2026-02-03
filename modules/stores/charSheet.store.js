@@ -3,6 +3,7 @@ import getOrigin from '../data/origins.js'
 import getSpecies from '../data/species.js'
 import { EFFECT, ABILITY, DICE, SKILLS, } from '../common.js'
 import { EQUIPED_CATEGORY, EQUIPMENT_TYPE, getEquipment, } from '../data/equipments.js'
+import { getLevelFromExperience } from '../data/leveling.js'
 import { s } from '../helpers.js'
 import createObservableStore from './createObservableStore.js'
 import * as storeManager from '../storageManager.js'
@@ -287,7 +288,19 @@ function createCharSheetStore() {
 
   // Save this name. Test it
   function setCharName(charName) { set({ charName }) }
-  function setCharExperience(charExperience) { set({ charExperience }) }
+  function setCharExperience(charExperience) {
+    const experience = parseInt(charExperience)
+    if (!experience) return
+    const level = getLevelFromExperience(experience)
+
+    set({
+      charExperience: experience,
+      charLevel: level,
+      proficiencyBonus: _computeProficiencyBonus(level),
+      charClass: getClass(get('charClassName'), get('charSubClassName'), level),
+      charSpecies: getSpecies(get('charSpeciesName'), level),
+    })
+  }
   function setCharLevel(charLevel = 0) {
     set({
       charLevel: Number(charLevel),

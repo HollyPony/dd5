@@ -138,6 +138,16 @@ function charLevelChanged({ target: { value } }) {
   // TODO: userData.reloadSpecies
 }
 
+function charExperienceChanged({ target: { value } }) {
+  charSheet.setCharExperience(value)
+
+  refreshCharExperience()
+  refreshCharLevel()
+  refreshHitPointMax() // TODO: from event ?
+  refreshHitDiceMax() // TODO: from event ?
+  refreshProficiencyBonus() // TODO: from event ?
+}
+
 /////////////////////////////////////////////////////////////////////////
 // STORAGE //////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
@@ -166,6 +176,7 @@ function setBindings() {
 
   charNameElement.addEventListener('change', charNameChanged)
   charLevelElement.addEventListener('change', charLevelChanged)
+  charExperienceElement.addEventListener('change', charExperienceChanged)
 }
 
 function registerCustomElements() {
