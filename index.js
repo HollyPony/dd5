@@ -131,6 +131,48 @@ function refreshAll() {
 }
 
 /////////////////////////////////////////////////////////////////////////
+// SUBSCRIPTIONS ////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+const subscriptions = []
+
+function registerSubscriptions() {
+  subscriptions.push(
+    charSheet.subscribe(refreshCharName, 'charName'),
+    charSheet.subscribe(refreshCharExperience, 'charExperience'),
+    charSheet.subscribe(refreshCharLevel, 'charLevel'),
+    charSheet.subscribe(refreshProficiencyBonus, 'proficiencyBonus'),
+    charSheet.subscribe(refreshHitPointMax, 'charLevel'),
+    charSheet.subscribe(refreshHitPointMax, 'charClass'),
+    charSheet.subscribe(refreshHitPointMax, 'modifiers'),
+    charSheet.subscribe(refreshHitDiceMax, 'charLevel'),
+    charSheet.subscribe(refreshHitDiceMax, 'charClass'),
+    charSheet.subscribe(refreshInitiative, 'modifiers'),
+    charSheet.subscribe(refreshSpeed, 'charSpecies'),
+    charSheet.subscribe(refreshSpeed, 'equiped'),
+    charSheet.subscribe(refreshSpeed, 'feats'),
+    charSheet.subscribe(refreshSize, 'charSizeCategory'),
+    charSheet.subscribe(refreshSize, 'charSize'),
+    charSheet.subscribe(refreshPassivePerception, 'classSkills'),
+    charSheet.subscribe(refreshPassivePerception, 'modifiers'),
+    charSheet.subscribe(refreshCharAlignment, 'charAlignment'),
+    charSheet.subscribe(refreshTrainings, 'charClass'),
+    charSheet.subscribe(refreshTrainings, 'feats'),
+    charSheet.subscribe(refreshArmorClass, 'charClass'),
+    charSheet.subscribe(refreshArmorClass, 'equiped'),
+    charSheet.subscribe(refreshArmorClass, 'feats'),
+    charSheet.subscribe(refreshArmorClass, 'modifiers'),
+  )
+}
+
+function unregisterSubscriptions() {
+  while (subscriptions.length) {
+    const unsubscribe = subscriptions.pop()
+    if (unsubscribe) unsubscribe()
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////
 // EVENTS ///////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
@@ -140,17 +182,6 @@ function charNameChanged({ target: { value } }) {
 
 function charExperienceChanged({ target: { value } }) {
   charSheet.setCharExperience(value)
-
-  // TODO: Maybe it's better to refresh from Observable charSheet values ?
-  refreshCharExperience()
-  refreshCharLevel()
-  refreshHitPointMax()
-  refreshHitDiceMax()
-  refreshProficiencyBonus()
-
-  // TODO: Update species abilities / spells etc ...
-
-  // TODO: userData.reloadSpecies
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -214,6 +245,15 @@ function setBindings() {
   charExperienceElement.addEventListener('change', charExperienceChanged)
 }
 
+function unregisterBindings() {
+  exportCharLink.removeEventListener('click', exportJSON)
+  importCharLink.removeEventListener('click', importCharClicked)
+  importCharFileElement.removeEventListener('change', importCharFileChanged)
+
+  charNameElement.removeEventListener('change', charNameChanged)
+  charExperienceElement.removeEventListener('change', charExperienceChanged)
+}
+
 function registerCustomElements() {
   Ability.register()
   OriginSelect.register()
@@ -236,5 +276,10 @@ refreshAll()
 
 setBindings()
 registerCustomElements()
+registerSubscriptions()
+window.addEventListener('beforeunload', () => {
+  unregisterSubscriptions()
+  unregisterBindings()
+})
 
 i18n.applyTranslations()
