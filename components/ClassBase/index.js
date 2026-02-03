@@ -83,7 +83,7 @@ export class ClassBase extends AbstractComponent {
 
   #refreshSkillsList() {
     console.info('-- ClassBase.refreshSkillsList')
-    fillElement(this.#skillsList, charSheet.getCharClass().skills.list.map(skill => createElement(null, [
+    fillElement(this.#skillsList, charSheet.getCharClass().skills.list.map(skill => createElement('div', [
       createElement('input', null, {
         type: 'checkbox', class: 'btn-check', id: `${skill.name}.${this._id}`,
         checked: charSheet.getClassSkills().includes(skill),
