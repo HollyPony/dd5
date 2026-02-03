@@ -1,10 +1,13 @@
 import { AbstractSelect } from '../AbstractSelect/index.js'
+import charSheet from '../../modules/stores/charSheet.store.js'
 import { getList as getClassesList, } from '../../modules/data/classes.js'
 import { populateSelect, } from '../../modules/domlib.js'
 import { i18n } from '../../modules/i18n.js'
 
 export class ClassSelect extends AbstractSelect {
   static get tagName() { return 'class-select' }
+
+  #subscriptions = []
 
   // async connectedCallback() {
   //   await super.connectedCallback()
@@ -17,15 +20,17 @@ export class ClassSelect extends AbstractSelect {
   // }
 
   _registerEvents() {
-    this._selectElement.addEventListener('change', this._selectChanged)
+    this._selectElement.addEventListener('change', this.#selectChanged)
 
-    document.addEventListener("userData.charClassChanged", this._refreshValue)
+    this.#subscriptions.push(
+      charSheet.subscribe(this._refreshValue, 'charClass'),
+    )
   }
 
   _unregisterEvents() {
-    this._selectElement.removeEventListener('change', this._selectChanged)
+    this._selectElement.removeEventListener('change', this.#selectChanged)
 
-    document.removeEventListener("userData.charClassChanged", this._refreshValue)
+    this.#subscriptions.forEach(subscription => subscription())
   }
 
   _refreshList = () => {
@@ -41,11 +46,11 @@ export class ClassSelect extends AbstractSelect {
 
   _refreshValue = () => {
     console.info('-- ClassSelect.#refreshValue')
-    this._selectElement.value = ClassSelect.charsheet.charClassName || ''
+    this._selectElement.value = charSheet.getCharClassName() || ''
   }
 
-  _selectChanged = ({ target: { value } }) => {
+  #selectChanged = ({ target: { value } }) => {
     console.info('-- ClassSelect.#selectChanged', value)
-    ClassSelect.charsheet.charClassName = value
+    charSheet.setCharClassName(value)
   }
 }

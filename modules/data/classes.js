@@ -1,6 +1,6 @@
 import { InvalidClassNameError, InvalidSubClassNameError } from '../errors.js'
 import { Enum, f, } from '../helpers.js'
-import { EFFECT, D, SKILLS, ABILITY, } from '../common.js'
+import { EFFECT, DICES as D, SKILLS, ABILITY, } from '../common.js'
 import { ARMOR_CATEGORY, INSTRUMENTS, TOOL_CATEGORY, TOOLS, WEAPON_CATEGORY, WEAPON_PROPERTY } from './equipments.js'
 
 const INSERTION_TYPE = Enum({

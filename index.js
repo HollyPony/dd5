@@ -8,12 +8,11 @@ import { ClassBase } from './components/ClassBase/index.js'
 import { ClassFeature } from './components/ClassFeature/index.js'
 import { WeaponSelect } from './components/WeaponSelect/index.js'
 
-import { D, SKILLS } from './modules/common.js'
+import { DICES as D, } from './modules/common.js'
 import { createElement, removeAllChildren, } from './modules/domlib.js'
 import { i18n } from '/modules/i18n.js'
-import { CharSheet, } from './modules/CharSheet.js'
+import charSheet from './modules/stores/charSheet.store.js'
 import { ARMOR_CATEGORY, } from './modules/data/equipments.js'
-
 
 // TODO: remove mock
 import { mock as storedData } from './modules/storeManager.js'
@@ -23,20 +22,15 @@ import { mock as storedData } from './modules/storeManager.js'
 /////////////////////////////////////////////////////////////////////////
 
 const dataSource = storedData
-const charsheet = CharSheet.getInstance()
-charsheet.init(dataSource)
 
 /////////////////////////////////////////////////////////////////////////
-// INPUTS ///////////////////////////////////////////////////////////////
+// ELEMENTS TO UPDATE ///////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
+const charNameElement = document.getElementsByName('charName')[0]
 const charLevelElement = document.getElementsByName('charLevel')[0]
-
-// TODO: Update level with experience ?
-const charExperienceElement = document.getElementsByName('experiencepoints')[0]
-
+const charExperienceElement = document.getElementsByName('experiencepoints')[0] // TODO: Update level with experience ?
 const exportCharLink = document.getElementById("exportCharLink")
-
 const trainingsElements = {
   armorLight: document.getElementsByName('trainings-armor-light')[0],
   armorMedium: document.getElementsByName('trainings-armor-medium')[0],
@@ -59,68 +53,67 @@ function diceToString({ number, dice }) {
 // DISPLAY UPDATES
 
 function refreshCharName() {
-  document.getElementsByName('charName')[0].value = charsheet.charName
+  document.getElementsByName('charName')[0].value = charSheet.getCharName()
 }
 
 function refreshCharExperience() {
-  charExperienceElement.value = charsheet.charExperience
+  charExperienceElement.value = charSheet.getCharExperience()
 }
 
 function refreshCharLevel() {
-  charLevelElement.value = charsheet.charLevel
+  charLevelElement.value = charSheet.getCharLevel()
 }
 
 function refreshArmorClass() {
-  document.getElementsByName('armorClass')[0].value = charsheet.armorClass
+  document.getElementsByName('armorClass')[0].value = charSheet.getArmorClass()
 }
 
 function refreshProficiencyBonus() {
-  document.getElementsByName('proficiencybonus')[0].value = skillAsText(charsheet.proficencyBonus)
+  document.getElementsByName('proficiencybonus')[0].value = skillAsText(charSheet.getProficiencyBonus())
 }
 
 function refreshHitPointMax() {
-  document.getElementsByName('hitPointMax')[0].value = charsheet.hitPointMax
+  document.getElementsByName('hitPointMax')[0].value = charSheet.getHitPointMax()
 }
 
 function refreshHitDiceMax() {
-  document.getElementsByName('hitDiceMax')[0].value = diceToString(charsheet.hitDiceMax)
+  document.getElementsByName('hitDiceMax')[0].value = diceToString(charSheet.getHitDiceMax())
 }
 
 function refreshInitiative() {
-  document.getElementsByName('specs.initiative')[0].value = charsheet.initiative
+  document.getElementsByName('specs.initiative')[0].value = charSheet.getInitiative()
 }
 
 function refreshSpeed() {
-  document.getElementsByName('specs.speed')[0].value = charsheet.charSpeed
+  document.getElementsByName('specs.speed')[0].value = charSheet.getCharSpeed()
 }
 
 function refreshSize() {
-  document.getElementsByClassName('size-category')[0].value = charsheet.sizeCategory
-  document.getElementsByName('specs.size')[0].value = charsheet.size || ''
+  document.getElementsByClassName('size-category')[0].value = charSheet.getCharSizeCategory()
+  document.getElementsByName('specs.size')[0].value = charSheet.getCharSize() || ''
 }
 
 function refreshPassivePerception() {
-  document.getElementsByName('specs.passivePerception')[0].value = charsheet.getSkillScore(SKILLS.perception) + 10
+  document.getElementsByName('specs.passivePerception')[0].value = charSheet.getPassivePerception()
 }
 
 function refreshCharAlignment() {
-  document.getElementsByName('alignment')[0].value = charsheet.charAlignment
+  document.getElementsByName('alignment')[0].value = charSheet.getCharAlignment()
 }
 
 function refreshTrainings() {
-  const armorProficiencies = charsheet.armorProficiencies
+  const armorProficiencies = charSheet.getArmorProficiencies()
   trainingsElements.armorLight.checked = armorProficiencies.includes(ARMOR_CATEGORY.Light)
   trainingsElements.armorMedium.checked = armorProficiencies.includes(ARMOR_CATEGORY.Medium)
   trainingsElements.armorHeavy.checked = armorProficiencies.includes(ARMOR_CATEGORY.Heavy)
-  trainingsElements.shield.checked = charsheet.shieldProficiency
+  trainingsElements.shield.checked = charSheet.getShieldProficiency()
   removeAllChildren(trainingsElements.weaponsList)
-  charsheet.weaponProficiencies.forEach(proficiency => {
-    const proficiencySplitted = proficiency.split('.').filter(_ => !['WEAPON_CATEGORY', 'WEAPON_PROPERTY'].includes(_))
-    return trainingsElements.weaponsList.appendChild(createElement('p', i18n._(['stats.trainings.weapons']
-      .concat(proficiencySplitted, proficiencySplitted.length === 1 ? 'all' : [])
+  charSheet.getWeaponProficiencies().forEach(proficiency => trainingsElements.weaponsList
+    .appendChild(createElement('p', i18n._(['stats.trainings.weapons']
+      .concat(proficiency.length === 1 ? [proficiency, 'all'] : proficiency)
       .join('.')
     )))
-  })
+  )
 
   removeAllChildren(trainingsElements.toolsList)
 }
@@ -129,8 +122,12 @@ function refreshTrainings() {
 // EVENTS ///////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
+function charNameChanged({ target: { value } }) {
+  charSheet.setCharName(value)
+}
+
 function charLevelChanged({ target: { value } }) {
-  charsheet.charLevel = value
+  charSheet.setCharLevel(value)
 
   refreshHitPointMax() // TODO: from event ?
   refreshHitDiceMax() // TODO: from event ?
@@ -149,11 +146,11 @@ function exportJSON() {
   const baseHref = exportCharLink.href
   const baseDowload = exportCharLink.download
 
-  const json = charsheet.toJSON()
+  const json = charSheet.toJSON()
   const blob = new Blob([json], { type: "application/json" })
   const url = URL.createObjectURL(blob)
 
-  exportCharLink.download = charsheet.charName.replace(/[^a-zA-Z0-9 ]/g, '')
+  exportCharLink.download = charSheet.getCharName().replace(/[^a-zA-Z0-9 ]/g, '')
   exportCharLink.href = url
 
   // nettoyage mémoire
@@ -167,6 +164,7 @@ function exportJSON() {
 function setBindings() {
   exportCharLink.addEventListener('click', exportJSON)
 
+  charNameElement.addEventListener('change', charNameChanged)
   charLevelElement.addEventListener('change', charLevelChanged)
 }
 
@@ -185,6 +183,8 @@ function registerCustomElements() {
 /////////////////////////////////////////////////////////////////////////
 // POPULATE /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
+
+charSheet.init(dataSource)
 
 refreshCharName()
 refreshCharExperience()

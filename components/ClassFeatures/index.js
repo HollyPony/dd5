@@ -1,10 +1,13 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
+import charSheet from '../../modules/stores/charSheet.store.js'
 import { createElement, removeAllChildren } from '../../modules/domlib.js'
 import { i18n } from '../../modules/i18n.js'
 
 export class ClassFeatures extends AbstractComponent {
   static get tagName() { return 'class-features' }
   static get _componentPath() { return '/components/ClassFeatures' }
+
+  #subscriptions = []
 
   #mainRequiredBadgeElement
 
@@ -36,18 +39,18 @@ export class ClassFeatures extends AbstractComponent {
     // this.#scoreElement.addEventListener('change', this.#classChanged)
 
     // TODO: had a class features changed ????
-    document.addEventListener('userData.charLevelChanged', this.#levelChanged)
-    document.addEventListener('userData.charClassChanged', this.#classChanged)
-    document.addEventListener('userData.charSubClassChanged', this.#subClassChanged)
+
+    this.#subscriptions.push(
+      charSheet.subscribe(this.#levelChanged, 'charLevel'),
+      charSheet.subscribe(this.#classChanged, 'charClass'),
+    )
   }
 
   #unregisterEvents() {
     this.removeEventListener('action-required-changed', this.#actionRequiredChanged)
     // this.#scoreElement.removeEventListener('change', this.#classChanged)
 
-    document.removeEventListener('userData.charLevelChanged', this.#classChanged)
-    document.removeEventListener('userData.charClassChanged', this.#classChanged)
-    document.removeEventListener('userData.charSubClassChanged', this.#classChanged)
+    this.#subscriptions.forEach(subscription => subscription())
   }
 
   #refreshBaseFeature() {
@@ -58,7 +61,7 @@ export class ClassFeatures extends AbstractComponent {
     console.info('-- ClassFeatures.#refreshFeatures',)
 
     removeAllChildren(this.#featuresElement)
-    ClassFeatures.charsheet.charClass?.features?.forEach(this.#appendFeature)
+    charSheet.getCharClass()?.features?.forEach(this.#appendFeature)
   }
 
   #appendFeature = (feature) => {
@@ -93,6 +96,4 @@ export class ClassFeatures extends AbstractComponent {
     this.#refreshBaseFeature()
     this.#refreshFeatures()
   }
-
-  #subClassChanged = this.#classChanged
 }

@@ -1,279 +1,279 @@
 import { f, Enum, } from '../helpers.js'
 import {
-  ABILITY, D, DICE, EFFECT,
+  ABILITY, DICES, DICE, EFFECT,
 }
   from '../common.js'
 import { Money, GOLD as G, SILVER as S, COPPER as C } from './money.js'
 import { Weight } from './weight.js'
 
 export const EQUIPMENT_TYPE = Enum({
-  WEAPON: 'EQUIPMENT_TYPE.WEAPON',
-  ARMOR: 'EQUIPMENT_TYPE.ARMOR',
-  SHIELD: 'EQUIPMENT_TYPE.SHIELD',
-  TOOL: 'EQUIPMENT_TYPE.TOOL',
-  GEAR: 'EQUIPMENT_TYPE.GEAR',
-  MAGIC_ITEM: 'EQUIPMENT_TYPE.MAGIC_ITEM',
+  WEAPON: 'EQUIPMENT_TYPE_WEAPON',
+  ARMOR: 'EQUIPMENT_TYPE_ARMOR',
+  SHIELD: 'EQUIPMENT_TYPE_SHIELD',
+  TOOL: 'EQUIPMENT_TYPE_TOOL',
+  GEAR: 'EQUIPMENT_TYPE_GEAR',
+  MAGIC_ITEM: 'EQUIPMENT_TYPE_MAGIC_ITEM',
 })
 
 export const EQUIPED_CATEGORY = Enum({
-  WEAPON: 'EQUIPED_CATEGORY.WEAPON',
-  ARMOR: 'EQUIPED_CATEGORY.ARMOR',
-  SHIELD: 'EQUIPED_CATEGORY.SHIELD',
-  OTHER: 'EQUIPED_CATEGORY.OTHER',
+  WEAPON: 'EQUIPED_CATEGORY_WEAPON',
+  ARMOR: 'EQUIPED_CATEGORY_ARMOR',
+  SHIELD: 'EQUIPED_CATEGORY_SHIELD',
+  OTHER: 'EQUIPED_CATEGORY_OTHER',
 })
 
 export const WEAPON_CATEGORY = Enum({
-  simpleMelee: 'WEAPON_CATEGORY.simpleMelee', // Armes courantes de corps à corps
-  simpleRanged: 'WEAPON_CATEGORY.simpleRanged', // Armes courantes à distance
-  martialMelee: 'WEAPON_CATEGORY.martialMelee', // Armes de guerre de corps à corps
-  martialRanged: 'WEAPON_CATEGORY.martialRanged', // Armes de guerre à distance
+  simpleMelee: 'WEAPON_CATEGORY_simpleMelee', // Armes courantes de corps à corps
+  simpleRanged: 'WEAPON_CATEGORY_simpleRanged', // Armes courantes à distance
+  martialMelee: 'WEAPON_CATEGORY_martialMelee', // Armes de guerre de corps à corps
+  martialRanged: 'WEAPON_CATEGORY_martialRanged', // Armes de guerre à distance
 })
 
 export const WEAPON_DAMAGE_TYPE = Enum({
-  piercing: 'WEAPON_DAMAGE_TYPE.piercing', // Perforant
-  slashing: 'WEAPON_DAMAGE_TYPE.slashing', // Tranchant
-  bludgeoning: 'WEAPON_DAMAGE_TYPE.bludgeoning', // Contondant
+  piercing: 'WEAPON_DAMAGE_TYPE_piercing', // Perforant
+  slashing: 'WEAPON_DAMAGE_TYPE_slashing', // Tranchant
+  bludgeoning: 'WEAPON_DAMAGE_TYPE_bludgeoning', // Contondant
 })
 
 export const WEAPON_PROPERTY = Enum({ // P.214 - Propriété
-  Ammunition: 'WEAPON_PROPERTY.Ammunition',
-  Finesse: 'WEAPON_PROPERTY.Finesse',
-  Heavy: 'WEAPON_PROPERTY.Heavy',
-  Light: 'WEAPON_PROPERTY.Light',
-  Loading: 'WEAPON_PROPERTY.Loading',
-  Range: 'WEAPON_PROPERTY.Range',
-  Reach: 'WEAPON_PROPERTY.Reach',
-  Thrown: 'WEAPON_PROPERTY.Thrown',
-  TwoHanded: 'WEAPON_PROPERTY.TwoHanded',
-  Versatile: 'WEAPON_PROPERTY.Versatile',
+  Ammunition: 'WEAPON_PROPERTY_Ammunition',
+  Finesse: 'WEAPON_PROPERTY_Finesse',
+  Heavy: 'WEAPON_PROPERTY_Heavy',
+  Light: 'WEAPON_PROPERTY_Light',
+  Loading: 'WEAPON_PROPERTY_Loading',
+  Range: 'WEAPON_PROPERTY_Range',
+  Reach: 'WEAPON_PROPERTY_Reach',
+  Thrown: 'WEAPON_PROPERTY_Thrown',
+  TwoHanded: 'WEAPON_PROPERTY_TwoHanded',
+  Versatile: 'WEAPON_PROPERTY_Versatile',
 })
 
 export const WEAPON_AMMUNITION = Enum({
-  Arrows: 'WEAPON_AMMUNITION.Arrows',
-  Bolts: 'WEAPON_AMMUNITION.Bolts',
-  SlingBullet: 'WEAPON_AMMUNITION.SlingBullets',
-  FirearmBullets: 'WEAPON_AMMUNITION.FirearmBullets',
-  Needles: 'WEAPON_AMMUNITION.Needles',
+  Arrows: 'WEAPON_AMMUNITION_Arrows',
+  Bolts: 'WEAPON_AMMUNITION_Bolts',
+  SlingBullet: 'WEAPON_AMMUNITION_SlingBullets',
+  FirearmBullets: 'WEAPON_AMMUNITION_FirearmBullets',
+  Needles: 'WEAPON_AMMUNITION_Needles',
 })
 
 export const WEAPON_MASTERY = Enum({ // Bottes P.215
-  Cleave: 'WEAPON_MASTERY.Cleave',
-  Graze: 'WEAPON_MASTERY.Graze',
-  Nick: 'WEAPON_MASTERY.Nick',
-  Push: 'WEAPON_MASTERY.Push',
-  Sap: 'WEAPON_MASTERY.Sap',
-  Slow: 'WEAPON_MASTERY.Slow',
-  Topple: 'WEAPON_MASTERY.Topple',
-  Vex: 'WEAPON_MASTERY.Vex',
+  Cleave: 'WEAPON_MASTERY_Cleave',
+  Graze: 'WEAPON_MASTERY_Graze',
+  Nick: 'WEAPON_MASTERY_Nick',
+  Push: 'WEAPON_MASTERY_Push',
+  Sap: 'WEAPON_MASTERY_Sap',
+  Slow: 'WEAPON_MASTERY_Slow',
+  Topple: 'WEAPON_MASTERY_Topple',
+  Vex: 'WEAPON_MASTERY_Vex',
 })
 
 export const ARMOR_CATEGORY = Enum({ // P.220
-  Light: 'ARMOR_CATEGORY.Light',
-  Medium: 'ARMOR_CATEGORY.Medium',
-  Heavy: 'ARMOR_CATEGORY.Heavy',
+  Light: 'ARMOR_CATEGORY_Light',
+  Medium: 'ARMOR_CATEGORY_Medium',
+  Heavy: 'ARMOR_CATEGORY_Heavy',
 })
 
 export const TOOL_CATEGORY = Enum({ // P.221
-  Artisan: 'TOOL_CATEGORY.Artisan',
-  Other: 'TOOL_CATEGORY.Other', // P.222
+  Artisan: 'TOOL_CATEGORY_Artisan',
+  Other: 'TOOL_CATEGORY_Other', // P.222
 })
 
 export const INSTRUMENTS = Enum({
-  bagpipes: 'INSTRUMENTS.bagpipes',
-  drum: 'INSTRUMENTS.drum',
-  dulcimer: 'INSTRUMENTS.dulcimer',
-  flute: 'INSTRUMENTS.flute',
-  horn: 'INSTRUMENTS.horn',
-  lute: 'INSTRUMENTS.lute',
-  lyre: 'INSTRUMENTS.lyre',
-  panFlute: 'INSTRUMENTS.panFlute',
-  shawm: 'INSTRUMENTS.shawm',
-  viol: 'INSTRUMENTS.viol',
+  bagpipes: 'INSTRUMENTS_bagpipes',
+  drum: 'INSTRUMENTS_drum',
+  dulcimer: 'INSTRUMENTS_dulcimer',
+  flute: 'INSTRUMENTS_flute',
+  horn: 'INSTRUMENTS_horn',
+  lute: 'INSTRUMENTS_lute',
+  lyre: 'INSTRUMENTS_lyre',
+  panFlute: 'INSTRUMENTS_panFlute',
+  shawm: 'INSTRUMENTS_shawm',
+  viol: 'INSTRUMENTS_viol',
 })
 
 export const MAGIC_ITEM_TYPE = Enum({
-  armor: 'MAGIC_ITEM_TYPE.armor', // Armure
-  potion: 'MAGIC_ITEM_TYPE.potion', // Potion
-  ring: 'MAGIC_ITEM_TYPE.ring', // Anneau
-  scroll: 'MAGIC_ITEM_TYPE.scroll', // Parchemin
-  staff: 'MAGIC_ITEM_TYPE.staff', // Bâton
-  wand: 'MAGIC_ITEM_TYPE.wand', // Baguette
-  weapon: 'MAGIC_ITEM_TYPE.weapon', // Arme
-  wondrousItem: 'MAGIC_ITEM_TYPE.wondrousItem', // Objet merveilleux
-  rod: 'MAGIC_ITEM_TYPE.rod', // Sceptre
+  armor: 'MAGIC_ITEM_TYPE_armor', // Armure
+  potion: 'MAGIC_ITEM_TYPE_potion', // Potion
+  ring: 'MAGIC_ITEM_TYPE_ring', // Anneau
+  scroll: 'MAGIC_ITEM_TYPE_scroll', // Parchemin
+  staff: 'MAGIC_ITEM_TYPE_staff', // Bâton
+  wand: 'MAGIC_ITEM_TYPE_wand', // Baguette
+  weapon: 'MAGIC_ITEM_TYPE_weapon', // Arme
+  wondrousItem: 'MAGIC_ITEM_TYPE_wondrousItem', // Objet merveilleux
+  rod: 'MAGIC_ITEM_TYPE_rod', // Sceptre
 })
 
 const WEAPONS = Enum({
-  quarterstaff: 'WEAPONS.quarterstaff',
-  dagger: 'WEAPONS.dagger',
-  club: 'WEAPONS.club',
-  handaxe: 'WEAPONS.handaxe',
-  javelin: 'WEAPONS.javelin',
-  spear: 'WEAPONS.spear',
-  lightHammer: 'WEAPONS.lightHammer',
-  mace: 'WEAPONS.mace',
-  greatclub: 'WEAPONS.greatclub',
-  sickle: 'WEAPONS.sickle',
-  lightCrossbow: 'WEAPONS.lightCrossbow',
-  shortbow: 'WEAPONS.shortbow',
-  dart: 'WEAPONS.dart',
-  sling: 'WEAPONS.sling',
-  scimitar: 'WEAPONS.scimitar',
-  glaive: 'WEAPONS.glaive',
-  greatSword: 'WEAPONS.greatSword',
-  shortSword: 'WEAPONS.shortSword',
-  longSword: 'WEAPONS.longSword',
-  flail: 'WEAPONS.flail',
-  whip: 'WEAPONS.whip',
-  gretAxe: 'WEAPONS.gretAxe',
-  battleAxe: 'WEAPONS.battleAxe',
-  halberd: 'WEAPONS.halberd',
-  lance: 'WEAPONS.lance',
-  maul: 'WEAPONS.maul',
-  warhammer: 'WEAPONS.warhammer',
-  morningstar: 'WEAPONS.morningstar',
-  warPick: 'WEAPONS.warPick',
-  pike: 'WEAPONS.pike',
-  rapier: 'WEAPONS.rapier',
-  trident: 'WEAPONS.trident',
-  handCrossbow: 'WEAPONS.handCrossbow',
-  heavyCrossbow: 'WEAPONS.heavyCrossbow',
-  longbow: 'WEAPONS.longbow',
-  musket: 'WEAPONS.musket',
-  pistol: 'WEAPONS.pistol',
-  blowgun: 'WEAPONS.blowgun',
+  quarterstaff: 'WEAPONS_quarterstaff',
+  dagger: 'WEAPONS_dagger',
+  club: 'WEAPONS_club',
+  handaxe: 'WEAPONS_handaxe',
+  javelin: 'WEAPONS_javelin',
+  spear: 'WEAPONS_spear',
+  lightHammer: 'WEAPONS_lightHammer',
+  mace: 'WEAPONS_mace',
+  greatclub: 'WEAPONS_greatclub',
+  sickle: 'WEAPONS_sickle',
+  lightCrossbow: 'WEAPONS_lightCrossbow',
+  shortbow: 'WEAPONS_shortbow',
+  dart: 'WEAPONS_dart',
+  sling: 'WEAPONS_sling',
+  scimitar: 'WEAPONS_scimitar',
+  glaive: 'WEAPONS_glaive',
+  greatSword: 'WEAPONS_greatSword',
+  shortSword: 'WEAPONS_shortSword',
+  longSword: 'WEAPONS_longSword',
+  flail: 'WEAPONS_flail',
+  whip: 'WEAPONS_whip',
+  gretAxe: 'WEAPONS_gretAxe',
+  battleAxe: 'WEAPONS_battleAxe',
+  halberd: 'WEAPONS_halberd',
+  lance: 'WEAPONS_lance',
+  maul: 'WEAPONS_maul',
+  warhammer: 'WEAPONS_warhammer',
+  morningstar: 'WEAPONS_morningstar',
+  warPick: 'WEAPONS_warPick',
+  pike: 'WEAPONS_pike',
+  rapier: 'WEAPONS_rapier',
+  trident: 'WEAPONS_trident',
+  handCrossbow: 'WEAPONS_handCrossbow',
+  heavyCrossbow: 'WEAPONS_heavyCrossbow',
+  longbow: 'WEAPONS_longbow',
+  musket: 'WEAPONS_musket',
+  pistol: 'WEAPONS_pistol',
+  blowgun: 'WEAPONS_blowgun',
 })
 
 const ARMORS = Enum({
-  padded: 'ARMORS.padded',
-  leather: 'ARMORS.leather',
-  studdedLeather: 'ARMORS.studdedLeather',
-  hideArmor: 'ARMORS.hideArmor',
-  chainShirt: 'ARMORS.chainShirt',
-  scaleMail: 'ARMORS.scaleMail',
-  breastplate: 'ARMORS.breastplate',
-  halfPlate: 'ARMORS.halfPlate',
-  ringMail: 'ARMORS.ringMail',
-  chainMail: 'ARMORS.chainMail',
-  splint: 'ARMORS.splint',
-  plate: 'ARMORS.plate',
+  padded: 'ARMORS_padded',
+  leather: 'ARMORS_leather',
+  studdedLeather: 'ARMORS_studdedLeather',
+  hideArmor: 'ARMORS_hideArmor',
+  chainShirt: 'ARMORS_chainShirt',
+  scaleMail: 'ARMORS_scaleMail',
+  breastplate: 'ARMORS_breastplate',
+  halfPlate: 'ARMORS_halfPlate',
+  ringMail: 'ARMORS_ringMail',
+  chainMail: 'ARMORS_chainMail',
+  splint: 'ARMORS_splint',
+  plate: 'ARMORS_plate',
 })
 
 const SHIELDS = Enum({
-  shield: 'SHIELDS.shield',
+  shield: 'SHIELDS_shield',
 })
 
 export const TOOLS = Enum({
-  alchemistsSupplies: 'TOOLS.alchemistsSupplies',
-  brewersSupplies: 'TOOLS.brewersSupplies',
-  calligraphersSupplies: 'TOOLS.calligraphersSupplies',
-  carpentersTools: 'TOOLS.carpentersTools',
-  cartographersToolTools: 'TOOLS.cartographersToolTools',
-  cobblersTools: 'TOOLS.cobblersTools',
-  cooksTools: 'TOOLS.cooksTools',
-  glassblowersTools: 'TOOLS.glassblowersTools',
-  jewelersTools: 'TOOLS.jewelersTools',
-  leatherworkersTools: 'TOOLS.leatherworkersTools',
-  masonsTools: 'TOOLS.masonsTools',
-  paintersTools: 'TOOLS.paintersTools',
-  pottersTools: 'TOOLS.pottersTools',
-  smithsTools: 'TOOLS.smithsTools',
-  tinkersTools: 'TOOLS.tinkersTools',
-  weaversTools: 'TOOLS.weaversTools',
-  woodcarversTools: 'TOOLS.woodcarversTools',
+  alchemistsSupplies: 'TOOLS_alchemistsSupplies',
+  brewersSupplies: 'TOOLS_brewersSupplies',
+  calligraphersSupplies: 'TOOLS_calligraphersSupplies',
+  carpentersTools: 'TOOLS_carpentersTools',
+  cartographersToolTools: 'TOOLS_cartographersToolTools',
+  cobblersTools: 'TOOLS_cobblersTools',
+  cooksTools: 'TOOLS_cooksTools',
+  glassblowersTools: 'TOOLS_glassblowersTools',
+  jewelersTools: 'TOOLS_jewelersTools',
+  leatherworkersTools: 'TOOLS_leatherworkersTools',
+  masonsTools: 'TOOLS_masonsTools',
+  paintersTools: 'TOOLS_paintersTools',
+  pottersTools: 'TOOLS_pottersTools',
+  smithsTools: 'TOOLS_smithsTools',
+  tinkersTools: 'TOOLS_tinkersTools',
+  weaversTools: 'TOOLS_weaversTools',
+  woodcarversTools: 'TOOLS_woodcarversTools',
 
-  disguiseKit: 'TOOLS.disguiseKit',
-  forgeryKit: 'TOOLS.forgeryKit',
-  gamingSet: 'TOOLS.gamingSet',
-  herbalismKit: 'TOOLS.herbalismKit',
-  musicalInstrument: 'TOOLS.musicalInstrument',
-  navigatorsTools: 'TOOLS.navigatorsTools',
-  poisonersKit: 'TOOLS.poisonersKit',
-  thievesTools: 'TOOLS.thievesTools',
+  disguiseKit: 'TOOLS_disguiseKit',
+  forgeryKit: 'TOOLS_forgeryKit',
+  gamingSet: 'TOOLS_gamingSet',
+  herbalismKit: 'TOOLS_herbalismKit',
+  musicalInstrument: 'TOOLS_musicalInstrument',
+  navigatorsTools: 'TOOLS_navigatorsTools',
+  poisonersKit: 'TOOLS_poisonersKit',
+  thievesTools: 'TOOLS_thievesTools',
 })
 
 const GEARS = Enum({
-  acid: 'GEARS.acid',
-  antitoxin: 'GEARS.antitoxin',
-  clothesFine: 'GEARS.clothesFine',
-  ramPortable: 'GEARS.ramPortable',
-  ballBearings: 'GEARS.ballBearings',
-  tinderbox: 'GEARS.tinderbox',
-  candle: 'GEARS.candle',
-  bottleGlass: 'GEARS.bottleGlass',
-  lock: 'GEARS.lock',
-  quiver: 'GEARS.quiver',
-  map: 'GEARS.map',
-  chain: 'GEARS.chain',
-  caltrops: 'GEARS.caltrops',
-  bell: 'GEARS.bell',
-  chest: 'GEARS.chest',
-  rope: 'GEARS.rope',
-  costume: 'GEARS.costume',
-  blanket: 'GEARS.blanket',
-  jug: 'GEARS.jug',
-  holyWater: 'GEARS.holyWater',
-  ladder: 'GEARS.ladder',
-  ink: 'GEARS.ink',
-  caseMapOrScroll: 'GEARS.caseMapOrScroll',
-  caseCrossbowBolt: 'GEARS.caseCrossbowBolt',
-  alchemistsFire: 'GEARS.alchemistsFire',
-  string: 'GEARS.string',
-  net: 'GEARS.net',
-  vial: 'GEARS.vial',
-  flask: 'GEARS.flask',
-  arcaneFocus: 'GEARS.arcaneFocus',
-  druidicFocus: 'GEARS.druidicFocus',
-  grapplingHook: 'GEARS.grapplingHook',
-  oil: 'GEARS.oil',
-  lamp: 'GEARS.lamp',
-  lanternHooded: 'GEARS.lanternHooded',
-  lanternBullseye: 'GEARS.lanternBullseye',
-  book: 'GEARS.book',
-  spyglass: 'GEARS.spyglass',
-  magnifyingGlass: 'GEARS.magnifyingGlass',
-  climbersKit: 'GEARS.climbersKit',
-  manacles: 'GEARS.manacles',
-  mirror: 'GEARS.mirror',
-  ammunition: 'GEARS.ammunition',
-  waterskin: 'GEARS.waterskin',
-  blockAndTackle: 'GEARS.blockAndTackle',
-  basket: 'GEARS.basket',
-  paper: 'GEARS.paper',
-  burglarsPack: 'GEARS.burglarsPack',
-  diplomatsPack: 'GEARS.diplomatsPack',
-  entertainersPack: 'GEARS.entertainersPack',
-  priestsPack: 'GEARS.priestsPack',
-  scholarsPack: 'GEARS.scholarsPack',
-  explorersPack: 'GEARS.explorersPack',
-  dungeoneersPack: 'GEARS.dungeoneersPack',
-  parchment: 'GEARS.parchment',
-  spellScroll: 'GEARS.spellScroll',
-  perfume: 'GEARS.perfume',
-  shovel: 'GEARS.shovel',
-  pole: 'GEARS.pole',
-  crowbar: 'GEARS.crowbar',
-  huntingTrap: 'GEARS.huntingTrap',
-  spikesIron: 'GEARS.spikesIron',
-  poisonBasic: 'GEARS.poisonBasic',
-  inkPen: 'GEARS.inkPen',
-  potIron: 'GEARS.potIron',
-  potionOfHealing: 'GEARS.potionOfHealing',
-  rations: 'GEARS.rations',
-  robe: 'GEARS.robe',
-  sack: 'GEARS.sack',
-  backpack: 'GEARS.backpack',
-  bedroll: 'GEARS.bedroll',
-  pouch: 'GEARS.pouch',
-  componentPouch: 'GEARS.componentPouch',
-  bucket: 'GEARS.bucket',
-  signalWhistle: 'GEARS.signalWhistle',
-  holySymbol: 'GEARS.holySymbol',
-  tent: 'GEARS.tent',
-  clothesTravelers: 'GEARS.clothesTravelers',
-  barrel: 'GEARS.barrel',
-  torch: 'GEARS.torch',
-  healersKit: 'GEARS.healersKit',
+  acid: 'GEARS_acid',
+  antitoxin: 'GEARS_antitoxin',
+  clothesFine: 'GEARS_clothesFine',
+  ramPortable: 'GEARS_ramPortable',
+  ballBearings: 'GEARS_ballBearings',
+  tinderbox: 'GEARS_tinderbox',
+  candle: 'GEARS_candle',
+  bottleGlass: 'GEARS_bottleGlass',
+  lock: 'GEARS_lock',
+  quiver: 'GEARS_quiver',
+  map: 'GEARS_map',
+  chain: 'GEARS_chain',
+  caltrops: 'GEARS_caltrops',
+  bell: 'GEARS_bell',
+  chest: 'GEARS_chest',
+  rope: 'GEARS_rope',
+  costume: 'GEARS_costume',
+  blanket: 'GEARS_blanket',
+  jug: 'GEARS_jug',
+  holyWater: 'GEARS_holyWater',
+  ladder: 'GEARS_ladder',
+  ink: 'GEARS_ink',
+  caseMapOrScroll: 'GEARS_caseMapOrScroll',
+  caseCrossbowBolt: 'GEARS_caseCrossbowBolt',
+  alchemistsFire: 'GEARS_alchemistsFire',
+  string: 'GEARS_string',
+  net: 'GEARS_net',
+  vial: 'GEARS_vial',
+  flask: 'GEARS_flask',
+  arcaneFocus: 'GEARS_arcaneFocus',
+  druidicFocus: 'GEARS_druidicFocus',
+  grapplingHook: 'GEARS_grapplingHook',
+  oil: 'GEARS_oil',
+  lamp: 'GEARS_lamp',
+  lanternHooded: 'GEARS_lanternHooded',
+  lanternBullseye: 'GEARS_lanternBullseye',
+  book: 'GEARS_book',
+  spyglass: 'GEARS_spyglass',
+  magnifyingGlass: 'GEARS_magnifyingGlass',
+  climbersKit: 'GEARS_climbersKit',
+  manacles: 'GEARS_manacles',
+  mirror: 'GEARS_mirror',
+  ammunition: 'GEARS_ammunition',
+  waterskin: 'GEARS_waterskin',
+  blockAndTackle: 'GEARS_blockAndTackle',
+  basket: 'GEARS_basket',
+  paper: 'GEARS_paper',
+  burglarsPack: 'GEARS_burglarsPack',
+  diplomatsPack: 'GEARS_diplomatsPack',
+  entertainersPack: 'GEARS_entertainersPack',
+  priestsPack: 'GEARS_priestsPack',
+  scholarsPack: 'GEARS_scholarsPack',
+  explorersPack: 'GEARS_explorersPack',
+  dungeoneersPack: 'GEARS_dungeoneersPack',
+  parchment: 'GEARS_parchment',
+  spellScroll: 'GEARS_spellScroll',
+  perfume: 'GEARS_perfume',
+  shovel: 'GEARS_shovel',
+  pole: 'GEARS_pole',
+  crowbar: 'GEARS_crowbar',
+  huntingTrap: 'GEARS_huntingTrap',
+  spikesIron: 'GEARS_spikesIron',
+  poisonBasic: 'GEARS_poisonBasic',
+  inkPen: 'GEARS_inkPen',
+  potIron: 'GEARS_potIron',
+  potionOfHealing: 'GEARS_potionOfHealing',
+  rations: 'GEARS_rations',
+  robe: 'GEARS_robe',
+  sack: 'GEARS_sack',
+  backpack: 'GEARS_backpack',
+  bedroll: 'GEARS_bedroll',
+  pouch: 'GEARS_pouch',
+  componentPouch: 'GEARS_componentPouch',
+  bucket: 'GEARS_bucket',
+  signalWhistle: 'GEARS_signalWhistle',
+  holySymbol: 'GEARS_holySymbol',
+  tent: 'GEARS_tent',
+  clothesTravelers: 'GEARS_clothesTravelers',
+  barrel: 'GEARS_barrel',
+  torch: 'GEARS_torch',
+  healersKit: 'GEARS_healersKit',
 })
 
 // TODO: Place MAGIC_ITEMS here
@@ -281,7 +281,7 @@ const GEARS = Enum({
 const weapons = f([ // P.214
   f({
     name: WEAPONS.quarterstaff,
-    damage: DICE(1, D[6]),
+    damage: DICE(1, DICES[6]),
     damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
     category: WEAPON_CATEGORY.simpleMelee,
     properties: f([WEAPON_PROPERTY.Versatile]),
@@ -289,7 +289,7 @@ const weapons = f([ // P.214
       [WEAPON_PROPERTY.Versatile]: {
         // TODO: test
         condition: weapons => weapons?.length && (weapons?.[0] === this ?? false),
-        damage: DICE(1, D[8]),
+        damage: DICE(1, DICES[8]),
       },
     },
     mastery: WEAPON_MASTERY.Topple,
@@ -298,7 +298,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.dagger,
-    damage: DICE(1, D[4]),
+    damage: DICE(1, DICES[4]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.simpleMelee,
     properties: f([WEAPON_PROPERTY.Finesse, WEAPON_PROPERTY.Thrown, WEAPON_PROPERTY.Light]),
@@ -317,7 +317,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.club,
-    damage: DICE(1, D[4]),
+    damage: DICE(1, DICES[4]),
     damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
     category: WEAPON_CATEGORY.simpleMelee,
     properties: f([WEAPON_PROPERTY.Light]),
@@ -327,7 +327,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.handaxe,
-    damage: DICE(1, D[6]),
+    damage: DICE(1, DICES[6]),
     damageType: WEAPON_DAMAGE_TYPE.slashing,
     category: WEAPON_CATEGORY.simpleMelee,
     properties: f([WEAPON_PROPERTY.Thrown, WEAPON_PROPERTY.Light]),
@@ -346,7 +346,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.javelin,
-    damage: DICE(1, D[6]),
+    damage: DICE(1, DICES[6]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.simpleMelee,
     properties: f([WEAPON_PROPERTY.Thrown]),
@@ -365,7 +365,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.spear,
-    damage: DICE(1, D[6]),
+    damage: DICE(1, DICES[6]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.simpleMelee,
     properties: f([WEAPON_PROPERTY.Thrown, WEAPON_PROPERTY.Versatile]),
@@ -380,7 +380,7 @@ const weapons = f([ // P.214
       [WEAPON_PROPERTY.Versatile]: {
         // TODO: test
         condition: weapons => weapons?.length && (weapons?.[0] === this ?? false),
-        damage: DICE(1, D[8]),
+        damage: DICE(1, DICES[8]),
       },
     },
     mastery: WEAPON_MASTERY.Sap,
@@ -389,7 +389,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.lightHammer,
-    damage: DICE(1, D[4]),
+    damage: DICE(1, DICES[4]),
     damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
     category: WEAPON_CATEGORY.simpleMelee,
     properties: f([WEAPON_PROPERTY.Thrown, WEAPON_PROPERTY.Light]),
@@ -408,7 +408,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.mace,
-    damage: DICE(1, D[6]),
+    damage: DICE(1, DICES[6]),
     damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
     category: WEAPON_CATEGORY.simpleMelee,
     properties: f([]),
@@ -418,7 +418,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.greatclub,
-    damage: DICE(1, D[8]),
+    damage: DICE(1, DICES[8]),
     damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
     category: WEAPON_CATEGORY.simpleMelee,
     properties: f([WEAPON_PROPERTY.TwoHanded]),
@@ -428,7 +428,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.sickle,
-    damage: DICE(1, D[4]),
+    damage: DICE(1, DICES[4]),
     damageType: WEAPON_DAMAGE_TYPE.slashing,
     category: WEAPON_CATEGORY.simpleMelee,
     properties: f([WEAPON_PROPERTY.Light]),
@@ -438,7 +438,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.lightCrossbow,
-    damage: DICE(1, D[8]),
+    damage: DICE(1, DICES[8]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.simpleRanged,
     properties: f([WEAPON_PROPERTY.Loading, WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Ammunition]),
@@ -457,7 +457,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.shortbow,
-    damage: DICE(1, D[6]),
+    damage: DICE(1, DICES[6]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.simpleRanged,
     properties: f([WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Ammunition]),
@@ -476,7 +476,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.dart,
-    damage: DICE(1, D[4]),
+    damage: DICE(1, DICES[4]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.simpleRanged,
     properties: f([WEAPON_PROPERTY.Finesse, WEAPON_PROPERTY.Thrown]),
@@ -495,7 +495,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.sling,
-    damage: DICE(1, D[4]),
+    damage: DICE(1, DICES[4]),
     damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
     category: WEAPON_CATEGORY.simpleRanged,
     properties: f([WEAPON_PROPERTY.Ammunition]),
@@ -514,7 +514,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.scimitar,
-    damage: DICE(1, D[6]),
+    damage: DICE(1, DICES[6]),
     damageType: WEAPON_DAMAGE_TYPE.slashing,
     category: WEAPON_CATEGORY.martialMelee,
     properties: f([WEAPON_PROPERTY.Finesse, WEAPON_PROPERTY.Light]),
@@ -524,7 +524,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.glaive,
-    damage: DICE(1, D[10]),
+    damage: DICE(1, DICES[10]),
     damageType: WEAPON_DAMAGE_TYPE.slashing,
     category: WEAPON_CATEGORY.martialMelee,
     properties: f([WEAPON_PROPERTY.Reach, WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Heavy]),
@@ -534,7 +534,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.greatSword,
-    damage: DICE(2, D[6]),
+    damage: DICE(2, DICES[6]),
     damageType: WEAPON_DAMAGE_TYPE.slashing,
     category: WEAPON_CATEGORY.martialMelee,
     properties: f([WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Heavy]),
@@ -544,7 +544,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.shortSword,
-    damage: DICE(1, D[6]),
+    damage: DICE(1, DICES[6]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialMelee,
     properties: f([WEAPON_PROPERTY.Finesse, WEAPON_PROPERTY.Light]),
@@ -554,7 +554,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.longSword,
-    damage: DICE(1, D[8]),
+    damage: DICE(1, DICES[8]),
     damageType: WEAPON_DAMAGE_TYPE.slashing,
     category: WEAPON_CATEGORY.martialMelee,
     properties: f([WEAPON_PROPERTY.Versatile]),
@@ -562,7 +562,7 @@ const weapons = f([ // P.214
       [WEAPON_PROPERTY.Versatile]: {
         // TODO: test
         condition: weapons => weapons?.length && (weapons?.[0] === this ?? false),
-        damage: DICE(1, D[10]),
+        damage: DICE(1, DICES[10]),
       },
     },
     mastery: WEAPON_MASTERY.Sap,
@@ -571,7 +571,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.flail,
-    damage: DICE(1, D[8]),
+    damage: DICE(1, DICES[8]),
     damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
     category: WEAPON_CATEGORY.martialMelee,
     properties: f([]),
@@ -581,7 +581,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.whip,
-    damage: DICE(1, D[4]),
+    damage: DICE(1, DICES[4]),
     damageType: WEAPON_DAMAGE_TYPE.slashing,
     category: WEAPON_CATEGORY.martialMelee,
     properties: f([WEAPON_PROPERTY.Reach, WEAPON_PROPERTY.Finesse]),
@@ -591,7 +591,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.gretAxe,
-    damage: DICE(1, D[12]),
+    damage: DICE(1, DICES[12]),
     damageType: WEAPON_DAMAGE_TYPE.slashing,
     category: WEAPON_CATEGORY.martialMelee,
     properties: f([WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Heavy]),
@@ -601,7 +601,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.battleAxe,
-    damage: DICE(1, D[8]),
+    damage: DICE(1, DICES[8]),
     damageType: WEAPON_DAMAGE_TYPE.slashing,
     category: WEAPON_CATEGORY.martialMelee,
     properties: f([WEAPON_PROPERTY.Versatile]),
@@ -609,7 +609,7 @@ const weapons = f([ // P.214
       [WEAPON_PROPERTY.Versatile]: {
         // TODO: test
         condition: weapons => weapons?.length && (weapons?.[0] === this ?? false),
-        damage: DICE(1, D[10]),
+        damage: DICE(1, DICES[10]),
       },
     },
     mastery: WEAPON_MASTERY.Topple,
@@ -618,7 +618,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.halberd,
-    damage: DICE(1, D[10]),
+    damage: DICE(1, DICES[10]),
     damageType: WEAPON_DAMAGE_TYPE.slashing,
     category: WEAPON_CATEGORY.martialMelee,
     properties: f([WEAPON_PROPERTY.Reach, WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Heavy]),
@@ -628,7 +628,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.lance,
-    damage: DICE(1, D[10]),
+    damage: DICE(1, DICES[10]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialMelee,
     properties: f([WEAPON_PROPERTY.Reach, WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Heavy]),
@@ -643,7 +643,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.maul,
-    damage: DICE(2, D[6]),
+    damage: DICE(2, DICES[6]),
     damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
     category: WEAPON_CATEGORY.martialMelee,
     properties: f([WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Heavy]),
@@ -653,7 +653,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.warhammer,
-    damage: DICE(1, D[8]),
+    damage: DICE(1, DICES[8]),
     damageType: WEAPON_DAMAGE_TYPE.bludgeoning,
     category: WEAPON_CATEGORY.martialMelee,
     properties: f([WEAPON_PROPERTY.Versatile]),
@@ -661,7 +661,7 @@ const weapons = f([ // P.214
       [WEAPON_PROPERTY.Versatile]: {
         // TODO: test
         condition: weapons => weapons?.length && (weapons?.[0] === this ?? false),
-        damage: DICE(1, D[10]),
+        damage: DICE(1, DICES[10]),
       },
     },
     mastery: WEAPON_MASTERY.Push,
@@ -670,7 +670,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.morningstar,
-    damage: DICE(1, D[8]),
+    damage: DICE(1, DICES[8]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialMelee,
     properties: f([]),
@@ -680,7 +680,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.warPick,
-    damage: DICE(1, D[8]),
+    damage: DICE(1, DICES[8]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialMelee,
     properties: f([WEAPON_PROPERTY.Versatile]),
@@ -688,7 +688,7 @@ const weapons = f([ // P.214
       [WEAPON_PROPERTY.Versatile]: {
         // TODO: test
         condition: weapons => weapons?.length && (weapons?.[0] === this ?? false),
-        damage: DICE(1, D[10]),
+        damage: DICE(1, DICES[10]),
       },
     },
     mastery: WEAPON_MASTERY.Sap,
@@ -697,7 +697,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.pike,
-    damage: DICE(1, D[10]),
+    damage: DICE(1, DICES[10]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialMelee,
     properties: f([WEAPON_PROPERTY.Reach, WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Heavy]),
@@ -707,7 +707,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.rapier,
-    damage: DICE(1, D[8]),
+    damage: DICE(1, DICES[8]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialMelee,
     properties: f([WEAPON_PROPERTY.Finesse]),
@@ -717,7 +717,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.trident,
-    damage: DICE(1, D[8]),
+    damage: DICE(1, DICES[8]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialMelee,
     properties: f([WEAPON_PROPERTY.Thrown, WEAPON_PROPERTY.Versatile]),
@@ -732,7 +732,7 @@ const weapons = f([ // P.214
       [WEAPON_PROPERTY.Versatile]: {
         // TODO: test
         condition: weapons => weapons?.length && (weapons?.[0] === this ?? false),
-        damage: DICE(1, D[10]),
+        damage: DICE(1, DICES[10]),
       },
     },
     mastery: WEAPON_MASTERY.Topple,
@@ -741,7 +741,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.handCrossbow,
-    damage: DICE(1, D[6]),
+    damage: DICE(1, DICES[6]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialRanged,
     properties: f([WEAPON_PROPERTY.Loading, WEAPON_PROPERTY.Light, WEAPON_PROPERTY.Ammunition]),
@@ -760,7 +760,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.heavyCrossbow,
-    damage: DICE(1, D[10]),
+    damage: DICE(1, DICES[10]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialRanged,
     properties: f([WEAPON_PROPERTY.Loading, WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Heavy, WEAPON_PROPERTY.Ammunition]),
@@ -779,7 +779,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.longbow,
-    damage: DICE(1, D[8]),
+    damage: DICE(1, DICES[8]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialRanged,
     properties: f([WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Heavy, WEAPON_PROPERTY.Ammunition]),
@@ -798,7 +798,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.musket,
-    damage: DICE(1, D[12]),
+    damage: DICE(1, DICES[12]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialRanged,
     properties: f([WEAPON_PROPERTY.Loading, WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Ammunition]),
@@ -817,7 +817,7 @@ const weapons = f([ // P.214
   }),
   f({
     name: WEAPONS.pistol,
-    damage: DICE(1, D[10]),
+    damage: DICE(1, DICES[10]),
     damageType: WEAPON_DAMAGE_TYPE.piercing,
     category: WEAPON_CATEGORY.martialRanged,
     properties: f([WEAPON_PROPERTY.Loading, WEAPON_PROPERTY.Ammunition]),

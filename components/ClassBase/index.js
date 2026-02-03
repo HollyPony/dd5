@@ -1,10 +1,13 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
+import charSheet from '../../modules/stores/charSheet.store.js'
 import { i18n } from '../../modules/i18n.js'
 import { createElement, fillElement } from '../../modules/domlib.js'
 
 export class ClassBase extends AbstractComponent {
   static get tagName() { return 'class-base' }
   static get _componentPath() { return '/components/ClassBase' }
+
+  #subscriptions = []
 
   #baseFeatureButtonElement
   #skillsActionRequiredElement
@@ -46,22 +49,20 @@ export class ClassBase extends AbstractComponent {
   }
 
   #registerEvents() {
-    // this.#scoreElement.addEventListener('change', this.#scoreChanged)
+    this.#subscriptions.push(
+      charSheet.subscribe(this.#skillsChanged, 'classSkills'),
+    )
 
-    // document.addEventListener("userData.charLevelChanged", this.#refreshScore)
-
-    document.addEventListener('CharSheet.skillsChanged', this.#skillsChanged)
   }
 
   #unregisterEvents() {
-    // this.#scoreElement.removeEventListener('change', this.#scoreChanged)
-
-    // document.removeEventListener("userData.charLevelChanged", this.#refreshScore)
+    this.#subscriptions.forEach(subscriber => subscriber())
   }
 
   #refreshActionsRequired() {
+    console.info('-- ClassBase.refreshActionsRequired')
     const actionsRequired = {
-      skills: (ClassBase.charsheet.charClass.skills.nb - ClassBase.charsheet.classSkills.length) > 0
+      skills: (charSheet.getCharClass().skills.nb - charSheet.getClassSkills().length) > 0
     }
 
     this.#skillsActionRequiredElement.classList[actionsRequired.skills ? 'add' : 'remove']('show')
@@ -74,19 +75,21 @@ export class ClassBase extends AbstractComponent {
   }
 
   #refreshSkillsChooseLabel() {
+    console.info('-- ClassBase.refreshSkillsChooseLabel')
     fillElement(this.#skillsChooseLabel, i18n.tn('components.ClassBase.skills.remaining', {
-      remaining: ClassBase.charsheet.charClass.skills.nb - ClassBase.charsheet.classSkills.length
+      remaining: charSheet.getCharClass().skills.nb - charSheet.getClassSkills().length
     }))
   }
 
   #refreshSkillsList() {
-    fillElement(this.#skillsList, ClassBase.charsheet.charClass.skills.list.map(skill => createElement(null, [
+    console.info('-- ClassBase.refreshSkillsList')
+    fillElement(this.#skillsList, charSheet.getCharClass().skills.list.map(skill => createElement(null, [
       createElement('input', null, {
         type: 'checkbox', class: 'btn-check', id: `${skill.name}.${this._id}`,
-        checked: ClassBase.charsheet.classSkills.includes(skill),
-        disabled: ClassBase.charsheet.isDisabledSkill(skill),
+        checked: charSheet.getClassSkills().includes(skill),
+        disabled: charSheet.isDisabledSkill(skill),
         eventListeners: {
-          change: ({ target: { checked } }) => ClassBase.charsheet[checked ? 'classSkillsAdd' : 'classSkillsRemove'](skill)
+          change: ({ target: { checked } }) => charSheet[checked ? 'classSkillsAdd' : 'classSkillsRemove'](skill)
         }
       }),
       createElement('label', i18n._(`statics.${skill.name}`), { class: 'btn btn-outline-primary', for: `${skill.name}.${this._id}` }),
@@ -94,6 +97,7 @@ export class ClassBase extends AbstractComponent {
   }
 
   #skillsChanged = () => {
+    console.info('-- ClassBase.skillsChanged')
     this.#refreshActionsRequired()
     this.#refreshSkillsChooseLabel()
     this.#refreshSkillsList()

@@ -1,4 +1,5 @@
 import { AbstractSelect } from '../AbstractSelect/index.js'
+import charSheet from '../../modules/stores/charSheet.store.js'
 import { getList as getOriginList, } from '../../modules/data/origins.js'
 import { populateSelect, } from '../../modules/domlib.js'
 import { i18n } from '../../modules/i18n.js'
@@ -6,21 +7,12 @@ import { i18n } from '../../modules/i18n.js'
 export class OriginSelect extends AbstractSelect {
   static get tagName() { return 'origin-select' }
 
-  // async connectedCallback() {
-  //   await super.connectedCallback()
-  //   console.info('-- OriginSelect.#connectedCallback')
-  // }
-
   _registerEvents() {
-    this._selectElement.addEventListener('change', this._selectChanged)
-
-    document.addEventListener("userData.charOriginChanged", this._refreshValue)
+    this._selectElement.addEventListener('change', this.#selectChanged)
   }
 
   _unregisterEvents() {
-    this._selectElement.removeEventListener('change', this._selectChanged)
-
-    document.removeEventListener("userData.charOriginChanged", this._refreshValue)
+    this._selectElement.removeEventListener('change', this.#selectChanged)
   }
 
   _refreshList = () => {
@@ -36,12 +28,12 @@ export class OriginSelect extends AbstractSelect {
 
   _refreshValue = () => {
     console.info('-- OriginSelect.#refreshValue')
-    this._selectElement.value = OriginSelect.charsheet.charOriginName || ''
+    this._selectElement.value = charSheet.getCharOriginName() || ''
   }
 
-  _selectChanged = ({ target: { value } }) => {
+  #selectChanged = ({ target: { value } }) => {
     console.info('-- OriginSelect.#selectChanged', value)
     // TODO: alert skills lost
-    OriginSelect.charsheet.charOrigin = value
+    charSheet.setCharOriginName(value)
   }
 }

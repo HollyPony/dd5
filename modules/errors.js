@@ -30,4 +30,14 @@ export function BadDiceError(dice, ...props) {
 
   return err
 }
-BadDiceError.prototype = Object.create(Error.prototype, { constructor: { value: BadDiceError, } })
+BadDiceError.prototype = Object.create(Error.prototype, { constructor: { value: MissingPathError, } })
+
+export function MissingPathError(...props) {
+  const message = `A 'path' is required`
+  const err = new Error(message, ...props)
+  Object.setPrototypeOf(err, MissingPathError.prototype)
+  err.name = "MissingPathError"
+
+  return err
+}
+MissingPathError.prototype = Object.create(Error.prototype, { constructor: { value: MissingPathError, } })

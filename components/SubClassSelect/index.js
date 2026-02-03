@@ -1,4 +1,5 @@
 import { AbstractSelect } from '../AbstractSelect/index.js'
+import charSheet from '../../modules/stores/charSheet.store.js'
 import { getSubClasses, } from '../../modules/data/classes.js'
 import { populateSelect, } from '../../modules/domlib.js'
 import { i18n } from '../../modules/i18n.js'
@@ -6,59 +7,58 @@ import { i18n } from '../../modules/i18n.js'
 export class SubClassSelect extends AbstractSelect {
   static get tagName() { return 'sub-class-select' }
 
-  // async connectedCallback() {
-  //   await super.connectedCallback()
-  // }
+  #subscriptions = []
 
   _registerEvents() {
-    this._selectElement.addEventListener('change', this._selectChanged)
+    this._selectElement.addEventListener('change', this.#selectChanged)
 
-    document.addEventListener('userData.charLevelChanged', this._charLevelChanged)
-    document.addEventListener('userData.charClassChanged', this._charClassChanged)
-    document.addEventListener('userData.charSubClassChanged', this._refreshValue)
+    this.#subscriptions.push(
+      charSheet.subscribe(this.#charLevelChanged, 'charLevel'),
+      charSheet.subscribe(this.#charClassChanged, 'charClass'),
+      charSheet.subscribe(this._refreshValue, 'charSubClassName')
+    )
   }
 
   _unregisterEvents() {
-    this._selectElement.removeEventListener('change', this._charClassChanged)
+    this._selectElement.removeEventListener('change', this.#charClassChanged)
 
-    document.removeEventListener('userData.charLevelChanged', this._charLevelChanged)
-    document.removeEventListener('userData.charClassChanged', this._charClassChanged)
-    document.removeEventListener('userData.charSubClassChanged', this._refreshValue)
+    this.#subscriptions.forEach(subscription => subscription())
   }
 
   _refreshList = () => {
     console.info('-- SubClassSelect.#refreshList')
     populateSelect(
       this._selectElement,
-      [
-        { value: '', text: i18n._((SubClassSelect.charsheet.charLevel < 3 || !SubClassSelect.charsheet.charClassName) ? `subClasses.select.unavailable` : `subClasses.select.chooseOne`), disabled: true },
-        ...getSubClasses(SubClassSelect.charsheet.charClassName).map(subClassName => ({
-          value: subClassName,
-          text: i18n._(`statics.subClasses.${SubClassSelect.charsheet.charClassName}.${subClassName}`),
-        })),
-      ],
-      { clear: true }
+      getSubClasses(charSheet.getCharClassName()).map(subClassName => ({
+        value: subClassName,
+        text: i18n._(`statics.subClasses.${charSheet.getCharClassName()}.${subClassName}`),
+      })),
+      {
+        clear: true,
+        placeholder: i18n._((charSheet.getCharLevel() < 3 || !charSheet.getCharClassName()) ? `subClasses.select.unavailable` : `subClasses.select.chooseOne`)
+      }
     )
   }
 
   _refreshValue = () => {
     console.info('-- SubClassSelect.#refreshValue')
-    this._selectElement.value = SubClassSelect.charsheet.charLevel > 2 && SubClassSelect.charsheet.charSubClassName || ''
-    this._selectElement.disabled = SubClassSelect.charsheet.charLevel < 3
+    this._selectElement.value = charSheet.getCharLevel() > 2 && charSheet.getCharSubClassName() || ''
+    this._selectElement.disabled = charSheet.getCharLevel() < 3
   }
 
-  _selectChanged = ({ target: { value } }) => {
+  #selectChanged = ({ target: { value } }) => {
     console.info('-- SubClassSelect.#selectChanged', value)
     // TODO: alert skills lost
-    SubClassSelect.charsheet.charSubClassName = value
+    charSheet.setCharSubClassName(value)
   }
 
-  _charLevelChanged = () => {
+  #charLevelChanged = () => {
     console.info('-- SubClassSelect.#charLevelChanged')
+    this._refreshList()
     this._refreshValue()
   }
 
-  _charClassChanged = () => {
+  #charClassChanged = () => {
     console.info('-- SubClassSelect.#charClassChanged')
     this._refreshList()
     this._refreshValue()
