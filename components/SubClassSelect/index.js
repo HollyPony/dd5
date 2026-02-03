@@ -13,9 +13,9 @@ export class SubClassSelect extends AbstractSelect {
     this._selectElement.addEventListener('change', this.#selectChanged)
 
     this.#subscriptions.push(
-      charSheet.subscribe(this.#charLevelChanged, 'charLevel'),
-      charSheet.subscribe(this.#charClassChanged, 'charClass'),
-      charSheet.subscribe(this._refreshValue, 'charSubClassName')
+      charSheet.subscribe('charLevel', this.#charLevelChanged),
+      charSheet.subscribe('charClass', this.#charClassChanged),
+      charSheet.subscribe('charSubClassName', this._refreshValue)
     )
   }
 

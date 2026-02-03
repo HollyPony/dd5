@@ -72,12 +72,12 @@ export default function createObservableStore(initialState) {
      * The callback receives the current value at the subscribed path
      * whenever that path (or a child path) is updated.
      *
-     * @param {(value: any) => void} callback - Listener called on updates.
      * @param {string} stateKey - Dot-separated path to observe.
+     * @param {(value: any) => void} callback - Listener called on updates.
      * @returns {() => void} Unsubscribe function.
      * @throws {MissingPathError} If stateKey is missing or falsy.
      */
-    subscribe(callback, stateKey) {
+    subscribe(stateKey, callback) {
       if (!stateKey) throw new MissingPathError()
       if (!listeners.has(stateKey)) {
         listeners.set(stateKey, new Set())

@@ -23,7 +23,7 @@ export class ClassSelect extends AbstractSelect {
     this._selectElement.addEventListener('change', this.#selectChanged)
 
     this.#subscriptions.push(
-      charSheet.subscribe(this._refreshValue, 'charClass'),
+      charSheet.subscribe('charClass', this._refreshValue),
     )
   }
 

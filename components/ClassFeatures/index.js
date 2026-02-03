@@ -41,8 +41,8 @@ export class ClassFeatures extends AbstractComponent {
     // TODO: had a class features changed ????
 
     this.#subscriptions.push(
-      charSheet.subscribe(this.#levelChanged, 'charLevel'),
-      charSheet.subscribe(this.#classChanged, 'charClass'),
+      charSheet.subscribe('charLevel', this.#levelChanged),
+      charSheet.subscribe('charClass', this.#classChanged),
     )
   }
 

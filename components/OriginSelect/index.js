@@ -13,7 +13,7 @@ export class OriginSelect extends AbstractSelect {
     this._selectElement.addEventListener('change', this.#selectChanged)
 
     this.#subscriptions.push(
-      charSheet.subscribe(this._refreshValue, 'charOriginName')
+      charSheet.subscribe('charOriginName', this._refreshValue)
     )
   }
 

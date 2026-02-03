@@ -60,8 +60,8 @@ export class Ability extends AbstractComponent {
     this.#scoreElement.addEventListener('change', this.#scoreChanged)
 
     this.#subscriptions.push(
-      charSheet.subscribe(this.#levelChanged, 'charLevel'),
-      charSheet.subscribe(this.#skillsChanged, 'classSkills'),
+      charSheet.subscribe('charLevel', this.#levelChanged),
+      charSheet.subscribe('classSkills', this.#skillsChanged),
     )
   }
 

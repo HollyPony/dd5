@@ -13,7 +13,7 @@ export class SpeciesSelect extends AbstractSelect {
     this._selectElement.addEventListener('change', this.#selectChanged)
 
     this.#subscriptions.push(
-      charSheet.subscribe(this._refreshValue, 'charSpeciesName')
+      charSheet.subscribe('charSpeciesName', this._refreshValue)
     )
   }
 
