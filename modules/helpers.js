@@ -26,3 +26,28 @@ const nfWithSign = new Intl.NumberFormat(undefined, {
 })
 
 export function signDisplay(score) { return nfWithSign.format(score) }
+
+/**
+ * Navigates inside `obj` with `path` string,
+ *
+ * Usage:
+ * objNavigate({a: {b: 123}}, "a.b") // returns 123
+ *
+ * Returns undefined if variable is not found.
+ * Fails silently.
+ */
+export function objNavigate(obj, path) {
+  const parts = path.split('.')
+  let current = obj
+  for (const part of parts) {
+    if (current == null) return undefined
+    current = current[part]
+  }
+  return current
+  // Reduce version less efficient
+  // try {
+  // return path.split('.').reduce((acc, keyPath) => acc[keyPath], obj)
+  // } catch {
+  //   return path
+  // }
+}

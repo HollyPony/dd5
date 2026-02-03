@@ -1,3 +1,4 @@
+import { objNavigate } from './helpers.js';
 import parseMarkdown from './markdown.js'
 
 const language = document.language ?? "fr";
@@ -29,46 +30,29 @@ export const i18n = {
     )
   },
 
-  /**
-   * Navigates inside `obj` with `path` string,
-   *
-   * Usage:
-   * objNavigate({a: {b: 123}}, "a.b") // returns 123
-   *
-   * Returns undefined if variable is not found.
-   * Fails silently.
-   */
-  objNavigate: function (obj, path) {
-    try {
-      return path.split('.').reduce((a, v) => a[v], obj) || path
-    } catch {
-      return path
-    }
-  },
-
-  _(key, interpolations) {
-    const value = i18n.objNavigate(i18n.translations[language], key)
+  _(path, interpolations) {
+    const value = objNavigate(i18n.translations[language], path) ?? path
     return i18n.strObjInterpolation(value, interpolations)
   },
 
-  md(key, interpolations) {
-    return parseMarkdown(i18n._(key, interpolations))
+  md(path, interpolations) {
+    return parseMarkdown(i18n._(path, interpolations))
   },
 
-  tn(key, interpolations) {
-    return document.createTextNode(i18n._(key, interpolations))
+  tn(path, interpolations) {
+    return document.createTextNode(i18n._(path, interpolations))
   },
 
   /**
    * Translate a dom element
    * @param {HTMLElement} element to insert the translated text
-   * @param {string} key translation key
+   * @param {string} path translation path
    * @param {Object} config 
    * @param {boolean} config.markdown if true, parse result as markdown
    * @param {Array.string} config.interpolations // TODO: test interpolations
    * @param {Array.object} config.attributess // TODO: test attributes translations
    */
-  translate(element, key, {
+  translate(element, path, {
     markdown = false,
     interpolations = [],
     attributes = []
@@ -79,7 +63,7 @@ export const i18n = {
       i18n._(attribute.keys, attribute.interpolations)
     }
 
-    const result = i18n[markdown ? 'md' : 'tn'](key, interpolations)
+    const result = i18n[markdown ? 'md' : 'tn'](path, interpolations)
     if (result) {
       while (element.firstChild) { element.removeChild(element.firstChild) }
       element.appendChild(result)
