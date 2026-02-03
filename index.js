@@ -156,21 +156,29 @@ function charExperienceChanged({ target: { value } }) {
 // STORAGE //////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
-function exportJSON() {
-  const baseHref = exportCharLink.href
-  const baseDowload = exportCharLink.download
+function exportJSON(event) {
+  event?.preventDefault()
 
-  const json = charSheet.toJSON()
+  let json
+  try {
+    json = charSheet.toJSON()
+  } catch (error) {
+    console.error('Export failed', error)
+    return
+  }
+
   const blob = new Blob([json], { type: "application/json" })
   const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
 
-  exportCharLink.download = charSheet.getCharName().replace(/[^a-zA-Z0-9 ]/g, '')
-  exportCharLink.href = url
+
+  // const safeName = (charSheet.getCharName() || '').replace(/[^a-zA-Z0-9 ]/g, '').trim()
+  link.download = charSheet.getCharName().replace(/[^a-zA-Z0-9 ]/g, '').trim() || 'TheCharacterWithNoName'
+  link.href = url
+  link.click()
 
   // nettoyage mémoire
   setTimeout(() => {
-    exportCharLink.href = baseHref
-    exportCharLink.download = baseDowload
     URL.revokeObjectURL(url)
   }, 0)
 }
