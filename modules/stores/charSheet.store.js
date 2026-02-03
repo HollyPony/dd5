@@ -329,7 +329,10 @@ function createCharSheetStore() {
     // refreshClassFeatures()
   }
   function setCharSpeciesName(charSpeciesName) {
-    set({ charSpeciesName })
+    set({
+      charSpeciesName,
+      charSpecies: getSpecies(charSpeciesName, get('charLevel')),
+    })
 
     // document.dispatchEvent(new CustomEvent('userData.charSpeciesChanged'))
     // // TODO: Handle what changed on species changed
