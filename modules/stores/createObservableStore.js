@@ -30,6 +30,8 @@ export default function createObservableStore(initialState) {
      *
      * Keys can be dot-separated paths. Fails fast if any segment is invalid.
      * Notifications are sent to listeners on each path segment (parent -> child).
+     * When multiple paths are updated in a single set, callbacks are de-duplicated
+     * and invoked once per update (no value is passed).
      *
      * @param {Object<string, *>} pathMap - Patch object where keys are paths.
      * @param {boolean} [shouldNotify=true] - Whether to notify listeners.
@@ -37,6 +39,7 @@ export default function createObservableStore(initialState) {
      * @throws {ReferenceError} If a path segment is invalid.
      */
     set(pathMap, shouldNotify = true) {
+      const callbacks = new Set()
       for (const [path, value] of Object.entries(pathMap)) {
         const pathParts = getPathParts(path)
         let currentTarget = state
@@ -49,20 +52,18 @@ export default function createObservableStore(initialState) {
 
         // Notify
         if (shouldNotify) {
-          currentTarget = state
           let key
           for (const part of pathParts) {
-            currentTarget = currentTarget[part]
             key = key ? key + '.' + part : part
             const bucket = listeners.get(key)
             if (bucket) {
-              for (const listener of bucket) {
-                listener(currentTarget)
-              }
+              for (const listener of bucket) callbacks.add(listener)
             }
           }
         }
       }
+
+      if (shouldNotify) callbacks.forEach(listener => listener())
     },
 
     /**
