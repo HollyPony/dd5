@@ -308,6 +308,7 @@ function createCharSheetStore() {
       charClassName: className,
       charSubClassName: undefined,
       charClass: getClass(className, undefined, get('charLevel')),
+      classSkills: [],
     })
 
     // TODO: refresh this datas with event
@@ -377,19 +378,11 @@ function createCharSheetStore() {
     // document.dispatchEvent(new CustomEvent('CharSheet.skillsChanged'))
   }
 
-  function classSkillsClear() {
-    set({ 'classSkills': [] })
-    // get('classSkills').length = 0
-    // TODO: It works ?
-    // document.dispatchEvent(new CustomEvent('CharSheet.skillsChanged'))
-  }
-
   const helpers = {
     isDisabledSkill,
     isCheckedSkill,
     classSkillsAdd,
     classSkillsRemove,
-    classSkillsClear,
     toJSON() { return storeManager.toJSON(this) }
   }
 
