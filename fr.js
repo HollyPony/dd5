@@ -44,36 +44,6 @@ const fr = {
   stats: {
     proficiencyBonus: 'Bonus de maîtrise',
     inspiration: 'Inspiration',
-    trainings: {
-      title: 'Entraînements & Maîtrises',
-      armor: {
-        title: 'Armures',
-        light: 'Légères',
-        medium: 'Intermed.',
-        heavy: 'Lourdes',
-      },
-      shield: 'Boucliers',
-      weapons: {
-        title: 'Armes',
-        WEAPON_CATEGORY_simpleMelee: {
-          all: 'Armes courantes de corps à corps',
-        },
-        WEAPON_CATEGORY_simpleRanged: {
-          all: 'Armes courantes à distance',
-        },
-        WEAPON_CATEGORY_martialMelee: {
-          all: 'Armes de guerre de corps à corps',
-          WEAPON_PROPERTY_Light: 'Armes de guerre de corps à corps (Légères)',
-        },
-        WEAPON_CATEGORY_martialRanged: {
-          all: 'Armes de guerre à distance',
-          WEAPON_PROPERTY_Light: 'Armes de guerre à distance (Légères)',
-        },
-      },
-      tools: {
-        title: 'Outils',
-      }
-    },
   },
   specs: {
     initiative: 'Initiative',
@@ -92,6 +62,38 @@ const fr = {
     title: `Traits d'espèce`,
   },
   components: {
+    Trainings: {
+      title: 'Entraînements & Maîtrises',
+      armor: {
+        title: 'Armures',
+        light: 'Légères',
+        medium: 'Intermed.',
+        heavy: 'Lourdes',
+      },
+      shield: 'Boucliers',
+      weapons: {
+        title: 'Armes',
+        none: 'Aucune arme maîtrisée',
+        WEAPON_CATEGORY_simpleMelee: {
+          all: 'Armes courantes de corps à corps',
+        },
+        WEAPON_CATEGORY_simpleRanged: {
+          all: 'Armes courantes à distance',
+        },
+        WEAPON_CATEGORY_martialMelee: {
+          all: 'Armes de guerre de corps à corps',
+          WEAPON_PROPERTY_Light: 'Armes de guerre de corps à corps (Légères)',
+        },
+        WEAPON_CATEGORY_martialRanged: {
+          all: 'Armes de guerre à distance',
+          WEAPON_PROPERTY_Light: 'Armes de guerre à distance (Légères)',
+        },
+      },
+      tools: {
+        title: 'Outils',
+        none: 'Aucun outil maîtrisée',
+      }
+    },
     ClassFeatures: {
       title: `Capacités de classe`
     },

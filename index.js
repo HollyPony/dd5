@@ -7,12 +7,11 @@ import { ClassFeatures } from './components/ClassFeatures/index.js'
 import { ClassBase } from './components/ClassBase/index.js'
 import { ClassFeature } from './components/ClassFeature/index.js'
 import { WeaponSelect } from './components/WeaponSelect/index.js'
+import { Trainings } from './components/Trainings/index.js'
 
 import { DICES as D, } from './modules/common.js'
-import { createElement, removeAllChildren, } from './modules/domlib.js'
 import { i18n } from '/modules/i18n.js'
 import charSheet from './modules/stores/charSheet.store.js'
-import { ARMOR_CATEGORY, } from './modules/data/equipments.js'
 import { ExportError, ImportError } from './modules/errors.js'
 
 import { fromJSON } from './modules/storageManager.js'
@@ -27,14 +26,6 @@ const charExperienceElement = document.getElementsByName('experiencepoints')[0] 
 const exportCharLink = document.getElementById("exportCharLink")
 const importCharLink = document.getElementById("importCharLink")
 const importCharFileElement = document.getElementById("importCharFile")
-const trainingsElements = {
-  armorLight: document.getElementsByName('trainings-armor-light')[0],
-  armorMedium: document.getElementsByName('trainings-armor-medium')[0],
-  armorHeavy: document.getElementsByName('trainings-armor-heavy')[0],
-  shield: document.getElementsByName('trainings-shield')[0],
-  weaponsList: document.getElementsByClassName('trainings-weapons-list')[0],
-  toolsList: document.getElementsByClassName('trainings-tools-list')[0],
-}
 
 //////////////////////////////////////////////////////////////////////
 // DISPLAY HELPERS //////////////////////////////////////////////////////
@@ -97,22 +88,6 @@ function refreshCharAlignment() {
   document.getElementsByName('alignment')[0].value = charSheet.getCharAlignment()
 }
 
-function refreshTrainings() {
-  const armorProficiencies = charSheet.getArmorProficiencies()
-  trainingsElements.armorLight.checked = armorProficiencies?.includes(ARMOR_CATEGORY.Light)
-  trainingsElements.armorMedium.checked = armorProficiencies?.includes(ARMOR_CATEGORY.Medium)
-  trainingsElements.armorHeavy.checked = armorProficiencies?.includes(ARMOR_CATEGORY.Heavy)
-  trainingsElements.shield.checked = charSheet.getShieldProficiency()
-  removeAllChildren(trainingsElements.weaponsList)
-  charSheet.getWeaponProficiencies().forEach(proficiency => trainingsElements.weaponsList
-    .appendChild(createElement('p', i18n._(['stats.trainings.weapons']
-      .concat(proficiency.length === 1 ? [proficiency, 'all'] : proficiency)
-      .join('.')
-    )))
-  )
-
-  removeAllChildren(trainingsElements.toolsList)
-}
 
 function refreshAll() {
   refreshCharName()
@@ -125,7 +100,6 @@ function refreshAll() {
   refreshSize()
   refreshPassivePerception()
   refreshCharAlignment()
-  refreshTrainings()
   refreshArmorClass()
   refreshProficiencyBonus()
 }
@@ -156,8 +130,6 @@ function registerSubscriptions() {
     charSheet.subscribe('classSkills', refreshPassivePerception),
     charSheet.subscribe('modifiers', refreshPassivePerception),
     charSheet.subscribe('charAlignment', refreshCharAlignment),
-    charSheet.subscribe('charClass', refreshTrainings),
-    charSheet.subscribe('feats', refreshTrainings),
     charSheet.subscribe('charClass', refreshArmorClass),
     charSheet.subscribe('equiped', refreshArmorClass),
     charSheet.subscribe('feats', refreshArmorClass),
@@ -264,6 +236,7 @@ function registerCustomElements() {
   ClassBase.register()
   ClassFeature.register()
   WeaponSelect.register()
+  Trainings.register()
 }
 
 /////////////////////////////////////////////////////////////////////////
