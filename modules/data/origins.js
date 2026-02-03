@@ -70,4 +70,6 @@ export const origins = f({
 })
 
 export function getList() { return Object.keys(origins) }
-export function getOrigin(originName) { return origins[originName] }
+export default function (originName) {
+  return originName ? origins[originName] : undefined
+}

@@ -428,10 +428,8 @@ const classes = f({
 
 export function getList() { return Object.keys(classes) }
 export function getSubClasses(className) { return Object.keys(classes?.[className]?.subClasses ?? {}) }
-export default function get(className, subClassName, level) {
-  if (className === null) {
-    return null
-  }
+export default function (className, subClassName, level) {
+  if (!className) return
   if (!classes[className]) {
     throw InvalidClassNameError(className)
   }

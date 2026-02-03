@@ -235,7 +235,8 @@ export function getList() {
   }))
 }
 
-export default function getSpecies(speciesName, level) {
+export default function (speciesName, level) {
+  if (!speciesName) return
   const [speciesBaseName, lineageName] = speciesName.split('.')
   const { lineages, ...speciesBase } = species[speciesBaseName]
   const lineage = lineages?.[lineageName]
