@@ -116,7 +116,10 @@ const fr = {
     },
     OriginSelect: {
       chooseOne: `Choisir une origine`,
-    }
+    },
+    SpeciesSelect: {
+      chooseOne: `Choisir une race`,
+    },
   },
   statics: {
     origins: {

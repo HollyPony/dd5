@@ -62,7 +62,7 @@ export class ClassBase extends AbstractComponent {
   #refreshActionsRequired() {
     console.info('-- ClassBase.refreshActionsRequired')
     const actionsRequired = {
-      skills: (charSheet.getCharClass().skills.nb - charSheet.getClassSkills().length) > 0
+      skills: (charSheet.getCharClass()?.skills.nb - charSheet.getClassSkills().length) > 0
     }
 
     this.#skillsActionRequiredElement.classList[actionsRequired.skills ? 'add' : 'remove']('show')
@@ -77,13 +77,13 @@ export class ClassBase extends AbstractComponent {
   #refreshSkillsChooseLabel() {
     console.info('-- ClassBase.refreshSkillsChooseLabel')
     fillElement(this.#skillsChooseLabel, i18n.tn('components.ClassBase.skills.remaining', {
-      remaining: charSheet.getCharClass().skills.nb - charSheet.getClassSkills().length
+      remaining: charSheet.getCharClass()?.skills.nb - charSheet.getClassSkills().length
     }))
   }
 
   #refreshSkillsList() {
     console.info('-- ClassBase.refreshSkillsList')
-    fillElement(this.#skillsList, charSheet.getCharClass().skills.list.map(skill => createElement('div', [
+    fillElement(this.#skillsList, charSheet.getCharClass()?.skills.list.map(skill => createElement('div', [
       createElement('input', null, {
         type: 'checkbox', class: 'btn-check', id: `${skill.name}.${this._id}`,
         checked: charSheet.getClassSkills().includes(skill),

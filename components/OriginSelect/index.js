@@ -7,12 +7,20 @@ import { i18n } from '../../modules/i18n.js'
 export class OriginSelect extends AbstractSelect {
   static get tagName() { return 'origin-select' }
 
+  #subscriptions = []
+
   _registerEvents() {
     this._selectElement.addEventListener('change', this.#selectChanged)
+
+    this.#subscriptions.push(
+      charSheet.subscribe(this._refreshValue, 'charOriginName')
+    )
   }
 
   _unregisterEvents() {
     this._selectElement.removeEventListener('change', this.#selectChanged)
+
+    this.#subscriptions.forEach(subscription => subscription())
   }
 
   _refreshList = () => {

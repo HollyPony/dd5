@@ -1,60 +1,58 @@
 import { ABILITY, SKILLS, } from './common.js'
 
-// TODO: remove once at least web storage imported
-export const mock = {
-  name: 'Doudou McDoubidou',
-  origin: 'artisan',
-  class: 'monk',
-  species: 'goliath.stone',
-  level: 2,
-  experience: 300,
-  alignment: 'neutralGood',
-  sizeCategory: 'medium',
-  size: '242',
-  attributes: {
-    strength: 12,
-    dexterity: 17,
-    constitution: 14,
-    wisdom: 12,
-    intelligence: 8,
-    charisma: 12,
-  },
-  classSkills: ['athletics', 'acrobatics'],
-  equipments: [
-    {
-      name: 'SHIELDS_shield',
-      equiped: false,
-    },
-    {
-      name: 'cloakOfProtection',
-      hasAttunement: true,
-      equiped: false,
-    }
-  ],
-}
+// // TODO: remove once at least web storage imported
+// export const mock = {
+//   name: 'Doudou McDoubidou',
+//   origin: 'artisan',
+//   class: 'monk',
+//   species: 'goliath.stone',
+//   experience: 300,
+//   alignment: 'neutralGood',
+//   sizeCategory: 'medium',
+//   size: '242',
+//   attributes: {
+//     strength: 12,
+//     dexterity: 17,
+//     constitution: 14,
+//     wisdom: 12,
+//     intelligence: 8,
+//     charisma: 12,
+//   },
+//   classSkills: ['athletics', 'acrobatics'],
+//   equipments: [
+//     {
+//       name: 'SHIELDS_shield',
+//       equiped: false,
+//     },
+//     {
+//       name: 'cloakOfProtection',
+//       hasAttunement: true,
+//       equiped: false,
+//     }
+//   ],
+// }
 
 export function toCharsheet(jsSource) {
   return {
-    charName: jsSource.name,
-    charOriginName: jsSource.origin,
-    charClassName: jsSource.class?.split('.')[0],
-    charSubClassName: jsSource.class?.split('.')[1],
-    charSpeciesName: jsSource.species,
-    charLevel: jsSource.level,
-    charExperience: jsSource.experience,
-    charAlignment: jsSource.alignment,
-    charSizeCategory: jsSource.sizeCategory,
-    charSize: jsSource.size,
+    charName: jsSource?.name ?? '',
+    charOriginName: jsSource?.origin ?? '',
+    charClassName: jsSource?.class?.split('.')[0] ?? '',
+    charSubClassName: jsSource?.class?.split('.')[1] ?? '',
+    charSpeciesName: jsSource?.species ?? '',
+    charExperience: jsSource?.experience ?? 0,
+    charAlignment: jsSource?.alignment ?? '',
+    charSizeCategory: jsSource?.sizeCategory ?? '',
+    charSize: jsSource?.size ?? 0,
     attributes: {
-      [ABILITY.strength]: jsSource.attributes.strength,
-      [ABILITY.dexterity]: jsSource.attributes.dexterity,
-      [ABILITY.constitution]: jsSource.attributes.constitution,
-      [ABILITY.wisdom]: jsSource.attributes.wisdom,
-      [ABILITY.intelligence]: jsSource.attributes.intelligence,
-      [ABILITY.charisma]: jsSource.attributes.charisma,
+      [ABILITY.strength]: jsSource?.attributes.strength ?? 10,
+      [ABILITY.dexterity]: jsSource?.attributes.dexterity ?? 10,
+      [ABILITY.constitution]: jsSource?.attributes.constitution ?? 10,
+      [ABILITY.wisdom]: jsSource?.attributes.wisdom ?? 10,
+      [ABILITY.intelligence]: jsSource?.attributes.intelligence ?? 10,
+      [ABILITY.charisma]: jsSource?.attributes.charisma ?? 10,
     },
-    classSkills: jsSource.classSkills.map(skill => SKILLS[skill]),
-    equipments: jsSource.equipments,
+    classSkills: jsSource?.classSkills.map(skill => SKILLS[skill]) ?? [],
+    equipments: jsSource?.equipments ?? [],
   }
 }
 
@@ -81,9 +79,10 @@ export function toJSON(jsData) {
   return JSON.stringify({
     name: jsData.charName,
     origin: jsData.charOriginName,
-    class: `${jsData.charClassName}.${jsData.charSubClassName}`,
+    class: jsData.charClassName
+      ? (jsData.charSubClassName ? `${jsData.charClassName}.${jsData.charSubClassName}` : jsData.charClassName)
+      : undefined,
     species: jsData.charSpeciesName,
-    level: jsData.charLevel,
     experience: jsData.charExperience,
     alignment: jsData.charAlignment,
     sizeCategory: jsData.charSizeCategory,

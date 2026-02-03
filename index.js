@@ -14,14 +14,7 @@ import { i18n } from '/modules/i18n.js'
 import charSheet from './modules/stores/charSheet.store.js'
 import { ARMOR_CATEGORY, } from './modules/data/equipments.js'
 
-// TODO: remove mock
-import { mock as storedData } from './modules/storageManager.js'
-
-/////////////////////////////////////////////////////////////////////////
-// INIT /////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
-
-const dataSource = storedData
+import { fromJSON } from './modules/storageManager.js'
 
 /////////////////////////////////////////////////////////////////////////
 // ELEMENTS TO UPDATE ///////////////////////////////////////////////////
@@ -31,6 +24,8 @@ const charNameElement = document.getElementsByName('charName')[0]
 const charLevelElement = document.getElementsByName('charLevel')[0]
 const charExperienceElement = document.getElementsByName('experiencepoints')[0] // TODO: Update level with experience ?
 const exportCharLink = document.getElementById("exportCharLink")
+const importCharLink = document.getElementById("importCharLink")
+const importCharFileElement = document.getElementById("importCharFile")
 const trainingsElements = {
   armorLight: document.getElementsByName('trainings-armor-light')[0],
   armorMedium: document.getElementsByName('trainings-armor-medium')[0],
@@ -103,9 +98,9 @@ function refreshCharAlignment() {
 
 function refreshTrainings() {
   const armorProficiencies = charSheet.getArmorProficiencies()
-  trainingsElements.armorLight.checked = armorProficiencies.includes(ARMOR_CATEGORY.Light)
-  trainingsElements.armorMedium.checked = armorProficiencies.includes(ARMOR_CATEGORY.Medium)
-  trainingsElements.armorHeavy.checked = armorProficiencies.includes(ARMOR_CATEGORY.Heavy)
+  trainingsElements.armorLight.checked = armorProficiencies?.includes(ARMOR_CATEGORY.Light)
+  trainingsElements.armorMedium.checked = armorProficiencies?.includes(ARMOR_CATEGORY.Medium)
+  trainingsElements.armorHeavy.checked = armorProficiencies?.includes(ARMOR_CATEGORY.Heavy)
   trainingsElements.shield.checked = charSheet.getShieldProficiency()
   removeAllChildren(trainingsElements.weaponsList)
   charSheet.getWeaponProficiencies().forEach(proficiency => trainingsElements.weaponsList
@@ -116,6 +111,22 @@ function refreshTrainings() {
   )
 
   removeAllChildren(trainingsElements.toolsList)
+}
+
+function refreshAll() {
+  refreshCharName()
+  refreshCharExperience()
+  refreshCharLevel()
+  refreshHitPointMax()
+  refreshHitDiceMax()
+  refreshInitiative()
+  refreshSpeed()
+  refreshSize()
+  refreshPassivePerception()
+  refreshCharAlignment()
+  refreshTrainings()
+  refreshArmorClass()
+  refreshProficiencyBonus()
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -164,8 +175,28 @@ function exportJSON() {
   }, 0)
 }
 
+async function importFromJSONFile(file) {
+  const jsonText = await file.text()
+  const jsData = fromJSON(jsonText)
+  charSheet.init(jsData, true)
+  refreshAll()
+}
+
+function importCharClicked(event) {
+  event.preventDefault()
+  importCharFileElement.click()
+}
+
+function importCharFileChanged({ target: { files } }) {
+  if (!files?.length) return
+  importFromJSONFile(files[0])
+  importCharFileElement.value = ''
+}
+
 function setBindings() {
   exportCharLink.addEventListener('click', exportJSON)
+  importCharLink.addEventListener('click', importCharClicked)
+  importCharFileElement.addEventListener('change', importCharFileChanged)
 
   charNameElement.addEventListener('change', charNameChanged)
   charExperienceElement.addEventListener('change', charExperienceChanged)
@@ -187,21 +218,9 @@ function registerCustomElements() {
 // POPULATE /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
-charSheet.init(dataSource)
+charSheet.init()
 
-refreshCharName()
-refreshCharExperience()
-refreshCharLevel()
-refreshHitPointMax()
-refreshHitDiceMax()
-refreshInitiative()
-refreshSpeed()
-refreshSize()
-refreshPassivePerception()
-refreshCharAlignment()
-refreshTrainings()
-refreshArmorClass()
-refreshProficiencyBonus()
+refreshAll()
 
 setBindings()
 registerCustomElements()

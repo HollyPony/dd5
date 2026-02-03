@@ -39,7 +39,10 @@ export class SpeciesSelect extends AbstractSelect {
           value: species.name, text: i18n._(`statics.species.${species.name}`),
         }
       ))
-    )
+      , {
+
+        placeholder: i18n._('components.SpeciesSelect.chooseOne'),
+      })
   }
 
   _refreshValue = () => {

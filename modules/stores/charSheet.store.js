@@ -16,7 +16,7 @@ function applyEffect(item, effect, options, callback) {
 }
 
 function applyEffects(list, effect, options, callback) {
-  list.forEach(item => applyEffect(item, effect, options, callback))
+  list?.forEach(item => applyEffect(item, effect, options, callback))
 }
 
 function computeAbilityModifier(score) {
@@ -93,41 +93,58 @@ function createCharSheetStore() {
     return get('modifiers')[skill.ability] + (isCheckedSkill(skill) ? get('proficiencyBonus') : 0)
   }
 
-  function init(payload) {
-    set(storeManager.toCharsheet(payload), false)
-    set({
-      proficiencyBonus: _computeProficiencyBonus(),
-      charOrigin: getOrigin(get('charOriginName')),
-      charClass: getClass(get('charClassName'), get('charSubClassName'), get('charLevel')),
-      charSpecies: getSpecies(get('charSpeciesName'), get('charLevel')),
-      modifiers: Object.entries(get('attributes'))
-        .reduce((acc, [ability, score]) =>
-          Object.assign({}, acc, { [ability]: computeAbilityModifier(score) }), {}),
-      equiped: get('equipments')?.filter(equipment => equipment.equiped).reduce((acc, equipment) => {
-        const equipmentComputed = Object.assign({}, getEquipment(equipment.name), equipment)
+  function init(payload, notify = false) {
+    const charData = storeManager.toCharsheet(payload)
+    const charLevel = getLevelFromExperience(charData.charExperience)
+    const proficiencyBonus = _computeProficiencyBonus(charLevel)
+    const charOrigin = getOrigin(charData.charOriginName)
+    const charClass = getClass(charData.charClassName, charData.charSubClassName, charLevel)
+    const charSpecies = getSpecies(charData.charSpeciesName, charLevel)
+    const modifiers = Object.entries(charData.attributes)
+      .reduce((acc, [ability, score]) =>
+        Object.assign({}, acc, { [ability]: computeAbilityModifier(score) }), {})
+    const saves = Object.keys(charData.attributes)
+      .reduce((acc, ability) =>
+        Object.assign({}, acc, {
+          [ability]: modifiers[ability] + (charClass?.saves?.includes(ability) ? proficiencyBonus : 0)
+        }), {})
 
-        switch (equipmentComputed.type) {
-          case EQUIPMENT_TYPE.WEAPON: acc[EQUIPED_CATEGORY.WEAPON].push(equipmentComputed); break;
-          case EQUIPMENT_TYPE.ARMOR: acc[EQUIPED_CATEGORY.ARMOR] = equipmentComputed; break;
-          case EQUIPMENT_TYPE.SHIELD: acc[EQUIPED_CATEGORY.SHIELD] = equipmentComputed; break;
-          case EQUIPMENT_TYPE.MAGIC_ITEM:
-            switch (equipmentComputed.equipOn) {
-              case EQUIPED_CATEGORY.WEAPON: acc[EQUIPED_CATEGORY.WEAPON].push(equipmentComputed); break;
-              case EQUIPED_CATEGORY.ARMOR: acc[EQUIPED_CATEGORY.ARMOR] = equipmentComputed; break;
-              case EQUIPED_CATEGORY.SHIELD: acc[EQUIPED_CATEGORY.SHIELD] = equipmentComputed; break;
-              case EQUIPED_CATEGORY.OTHER: acc[EQUIPED_CATEGORY.OTHER].push(equipmentComputed); break;
-            }
-            break;
-        }
+    const equiped = (charData.equipments ?? []).filter(equipment => equipment.equiped).reduce((acc, equipment) => {
+      const equipmentComputed = Object.assign({}, getEquipment(equipment.name), equipment)
 
-        return acc
-      }, { ...get('equiped') })
-    }, false)
+      switch (equipmentComputed.type) {
+        case EQUIPMENT_TYPE.WEAPON: acc[EQUIPED_CATEGORY.WEAPON].push(equipmentComputed); break;
+        case EQUIPMENT_TYPE.ARMOR: acc[EQUIPED_CATEGORY.ARMOR] = equipmentComputed; break;
+        case EQUIPMENT_TYPE.SHIELD: acc[EQUIPED_CATEGORY.SHIELD] = equipmentComputed; break;
+        case EQUIPMENT_TYPE.MAGIC_ITEM:
+          switch (equipmentComputed.equipOn) {
+            case EQUIPED_CATEGORY.WEAPON: acc[EQUIPED_CATEGORY.WEAPON].push(equipmentComputed); break;
+            case EQUIPED_CATEGORY.ARMOR: acc[EQUIPED_CATEGORY.ARMOR] = equipmentComputed; break;
+            case EQUIPED_CATEGORY.SHIELD: acc[EQUIPED_CATEGORY.SHIELD] = equipmentComputed; break;
+            case EQUIPED_CATEGORY.OTHER: acc[EQUIPED_CATEGORY.OTHER].push(equipmentComputed); break;
+          }
+          break;
+      }
+
+      return acc
+    }, {
+      [EQUIPED_CATEGORY.WEAPON]: [],
+      [EQUIPED_CATEGORY.ARMOR]: null,
+      [EQUIPED_CATEGORY.SHIELD]: null,
+      [EQUIPED_CATEGORY.OTHER]: [],
+    })
+
     set({
-      saves: Object.keys(get('attributes'))
-        .reduce((acc, ability) =>
-          Object.assign({}, acc, { [ability]: _computedAbilitySave(ability) }), {}),
-    }, false)
+      ...charData,
+      charLevel,
+      proficiencyBonus,
+      charOrigin,
+      charClass,
+      charSpecies,
+      modifiers,
+      equiped,
+      saves,
+    }, notify)
 
     // TODO: init class features
 
@@ -155,10 +172,13 @@ function createCharSheetStore() {
   function getCharSpecies() { return get('charSpecies') }
 
   function getHitPointMax() {
-    return (getCharClass()?.hitPointMax.base + getAbilityModifier(ABILITY.constitution)) // P.41
-      + ((getCharClass()?.hitPointMax.addPerLevel + getAbilityModifier(ABILITY.constitution)) * (getCharLevel() - 1)) // P.43
+    const constitution = getAbilityModifier(ABILITY.constitution)
+    const hpBase = (getCharClass()?.hitPointMax.base ?? 0) + constitution // P.41
+    const hpPerLevel = (getCharClass()?.hitPointMax.addPerLevel ?? 0) + constitution
+    const additionalHp = hpPerLevel * (getCharLevel() - 1) // P.43
+    return hpBase + additionalHp
   }
-  function getHitDiceMax() { return DICE(get('charLevel'), get('charClass')?.hitDice) }
+  function getHitDiceMax() { return DICE(get('charLevel'), get('charClass')?.hitDice ?? 100) }
   function getAbilityScore(ability) { return get('attributes')[ability] }
   function getAbilityModifier(ability) { return get('modifiers')[ability] }
   function getAbilitySave(ability) { return get('saves')[ability] }
@@ -191,7 +211,7 @@ function createCharSheetStore() {
   }
 
   function getWeaponProficiencies() { // TODO: maitrise d'armes
-    return Object.entries(get('charClass')?.weaponProficiencies)?.map(([category, properties]) =>
+    return Object.entries(get('charClass')?.weaponProficiencies ?? {})?.map(([category, properties]) =>
       [].concat(category, properties)
     )
   }
@@ -372,7 +392,7 @@ function createCharSheetStore() {
   }
 
   function isCheckedSkill(skill) { // TODO: get from class features + get from feats
-    return get('charOrigin')?.skills?.includes(skill) || get('classSkills').includes(skill)
+    return get('charOrigin')?.skills?.includes(skill) || get('classSkills')?.includes(skill)
   }
 
   function classSkillsAdd(skill) {
@@ -392,7 +412,7 @@ function createCharSheetStore() {
     isCheckedSkill,
     classSkillsAdd,
     classSkillsRemove,
-    toJSON() { return storeManager.toJSON(this) }
+    toJSON() { return storeManager.toJSON(store.get()) }
   }
 
   return {
