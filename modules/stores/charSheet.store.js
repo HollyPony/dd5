@@ -98,7 +98,7 @@ function createCharSheetStore() {
       proficiencyBonus: _computeProficiencyBonus(),
       charOrigin: getOrigin(get('charOriginName')),
       charClass: getClass(get('charClassName'), get('charSubClassName'), get('charLevel')),
-      charSpecies: getSpecies(get('charSpeciesName')),
+      charSpecies: getSpecies(get('charSpeciesName'), get('charLevel')),
       modifiers: Object.entries(get('attributes'))
         .reduce((acc, [ability, score]) =>
           Object.assign({}, acc, { [ability]: computeAbilityModifier(score) }), {}),
