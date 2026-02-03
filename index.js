@@ -133,7 +133,7 @@ function charLevelChanged({ target: { value } }) {
   refreshHitDiceMax() // TODO: from event ?
   refreshProficiencyBonus() // TODO: from event ?
 
-  // Update species abilities / spells etc ...
+  // TODO: Update species abilities / spells etc ...
 
   // TODO: userData.reloadSpecies
 }
