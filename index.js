@@ -13,7 +13,7 @@ import { createElement, removeAllChildren, } from './modules/domlib.js'
 import { i18n } from '/modules/i18n.js'
 import charSheet from './modules/stores/charSheet.store.js'
 import { ARMOR_CATEGORY, } from './modules/data/equipments.js'
-import { showToast } from './modules/toast.js'
+import { ExportError, ImportError } from './modules/errors.js'
 
 import { fromJSON } from './modules/storageManager.js'
 
@@ -164,13 +164,7 @@ function exportJSON(event) {
   try {
     json = charSheet.toJSON()
   } catch (error) {
-    console.error('Export failed', error)
-    showToast({
-      title: 'Export failed',
-      message: error?.message ?? 'Unknown error',
-      variant: 'danger',
-    })
-    return
+    throw new ExportError(error?.message)
   }
 
   const blob = new Blob([json], { type: "application/json" })
@@ -190,10 +184,14 @@ function exportJSON(event) {
 }
 
 async function importFromJSONFile(file) {
-  const jsonText = await file.text()
-  const jsData = fromJSON(jsonText)
-  charSheet.init(jsData, true)
-  refreshAll()
+  try {
+    const jsonText = await file.text()
+    const jsData = fromJSON(jsonText)
+    charSheet.init(jsData, true)
+    refreshAll()
+  } catch (error) {
+    throw new ImportError(error?.message)
+  }
 }
 
 function importCharClicked(event) {

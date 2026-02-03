@@ -44,3 +44,19 @@ export function MissingPathError(...props) {
     args: props,
   })
 }
+
+export function ExportError(message, ...props) {
+  return createCustomError({
+    name: 'ExportError',
+    message: message || 'Export failed',
+    args: props,
+  })
+}
+
+export function ImportError(message, ...props) {
+  return createCustomError({
+    name: 'ImportError',
+    message: message || 'Import failed',
+    args: props,
+  })
+}
