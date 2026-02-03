@@ -93,8 +93,8 @@ function createCharSheetStore() {
   }
 
   function init(payload) {
-    store.set(storeManager.toCharsheet(payload), false)
-    store.set({
+    set(storeManager.toCharsheet(payload), false)
+    set({
       proficiencyBonus: _computeProficiencyBonus(),
       charOrigin: getOrigin(get('charOriginName')),
       charClass: getClass(get('charClassName'), get('charSubClassName'), get('charLevel')),
@@ -122,7 +122,7 @@ function createCharSheetStore() {
         return acc
       }, { ...get('equiped') })
     }, false)
-    store.set({
+    set({
       saves: Object.keys(get('attributes'))
         .reduce((acc, ability) =>
           Object.assign({}, acc, { [ability]: _computedAbilitySave(ability) }), {}),
