@@ -7,15 +7,12 @@ export class ClassBase extends AbstractComponent {
   static get tagName() { return 'class-base' }
   static get _componentPath() { return '/components/ClassBase' }
 
-  #subscriptions = []
-
   #baseFeatureButtonElement
   #skillsActionRequiredElement
   #skillsChooseLabel
   #skillsList
 
-  async connectedCallback() {
-    await super.connectedCallback()
+  _connectedCallback() {
     console.info('-- ClassBase.connectedCallback')
 
     const baseFeatureElement = this.querySelector('.class-feature-base')
@@ -41,23 +38,15 @@ export class ClassBase extends AbstractComponent {
     this.#refreshSkillsList()
 
     i18n.applyTranslations(this)
-    this.#registerEvents()
   }
 
-  disconnectedCallback() {
-    this.#unregisterEvents()
-  }
+  _registerEvents() {
+    super._registerEvents()
 
-  #registerEvents() {
-    this.#subscriptions.push(
+    this._subscriptions.push(
       charSheet.subscribe('classSkills', this.#skillsChanged),
       i18n.subscribe(this.#i18nChanged),
     )
-
-  }
-
-  #unregisterEvents() {
-    this.#subscriptions.forEach(subscriber => subscriber())
   }
 
   #refreshActionsRequired() {

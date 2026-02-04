@@ -7,14 +7,11 @@ export class ClassFeatures extends AbstractComponent {
   static get tagName() { return 'class-features' }
   static get _componentPath() { return '/components/ClassFeatures' }
 
-  #subscriptions = []
-
   #mainRequiredBadgeElement
 
   #featuresElement
 
-  async connectedCallback() {
-    await super.connectedCallback()
+  _connectedCallback() {
     console.info('-- ClassFeatures.connectedCallback')
 
     // TODO: toggle it
@@ -27,30 +24,19 @@ export class ClassFeatures extends AbstractComponent {
     this.#refreshFeatures()
 
     i18n.applyTranslations(this)
-    this.#registerEvents()
   }
 
-  disconnectedCallback() {
-    this.#unregisterEvents()
-  }
-
-  #registerEvents() {
-    this.addEventListener('action-required-changed', this.#actionRequiredChanged)
+  _registerEvents() {
+    super._registerEvents()
+    this._listen(this, 'action-required-changed', this.#actionRequiredChanged)
     // this.#scoreElement.addEventListener('change', this.#classChanged)
 
     // TODO: had a class features changed ????
 
-    this.#subscriptions.push(
+    this._subscriptions.push(
       charSheet.subscribe('charLevel', this.#levelChanged),
       charSheet.subscribe('charClass', this.#classChanged),
     )
-  }
-
-  #unregisterEvents() {
-    this.removeEventListener('action-required-changed', this.#actionRequiredChanged)
-    // this.#scoreElement.removeEventListener('change', this.#classChanged)
-
-    this.#subscriptions.forEach(subscription => subscription())
   }
 
   #refreshBaseFeature() {

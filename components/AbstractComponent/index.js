@@ -1,6 +1,9 @@
 export class AbstractComponent extends HTMLElement {
   _id
 
+  _listeners = []
+  _subscriptions = []
+
   static get tagName() { return null }
   static get _componentPath() { return undefined }
   static register({ tagName, ...options } = {}) { customElements.define(tagName ?? this.tagName, this, options) }
@@ -37,19 +40,40 @@ export class AbstractComponent extends HTMLElement {
       stylesheetLink.setAttribute('href', `${this.constructor._componentPath}/index.css`)
       document.head.appendChild(stylesheetLink)
     }
-    // this.#registerEvents()
+
+    await this._connectedCallback()
+
+    this._registerEvents()
   }
 
-  // disconnectedCallback() {
-  //   console.info('-- Mother.disconnectedCallback')
-  //   this.#unregisterEvents()
-  // }
+  disconnectedCallback() {
+    console.info('-- AbstractComponent.disconnectedCallback')
+    this._disconnectedCallback()
+    this._unregisterEvents()
+  }
 
-  // #registerEvents() {
-  //   console.info('-- Mother.registerEvents')
-  // }
+  _connectedCallback() { }
 
-  // #unregisterEvents() {
-  //   console.info('-- Mother.unregisterEvents')
-  // }
+  _disconnectedCallback() { }
+
+  _registerEvents() {
+    console.info('-- AbstractComponent.registerEvents')
+  }
+
+  _unregisterEvents() {
+    console.info('-- AbstractComponent.unregisterEvents')
+
+    for (const listener of this._listeners) listener()
+    this._listeners.length = 0
+
+    for (const subscription of this._subscriptions) subscription()
+    this._subscriptions.length = 0
+  }
+
+  _listen(target, event, handler, options) {
+    if (!target || !event || !handler) return
+    target.addEventListener(event, handler, options)
+
+    this._listeners.push(() => target.removeEventListener(event, handler, options))
+  }
 }

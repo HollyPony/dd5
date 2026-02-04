@@ -8,8 +8,6 @@ export class Trainings extends AbstractComponent {
   static get tagName() { return 'trainings-block' }
   static get _componentPath() { return '/components/Trainings' }
 
-  #subscriptions = []
-
   #armorLightElement
   #armorMediumElement
   #armorHeavyElement
@@ -17,8 +15,7 @@ export class Trainings extends AbstractComponent {
   #weaponsListElement
   #toolsListElement
 
-  async connectedCallback() {
-    await super.connectedCallback()
+  _connectedCallback() {
     console.info('-- Trainings.connectedCallback')
 
     this.#armorLightElement = this.querySelector('[name="trainings-armor-light"]')
@@ -30,24 +27,15 @@ export class Trainings extends AbstractComponent {
 
     this.#refreshTrainings()
     i18n.applyTranslations(this)
-
-    this.#registerEvents()
   }
 
-  disconnectedCallback() {
-    this.#unregisterEvents()
-  }
-
-  #registerEvents() {
-    this.#subscriptions.push(
+  _registerEvents() {
+    super._registerEvents()
+    this._subscriptions.push(
       charSheet.subscribe('charClass', this.#refreshTrainings),
       charSheet.subscribe('feats', this.#refreshTrainings),
       i18n.subscribe(this.#i18nChanged),
     )
-  }
-
-  #unregisterEvents() {
-    this.#subscriptions.forEach(subscription => subscription())
   }
 
   #refreshTrainings = () => {
@@ -81,7 +69,7 @@ export class Trainings extends AbstractComponent {
     }
   }
 
-  #i18nChanged() {
+  #i18nChanged = () => {
     this.#refreshTrainings()
   }
 }

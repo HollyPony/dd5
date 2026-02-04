@@ -7,24 +7,15 @@ import { t } from '../../modules/i18n.js'
 export class SubClassSelect extends AbstractSelect {
   static get tagName() { return 'sub-class-select' }
 
-  #subscriptions = []
-
   _registerEvents() {
     super._registerEvents()
-    this._selectElement.addEventListener('change', this.#selectChanged)
+    this._listen(this._selectElement, 'change', this.#selectChanged)
 
-    this.#subscriptions.push(
+    this._subscriptions.push(
       charSheet.subscribe('charLevel', this.#charLevelChanged),
       charSheet.subscribe('charClass', this.#charClassChanged),
       charSheet.subscribe('charSubClassName', this._refreshValue)
     )
-  }
-
-  _unregisterEvents() {
-    super._unregisterEvents()
-    this._selectElement.removeEventListener('change', this.#charClassChanged)
-
-    this.#subscriptions.forEach(subscription => subscription())
   }
 
   _refreshList = () => {

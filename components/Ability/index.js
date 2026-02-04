@@ -12,8 +12,6 @@ export class Ability extends AbstractComponent {
   static get tagName() { return 'ability-card' }
   static get _componentPath() { return '/components/Ability' }
 
-  #subscriptions = []
-
   #scoreElement
   #modifierElement
   #save
@@ -21,8 +19,7 @@ export class Ability extends AbstractComponent {
   #skillsContainer
   #labelElement
 
-  async connectedCallback() {
-    await super.connectedCallback()
+  _connectedCallback() {
     console.info('-- Ability.connectedCallback')
 
     this.ability = ABILITY[this.dataset.ability]
@@ -47,32 +44,19 @@ export class Ability extends AbstractComponent {
 
     this.#save.label.appendChild(t.tn('ability.save.label'))
 
-    this.#registerEvents()
-
     this.#refreshScore()
   }
 
-  disconnectedCallback() {
-    this.#unregisterEvents()
-  }
-
-  #registerEvents() {
+  _registerEvents() {
+    super._registerEvents()
     // TODO: trigger per input ?
-    this.#scoreElement.addEventListener('change', this.#scoreChanged)
+    this._listen(this.#scoreElement, 'change', this.#scoreChanged)
 
-    this.#subscriptions.push(
+    this._subscriptions.push(
       charSheet.subscribe('charLevel', this.#levelChanged),
       charSheet.subscribe('classSkills', this.#skillsChanged),
       i18n.subscribe(this.#i18nChanged),
     )
-  }
-
-  #unregisterEvents() {
-    this.#scoreElement.removeEventListener('change', this.#scoreChanged)
-
-    document.removeEventListener('CharSheet.skillsChanged', this.#skillsChanged)
-
-    this.#subscriptions.forEach(subscriber => subscriber())
   }
 
   #refreshScore = () => {

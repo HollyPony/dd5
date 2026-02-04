@@ -5,10 +5,8 @@ export class AbstractSelect extends AbstractComponent {
   static get _componentPath() { return '/components/AbstractSelect' }
 
   _selectElement
-  #i18nUnsubscribe
 
-  async connectedCallback() {
-    await super.connectedCallback()
+  _connectedCallback() {
     console.info('-- AbstractSelect.connectedCallback')
 
     this.setAttribute('data-abstract-select', '')
@@ -17,20 +15,11 @@ export class AbstractSelect extends AbstractComponent {
 
     this._refreshList()
     this._refreshValue()
-
-    this._registerEvents()
-  }
-
-  disconnectedCallback() {
-    this._unregisterEvents()
   }
 
   _registerEvents() {
-    this.#i18nUnsubscribe = i18n.subscribe(this._i18nChanged)
-  }
-
-  _unregisterEvents() {
-    this.#i18nUnsubscribe()
+    super._registerEvents()
+    this._subscriptions.push(i18n.subscribe(this._i18nChanged))
   }
 
   _refreshList = () => { }

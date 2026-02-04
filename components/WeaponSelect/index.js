@@ -12,16 +12,9 @@ export class WeaponSelect extends AbstractSelect {
 
   _registerEvents() {
     super._registerEvents()
-    this._selectElement.addEventListener('change', this.#selectChanged)
+    this._listen(this._selectElement, 'change', this.#selectChanged)
 
     // document.addEventListener("userData.charOriginChanged", this._refreshValue)
-  }
-
-  _unregisterEvents() {
-    super._unregisterEvents()
-    this._selectElement.removeEventListener('change', this.#selectChanged)
-
-    // document.removeEventListener("userData.charOriginChanged", this._refreshValue)
   }
 
   _refreshList = () => {

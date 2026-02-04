@@ -10,10 +10,8 @@ export class ClassFeature extends AbstractComponent {
   #feature
   #titleElement
   #descriptionElement
-  #i18nUnsubscribe
 
-  async connectedCallback() {
-    await super.connectedCallback()
+  _connectedCallback() {
     console.info('-- ClassFeature.connectedCallback')
 
     this.#accordionParent = this.dataset.accordion
@@ -31,19 +29,11 @@ export class ClassFeature extends AbstractComponent {
     this.#refreshDescription()
 
     i18n.applyTranslations(this)
-    this.#registerEvents()
   }
 
-  disconnectedCallback() {
-    this.#unregisterEvents()
-  }
-
-  #registerEvents() {
-    this.#i18nUnsubscribe = i18n.subscribe(this.#i18nChanged)
-  }
-
-  #unregisterEvents() {
-    this.#i18nUnsubscribe?.()
+  _registerEvents() {
+    super._registerEvents()
+    this._subscriptions.push(i18n.subscribe(this.#i18nChanged))
   }
 
   #refreshTexts() {
