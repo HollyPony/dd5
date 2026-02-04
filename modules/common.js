@@ -35,6 +35,8 @@ export const EFFECT = Enum({
   SavesModifierEffect: 'EFFECT_SavesModifierEffect',
   SubClassChooseEffect: 'EFFECT_SubClassChooseEffect',
   ImprovementChooseEffect: 'EFFECT_ImprovementChooseEffect',
+  ChooseAbilityImprovmentEffect: 'EFFECT_ChooseAbilityImprovmentEffect',
+  AbilityImprovmentEffect: 'EFFECT_AbilityImprovmentEffect',
   AddAbilityEffect: 'EFFECT_ImproveAbilityEffect',
   AddFeatEffect: 'EFFECT_ImproveFeatEffect',
   ReduceFallDamageEffect: 'EFFECT_ReducedFallDamageEffect',

@@ -19,6 +19,7 @@ import { ABILITY, SKILLS, } from './common.js'
 //     charisma: 12,
 //   },
 //   classSkills: ['athletics', 'acrobatics'],
+// expertSkills : [] count proficiencyBonus *2 // Available for thief and bard and epic feat (boon)
 //   equipments: [
 //     {
 //       name: 'SHIELDS_shield',
