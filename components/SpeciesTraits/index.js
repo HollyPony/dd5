@@ -70,7 +70,7 @@ export class SpeciesTraits extends AbstractComponent {
 
     const spellItems = (species.spells || []).map(({ spell, atLevel }, index) => {
       const spellKey = spellNameByRef.get(spell)
-      const spellName = spellKey ? t._(`statics.spells.${spellKey}`) : ''
+      const spellName = spellKey ? t._(`statics.spells.${spellKey}.name`) : ''
       if (!spellName) return null
       const level = atLevel || 1
       const description = t._('components.SpeciesTraits.spellLevel', { level })
