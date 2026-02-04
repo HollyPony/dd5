@@ -1,6 +1,6 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
-import { i18n } from '../../modules/i18n.js'
+import { t, i18n } from '../../modules/i18n.js'
 import { createElement, fillElement } from '../../modules/domlib.js'
 
 export class ClassBase extends AbstractComponent {
@@ -51,6 +51,7 @@ export class ClassBase extends AbstractComponent {
   #registerEvents() {
     this.#subscriptions.push(
       charSheet.subscribe('classSkills', this.#skillsChanged),
+      i18n.subscribe(this.#i18nChanged),
     )
 
   }
@@ -76,7 +77,7 @@ export class ClassBase extends AbstractComponent {
 
   #refreshSkillsChooseLabel() {
     console.info('-- ClassBase.refreshSkillsChooseLabel')
-    fillElement(this.#skillsChooseLabel, i18n.tn('components.ClassBase.skills.remaining', {
+    fillElement(this.#skillsChooseLabel, t.tn('components.ClassBase.skills.remaining', {
       remaining: charSheet.getCharClass()?.skills.nb - charSheet.getClassSkills().length
     }))
   }
@@ -92,13 +93,20 @@ export class ClassBase extends AbstractComponent {
           change: ({ target: { checked } }) => charSheet[checked ? 'classSkillsAdd' : 'classSkillsRemove'](skill)
         }
       }),
-      createElement('label', i18n._(`statics.${skill.name}`), { class: 'btn btn-outline-primary', for: `${skill.name}.${this._id}` }),
+      createElement('label', t._(`statics.${skill.name}`), { class: 'btn btn-outline-primary', for: `${skill.name}.${this._id}` }),
     ])))
   }
 
   #skillsChanged = () => {
     console.info('-- ClassBase.skillsChanged')
     this.#refreshActionsRequired()
+    this.#refreshSkillsChooseLabel()
+    this.#refreshSkillsList()
+  }
+
+  #i18nChanged = () => {
+    console.info('-- ClassBase.i18nChanged')
+    i18n.applyTranslations(this)
     this.#refreshSkillsChooseLabel()
     this.#refreshSkillsList()
   }

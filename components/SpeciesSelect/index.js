@@ -2,7 +2,7 @@ import { AbstractSelect } from '../AbstractSelect/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
 import { getList as getSpeciesList, } from '../../modules/data/species.js'
 import { populateSelect, } from '../../modules/domlib.js'
-import { i18n } from '../../modules/i18n.js'
+import { t } from '../../modules/i18n.js'
 
 export class SpeciesSelect extends AbstractSelect {
   static get tagName() { return 'species-select' }
@@ -10,6 +10,7 @@ export class SpeciesSelect extends AbstractSelect {
   #subscriptions = []
 
   _registerEvents() {
+    super._registerEvents()
     this._selectElement.addEventListener('change', this.#selectChanged)
 
     this.#subscriptions.push(
@@ -18,6 +19,7 @@ export class SpeciesSelect extends AbstractSelect {
   }
 
   _unregisterEvents() {
+    super._unregisterEvents()
     this._selectElement.removeEventListener('change', this.#selectChanged)
 
     this.#subscriptions.forEach(subscription => subscription())
@@ -30,18 +32,18 @@ export class SpeciesSelect extends AbstractSelect {
       getSpeciesList().map(species => (
         species.lineages ? {
           isGroup: true,
-          label: i18n._(`statics.species.${species.name}`),
+          label: t._(`statics.species.${species.name}`),
           options: species.lineages.map(lineage => ({
             value: `${species.name}.${lineage}`,
-            text: i18n._(`statics.species.${species.name}-${lineage}`),
+            text: t._(`statics.species.${species.name}-${lineage}`),
           })),
         } : {
-          value: species.name, text: i18n._(`statics.species.${species.name}`),
+          value: species.name, text: t._(`statics.species.${species.name}`),
         }
       ))
       , {
 
-        placeholder: i18n._('components.SpeciesSelect.chooseOne'),
+        placeholder: t._('components.SpeciesSelect.chooseOne'),
       })
   }
 

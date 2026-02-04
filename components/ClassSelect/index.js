@@ -2,7 +2,7 @@ import { AbstractSelect } from '../AbstractSelect/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
 import { getList as getClassesList, } from '../../modules/data/classes.js'
 import { populateSelect, } from '../../modules/domlib.js'
-import { i18n } from '../../modules/i18n.js'
+import { t } from '../../modules/i18n.js'
 
 export class ClassSelect extends AbstractSelect {
   static get tagName() { return 'class-select' }
@@ -20,6 +20,7 @@ export class ClassSelect extends AbstractSelect {
   // }
 
   _registerEvents() {
+    super._registerEvents()
     this._selectElement.addEventListener('change', this.#selectChanged)
 
     this.#subscriptions.push(
@@ -28,6 +29,7 @@ export class ClassSelect extends AbstractSelect {
   }
 
   _unregisterEvents() {
+    super._unregisterEvents()
     this._selectElement.removeEventListener('change', this.#selectChanged)
 
     this.#subscriptions.forEach(subscription => subscription())
@@ -37,9 +39,9 @@ export class ClassSelect extends AbstractSelect {
     console.info('-- ClassSelect.#refreshList')
     populateSelect(
       this._selectElement,
-      getClassesList().map(className => ({ value: className, text: i18n._(`statics.classes.${className}`), })),
+      getClassesList().map(className => ({ value: className, text: t._(`statics.classes.${className}`), })),
       {
-        placeholder: i18n._('components.ClassSelect.chooseOne'),
+        placeholder: t._('components.ClassSelect.chooseOne'),
       },
     )
   }

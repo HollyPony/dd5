@@ -1,9 +1,11 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
+import { i18n } from '../../modules/i18n.js'
 
 export class AbstractSelect extends AbstractComponent {
   static get _componentPath() { return '/components/AbstractSelect' }
 
   _selectElement
+  #i18nUnsubscribe
 
   async connectedCallback() {
     await super.connectedCallback()
@@ -23,11 +25,20 @@ export class AbstractSelect extends AbstractComponent {
     this._unregisterEvents()
   }
 
-  _registerEvents() { }
+  _registerEvents() {
+    this.#i18nUnsubscribe = i18n.subscribe(this._i18nChanged)
+  }
 
-  _unregisterEvents() { }
+  _unregisterEvents() {
+    this.#i18nUnsubscribe()
+  }
 
   _refreshList = () => { }
 
-  // _refreshValue = () => { }
+  _refreshValue = () => { }
+
+  _i18nChanged = () => {
+    this._refreshList()
+    this._refreshValue()
+  }
 }

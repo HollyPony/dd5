@@ -2,7 +2,7 @@ import { AbstractSelect } from '../AbstractSelect/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
 import { getList as getOriginList, } from '../../modules/data/origins.js'
 import { populateSelect, } from '../../modules/domlib.js'
-import { i18n } from '../../modules/i18n.js'
+import { t } from '../../modules/i18n.js'
 
 export class OriginSelect extends AbstractSelect {
   static get tagName() { return 'origin-select' }
@@ -10,6 +10,7 @@ export class OriginSelect extends AbstractSelect {
   #subscriptions = []
 
   _registerEvents() {
+    super._registerEvents()
     this._selectElement.addEventListener('change', this.#selectChanged)
 
     this.#subscriptions.push(
@@ -18,6 +19,7 @@ export class OriginSelect extends AbstractSelect {
   }
 
   _unregisterEvents() {
+    super._unregisterEvents()
     this._selectElement.removeEventListener('change', this.#selectChanged)
 
     this.#subscriptions.forEach(subscription => subscription())
@@ -27,9 +29,9 @@ export class OriginSelect extends AbstractSelect {
     console.info('-- OriginSelect.#refreshList')
     populateSelect(
       this._selectElement,
-      getOriginList().map(originName => ({ value: originName, text: i18n._(`statics.origins.${originName}`), })),
+      getOriginList().map(originName => ({ value: originName, text: t._(`statics.origins.${originName}`), })),
       {
-        placeholder: i18n._('components.OriginSelect.chooseOne'),
+        placeholder: t._('components.OriginSelect.chooseOne'),
       }
     )
   }

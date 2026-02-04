@@ -2,7 +2,7 @@ import { AbstractSelect } from '../AbstractSelect/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
 import { getSubClasses, } from '../../modules/data/classes.js'
 import { populateSelect, } from '../../modules/domlib.js'
-import { i18n } from '../../modules/i18n.js'
+import { t } from '../../modules/i18n.js'
 
 export class SubClassSelect extends AbstractSelect {
   static get tagName() { return 'sub-class-select' }
@@ -10,6 +10,7 @@ export class SubClassSelect extends AbstractSelect {
   #subscriptions = []
 
   _registerEvents() {
+    super._registerEvents()
     this._selectElement.addEventListener('change', this.#selectChanged)
 
     this.#subscriptions.push(
@@ -20,6 +21,7 @@ export class SubClassSelect extends AbstractSelect {
   }
 
   _unregisterEvents() {
+    super._unregisterEvents()
     this._selectElement.removeEventListener('change', this.#charClassChanged)
 
     this.#subscriptions.forEach(subscription => subscription())
@@ -31,11 +33,11 @@ export class SubClassSelect extends AbstractSelect {
       this._selectElement,
       getSubClasses(charSheet.getCharClassName()).map(subClassName => ({
         value: subClassName,
-        text: i18n._(`statics.subClasses.${charSheet.getCharClassName()}.${subClassName}`),
+        text: t._(`statics.subClasses.${charSheet.getCharClassName()}.${subClassName}`),
       })),
       {
         clear: true,
-        placeholder: i18n._((charSheet.getCharLevel() < 3 || !charSheet.getCharClassName()) ? `subClasses.select.unavailable` : `subClasses.select.chooseOne`)
+        placeholder: t._((charSheet.getCharLevel() < 3 || !charSheet.getCharClassName()) ? `subClasses.select.unavailable` : `subClasses.select.chooseOne`)
       }
     )
   }

@@ -10,7 +10,7 @@ import { WeaponSelect } from './components/WeaponSelect/index.js'
 import { Trainings } from './components/Trainings/index.js'
 
 import { DICES as D, } from './modules/common.js'
-import { i18n } from '/modules/i18n.js'
+import initTranslations from '/modules/i18n.js'
 import charSheet from './modules/stores/charSheet.store.js'
 import { ExportError, ImportError } from './modules/errors.js'
 
@@ -253,7 +253,7 @@ function initApp() {
   registerSubscriptions()
   window.addEventListener('beforeunload', destroyApp)
 
-  i18n.applyTranslations()
+  initTranslations()
 }
 
 function destroyApp() {

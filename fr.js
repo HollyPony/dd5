@@ -1,4 +1,4 @@
-const fr = {
+export default {
   navbar: {
     appTitle: 'Création de personnage',
     exportChar: 'Télécharger',

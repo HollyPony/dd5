@@ -2,7 +2,7 @@ import { AbstractComponent } from '../AbstractComponent/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
 import { createElement, removeAllChildren } from '../../modules/domlib.js'
 import { ARMOR_CATEGORY } from '../../modules/data/equipments.js'
-import { i18n } from '../../modules/i18n.js'
+import { t, i18n } from '../../modules/i18n.js'
 
 export class Trainings extends AbstractComponent {
   static get tagName() { return 'trainings-block' }
@@ -42,6 +42,7 @@ export class Trainings extends AbstractComponent {
     this.#subscriptions.push(
       charSheet.subscribe('charClass', this.#refreshTrainings),
       charSheet.subscribe('feats', this.#refreshTrainings),
+      i18n.subscribe(this.#i18nChanged),
     )
   }
 
@@ -60,11 +61,11 @@ export class Trainings extends AbstractComponent {
     const weaponProficiencies = charSheet.getWeaponProficiencies() || []
     if (weaponProficiencies.length === 0) {
       this.#weaponsListElement.appendChild(
-        createElement('p', i18n._('components.Trainings.weapons.none'), { class: 'text-muted' })
+        createElement('p', t._('components.Trainings.weapons.none'), { class: 'text-muted' })
       )
     } else {
       weaponProficiencies.forEach(proficiency => this.#weaponsListElement
-        .appendChild(createElement('p', i18n._(['components.Trainings.weapons']
+        .appendChild(createElement('p', t._(['components.Trainings.weapons']
           .concat(proficiency.length === 1 ? [proficiency, 'all'] : proficiency)
           .join('.')
         )))
@@ -75,8 +76,12 @@ export class Trainings extends AbstractComponent {
     const toolProficiencies = charSheet.getToolProficiencies() || []
     if (toolProficiencies.length === 0) {
       this.#toolsListElement.appendChild(
-        createElement('p', i18n._('components.Trainings.tools.none'), { class: 'text-muted' })
+        createElement('p', t._('components.Trainings.tools.none'), { class: 'text-muted' })
       )
     }
+  }
+
+  #i18nChanged() {
+    this.#refreshTrainings()
   }
 }

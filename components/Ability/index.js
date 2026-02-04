@@ -3,7 +3,7 @@ import charSheet from '../../modules/stores/charSheet.store.js'
 import { createElement, removeAllChildren } from '../../modules/domlib.js'
 import { ABILITY, SKILLS, } from '../../modules/common.js'
 import { signDisplay, } from '../../modules/helpers.js'
-import { i18n } from '../../modules/i18n.js'
+import { t, i18n } from '../../modules/i18n.js'
 
 // const ModifierChangedEventName = 'Ability.modifierChanged'
 // const ModifierChangedEvent = new CustomEvent(ModifierChangedEventName)
@@ -19,6 +19,7 @@ export class Ability extends AbstractComponent {
   #save
   #skills
   #skillsContainer
+  #labelElement
 
   async connectedCallback() {
     await super.connectedCallback()
@@ -26,8 +27,8 @@ export class Ability extends AbstractComponent {
 
     this.ability = ABILITY[this.dataset.ability]
 
-    const labelElement = this.querySelector('[data-wc-id]')
-    labelElement.appendChild(i18n.tn(`statics.${this.ability}`))
+    this.#labelElement = this.querySelector('[data-wc-id]')
+    this.#labelElement.appendChild(t.tn(`statics.${this.ability}`))
 
     this.#scoreElement = this.querySelector('.ability-score')
     this.#modifierElement = this.querySelector('.ability-modifier')
@@ -44,7 +45,7 @@ export class Ability extends AbstractComponent {
       this.#skillsContainer.classList.add('ability-card-content')
     }
 
-    this.#save.label.appendChild(i18n.tn('ability.save.label'))
+    this.#save.label.appendChild(t.tn('ability.save.label'))
 
     this.#registerEvents()
 
@@ -62,6 +63,7 @@ export class Ability extends AbstractComponent {
     this.#subscriptions.push(
       charSheet.subscribe('charLevel', this.#levelChanged),
       charSheet.subscribe('classSkills', this.#skillsChanged),
+      i18n.subscribe(this.#i18nChanged),
     )
   }
 
@@ -104,7 +106,7 @@ export class Ability extends AbstractComponent {
         checked: charSheet.isCheckedSkill(skill),
       }),
       createElement('span', signDisplay(charSheet.getSkillScore(skill)), { class: 'skill-score' }),
-      createElement('label', i18n._(`statics.${skill.name}`), {
+      createElement('label', t._(`statics.${skill.name}`), {
         id: `${skill.name}.${this._id}`,
       }),
     ], { class: 'form-check' }))
@@ -132,6 +134,15 @@ export class Ability extends AbstractComponent {
 
   #skillsChanged = () => {
     console.info('-- Ability.#skillsChanged',)
+    this.#refreshSkills()
+  }
+
+  #i18nChanged = () => {
+    console.info('-- Ability.#i18nChanged', this.ability)
+    removeAllChildren(this.#save.labelElement)
+    this.#labelElement.appendChild(t.tn(`statics.${this.ability}`))
+    removeAllChildren(this.#save.label)
+    this.#save.label.appendChild(t.tn('ability.save.label'))
     this.#refreshSkills()
   }
 

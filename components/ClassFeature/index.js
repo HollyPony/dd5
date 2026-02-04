@@ -1,6 +1,6 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
-import { i18n } from '../../modules/i18n.js'
+import { t, i18n } from '../../modules/i18n.js'
 
 export class ClassFeature extends AbstractComponent {
   static get tagName() { return 'class-feature' }
@@ -8,6 +8,9 @@ export class ClassFeature extends AbstractComponent {
 
   #accordionParent
   #feature
+  #titleElement
+  #descriptionElement
+  #i18nUnsubscribe
 
   async connectedCallback() {
     await super.connectedCallback()
@@ -16,22 +19,16 @@ export class ClassFeature extends AbstractComponent {
     this.#accordionParent = this.dataset.accordion
     this.#feature = charSheet.getCharClass()?.features.find(feature => feature.name === this.dataset.feature)
 
-    const title = this.querySelector('.accordion-header > .feature-title')
+    this.#titleElement = this.querySelector('.accordion-header > .feature-title')
+    this.#titleElement.dataset.bsTarget = `#${this._id}`
     const content = this.querySelector('.accordion-collapse')
-    const description = content.querySelector('.accordion-body > .description > .card-body')
-
-    title.appendChild(i18n.md('components.ClassFeature.name', {
-      level: this.#feature.atLevel,
-      featureName: i18n._(`statics.class-features.${charSheet.getCharClassName()}.${this.#feature.name}.name`)
-    }))
-    title.dataset.bsTarget = `#${this._id}`
+    this.#descriptionElement = content.querySelector('.accordion-body > .description > .card-body')
 
     content.id = this._id
     content.dataset.bsParent = `#${this.#accordionParent}`
 
-    description.appendChild(
-      i18n.md(`statics.class-features.${charSheet.getCharClassName()}.${this.#feature.name}.description`)
-    )
+    this.#refreshTexts()
+    this.#refreshDescription()
 
     i18n.applyTranslations(this)
     this.#registerEvents()
@@ -42,8 +39,31 @@ export class ClassFeature extends AbstractComponent {
   }
 
   #registerEvents() {
+    this.#i18nUnsubscribe = i18n.subscribe(this.#i18nChanged)
   }
 
   #unregisterEvents() {
+    this.#i18nUnsubscribe?.()
+  }
+
+  #refreshTexts() {
+    while (this.#titleElement.firstChild) { this.#titleElement.removeChild(this.#titleElement.firstChild) }
+    this.#titleElement.appendChild(t.md('components.ClassFeature.name', {
+      level: this.#feature.atLevel,
+      featureName: t._(`statics.class-features.${charSheet.getCharClassName()}.${this.#feature.name}.name`)
+    }))
+  }
+
+  #refreshDescription() {
+    while (this.#descriptionElement.firstChild) { this.#descriptionElement.removeChild(this.#descriptionElement.firstChild) }
+    this.#descriptionElement.appendChild(
+      t.md(`statics.class-features.${charSheet.getCharClassName()}.${this.#feature.name}.description`)
+    )
+  }
+
+  #i18nChanged = () => {
+    i18n.applyTranslations(this)
+    this.#refreshTexts()
+    this.#refreshDescription()
   }
 }

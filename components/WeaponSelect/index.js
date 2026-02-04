@@ -1,7 +1,7 @@
 import { AbstractSelect } from '../AbstractSelect/index.js'
 import { getWeapons } from '../../modules/data/equipments.js'
 import { populateSelect, } from '../../modules/domlib.js'
-import { i18n } from '../../modules/i18n.js'
+import { t } from '../../modules/i18n.js'
 
 export class WeaponSelect extends AbstractSelect {
   static get tagName() { return 'weapon-select' }
@@ -11,13 +11,15 @@ export class WeaponSelect extends AbstractSelect {
   // }
 
   _registerEvents() {
-    // this._selectElement.addEventListener('change', this._selectChanged)
+    super._registerEvents()
+    this._selectElement.addEventListener('change', this.#selectChanged)
 
     // document.addEventListener("userData.charOriginChanged", this._refreshValue)
   }
 
   _unregisterEvents() {
-    // this._selectElement.removeEventListener('change', this._selectChanged)
+    super._unregisterEvents()
+    this._selectElement.removeEventListener('change', this.#selectChanged)
 
     // document.removeEventListener("userData.charOriginChanged", this._refreshValue)
   }
@@ -27,7 +29,7 @@ export class WeaponSelect extends AbstractSelect {
 
     populateSelect(
       this._selectElement,
-      [{ value: '', text: i18n._('weaponscantrip.weapons._select') }].concat(
+      [{ value: '', text: t._('weaponscantrip.weapons._select') }].concat(
         Object.entries(
           getWeapons()
             .reduce((acc, weapon) => {
@@ -37,9 +39,9 @@ export class WeaponSelect extends AbstractSelect {
             }, {})
         ).map(([category, weapons]) => ({
           isGroup: true,
-          label: i18n._(`statics.${category}`),
+          label: t._(`statics.${category}`),
           options: weapons.map(weapon => ({
-            value: weapon, text: i18n._(`statics.${weapon.name}`)
+            value: weapon, text: t._(`statics.${weapon.name}`)
           })),
         }))
       ))
@@ -50,7 +52,7 @@ export class WeaponSelect extends AbstractSelect {
     this._selectElement.value = ''
   }
 
-  _selectChanged = ({ target: { value } }) => {
+  #selectChanged = ({ target: { value } }) => {
     console.info('-- WeaponSelect.#selectChanged', value)
 
     // // TODO: implement it
