@@ -139,7 +139,7 @@ export class Ability extends AbstractComponent {
 
   #i18nChanged = () => {
     console.info('-- Ability.#i18nChanged', this.ability)
-    removeAllChildren(this.#save.labelElement)
+    removeAllChildren(this.#labelElement)
     this.#labelElement.appendChild(t.tn(`statics.${this.ability}`))
     removeAllChildren(this.#save.label)
     this.#save.label.appendChild(t.tn('ability.save.label'))
