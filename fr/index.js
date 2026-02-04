@@ -1,6 +1,7 @@
 ﻿import species from './species.js'
 import speciesTraits from './species-traits.js'
 import spells from './spells.js'
+import feats, { CATEGORY as FEAT_CATEGORY } from './feats.js'
 
 // Remplis toutes les descriptions d’espèces dans species.js.
 // - Écris en français, UTF‑8 avec accents.
@@ -852,6 +853,9 @@ Reliquaire (tenu) 	1 kg 	5 po`
       },
     },
     spells,
+    feats,
+    FEAT_CATEGORY,
+
 
 
     SKILLS_acrobatics: 'Acrobaties', // Rester debout lorsque l'équilibre ou accomplir un exercice acrobatique
