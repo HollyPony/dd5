@@ -41,11 +41,11 @@ export function removeAllChildren(element) {
  * @returns the element
  */
 export function fillElement(element, items = [], params = { clear: true }) {
-  const fragment = document.createDocumentFragment()
   if (params.clear) {
     removeAllChildren(element)
   }
 
+  const fragment = document.createDocumentFragment()
   Array().concat(items).forEach(item => fragment.appendChild(item))
   element.appendChild(fragment)
   return element
