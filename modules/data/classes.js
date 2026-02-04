@@ -17,7 +17,7 @@ const abilityScoreImprovement = (level) => ({ // TODO: Check apply `this` work o
       apply: () => { }, // TODO: Update Ability - 2 ability +1 OR 1 ability +2 no more 20
     },
     [EFFECT.AddFeatEffect]: {
-      condition: () => { }, // TODO: If abilityChoose
+      condition: () => { }, // TODO: If featChoose
       apply: () => { }, // TODO: Update Ability - Choose feat according to conditions
     },
   }
