@@ -27,7 +27,6 @@ export class SubClassSelect extends AbstractSelect {
         text: t._(`statics.subClasses.${charSheet.getCharClassName()}.${subClassName}`),
       })),
       {
-        clear: true,
         placeholder: t._((charSheet.getCharLevel() < 3 || !charSheet.getCharClassName()) ? `subClasses.select.unavailable` : `subClasses.select.chooseOne`)
       }
     )

@@ -4,9 +4,17 @@ export class AbstractComponent extends HTMLElement {
   _listeners = []
   _subscriptions = []
 
+  #isLoaded = false
+
+  static #instances = new Set()
   static get tagName() { return null }
   static get _componentPath() { return undefined }
   static register({ tagName, ...options } = {}) { customElements.define(tagName ?? this.tagName, this, options) }
+  static notifyI18nChanged() {
+    for (const instance of AbstractComponent.#instances) {
+      instance.#isLoaded && instance._i18nChanged?.()
+    }
+  }
 
   static _templatePromise
   static get _template() {
@@ -27,6 +35,7 @@ export class AbstractComponent extends HTMLElement {
   async connectedCallback() {
     console.info('-- AbstractComponent.connectedCallback')
     this._id = crypto.randomUUID()
+    AbstractComponent.#instances.add(this)
 
     const template = await this.constructor._template
     this.appendChild(template.content.cloneNode(true), true)
@@ -44,10 +53,13 @@ export class AbstractComponent extends HTMLElement {
     await this._connectedCallback()
 
     this._registerEvents()
+    this.#isLoaded = true
   }
 
   disconnectedCallback() {
     console.info('-- AbstractComponent.disconnectedCallback')
+    this.#isLoaded = false
+    AbstractComponent.#instances.delete(this)
     this._disconnectedCallback()
     this._unregisterEvents()
   }

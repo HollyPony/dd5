@@ -3,7 +3,7 @@ import charSheet from '../../modules/stores/charSheet.store.js'
 import { createElement, removeAllChildren } from '../../modules/domlib.js'
 import { ABILITY, SKILLS, } from '../../modules/common.js'
 import { signDisplay, } from '../../modules/helpers.js'
-import { t, i18n } from '../../modules/i18n.js'
+import { t } from '../../modules/i18n.js'
 
 // const ModifierChangedEventName = 'Ability.modifierChanged'
 // const ModifierChangedEvent = new CustomEvent(ModifierChangedEventName)
@@ -55,7 +55,6 @@ export class Ability extends AbstractComponent {
     this._subscriptions.push(
       charSheet.subscribe('charLevel', this.#levelChanged),
       charSheet.subscribe('classSkills', this.#skillsChanged),
-      i18n.subscribe(this.#i18nChanged),
     )
   }
 
@@ -121,7 +120,7 @@ export class Ability extends AbstractComponent {
     this.#refreshSkills()
   }
 
-  #i18nChanged = () => {
+  _i18nChanged = () => {
     console.info('-- Ability.#i18nChanged', this.ability)
     removeAllChildren(this.#labelElement)
     this.#labelElement.appendChild(t.tn(`statics.${this.ability}`))

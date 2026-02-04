@@ -31,9 +31,8 @@ export class SpeciesSelect extends AbstractSelect {
         } : {
           value: species.name, text: t._(`statics.species.${species.name}`),
         }
-      ))
-      , {
-
+      )),
+      {
         placeholder: t._('components.SpeciesSelect.chooseOne'),
       })
   }

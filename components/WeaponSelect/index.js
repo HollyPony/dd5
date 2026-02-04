@@ -22,22 +22,23 @@ export class WeaponSelect extends AbstractSelect {
 
     populateSelect(
       this._selectElement,
-      [{ value: '', text: t._('weaponscantrip.weapons._select') }].concat(
-        Object.entries(
-          getWeapons()
-            .reduce((acc, weapon) => {
-              if (!acc[weapon.category]) acc[weapon.category] = []
-              acc[weapon.category].push(weapon)
-              return acc
-            }, {})
-        ).map(([category, weapons]) => ({
-          isGroup: true,
-          label: t._(`statics.${category}`),
-          options: weapons.map(weapon => ({
-            value: weapon, text: t._(`statics.${weapon.name}`)
-          })),
-        }))
-      ))
+      Object.entries(
+        getWeapons()
+          .reduce((acc, weapon) => {
+            if (!acc[weapon.category]) acc[weapon.category] = []
+            acc[weapon.category].push(weapon)
+            return acc
+          }, {})
+      ).map(([category, weapons]) => ({
+        isGroup: true,
+        label: t._(`statics.${category}`),
+        options: weapons.map(weapon => ({
+          value: weapon, text: t._(`statics.${weapon.name}`)
+        })),
+      })),
+      {
+        placeholder: t._('weaponscantrip.weapons._select')
+      })
   }
 
   _refreshValue = () => {

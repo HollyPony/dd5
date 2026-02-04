@@ -18,7 +18,6 @@ export class Stats extends AbstractComponent {
   _registerEvents() {
     super._registerEvents()
     this._subscriptions.push(
-      i18n.subscribe(() => i18n.applyTranslations(this)),
       charSheet.subscribe('proficiencyBonus', this.#refreshProficiencyBonus),
     )
   }
@@ -26,5 +25,9 @@ export class Stats extends AbstractComponent {
   #refreshProficiencyBonus = () => {
     const bonus = charSheet.getProficiencyBonus()
     this.#proficiencyBonusElement.value = signDisplay(bonus)
+  }
+
+  _i18nChanged = () => {
+    i18n.applyTranslations(this)
   }
 }

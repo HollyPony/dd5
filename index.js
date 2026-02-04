@@ -13,9 +13,10 @@ import { WeaponsCantrip } from './components/WeaponsCantrip/index.js'
 import { SpeciesTraits } from './components/SpeciesTraits/index.js'
 import { Feats } from './components/Feats/index.js'
 import { Specs } from './components/Specs/index.js'
+import { AbstractComponent } from './components/AbstractComponent/index.js'
 
 import { DICES as D, } from './modules/common.js'
-import initTranslations from '/modules/i18n.js'
+import initTranslations, { i18n } from '/modules/i18n.js'
 import charSheet from './modules/stores/charSheet.store.js'
 import { ExportError, ImportError } from './modules/errors.js'
 
@@ -102,6 +103,7 @@ function registerSubscriptions() {
     charSheet.subscribe('equiped', refreshArmorClass),
     charSheet.subscribe('feats', refreshArmorClass),
     charSheet.subscribe('modifiers', refreshArmorClass),
+    i18n.subscribe(() => AbstractComponent.notifyI18nChanged()),
   )
 }
 

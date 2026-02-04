@@ -61,7 +61,7 @@ export function fillElement(element, items = [], params = { clear: true }) {
  * @returns the selectElement for chaining or re-use. (ie. for `.value = ` ...)
  */
 export function populateSelect(selectElement, items, params = {
-  clear: false,
+  clear: true,
   placeholder: null
 }) {
   return fillElement(selectElement, Array()

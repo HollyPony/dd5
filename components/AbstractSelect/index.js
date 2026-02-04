@@ -1,5 +1,4 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
-import { i18n } from '../../modules/i18n.js'
 
 export class AbstractSelect extends AbstractComponent {
   static get _componentPath() { return '/components/AbstractSelect' }
@@ -17,16 +16,12 @@ export class AbstractSelect extends AbstractComponent {
     this._refreshValue()
   }
 
-  _registerEvents() {
-    super._registerEvents()
-    this._subscriptions.push(i18n.subscribe(this._i18nChanged))
-  }
-
   _refreshList = () => { }
 
   _refreshValue = () => { }
 
   _i18nChanged = () => {
+    console.log('AbstractSelect._i18nChanged', this)
     this._refreshList()
     this._refreshValue()
   }

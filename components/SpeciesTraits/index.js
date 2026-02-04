@@ -9,8 +9,7 @@ export class SpeciesTraits extends AbstractComponent {
     i18n.applyTranslations(this)
   }
 
-  _registerEvents() {
-    super._registerEvents()
-    this._subscriptions.push(i18n.subscribe(() => i18n.applyTranslations(this)))
+  _i18nChanged = () => {
+    i18n.applyTranslations(this)
   }
 }

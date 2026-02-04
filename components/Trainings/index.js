@@ -34,7 +34,6 @@ export class Trainings extends AbstractComponent {
     this._subscriptions.push(
       charSheet.subscribe('charClass', this.#refreshTrainings),
       charSheet.subscribe('feats', this.#refreshTrainings),
-      i18n.subscribe(this.#i18nChanged),
     )
   }
 
@@ -69,7 +68,7 @@ export class Trainings extends AbstractComponent {
     }
   }
 
-  #i18nChanged = () => {
+  _i18nChanged = () => {
     this.#refreshTrainings()
   }
 }

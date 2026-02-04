@@ -31,11 +31,6 @@ export class ClassFeature extends AbstractComponent {
     i18n.applyTranslations(this)
   }
 
-  _registerEvents() {
-    super._registerEvents()
-    this._subscriptions.push(i18n.subscribe(this.#i18nChanged))
-  }
-
   #refreshTexts() {
     while (this.#titleElement.firstChild) { this.#titleElement.removeChild(this.#titleElement.firstChild) }
     this.#titleElement.appendChild(t.md('components.ClassFeature.name', {
@@ -51,7 +46,7 @@ export class ClassFeature extends AbstractComponent {
     )
   }
 
-  #i18nChanged = () => {
+  _i18nChanged = () => {
     i18n.applyTranslations(this)
     this.#refreshTexts()
     this.#refreshDescription()

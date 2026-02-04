@@ -45,7 +45,6 @@ export class ClassBase extends AbstractComponent {
 
     this._subscriptions.push(
       charSheet.subscribe('classSkills', this.#skillsChanged),
-      i18n.subscribe(this.#i18nChanged),
     )
   }
 
@@ -93,7 +92,7 @@ export class ClassBase extends AbstractComponent {
     this.#refreshSkillsList()
   }
 
-  #i18nChanged = () => {
+  _i18nChanged = () => {
     console.info('-- ClassBase.i18nChanged')
     i18n.applyTranslations(this)
     this.#refreshSkillsChooseLabel()

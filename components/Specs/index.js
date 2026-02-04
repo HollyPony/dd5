@@ -38,7 +38,6 @@ export class Specs extends AbstractComponent {
       charSheet.subscribe('charSize', this.#refreshSize),
       charSheet.subscribe('classSkills', this.#refreshPassivePerception),
       charSheet.subscribe('modifiers', this.#refreshPassivePerception),
-      i18n.subscribe(() => i18n.applyTranslations(this)),
     )
   }
 
@@ -67,5 +66,9 @@ export class Specs extends AbstractComponent {
     if (this.#passivePerceptionElement) {
       this.#passivePerceptionElement.value = charSheet.getPassivePerception()
     }
+  }
+
+  _i18nChanged = () => {
+    i18n.applyTranslations(this)
   }
 }
