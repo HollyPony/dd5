@@ -48,11 +48,9 @@ export class Ability extends AbstractComponent {
   }
 
   _registerEvents() {
-    super._registerEvents()
-    // TODO: trigger per input ?
-    this._listen(this.#scoreElement, 'change', this.#scoreChanged)
-
-    this._subscriptions.push(
+    this._events.push(
+      // TODO: trigger per input ?
+      this._addEventListener(this.#scoreElement, 'change', this.#scoreChanged),
       charSheet.subscribe('charLevel', this.#levelChanged),
       charSheet.subscribe('classSkills', this.#skillsChanged),
     )

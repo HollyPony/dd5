@@ -8,13 +8,11 @@ export class SubClassSelect extends AbstractSelect {
   static get tagName() { return 'sub-class-select' }
 
   _registerEvents() {
-    super._registerEvents()
-    this._listen(this._selectElement, 'change', this.#selectChanged)
-
-    this._subscriptions.push(
+    this._events.push(
+      this._addEventListener(this._selectElement, 'change', this.#selectChanged),
       charSheet.subscribe('charLevel', this.#charLevelChanged),
       charSheet.subscribe('charClass', this.#charClassChanged),
-      charSheet.subscribe('charSubClassName', this._refreshValue)
+      charSheet.subscribe('charSubClassName', this._refreshValue),
     )
   }
 

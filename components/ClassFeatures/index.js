@@ -27,13 +27,10 @@ export class ClassFeatures extends AbstractComponent {
   }
 
   _registerEvents() {
-    super._registerEvents()
-    this._listen(this, 'action-required-changed', this.#actionRequiredChanged)
-    // this.#scoreElement.addEventListener('change', this.#classChanged)
-
-    // TODO: had a class features changed ????
-
-    this._subscriptions.push(
+    this._events.push(
+      // TODO: rework 'action-required-changed' with Observable
+      this._addEventListener(this, 'action-required-changed', this.#actionRequiredChanged),
+      // TODO: had a class features changed ????
       charSheet.subscribe('charLevel', this.#levelChanged),
       charSheet.subscribe('charClass', this.#classChanged),
     )

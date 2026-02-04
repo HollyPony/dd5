@@ -41,9 +41,7 @@ export class ClassBase extends AbstractComponent {
   }
 
   _registerEvents() {
-    super._registerEvents()
-
-    this._subscriptions.push(
+    this._events.push(
       charSheet.subscribe('classSkills', this.#skillsChanged),
     )
   }

@@ -1,8 +1,7 @@
 export class AbstractComponent extends HTMLElement {
   _id
 
-  _listeners = []
-  _subscriptions = []
+  _events = []
 
   #isLoaded = false
 
@@ -50,42 +49,38 @@ export class AbstractComponent extends HTMLElement {
       document.head.appendChild(stylesheetLink)
     }
 
-    await this._connectedCallback()
+    await this._connectedCallback?.()
 
-    this._registerEvents()
+    this.#registerEvents()
     this.#isLoaded = true
   }
 
-  disconnectedCallback() {
+  async disconnectedCallback() {
     console.info('-- AbstractComponent.disconnectedCallback')
     this.#isLoaded = false
     AbstractComponent.#instances.delete(this)
-    this._disconnectedCallback()
-    this._unregisterEvents()
+    await this._disconnectedCallback?.()
+    this.#unregisterEvents()
   }
 
-  _connectedCallback() { }
-
-  _disconnectedCallback() { }
-
-  _registerEvents() {
+  #registerEvents() {
     console.info('-- AbstractComponent.registerEvents')
+    this._registerEvents?.()
   }
 
-  _unregisterEvents() {
+  #unregisterEvents() {
     console.info('-- AbstractComponent.unregisterEvents')
 
-    for (const listener of this._listeners) listener()
-    this._listeners.length = 0
+    this._unregisterEvents?.()
 
-    for (const subscription of this._subscriptions) subscription()
-    this._subscriptions.length = 0
+    for (const event of this._events) event()
+    this._events.length = 0
+
   }
 
-  _listen(target, event, handler, options) {
-    if (!target || !event || !handler) return
+  _addEventListener(target, event, handler, options) {
     target.addEventListener(event, handler, options)
 
-    this._listeners.push(() => target.removeEventListener(event, handler, options))
+    return () => target.removeEventListener(event, handler, options)
   }
 }

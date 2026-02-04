@@ -9,10 +9,6 @@ export class WeaponsCantrip extends AbstractComponent {
     i18n.applyTranslations(this)
   }
 
-  _registerEvents() {
-    super._registerEvents()
-  }
-
   _i18nChanged = () => {
     i18n.applyTranslations(this)
   }

@@ -18,10 +18,8 @@ export class ClassSelect extends AbstractSelect {
   // }
 
   _registerEvents() {
-    super._registerEvents()
-    this._listen(this._selectElement, 'change', this.#selectChanged)
-
-    this._subscriptions.push(
+    this._events.push(
+      this._addEventListener(this._selectElement, 'change', this.#selectChanged),
       charSheet.subscribe('charClass', this._refreshValue),
     )
   }

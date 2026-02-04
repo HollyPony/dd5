@@ -8,11 +8,9 @@ export class OriginSelect extends AbstractSelect {
   static get tagName() { return 'origin-select' }
 
   _registerEvents() {
-    super._registerEvents()
-    this._listen(this._selectElement, 'change', this.#selectChanged)
-
-    this._subscriptions.push(
-      charSheet.subscribe('charOriginName', this._refreshValue)
+    this._events.push(
+      this._addEventListener(this._selectElement, 'change', this.#selectChanged),
+      charSheet.subscribe('charOriginName', this._refreshValue),
     )
   }
 
