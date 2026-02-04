@@ -12,6 +12,12 @@ const FEAT_CATEGORY = f({
 export const feats = f({
   elementalAdept: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      features: f({
+        spellcastingOrPactMagic: true,
+      }),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.intelligence, ABILITY.wisdom, ABILITY.charisma]),
@@ -23,6 +29,9 @@ export const feats = f({
   }),
   feyTouched: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.intelligence, ABILITY.wisdom, ABILITY.charisma]),
@@ -34,6 +43,9 @@ export const feats = f({
   }),
   shadowTouched: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.intelligence, ABILITY.wisdom, ABILITY.charisma]),
@@ -45,30 +57,55 @@ export const feats = f({
   }),
   abilityScoreImprovement: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   archery: f({
     category: FEAT_CATEGORY.FIGHTING_STYLE,
+    requirements: f({
+      features: f({
+        fightingStyle: true,
+      }),
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   greatWeaponFighting: f({
     category: FEAT_CATEGORY.FIGHTING_STYLE,
+    requirements: f({
+      features: f({
+        fightingStyle: true,
+      }),
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   thrownWeaponFighting: f({
     category: FEAT_CATEGORY.FIGHTING_STYLE,
+    requirements: f({
+      features: f({
+        fightingStyle: true,
+      }),
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   athlete: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      ability: f({
+        mode: 'any',
+        list: f([{ ability: ABILITY.strength, min: 13 }, { ability: ABILITY.dexterity, min: 13 }]),
+      }),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.strength, ABILITY.dexterity]),
@@ -86,6 +123,9 @@ export const feats = f({
   }),
   crusher: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.strength, ABILITY.constitution]),
@@ -103,6 +143,9 @@ export const feats = f({
   }),
   chef: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.constitution, ABILITY.wisdom]),
@@ -114,24 +157,46 @@ export const feats = f({
   }),
   twoWeaponFighting: f({
     category: FEAT_CATEGORY.FIGHTING_STYLE,
+    requirements: f({
+      features: f({
+        fightingStyle: true,
+      }),
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   unarmedFighting: f({
     category: FEAT_CATEGORY.FIGHTING_STYLE,
+    requirements: f({
+      features: f({
+        fightingStyle: true,
+      }),
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   blindFighting: f({
     category: FEAT_CATEGORY.FIGHTING_STYLE,
+    requirements: f({
+      features: f({
+        fightingStyle: true,
+      }),
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   dualWielder: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      ability: f({
+        mode: 'any',
+        list: f([{ ability: ABILITY.strength, min: 13 }, { ability: ABILITY.dexterity, min: 13 }]),
+      }),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.strength, ABILITY.dexterity]),
@@ -143,6 +208,9 @@ export const feats = f({
   }),
   mountedCombatant: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.strength, ABILITY.dexterity, ABILITY.wisdom]),
@@ -154,6 +222,13 @@ export const feats = f({
   }),
   actor: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      ability: f({
+        mode: 'all',
+        list: f([{ ability: ABILITY.charisma, min: 13 }]),
+      }),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.charisma]),
@@ -165,6 +240,11 @@ export const feats = f({
   }),
   defense: f({
     category: FEAT_CATEGORY.FIGHTING_STYLE,
+    requirements: f({
+      features: f({
+        fightingStyle: true,
+      }),
+    }),
     benefits: f({
       acBonusArmor: 1,
       // TODO: ACModifierEffect with condition equipedArmor.
@@ -173,6 +253,13 @@ export const feats = f({
   }),
   skulker: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      ability: f({
+        mode: 'all',
+        list: f([{ ability: ABILITY.dexterity, min: 13 }]),
+      }),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.dexterity]),
@@ -190,12 +277,24 @@ export const feats = f({
   }),
   dueling: f({
     category: FEAT_CATEGORY.FIGHTING_STYLE,
+    requirements: f({
+      features: f({
+        fightingStyle: true,
+      }),
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   defensiveDuelist: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      ability: f({
+        mode: 'all',
+        list: f([{ ability: ABILITY.dexterity, min: 13 }]),
+      }),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.dexterity]),
@@ -207,6 +306,9 @@ export const feats = f({
   }),
   piercer: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.strength, ABILITY.dexterity]),
@@ -218,6 +320,13 @@ export const feats = f({
   }),
   grappler: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      ability: f({
+        mode: 'any',
+        list: f([{ ability: ABILITY.strength, min: 13 }, { ability: ABILITY.dexterity, min: 13 }]),
+      }),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.strength, ABILITY.dexterity]),
@@ -229,6 +338,9 @@ export const feats = f({
   }),
   poisoner: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.dexterity, ABILITY.intelligence]),
@@ -240,6 +352,13 @@ export const feats = f({
   }),
   keenMind: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      ability: f({
+        mode: 'all',
+        list: f([{ ability: ABILITY.intelligence, min: 13 }]),
+      }),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.intelligence]),
@@ -251,12 +370,22 @@ export const feats = f({
   }),
   skillExpert: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   charger: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      ability: f({
+        mode: 'any',
+        list: f([{ ability: ABILITY.strength, min: 13 }, { ability: ABILITY.dexterity, min: 13 }]),
+      }),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.strength, ABILITY.dexterity]),
@@ -276,54 +405,84 @@ export const feats = f({
   }),
   epicBoonOfIrresistibleOffense: f({
     category: FEAT_CATEGORY.EPIC_BOON,
+    requirements: f({
+      minLevel: 19,
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   epicBoonOfSkill: f({
     category: FEAT_CATEGORY.EPIC_BOON,
+    requirements: f({
+      minLevel: 19,
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   epicBoonOfDimensionalTravel: f({
     category: FEAT_CATEGORY.EPIC_BOON,
+    requirements: f({
+      minLevel: 19,
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   epicBoonOfNightSpirit: f({
     category: FEAT_CATEGORY.EPIC_BOON,
+    requirements: f({
+      minLevel: 19,
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   epicBoonOfMagicMemory: f({
     category: FEAT_CATEGORY.EPIC_BOON,
+    requirements: f({
+      minLevel: 19,
+      features: f({
+        spellcasting: true,
+      }),
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   epicBoonOfMartialProwess: f({
     category: FEAT_CATEGORY.EPIC_BOON,
+    requirements: f({
+      minLevel: 19,
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   epicBoonOfRecovery: f({
     category: FEAT_CATEGORY.EPIC_BOON,
+    requirements: f({
+      minLevel: 19,
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   epicBoonOfEnergyResistance: f({
     category: FEAT_CATEGORY.EPIC_BOON,
+    requirements: f({
+      minLevel: 19,
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   epicBoonOfFortitude: f({
     category: FEAT_CATEGORY.EPIC_BOON,
+    requirements: f({
+      minLevel: 19,
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
@@ -336,18 +495,31 @@ export const feats = f({
   }),
   epicBoonOfSpeed: f({
     category: FEAT_CATEGORY.EPIC_BOON,
+    requirements: f({
+      minLevel: 19,
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   epicBoonOfFate: f({
     category: FEAT_CATEGORY.EPIC_BOON,
+    requirements: f({
+      minLevel: 19,
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   inspiringLeader: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      ability: f({
+        mode: 'any',
+        list: f([{ ability: ABILITY.wisdom, min: 13 }, { ability: ABILITY.charisma, min: 13 }]),
+      }),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.wisdom, ABILITY.charisma]),
@@ -359,6 +531,9 @@ export const feats = f({
   }),
   martialWeaponTraining: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.strength, ABILITY.dexterity]),
@@ -370,6 +545,9 @@ export const feats = f({
   }),
   durable: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.constitution]),
@@ -387,6 +565,12 @@ export const feats = f({
   }),
   spellSniper: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      features: f({
+        spellcastingOrPactMagic: true,
+      }),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.intelligence, ABILITY.wisdom, ABILITY.charisma]),
@@ -404,12 +588,23 @@ export const feats = f({
   }),
   interception: f({
     category: FEAT_CATEGORY.FIGHTING_STYLE,
+    requirements: f({
+      features: f({
+        fightingStyle: true,
+      }),
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   warCaster: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      features: f({
+        spellcastingOrPactMagic: true,
+      }),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.intelligence, ABILITY.wisdom, ABILITY.charisma]),
@@ -421,6 +616,13 @@ export const feats = f({
   }),
   ritualCaster: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      ability: f({
+        mode: 'any',
+        list: f([{ ability: ABILITY.intelligence, min: 13 }, { ability: ABILITY.wisdom, min: 13 }, { ability: ABILITY.charisma, min: 13 }]),
+      }),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.intelligence, ABILITY.wisdom, ABILITY.charisma]),
@@ -432,6 +634,13 @@ export const feats = f({
   }),
   crossbowExpert: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      ability: f({
+        mode: 'all',
+        list: f([{ ability: ABILITY.dexterity, min: 13 }]),
+      }),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.dexterity]),
@@ -443,6 +652,9 @@ export const feats = f({
   }),
   weaponMaster: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.strength, ABILITY.dexterity]),
@@ -454,6 +666,13 @@ export const feats = f({
   }),
   polearmMaster: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      ability: f({
+        mode: 'any',
+        list: f([{ ability: ABILITY.strength, min: 13 }, { ability: ABILITY.dexterity, min: 13 }]),
+      }),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.strength, ABILITY.dexterity]),
@@ -465,6 +684,13 @@ export const feats = f({
   }),
   heavyWeaponMaster: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      ability: f({
+        mode: 'all',
+        list: f([{ ability: ABILITY.strength, min: 13 }]),
+      }),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.strength]),
@@ -476,6 +702,10 @@ export const feats = f({
   }),
   mediumArmorMaster: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      armorTraining: f(['medium']),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.strength, ABILITY.dexterity]),
@@ -487,6 +717,10 @@ export const feats = f({
   }),
   heavyArmorMaster: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      armorTraining: f(['heavy']),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.strength, ABILITY.constitution]),
@@ -498,6 +732,10 @@ export const feats = f({
   }),
   shieldMaster: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      shieldTraining: true,
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.strength]),
@@ -509,6 +747,13 @@ export const feats = f({
   }),
   mobile: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      ability: f({
+        mode: 'any',
+        list: f([{ ability: ABILITY.dexterity, min: 13 }, { ability: ABILITY.constitution, min: 13 }]),
+      }),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.dexterity, ABILITY.constitution]),
@@ -528,6 +773,13 @@ export const feats = f({
   }),
   observant: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      ability: f({
+        mode: 'any',
+        list: f([{ ability: ABILITY.intelligence, min: 13 }, { ability: ABILITY.wisdom, min: 13 }]),
+      }),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.intelligence, ABILITY.wisdom]),
@@ -539,12 +791,21 @@ export const feats = f({
   }),
   protection: f({
     category: FEAT_CATEGORY.FIGHTING_STYLE,
+    requirements: f({
+      features: f({
+        fightingStyle: true,
+      }),
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
   }),
   mediumArmorTraining: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      armorTraining: f(['light']),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.strength, ABILITY.dexterity]),
@@ -556,6 +817,9 @@ export const feats = f({
   }),
   lightArmorTraining: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.strength, ABILITY.dexterity]),
@@ -567,6 +831,10 @@ export const feats = f({
   }),
   heavyArmorTraining: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      armorTraining: f(['medium']),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.strength, ABILITY.constitution]),
@@ -578,6 +846,9 @@ export const feats = f({
   }),
   resilient: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+    }),
     benefits: f({
     }),
     // TODO: Convert remaining effects to structured benefits/effects.
@@ -598,6 +869,13 @@ export const feats = f({
   }),
   sentinel: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      ability: f({
+        mode: 'any',
+        list: f([{ ability: ABILITY.strength, min: 13 }, { ability: ABILITY.dexterity, min: 13 }]),
+      }),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.strength, ABILITY.dexterity]),
@@ -609,6 +887,9 @@ export const feats = f({
   }),
   telekinetic: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.intelligence, ABILITY.wisdom, ABILITY.charisma]),
@@ -620,6 +901,9 @@ export const feats = f({
   }),
   telepathic: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.intelligence, ABILITY.wisdom, ABILITY.charisma]),
@@ -631,6 +915,13 @@ export const feats = f({
   }),
   sharpshooter: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+      ability: f({
+        mode: 'all',
+        list: f([{ ability: ABILITY.dexterity, min: 13 }]),
+      }),
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.dexterity]),
@@ -642,6 +933,9 @@ export const feats = f({
   }),
   slasher: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.strength, ABILITY.dexterity]),
@@ -653,6 +947,9 @@ export const feats = f({
   }),
   mageSlayer: f({
     category: FEAT_CATEGORY.GENERAL,
+    requirements: f({
+      minLevel: 4,
+    }),
     benefits: f({
       abilityIncrease: f({
         choices: f([ABILITY.strength, ABILITY.dexterity]),
