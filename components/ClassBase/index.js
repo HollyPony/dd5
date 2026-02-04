@@ -41,7 +41,7 @@ export class ClassBase extends AbstractComponent {
   }
 
   _registerEvents() {
-    this._events.push(
+    this._pushEvents(
       charSheet.subscribe('classSkills', this.#skillsChanged),
     )
   }
@@ -53,12 +53,9 @@ export class ClassBase extends AbstractComponent {
     }
 
     this.#skillsActionRequiredElement.classList[actionsRequired.skills ? 'add' : 'remove']('show')
-    this.hasActionRequired = Object.values(actionsRequired).some(i => i)
-    this.#baseFeatureButtonElement.classList[this.hasActionRequired ? 'add' : 'remove']('show')
-
-    this.dispatchEvent(new CustomEvent('action-required-changed', {
-      bubbles: true,
-    }))
+    const hasActionRequired = Object.values(actionsRequired).some(i => i)
+    this.#baseFeatureButtonElement.classList[hasActionRequired ? 'add' : 'remove']('show')
+    this._observable('actionRequired').set(hasActionRequired ?? false)
   }
 
   #refreshSkillsChooseLabel() {

@@ -28,7 +28,7 @@ export class Specs extends AbstractComponent {
   }
 
   _registerEvents() {
-    this._events.push(
+    this._pushEvents(
       charSheet.subscribe('modifiers', this.#refreshInitiative),
       charSheet.subscribe('charSpecies', this.#refreshSpeed),
       charSheet.subscribe('equiped', this.#refreshSpeed),

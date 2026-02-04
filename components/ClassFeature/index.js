@@ -28,6 +28,8 @@ export class ClassFeature extends AbstractComponent {
     this.#refreshTexts()
     this.#refreshDescription()
 
+    this._observable('actionRequired').set(false)
+
     i18n.applyTranslations(this)
   }
 

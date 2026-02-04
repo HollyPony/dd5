@@ -2,6 +2,7 @@ import { AbstractSelect } from '../AbstractSelect/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
 import { getList as getClassesList, } from '../../modules/data/classes.js'
 import { populateSelect, } from '../../modules/domlib.js'
+import { domSubscribe } from '../../modules/helpers.js'
 import { t } from '../../modules/i18n.js'
 
 export class ClassSelect extends AbstractSelect {
@@ -18,8 +19,8 @@ export class ClassSelect extends AbstractSelect {
   // }
 
   _registerEvents() {
-    this._events.push(
-      this._addEventListener(this._selectElement, 'change', this.#selectChanged),
+    this._pushEvents(
+      domSubscribe(this._selectElement, 'change', this.#selectChanged),
       charSheet.subscribe('charClass', this._refreshValue),
     )
   }

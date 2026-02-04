@@ -2,14 +2,15 @@ import { AbstractSelect } from '../AbstractSelect/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
 import { getSubClasses, } from '../../modules/data/classes.js'
 import { populateSelect, } from '../../modules/domlib.js'
+import { domSubscribe } from '../../modules/helpers.js'
 import { t } from '../../modules/i18n.js'
 
 export class SubClassSelect extends AbstractSelect {
   static get tagName() { return 'sub-class-select' }
 
   _registerEvents() {
-    this._events.push(
-      this._addEventListener(this._selectElement, 'change', this.#selectChanged),
+    this._pushEvents(
+      domSubscribe(this._selectElement, 'change', this.#selectChanged),
       charSheet.subscribe('charLevel', this.#charLevelChanged),
       charSheet.subscribe('charClass', this.#charClassChanged),
       charSheet.subscribe('charSubClassName', this._refreshValue),

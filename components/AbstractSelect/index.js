@@ -21,7 +21,6 @@ export class AbstractSelect extends AbstractComponent {
   _refreshValue = () => { }
 
   _i18nChanged = () => {
-    console.log('AbstractSelect._i18nChanged', this)
     this._refreshList()
     this._refreshValue()
   }

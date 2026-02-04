@@ -2,14 +2,15 @@ import { AbstractSelect } from '../AbstractSelect/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
 import { getList as getSpeciesList, } from '../../modules/data/species.js'
 import { populateSelect, } from '../../modules/domlib.js'
+import { domSubscribe } from '../../modules/helpers.js'
 import { t } from '../../modules/i18n.js'
 
 export class SpeciesSelect extends AbstractSelect {
   static get tagName() { return 'species-select' }
 
   _registerEvents() {
-    this._events.push(
-      this._addEventListener(this._selectElement, 'change', this.#selectChanged),
+    this._pushEvents(
+      domSubscribe(this._selectElement, 'change', this.#selectChanged),
       charSheet.subscribe('charSpeciesName', this._refreshValue),
     )
   }

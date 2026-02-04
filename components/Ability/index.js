@@ -2,7 +2,7 @@ import { AbstractComponent } from '../AbstractComponent/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
 import { createElement, removeAllChildren } from '../../modules/domlib.js'
 import { ABILITY, SKILLS, } from '../../modules/common.js'
-import { signDisplay, } from '../../modules/helpers.js'
+import { domSubscribe, signDisplay, } from '../../modules/helpers.js'
 import { t } from '../../modules/i18n.js'
 
 // const ModifierChangedEventName = 'Ability.modifierChanged'
@@ -48,9 +48,9 @@ export class Ability extends AbstractComponent {
   }
 
   _registerEvents() {
-    this._events.push(
+    this._pushEvents(
       // TODO: trigger per input ?
-      this._addEventListener(this.#scoreElement, 'change', this.#scoreChanged),
+      domSubscribe(this.#scoreElement, 'change', this.#scoreChanged),
       charSheet.subscribe('charLevel', this.#levelChanged),
       charSheet.subscribe('classSkills', this.#skillsChanged),
     )

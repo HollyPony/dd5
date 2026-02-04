@@ -2,14 +2,15 @@ import { AbstractSelect } from '../AbstractSelect/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
 import { getList as getOriginList, } from '../../modules/data/origins.js'
 import { populateSelect, } from '../../modules/domlib.js'
+import { domSubscribe } from '../../modules/helpers.js'
 import { t } from '../../modules/i18n.js'
 
 export class OriginSelect extends AbstractSelect {
   static get tagName() { return 'origin-select' }
 
   _registerEvents() {
-    this._events.push(
-      this._addEventListener(this._selectElement, 'change', this.#selectChanged),
+    this._pushEvents(
+      domSubscribe(this._selectElement, 'change', this.#selectChanged),
       charSheet.subscribe('charOriginName', this._refreshValue),
     )
   }

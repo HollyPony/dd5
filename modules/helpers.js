@@ -69,3 +69,31 @@ export function resolvePath(obj, path, { strict = false } = {}) {
   //   return path
   // }
 }
+
+
+
+export function domSubscribe(domElement, eventName, handler, options) {
+  domElement.addEventListener(eventName, handler, options)
+
+  return () => domElement.removeEventListener(eventName, handler, options)
+}
+
+export function createObservable() {
+  let value
+  const listeners = new Set()
+  return {
+    get: () => value,
+    set: (nextValue) => {
+      if (Object.is(nextValue, value)) return
+      value = nextValue
+      for (const callback of listeners) callback(value)
+    },
+    subscribe: (callback) => {
+      listeners.add(callback)
+      return () => listeners.delete(callback)
+    },
+    unsubscribe: () => {
+      listeners.clear()
+    }
+  }
+}

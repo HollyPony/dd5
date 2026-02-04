@@ -1,6 +1,7 @@
 import { AbstractSelect } from '../AbstractSelect/index.js'
 import { getWeapons } from '../../modules/data/equipments.js'
 import { populateSelect, } from '../../modules/domlib.js'
+import { domSubscribe } from '../../modules/helpers.js'
 import { t } from '../../modules/i18n.js'
 
 export class WeaponSelect extends AbstractSelect {
@@ -11,8 +12,8 @@ export class WeaponSelect extends AbstractSelect {
   // }
 
   _registerEvents() {
-    this._events.push(
-      this._addEventListener(this._selectElement, 'change', this.#selectChanged),
+    this._pushEvents(
+      domSubscribe(this._selectElement, 'change', this.#selectChanged),
     )
 
     // document.addEventListener("userData.charOriginChanged", this._refreshValue)

@@ -30,7 +30,7 @@ export class Trainings extends AbstractComponent {
   }
 
   _registerEvents() {
-    this._events.push(
+    this._pushEvents(
       charSheet.subscribe('charClass', this.#refreshTrainings),
       charSheet.subscribe('feats', this.#refreshTrainings),
     )

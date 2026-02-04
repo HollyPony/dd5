@@ -22,14 +22,17 @@ export class ClassFeatures extends AbstractComponent {
 
     this.#refreshBaseFeature()
     this.#refreshFeatures()
+    this.#refreshActionRequired()
+
+    const baseFeatureElement = this.querySelector('class-base')
+    const subscription = baseFeatureElement._observable('actionRequired').subscribe(this.#actionRequiredChanged)
+    baseFeatureElement._pushEvents(subscription)
 
     i18n.applyTranslations(this)
   }
 
   _registerEvents() {
-    this._events.push(
-      // TODO: rework 'action-required-changed' with Observable
-      this._addEventListener(this, 'action-required-changed', this.#actionRequiredChanged),
+    this._pushEvents(
       // TODO: had a class features changed ????
       charSheet.subscribe('charLevel', this.#levelChanged),
       charSheet.subscribe('charClass', this.#classChanged),
@@ -47,24 +50,37 @@ export class ClassFeatures extends AbstractComponent {
     charSheet.getCharClass()?.features?.forEach(this.#appendFeature)
   }
 
+  #refreshActionRequired() {
+    console.info('-- ClassFeatures.#refreshActionRequired',)
+
+    let hasActionRequired = false
+    for (const element of this.querySelectorAll('class-base, class-feature')) {
+      hasActionRequired = element._observable('actionRequired').get()
+      if (hasActionRequired) break;
+    }
+    this.#mainRequiredBadgeElement.classList[hasActionRequired ? 'add' : 'remove']('show')
+  }
+
   #appendFeature = (feature) => {
     console.info('-- ClassFeatures.#appendFeature',)
 
-    this.#featuresElement.appendChild(createElement('class-feature', [
+    const classFeature = createElement('class-feature', [
       // createElement('span', 'ca marche ?', { slot: 'label-name' })
     ], {
       class: 'accordion-item',
       'data-accordion': this.#featuresElement.id,
       'data-feature': feature.name,
-    }))
+    })
+
+    this.#featuresElement.appendChild(classFeature)
+
+    const subscritpion = classFeature._observable('actionRequired').subscribe(this.#actionRequiredChanged)
+    classFeature._pushEvents(subscritpion)
   }
 
   #actionRequiredChanged = () => {
-    const hasActionRequired = [
-      this.querySelector('class-base'),
-      ...this.querySelectorAll('class-feature')
-    ].map(element => element.hasActionRequired).some(x => x)
-    this.#mainRequiredBadgeElement.classList[hasActionRequired ? 'add' : 'remove']('show')
+    console.info('-- ClassFeatures.actionRequiredChanged')
+    this.#refreshActionRequired()
   }
 
   #levelChanged = () => {
@@ -78,5 +94,6 @@ export class ClassFeatures extends AbstractComponent {
 
     this.#refreshBaseFeature()
     this.#refreshFeatures()
+    this.#refreshActionRequired()
   }
 }

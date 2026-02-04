@@ -1,7 +1,10 @@
+import { createObservable } from '../../modules/helpers.js'
+
 export class AbstractComponent extends HTMLElement {
   _id
 
-  _events = []
+  #events = []
+  #observables = new Map()
 
   #isLoaded = false
 
@@ -73,14 +76,17 @@ export class AbstractComponent extends HTMLElement {
 
     this._unregisterEvents?.()
 
-    for (const event of this._events) event()
-    this._events.length = 0
+    for (const unregister of this.#events) unregister()
+    this.#events.length = 0
 
+    this.#observables.clear()
   }
 
-  _addEventListener(target, event, handler, options) {
-    target.addEventListener(event, handler, options)
+  _pushEvents(...events) {
+    this.#events.push(...events)
+  }
 
-    return () => target.removeEventListener(event, handler, options)
+  _observable(name) {
+    return this.#observables.get(name) || this.#observables.set(name, createObservable()).get(name)
   }
 }

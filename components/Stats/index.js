@@ -16,7 +16,7 @@ export class Stats extends AbstractComponent {
   }
 
   _registerEvents() {
-    this._events.push(
+    this._pushEvents(
       charSheet.subscribe('proficiencyBonus', this.#refreshProficiencyBonus),
     )
   }
