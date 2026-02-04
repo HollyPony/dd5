@@ -1,4 +1,4 @@
-import { AbstractSelect } from '../AbstractSelect/index.js'
+﻿import { AbstractSelect } from '../AbstractSelect/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
 import { getList as getSpeciesList, } from '../../modules/data/species.js'
 import { populateSelect, } from '../../modules/domlib.js'
@@ -22,13 +22,13 @@ export class SpeciesSelect extends AbstractSelect {
       getSpeciesList().map(species => (
         species.lineages ? {
           isGroup: true,
-          label: t._(`statics.species.${species.name}`),
+          label: t._(`statics.species.${species.name}.name`),
           options: species.lineages.map(lineage => ({
             value: `${species.name}.${lineage}`,
-            text: t._(`statics.species.${species.name}-${lineage}`),
+            text: t._(`statics.species.${species.name}-${lineage}.name`),
           })),
         } : {
-          value: species.name, text: t._(`statics.species.${species.name}`),
+          value: species.name, text: t._(`statics.species.${species.name}.name`),
         }
       )),
       {
@@ -47,3 +47,4 @@ export class SpeciesSelect extends AbstractSelect {
     charSheet.setCharSpeciesName(value)
   }
 }
+

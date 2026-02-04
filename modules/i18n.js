@@ -37,7 +37,7 @@ async function changeLang(lang) {
   if (!lang || !availableLanguages.includes(lang)) {
     throw new Error(`Language '${lang}' is not available`)
   }
-  translations = (await import(`../${lang}.js`)).default
+  translations = (await import(`../${lang}/index.js`)).default
   language = lang
   applyTranslations()
   notify()
