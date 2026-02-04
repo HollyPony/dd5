@@ -36,11 +36,8 @@ export class Ability extends AbstractComponent {
       label: this.querySelector('.save-label'),
     }
 
+    this.#skillsContainer = this.querySelector('.skills')
     this.#skills = Object.values(SKILLS).filter(skill => skill.ability === this.ability)
-    if (this.#skills.length > 0) {
-      this.#skillsContainer = this.querySelector('.skills')
-      this.#skillsContainer.classList.add('ability-card-content')
-    }
 
     this.#save.label.appendChild(t.tn('ability.save.label'))
 
@@ -73,6 +70,8 @@ export class Ability extends AbstractComponent {
 
   #refreshSkills() {
     console.info('-- Ability.#refreshSkills', this.ability)
+
+    this.#skillsContainer.classList[this.#skills.length > 0 ? 'add' : 'remove']('ability-card-content')
     fillElement(this.#skillsContainer, this.#skills.map(this.#createSkill))
   }
 
