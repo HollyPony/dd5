@@ -9,19 +9,19 @@ Ils apparaissent dans D&D comme des mortels choisis ou bénis, souvent liés à 
 
 Certains aasimar forment de petites communautés ou des ordres voués à la compassion, à la justice ou à la protection des innocents. D'autres mènent une vie ordinaire en ville, tout en luttant contre des préjugés ou une fascination excessive.
 
-Leur héritage se manifeste par une présence rassurante, des dons de soin et une révélation céleste qui peut se déclencher dans un moment clé.`
+Leur héritage se manifeste par une présence rassurante, le trait ***Mains guérisseuses*** et une ***Révélation céleste*** qui peut se déclencher dans un moment clé.`
   },
   dragonborn: {
     name: 'Drakéide',
-    description: `Descendants des dragons, les drakéides arborent des traits draconiques, des écailles et un souffle magique. Leurs couleurs, cornes et silhouettes varient selon l'ascendance.
+    description: `Descendants des dragons, les drakéides arborent des traits draconiques, des écailles et un ***Souffle*** magique. Leurs couleurs, cornes et silhouettes varient selon l'ascendance.
 
 Dans D&D, ils sont souvent issus d'anciennes lignées fières, marquées par l'honneur, la mémoire et le devoir. Selon les mondes, on les trouve en clans, en cités draconiennes ou intégrés aux grandes villes, où leur discipline et leur prestige sont reconnus.
 
 La vie drakéide est souvent communautaire, avec un fort sens du nom, du clan et des serments. D'autres choisissent l'errance pour faire honneur à leurs ancêtres, prouver leur valeur ou embrasser l'aventure.
 
-**Le choix de l'ascendance draconique** (noir, bleu, airain, bronze, cuivre, or, vert, rouge, argent, blanc) **détermine** :
+Le choix de ***Ascendance draconique*** (noir, bleu, airain, bronze, cuivre, or, vert, rouge, argent, blanc) détermine :
 - l'apparence (couleur/teinte des écailles)
-- le **type de dégâts** du **souffle draconique**
+- le **type de dégâts** du ***Souffle***
 - le **type de résistance** aux dégâts.
 
 L'ascendance influence aussi la manière dont leurs dons draconiques se manifestent.`
@@ -148,31 +148,31 @@ Leurs lignées reflètent des affinités différentes : certains sont liés aux 
 
 Dans D&D, ils sont souvent associés aux régions montagneuses ou aux grands espaces. Ils vivent en clans nomades ou en petites communautés soudées, valorisant l'effort, la résilience et la camaraderie.
 
-Leur culture est faite d'épreuves, de traditions orales et de rites de passage. **Leur lignée** (nuages, feu, givre, collines, pierres, tempêtes) confère un **don surnaturel** utilisable un nombre de fois égal à votre bonus de maîtrise, puis recharge après un repos long.`
+Leur culture est faite d'épreuves, de traditions orales et de rites de passage. Leur ***Ascendance géante*** (nuages, feu, givre, collines, pierres, tempêtes) confère un don utilisable un nombre de fois égal à votre bonus de maîtrise, puis recharge après un repos long.`
   },
   'goliath-cloud': {
     name: 'Géant des Nuages',
-    description: `Héritage des géants des nuages, lié aux hauteurs et aux déplacements soudains. **Don de l'héritage (Nuages)** : en action bonus, vous vous téléportez magiquement jusqu'à 9 m (30 ft) vers un espace inoccupé que vous voyez.`
+    description: `Héritage des géants des nuages, lié aux hauteurs et aux déplacements soudains. ***Ascendance géante*** (Nuages) : en action bonus, vous vous téléportez magiquement jusqu'à 9 m (30 ft) vers un espace inoccupé que vous voyez.`
   },
   'goliath-fire': {
     name: 'Géant du Feu',
-    description: `Héritage des géants du feu, lié aux forges et à la puissance brute. **Don de l'héritage (Feu)** : quand vous touchez une cible avec un jet d'attaque et lui infligez des dégâts, vous pouvez lui infliger **1d10 dégâts de feu** supplémentaires.`
+    description: `Héritage des géants du feu, lié aux forges et à la puissance brute. ***Ascendance géante*** (Feu) : quand vous touchez une cible avec un jet d'attaque et lui infligez des dégâts, vous pouvez lui infliger **1d10 dégâts de feu** supplémentaires.`
   },
   'goliath-frost': {
     name: 'Géant du Givre',
-    description: `Héritage des géants du givre, lié au froid et à l'endurance. **Don de l'héritage (Givre)** : quand vous touchez une cible avec un jet d'attaque et lui infligez des dégâts, vous pouvez lui infliger **1d6 dégâts de froid** supplémentaires et réduire sa vitesse de **3 m (10 ft)** jusqu'au début de votre prochain tour.`
+    description: `Héritage des géants du givre, lié au froid et à l'endurance. ***Ascendance géante*** (Givre) : quand vous touchez une cible avec un jet d'attaque et lui infligez des dégâts, vous pouvez lui infliger **1d6 dégâts de froid** supplémentaires et réduire sa vitesse de **3 m (10 ft)** jusqu'au début de votre prochain tour.`
   },
   'goliath-hill': {
     name: 'Géant des Collines',
-    description: `Héritage des géants des collines, lié à la vigueur et à la ténacité. **Don de l'héritage (Collines)** : quand vous touchez une créature de taille G ou inférieure avec un jet d'attaque et lui infligez des dégâts, vous pouvez la **mettre à terre (prone)**.`
+    description: `Héritage des géants des collines, lié à la vigueur et à la ténacité. ***Ascendance géante*** (Collines) : quand vous touchez une créature de taille G ou inférieure avec un jet d'attaque et lui infligez des dégâts, vous pouvez la **mettre à terre (prone)**.`
   },
   'goliath-stone': {
     name: 'Géant des Pierres',
-    description: `Héritage des géants des pierres, lié à la solidité. **Don de l'héritage (Pierres)** : quand vous subissez des dégâts, vous pouvez utiliser une **réaction** pour lancer **1d12** + mod. de Constitution, et **réduire les dégâts** d'un montant égal au total.`
+    description: `Héritage des géants des pierres, lié à la solidité. ***Ascendance géante*** (Pierres) : quand vous subissez des dégâts, vous pouvez utiliser une **réaction** pour lancer **1d12** + mod. de Constitution, et **réduire les dégâts** d'un montant égal au total.`
   },
   'goliath-storm': {
     name: 'Géant des Tempêtes',
-    description: `Héritage des géants des tempêtes, lié à l'orage. **Don de l'héritage (Tempêtes)** : quand vous subissez des dégâts d'une créature à 18 m (60 ft) ou moins, vous pouvez utiliser une **réaction** pour lui infliger **1d8 dégâts de tonnerre**.`
+    description: `Héritage des géants des tempêtes, lié à l'orage. ***Ascendance géante*** (Tempêtes) : quand vous subissez des dégâts d'une créature à 18 m (60 ft) ou moins, vous pouvez utiliser une **réaction** pour lui infliger **1d8 dégâts de tonnerre**.`
   },
   halfling: {
     name: 'Halfelin',
@@ -200,11 +200,11 @@ Beaucoup portent un esprit de combat intense et une résilience remarquable, cap
   },
   tiefling: {
     name: 'Tieffelin',
-    description: `Les tieffelins portent l'empreinte d'une lignée fiélonne. Cornes, queues, yeux et peau aux teintes inhabituelles sont des signes fréquents de leur héritage.
+    description: `Les tieffelins portent l'empreinte d'un ***Héritage fiélon***. Cornes, queues, yeux et peau aux teintes inhabituelles sont des signes fréquents de leur héritage.
 
 Dans D&D, ils vivent surtout dans les grandes villes, où leur différence est plus facilement tolérée, mais certains forment de petites communautés ou des cercles d'entraide. Leur présence suscite curiosité, méfiance ou fascination selon les régions.
 
-Ils sont souvent perçus avec méfiance, mais leur volonté et leur charisme peuvent inverser les préjugés. Le choix de la lignée (abyssale, chthonienne, infernale) colore leur histoire et leurs dons.`
+Ils sont souvent perçus avec méfiance, mais leur volonté et leur charisme peuvent inverser les préjugés. Le choix de ***Héritage fiélon*** (abyssale, chthonienne, infernale) colore leur histoire et leurs dons.`
   },
   'tiefling-abyssal': {
     name: 'Tieffelin Abyssal',
@@ -219,6 +219,7 @@ Ils sont souvent perçus avec méfiance, mais leur volonté et leur charisme peu
     description: `Lignée issue des Hells, disciplinée et implacable. Elle évoque les pactes, la hiérarchie et les flammes infernales.`
   },
 }
+
 
 
 

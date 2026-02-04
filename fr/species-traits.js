@@ -15,7 +15,7 @@ export default {
   },
   lightBearer: {
     name: `Porte-lumière`,
-    description: `**Lumière.** Vous connaissez le tour de magie *Lumière*. Choisissez Intelligence, Sagesse ou Charisme comme caractéristique d’incantation pour ce sort (le choix s’applique aussi à vos autres sorts d’espèce, s’il y en a).`
+    description: `**Lumière.** Vous connaissez le tour de magie ***Lumière***. Choisissez Intelligence, Sagesse ou Charisme comme caractéristique d’incantation pour ce sort (le choix s’applique aussi à vos autres sorts d’espèce, s’il y en a).`
   },
   celestialRevelation: {
     name: `Révélation céleste`,
@@ -30,11 +30,11 @@ La révélation se termine si vous êtes neutralisé, ou si vous y mettez fin (a
   },
   draconicAncestry: {
     name: `Ascendance draconique`,
-    description: `**Choix draconique.** Choisissez un type draconique (noir, bleu, airain, bronze, cuivre, or, vert, rouge, argent, blanc). Ce choix détermine le type de dégâts de votre Souffle draconique et la résistance associée.`
+    description: `**Choix draconique.** Choisissez un type draconique (noir, bleu, airain, bronze, cuivre, or, vert, rouge, argent, blanc). Ce choix détermine le type de dégâts de votre ***Souffle*** et la résistance associée.`
   },
   breathWeapon: {
     name: `Souffle`,
-    description: `**Souffle draconique.** Quand vous effectuez l’action Attaquer, vous pouvez remplacer une de vos attaques par un souffle magique. Vous choisissez à chaque utilisation une zone : cône de 4,5 m (15 ft) ou ligne de 9 m (30 ft). Chaque créature dans la zone effectue un jet de sauvegarde de Dextérité (DD = 8 + bonus de maîtrise + mod. de Constitution) et subit des dégâts du type de votre ascendance en cas d’échec (moitié en cas de réussite).
+    description: `***Souffle*** draconique. Quand vous effectuez l’action Attaquer, vous pouvez remplacer une de vos attaques par un souffle magique. Vous choisissez à chaque utilisation une zone : cône de 4,5 m (15 ft) ou ligne de 9 m (30 ft). Chaque créature dans la zone effectue un jet de sauvegarde de Dextérité (DD = 8 + bonus de maîtrise + mod. de Constitution) et subit des dégâts du type de votre ascendance en cas d’échec (moitié en cas de réussite).
 
 **Dégâts.** 1d10 au niveau 1, 2d10 au niveau 5, 3d10 au niveau 11, 4d10 au niveau 17.
 
@@ -42,7 +42,7 @@ La révélation se termine si vous êtes neutralisé, ou si vous y mettez fin (a
   },
   damageResistance: {
     name: `Résistance aux dégâts`,
-    description: `**Résistance.** Vous avez la résistance au type de dégâts associé à votre ascendance draconique.`
+    description: `**Résistance.** Vous avez la résistance au type de dégâts associé à votre ***Ascendance draconique***.`
   },
   draconicFlight: {
     name: `Vol draconique`,
@@ -74,11 +74,11 @@ La révélation se termine si vous êtes neutralisé, ou si vous y mettez fin (a
   },
   'forst-gnome-speakWithAnimals': {
     name: `Parler aux animaux`,
-    description: `**Affinité des forêts.** Vous connaissez le sort *Parler aux animaux*. Vous pouvez le lancer sans emplacement de sort un nombre de fois égal à votre bonus de maîtrise, et vous récupérez toutes les utilisations après un repos long. Vous pouvez aussi le lancer en utilisant vos emplacements de sort.`
+    description: `**Affinité des forêts.** Vous connaissez le sort ***Communication avec les animaux***. Vous pouvez le lancer sans emplacement de sort un nombre de fois égal à votre bonus de maîtrise, et vous récupérez toutes les utilisations après un repos long. Vous pouvez aussi le lancer en utilisant vos emplacements de sort.`
   },
   'rock-gnome-prestidigitation': {
     name: `Prestidigitation`,
-    description: `**Tour de magie.** Vous connaissez le tour de magie *Prestidigitation*.`
+    description: `**Tour de magie.** Vous connaissez le tour de magie ***Prestidigitation***.`
   },
   chooseCanTrip: {
     name: `Sort mineur`,
@@ -150,6 +150,8 @@ La révélation se termine si vous êtes neutralisé, ou si vous y mettez fin (a
   },
   otherworldlyPresence: {
     name: `Présence d'outre-monde`,
-    description: `**Thaumaturgie.** Vous connaissez le tour de magie *Thaumaturgie*. Il utilise la même caractéristique d’incantation que vos sorts d’Héritage fiélon.`
+    description: `**Thaumaturgie.** Vous connaissez le tour de magie ***Thaumaturgie***. Il utilise la même caractéristique d’incantation que vos sorts d’***Héritage fiélon***.`
   },
 }
+
+
