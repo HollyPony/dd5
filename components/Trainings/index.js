@@ -1,6 +1,6 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
-import { createElement, removeAllChildren } from '../../modules/domlib.js'
+import { createElement, fillElement } from '../../modules/domlib.js'
 import { ARMOR_CATEGORY } from '../../modules/data/equipments.js'
 import { t, i18n } from '../../modules/i18n.js'
 
@@ -37,34 +37,36 @@ export class Trainings extends AbstractComponent {
   }
 
   #refreshTrainings = () => {
+    this.#refreshArmors()
+    this.#refreshWeaponProficiencies()
+    this.#refreshToolsProficiency()
+  }
+
+  #refreshArmors = () => {
     const armorProficiencies = charSheet.getArmorProficiencies() || []
     this.#armorLightElement.checked = armorProficiencies.includes(ARMOR_CATEGORY.Light)
     this.#armorMediumElement.checked = armorProficiencies.includes(ARMOR_CATEGORY.Medium)
     this.#armorHeavyElement.checked = armorProficiencies.includes(ARMOR_CATEGORY.Heavy)
     this.#shieldElement.checked = charSheet.getShieldProficiency()
+  }
 
-    removeAllChildren(this.#weaponsListElement)
+  #refreshWeaponProficiencies = () => {
     const weaponProficiencies = charSheet.getWeaponProficiencies() || []
-    if (weaponProficiencies.length === 0) {
-      this.#weaponsListElement.appendChild(
-        createElement('p', t._('components.Trainings.weapons.none'), { class: 'text-muted' })
-      )
-    } else {
-      weaponProficiencies.forEach(proficiency => this.#weaponsListElement
-        .appendChild(createElement('p', t._(['components.Trainings.weapons']
-          .concat(proficiency.length === 1 ? [proficiency, 'all'] : proficiency)
-          .join('.')
-        )))
-      )
-    }
+    const weaponItems = weaponProficiencies.length === 0
+      ? [createElement('p', t._('components.Trainings.weapons.none'), { class: 'text-muted' })]
+      : weaponProficiencies.map(proficiency => createElement('p', t._(['components.Trainings.weapons']
+        .concat(proficiency.length === 1 ? [proficiency, 'all'] : proficiency)
+        .join('.')
+      )))
+    fillElement(this.#weaponsListElement, weaponItems)
+  }
 
-    removeAllChildren(this.#toolsListElement)
+  #refreshToolsProficiency = () => {
     const toolProficiencies = charSheet.getToolProficiencies() || []
-    if (toolProficiencies.length === 0) {
-      this.#toolsListElement.appendChild(
-        createElement('p', t._('components.Trainings.tools.none'), { class: 'text-muted' })
-      )
-    }
+    const toolItems = toolProficiencies.length === 0
+      ? [createElement('p', t._('components.Trainings.tools.none'), { class: 'text-muted' })]
+      : []
+    fillElement(this.#toolsListElement, toolItems)
   }
 
   _i18nChanged = () => {

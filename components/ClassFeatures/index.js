@@ -1,6 +1,6 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
-import { createElement, removeAllChildren } from '../../modules/domlib.js'
+import { createElement, fillElement } from '../../modules/domlib.js'
 import { i18n } from '../../modules/i18n.js'
 
 export class ClassFeatures extends AbstractComponent {
@@ -46,8 +46,8 @@ export class ClassFeatures extends AbstractComponent {
   #refreshFeatures() {
     console.info('-- ClassFeatures.#refreshFeatures',)
 
-    removeAllChildren(this.#featuresElement)
-    charSheet.getCharClass()?.features?.forEach(this.#appendFeature)
+    const featureElements = charSheet.getCharClass()?.features?.map(this.#createFeature) ?? []
+    fillElement(this.#featuresElement, featureElements)
   }
 
   #refreshActionRequired() {
@@ -61,7 +61,7 @@ export class ClassFeatures extends AbstractComponent {
     this.#mainRequiredBadgeElement.classList[hasActionRequired ? 'add' : 'remove']('show')
   }
 
-  #appendFeature = (feature) => {
+  #createFeature = (feature) => {
     console.info('-- ClassFeatures.#appendFeature',)
 
     const classFeature = createElement('class-feature', [
@@ -72,10 +72,9 @@ export class ClassFeatures extends AbstractComponent {
       'data-feature': feature.name,
     })
 
-    this.#featuresElement.appendChild(classFeature)
-
     const subscritpion = classFeature._observable('actionRequired').subscribe(this.#actionRequiredChanged)
     classFeature._pushEvents(subscritpion)
+    return classFeature
   }
 
   #actionRequiredChanged = () => {

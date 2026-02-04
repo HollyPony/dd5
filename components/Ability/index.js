@@ -1,6 +1,6 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
-import { createElement, removeAllChildren } from '../../modules/domlib.js'
+import { createElement, fillElement, removeAllChildren } from '../../modules/domlib.js'
 import { ABILITY, SKILLS, } from '../../modules/common.js'
 import { domSubscribe, signDisplay, } from '../../modules/helpers.js'
 import { t } from '../../modules/i18n.js'
@@ -73,13 +73,12 @@ export class Ability extends AbstractComponent {
 
   #refreshSkills() {
     console.info('-- Ability.#refreshSkills', this.ability)
-    removeAllChildren(this.#skillsContainer)
-    this.#skills.forEach(this.#appendSkill)
+    fillElement(this.#skillsContainer, this.#skills.map(this.#createSkill))
   }
 
-  #appendSkill = (skill) => {
+  #createSkill = (skill) => {
     console.info('-- Ability.#appendSkill', this.ability)
-    this.#skillsContainer.appendChild(createElement('div', [
+    return createElement('div', [
       createElement('input', null, {
         name: `${skill.name}.${this._id}`,
         type: 'checkbox', class: 'form-check-input checkbox-readonly skill-check',
@@ -90,7 +89,7 @@ export class Ability extends AbstractComponent {
       createElement('label', t._(`statics.${skill.name}`), {
         id: `${skill.name}.${this._id}`,
       }),
-    ], { class: 'form-check' }))
+    ], { class: 'form-check' })
   }
 
   #scoreChanged = ({ target: { value }, isTrusted }) => {
@@ -120,10 +119,8 @@ export class Ability extends AbstractComponent {
 
   _i18nChanged = () => {
     console.info('-- Ability.#i18nChanged', this.ability)
-    removeAllChildren(this.#labelElement)
-    this.#labelElement.appendChild(t.tn(`statics.${this.ability}`))
-    removeAllChildren(this.#save.label)
-    this.#save.label.appendChild(t.tn('ability.save.label'))
+    fillElement(this.#labelElement, t.tn(`statics.${this.ability}`))
+    fillElement(this.#save.label, t.tn('ability.save.label'))
     this.#refreshSkills()
   }
 
