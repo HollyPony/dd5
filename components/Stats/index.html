@@ -1,0 +1,32 @@
+<template>
+  <div class="row gx-2">
+    <div class="col-6 d-flex flex-column gap-2">
+      <div class="block proficiency">
+        <label for="proficiencybonus" class="text-center w-100 title" data-i18n="stats.proficiencyBonus"></label>
+        <hr class="m-0 border-2 w-100" />
+        <input disabled name="proficiencybonus" class="form-control p-0 border-top-0 rounded-top-0 text-center"
+          placeholder="+2">
+      </div>
+      <ability-card data-ability="strength"></ability-card>
+      <ability-card data-ability="dexterity"></ability-card>
+      <ability-card data-ability="constitution"></ability-card>
+
+      <div class="block inspiration">
+        <label for="inspiration" class="text-center w-100 title" data-i18n="stats.inspiration"></label>
+        <hr class="m-0 border-2 w-100" />
+        <input name="inspiration" type="checkbox"
+          class="form-check-input inspiration-check mt-0 rounded-top-0 border-top-0" />
+      </div>
+    </div>
+    <div class="col-6 d-flex flex-column gap-3">
+      <ability-card data-ability="intelligence"></ability-card>
+      <ability-card data-ability="wisdom"></ability-card>
+      <ability-card data-ability="charisma"></ability-card>
+    </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col">
+      <trainings-block></trainings-block>
+    </div>
+  </div>
+</template>

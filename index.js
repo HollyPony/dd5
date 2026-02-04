@@ -8,6 +8,11 @@ import { ClassBase } from './components/ClassBase/index.js'
 import { ClassFeature } from './components/ClassFeature/index.js'
 import { WeaponSelect } from './components/WeaponSelect/index.js'
 import { Trainings } from './components/Trainings/index.js'
+import { Stats } from './components/Stats/index.js'
+import { WeaponsCantrip } from './components/WeaponsCantrip/index.js'
+import { SpeciesTraits } from './components/SpeciesTraits/index.js'
+import { Feats } from './components/Feats/index.js'
+import { Specs } from './components/Specs/index.js'
 
 import { DICES as D, } from './modules/common.js'
 import initTranslations from '/modules/i18n.js'
@@ -31,8 +36,6 @@ const importCharFileElement = document.getElementById("importCharFile")
 // DISPLAY HELPERS //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
-function skillAsText(score) { return score > 0 ? `+${score}` : `${score}` }
-
 function diceToString({ number, dice }) {
   return D[dice] ? `${number}d${dice}` : 'err' // TODO:
 }
@@ -55,33 +58,12 @@ function refreshArmorClass() {
   document.getElementsByName('armorClass')[0].value = charSheet.getArmorClass()
 }
 
-function refreshProficiencyBonus() {
-  document.getElementsByName('proficiencybonus')[0].value = skillAsText(charSheet.getProficiencyBonus())
-}
-
 function refreshHitPointMax() {
   document.getElementsByName('hitPointMax')[0].value = charSheet.getHitPointMax()
 }
 
 function refreshHitDiceMax() {
   document.getElementsByName('hitDiceMax')[0].value = diceToString(charSheet.getHitDiceMax())
-}
-
-function refreshInitiative() {
-  document.getElementsByName('specs.initiative')[0].value = charSheet.getInitiative()
-}
-
-function refreshSpeed() {
-  document.getElementsByName('specs.speed')[0].value = charSheet.getCharSpeed()
-}
-
-function refreshSize() {
-  document.getElementsByClassName('size-category')[0].value = charSheet.getCharSizeCategory()
-  document.getElementsByName('specs.size')[0].value = charSheet.getCharSize() || ''
-}
-
-function refreshPassivePerception() {
-  document.getElementsByName('specs.passivePerception')[0].value = charSheet.getPassivePerception()
 }
 
 function refreshCharAlignment() {
@@ -95,13 +77,8 @@ function refreshAll() {
   refreshCharLevel()
   refreshHitPointMax()
   refreshHitDiceMax()
-  refreshInitiative()
-  refreshSpeed()
-  refreshSize()
-  refreshPassivePerception()
   refreshCharAlignment()
   refreshArmorClass()
-  refreshProficiencyBonus()
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -115,20 +92,11 @@ function registerSubscriptions() {
     charSheet.subscribe('charName', refreshCharName),
     charSheet.subscribe('charExperience', refreshCharExperience),
     charSheet.subscribe('charLevel', refreshCharLevel),
-    charSheet.subscribe('proficiencyBonus', refreshProficiencyBonus),
     charSheet.subscribe('charLevel', refreshHitPointMax),
     charSheet.subscribe('charClass', refreshHitPointMax),
     charSheet.subscribe('modifiers', refreshHitPointMax),
     charSheet.subscribe('charLevel', refreshHitDiceMax),
     charSheet.subscribe('charClass', refreshHitDiceMax),
-    charSheet.subscribe('modifiers', refreshInitiative),
-    charSheet.subscribe('charSpecies', refreshSpeed),
-    charSheet.subscribe('equiped', refreshSpeed),
-    charSheet.subscribe('feats', refreshSpeed),
-    charSheet.subscribe('charSizeCategory', refreshSize),
-    charSheet.subscribe('charSize', refreshSize),
-    charSheet.subscribe('classSkills', refreshPassivePerception),
-    charSheet.subscribe('modifiers', refreshPassivePerception),
     charSheet.subscribe('charAlignment', refreshCharAlignment),
     charSheet.subscribe('charClass', refreshArmorClass),
     charSheet.subscribe('equiped', refreshArmorClass),
@@ -237,6 +205,11 @@ function registerCustomElements() {
   ClassFeature.register()
   WeaponSelect.register()
   Trainings.register()
+  Stats.register()
+  Specs.register()
+  WeaponsCantrip.register()
+  SpeciesTraits.register()
+  Feats.register()
 }
 
 /////////////////////////////////////////////////////////////////////////

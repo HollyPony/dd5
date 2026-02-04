@@ -1,0 +1,39 @@
+<template>
+  <div class="row g-2 specs">
+    <div class="col-6 d-flex col-sm-3">
+      <div class="block flex-grow-1">
+        <label for="specs.initiative" class="text-center title" data-i18n="specs.initiative"></label>
+        <input disabled name="specs.initiative"
+          class="form-control my-auto p-0 border-0 border-bottom text-center" placeholder="+2">
+      </div>
+    </div>
+    <div class="col-6 d-flex col-sm-3">
+      <div class="block flex-grow-1">
+        <label for="specs.speed" class="text-center title" data-i18n="specs.speed"></label>
+        <input disabled name="specs.speed"
+          class="form-control my-auto p-0 border-0 border-bottom text-center">
+      </div>
+    </div>
+    <div class="col-6 d-flex col-sm-3">
+      <div class="block flex-grow-1">
+        <label for="specs.size" class="text-center title" data-i18n="specs.size"></label>
+        <div class="input-group my-auto">
+          <select class="form-select border-0 border-bottom rounded-0 p-0 pe-5 w-auto flex-grow-0 size-category">
+            <option value="small" data-i18n="sizeCategory.small"></option>
+            <option value="medium" data-i18n="sizeCategory.medium"></option>
+          </select>
+          <input type="text" name="specs.size" class="form-control p-0 border-0 border-bottom text-end"
+            placeholder="175 cm" size="3">
+          <span class="input-group-text border-0 border-bottom p-0 ps-2 rounded-0" id="basic-addon2">cm</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 d-flex col-sm-3">
+      <div class="block flex-grow-1">
+        <label for="specs.passivePerception" class="text-center title" data-i18n="specs.passivePerception"></label>
+        <input disabled name="specs.passivePerception"
+          class="form-control my-auto p-0 border-0 border-bottom text-center">
+      </div>
+    </div>
+  </div>
+</template>

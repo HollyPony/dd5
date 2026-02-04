@@ -213,105 +213,23 @@
 
       <div class="row g-3">
         <div class="col-md-4">
-          <div class="row gx-2">
-            <div class="col-6 d-flex flex-column gap-2">
-              <div class="block proficiency">
-                <label for="proficiencybonus" class="text-center w-100 title"
-                  data-i18n="stats.proficiencyBonus"></label>
-                <hr class="m-0 border-2 w-100" />
-                <input disabled name="proficiencybonus" class="form-control p-0 border-top-0 rounded-top-0 text-center"
-                  placeholder="+2">
-              </div>
-              <ability-card data-ability="strength"></ability-card>
-              <ability-card data-ability="dexterity"></ability-card>
-              <ability-card data-ability="constitution"></ability-card>
-
-              <div class="block inspiration">
-                <label for="inspiration" class="text-center w-100 title" data-i18n="stats.inspiration"></label>
-                <hr class="m-0 border-2 w-100" />
-                <input name="inspiration" type="checkbox"
-                  class="form-check-input inspiration-check mt-0 rounded-top-0 border-top-0" />
-              </div>
-            </div>
-            <div class="col-6 d-flex flex-column gap-3">
-              <ability-card data-ability="intelligence"></ability-card>
-              <ability-card data-ability="wisdom"></ability-card>
-              <ability-card data-ability="charisma"></ability-card>
-            </div>
-          </div>
-          <div class="row mt-3">
-            <div class="col">
-              <trainings-block></trainings-block>
-            </div>
-          </div>
+          <stats-block></stats-block>
         </div>
         <div class="col">
           <div class="row row-cols-1 g-3">
             <div class="col">
-              <div class="row g-2 specs">
-                <div class="col-6 d-flex col-sm-3">
-                  <div class="block flex-grow-1">
-                    <label for="specs.initiative" class="text-center title" data-i18n="specs.initiative"></label>
-                    <input disabled name="specs.initiative"
-                      class="form-control my-auto p-0 border-0 border-bottom text-center" placeholder="+2">
-                  </div>
-                </div>
-                <div class="col-6 d-flex col-sm-3">
-                  <div class="block flex-grow-1">
-                    <label for="specs.speed" class="text-center title" data-i18n="specs.speed"></label>
-                    <input disabled name="specs.speed"
-                      class="form-control my-auto p-0 border-0 border-bottom text-center">
-                  </div>
-                </div>
-                <div class="col-6 d-flex col-sm-3">
-                  <div class="block flex-grow-1">
-                    <label for="specs.size" class="text-center title" data-i18n="specs.size"></label>
-                    <div class="input-group my-auto">
-                      <select
-                        class="form-select border-0 border-bottom rounded-0 p-0 pe-5 w-auto flex-grow-0 size-category">
-                        <option value="small" data-i18n="sizeCategory.small"></option>
-                        <option value="medium" data-i18n="sizeCategory.medium"></option>
-                      </select>
-                      <input type="text" name="specs.size" class="form-control p-0 border-0 border-bottom text-end"
-                        placeholder="175 cm" size="3">
-                      <span class="input-group-text border-0 border-bottom p-0 ps-2 rounded-0"
-                        id="basic-addon2">cm</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-6 d-flex col-sm-3">
-                  <div class="block flex-grow-1">
-                    <label for="specs.passivePerception" class="text-center title"
-                      data-i18n="specs.passivePerception"></label>
-                    <input disabled name="specs.passivePerception"
-                      class="form-control my-auto p-0 border-0 border-bottom text-center">
-                  </div>
-                </div>
-              </div>
+              <specs-block></specs-block>
             </div>
             <div class="col">
-              <div class="block weaponscantrip-block">
-                <div class="text-center title" data-i18n="weaponscantrip.title"></div>
-                <ul class="list-group">
-                  <!-- <li class="list-group-item"></li> -->
-                </ul>
-                <weapon-select></weapon-select>
-              </div>
+              <weapons-cantrip></weapons-cantrip>
             </div>
             <div class="col">
               <class-features></class-features>
             </div>
             <div class="col">
               <div class="d-flex gap-2">
-                <div class="flex-grow-1 flex-basis-0 block species-traits">
-                  <div class="text-center title" data-i18n="species.title"></div>
-                  <ul class="list-group species-traits"></ul>
-                </div>
-                <div class="flex-grow-1 flex-basis-0 block feats">
-                  <div class="text-center title" data-i18n="feats.title">
-                    <ul class="list-group feats"></ul>
-                  </div>
-                </div>
+                <species-traits></species-traits>
+                <feats-block></feats-block>
               </div>
             </div>
           </div>
