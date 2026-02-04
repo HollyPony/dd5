@@ -75,5 +75,5 @@ export function populateSelect(selectElement, items, params = {
         { label: item.label }
       )
       : createElement('option', item.text, { value: item.value, disabled: item.disabled })
-    ), { clear: params.clear })
+    ), { clear: params.clear ?? true })
 }
