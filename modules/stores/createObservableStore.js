@@ -63,7 +63,7 @@ export default function createObservableStore(initialState) {
         }
       }
 
-      if (shouldNotify) callbacks.forEach(listener => listener())
+      if (shouldNotify) for (const callback of callbacks) callback()
     },
 
     /**
