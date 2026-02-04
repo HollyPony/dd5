@@ -104,55 +104,64 @@ function parseInline(text) {
   let cursorStart = 0
   let cursorEnd = 0
 
-  function flush() {
-    if (cursorStart < cursorEnd)
-      fragment.appendChild(document.createTextNode(text.slice(cursorStart, cursorEnd)))
-    cursorStart = cursorEnd
+  if (!text.includes('*') && !text.includes('[')) {
+    fragment.appendChild(createElement(undefined, text))
+    return fragment
   }
 
-  while (cursorEnd < text.length) {
-    // Link
+  function flush() {
+    if (cursorStart < cursorEnd)
+      fragment.appendChild(createElement(undefined, text.slice(cursorStart, cursorEnd)))
+    return cursorEnd
+  }
+
+  function catcher(marker, callback) {
+    const markerSize = marker.length
+    if (text.slice(cursorEnd, cursorEnd + markerSize) === marker) {
+      const end = text.indexOf(marker, cursorEnd + markerSize);
+      if (end !== -1) {
+        cursorStart = flush(fragment, cursorStart, cursorEnd)
+        fragment.appendChild(callback(text.slice(cursorEnd + markerSize, end)));
+        cursorEnd = end + markerSize
+        cursorStart = cursorEnd
+        return true
+      }
+    }
+  }
+
+  function catchUrl() {
     if (text[cursorEnd] === "[") {
       const endText = text.indexOf("]", cursorEnd);
       const startUrl = text.indexOf("(", endText);
       const endUrl = text.indexOf(")", startUrl);
 
       if (endText !== -1 && startUrl === endText + 1 && endUrl !== -1) {
-        flush()
-        fragment.appendChild(createElement('a', text.slice(cursorEnd + 1, endText), { href: text.slice(startUrl + 1, endUrl) }));
+        cursorStart = flush()
+        const contentText = text.slice(cursorEnd + 1, endText)
+        fragment.appendChild(createElement('a', contentText, { href: text.slice(startUrl + 1, endUrl) }));
         cursorEnd = endUrl + 1
         cursorStart = cursorEnd
-        continue;
+        return true
       }
     }
+  }
+
+  while (cursorEnd < text.length) {
+    // Link
+    if (catchUrl()) continue
+
+    // Italic/Bold
+    if (catcher('***', contentText => createElement('em', createElement('strong', contentText)))) continue
 
     // Bold
-    if (text.slice(cursorEnd, cursorEnd + 2) === "**") {
-      const end = text.indexOf("**", cursorEnd + 2);
-      if (end !== -1) {
-        flush()
-        fragment.appendChild(createElement('strong', text.slice(cursorEnd + 2, end)));
-        cursorEnd = end + 2
-        cursorStart = cursorEnd
-        continue
-      }
-    }
+    if (catcher('**', contentText => createElement('strong', contentText))) continue
 
     // Italic
-    if (text[cursorEnd] === "*") {
-      const end = text.indexOf("*", cursorEnd + 1);
-      if (end !== -1) {
-        flush()
-        fragment.appendChild(createElement('em', text.slice(cursorEnd + 1, end)));
-        cursorEnd = end + 1
-        cursorStart = cursorEnd
-        continue
-      }
-    }
+    if (catcher('*', contentText => createElement('em', contentText))) continue
     cursorEnd++
   }
 
-  flush()
+  cursorStart = flush(fragment, cursorStart, cursorEnd)
 
   return fragment;
 }
