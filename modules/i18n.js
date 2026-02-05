@@ -46,7 +46,7 @@ async function changeLang(lang) {
 
 function _(path, interpolations) {
   const value = resolvePath(translations || {}, path) ?? path
-  return strObjInterpolation(value, interpolations)
+  return strObjInterpolation(typeof value === 'string' ? value : path, interpolations)
 }
 
 function md(path, interpolations) {
