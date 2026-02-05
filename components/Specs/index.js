@@ -36,6 +36,7 @@ export class Specs extends AbstractComponent {
       charSheet.subscribe('charSizeCategory', this.#refreshSize),
       charSheet.subscribe('charSize', this.#refreshSize),
       charSheet.subscribe('classSkills', this.#refreshPassivePerception),
+      charSheet.subscribe('expertSkills', this.#refreshPassivePerception),
       charSheet.subscribe('modifiers', this.#refreshPassivePerception),
     )
   }

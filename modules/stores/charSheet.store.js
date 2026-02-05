@@ -67,6 +67,7 @@ function createCharSheetStore() {
       [ABILITY.charisma]: 0,
     }),
     classSkills: [],
+    expertSkills: [],
     feats: [],
     equipments: [],
     equiped: s({
@@ -90,7 +91,12 @@ function createCharSheetStore() {
   }
 
   function _computeSkillScore(skill) {
-    return get('modifiers')[skill.ability] + (isCheckedSkill(skill) ? get('proficiencyBonus') : 0)
+    const modifierScore = get('modifiers')[skill.ability]
+    const proficiencyBonus = get('proficiencyBonus')
+    const isProficient = isCheckedSkill(skill)
+    const isExpert = isExpertSkill(skill)
+    const proficiencyMultiplier = isProficient ? (isExpert ? 2 : 1) : 0
+    return modifierScore + (proficiencyBonus * proficiencyMultiplier)
   }
 
   function init(payload, notify = false) {
@@ -166,6 +172,7 @@ function createCharSheetStore() {
   function getCharSizeCategory() { return get('charSizeCategory') }
   function getCharSize() { return get('charSize') }
   function getClassSkills() { return get('classSkills') }
+  function getExpertSkills() { return get('expertSkills') }
 
   function getProficiencyBonus() { return get('proficiencyBonus') }
   function getCharClass() { return get('charClass') }
@@ -284,6 +291,7 @@ function createCharSheetStore() {
     getCharSizeCategory,
     getCharSize,
     getClassSkills,
+    getExpertSkills,
 
     // Computed
     getProficiencyBonus,
@@ -326,6 +334,7 @@ function createCharSheetStore() {
       charOriginName,
       charOrigin: getOrigin(charOriginName),
       classSkills: [],
+      expertSkills: [],
     })
     // TODO: handle skill from origin ?
     // TODO: remove also classSkills choosed due to conflicts with origin ones
@@ -336,6 +345,7 @@ function createCharSheetStore() {
       charSubClassName: undefined,
       charClass: getClass(className, undefined, get('charLevel')),
       classSkills: [],
+      expertSkills: [],
     })
 
     // TODO: refresh this datas with event
@@ -392,7 +402,12 @@ function createCharSheetStore() {
   }
 
   function isCheckedSkill(skill) { // TODO: get from class features + get from feats
-    return get('charOrigin')?.skills?.includes(skill) || get('classSkills')?.includes(skill)
+    return get('charOrigin')?.skills?.includes(skill)
+      || get('classSkills')?.includes(skill)
+  }
+
+  function isExpertSkill(skill) {
+    return get('expertSkills')?.includes(skill)
   }
 
   function classSkillsAdd(skill) {
@@ -407,11 +422,22 @@ function createCharSheetStore() {
     // document.dispatchEvent(new CustomEvent('CharSheet.skillsChanged'))
   }
 
+  function expertSkillsAdd(skill) {
+    set({ 'expertSkills': get('expertSkills').concat(skill) })
+  }
+
+  function expertSkillsRemove(skill) {
+    set({ 'expertSkills': get('expertSkills').filter(_skill => _skill !== skill) })
+  }
+
   const helpers = {
     isDisabledSkill,
     isCheckedSkill,
+    isExpertSkill,
     classSkillsAdd,
     classSkillsRemove,
+    expertSkillsAdd,
+    expertSkillsRemove,
     toJSON() { return storeManager.toJSON(store.get()) }
   }
 

@@ -50,6 +50,7 @@ export class Ability extends AbstractComponent {
       domSubscribe(this.#scoreElement, 'change', this.#scoreChanged),
       charSheet.subscribe('charLevel', this.#levelChanged),
       charSheet.subscribe('classSkills', this.#skillsChanged),
+      charSheet.subscribe('expertSkills', this.#skillsChanged),
     )
   }
 
@@ -77,10 +78,11 @@ export class Ability extends AbstractComponent {
 
   #createSkill = (skill) => {
     console.info('-- Ability.#appendSkill', this.ability)
+    const isExpert = charSheet.isExpertSkill(skill)
     return createElement('div', [
       createElement('input', null, {
         name: `${skill.name}.${this._id}`,
-        type: 'checkbox', class: 'form-check-input checkbox-readonly skill-check',
+        type: 'checkbox', class: `form-check-input checkbox-readonly skill-check${isExpert ? ' expert' : ''}`,
         tabindex: '-1',
         checked: charSheet.isCheckedSkill(skill),
       }),

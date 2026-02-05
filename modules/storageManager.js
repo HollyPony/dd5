@@ -19,7 +19,7 @@ import { ABILITY, SKILLS, } from './common.js'
 //     charisma: 12,
 //   },
 //   classSkills: ['athletics', 'acrobatics'],
-// expertSkills : [] count proficiencyBonus *2 // Available for thief and bard and epic feat (boon)
+//   expertSkills : [],
 //   equipments: [
 //     {
 //       name: 'SHIELDS_shield',
@@ -53,6 +53,7 @@ export function toCharsheet(jsSource) {
       [ABILITY.charisma]: jsSource?.attributes.charisma ?? 10,
     },
     classSkills: jsSource?.classSkills.map(skill => SKILLS[skill]) ?? [],
+    expertSkills: jsSource?.expertSkills?.map(skill => SKILLS[skill]) ?? [],
     equipments: jsSource?.equipments ?? [],
   }
 }
@@ -73,6 +74,7 @@ export function toJSON(jsData) {
   const reviver = (key, value) => {
     switch (key) {
       case 'classSkills': return Object.keys(SKILLS).filter(key => value.includes(SKILLS[key]))
+      case 'expertSkills': return Object.keys(SKILLS).filter(key => value.includes(SKILLS[key]))
       default: return value
     }
   }
@@ -97,6 +99,7 @@ export function toJSON(jsData) {
       charisma: jsData.attributes[ABILITY.charisma],
     },
     classSkills: jsData.classSkills,
+    expertSkills: jsData.expertSkills,
     equipments: jsData.equipments
   }, reviver, 2)
 }
