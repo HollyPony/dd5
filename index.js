@@ -115,6 +115,28 @@ function unregisterSubscriptions() {
 }
 
 /////////////////////////////////////////////////////////////////////////
+// CONNECT HTML EVENTS //////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+function setBindings() {
+  exportCharLink.addEventListener('click', exportJSON)
+  importCharLink.addEventListener('click', importCharClicked)
+  importCharFileElement.addEventListener('change', importCharFileChanged)
+
+  charNameElement.addEventListener('change', charNameChanged)
+  charExperienceElement.addEventListener('change', charExperienceChanged)
+}
+
+function unregisterBindings() {
+  exportCharLink.removeEventListener('click', exportJSON)
+  importCharLink.removeEventListener('click', importCharClicked)
+  importCharFileElement.removeEventListener('change', importCharFileChanged)
+
+  charNameElement.removeEventListener('change', charNameChanged)
+  charExperienceElement.removeEventListener('change', charExperienceChanged)
+}
+
+/////////////////////////////////////////////////////////////////////////
 // EVENTS ///////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
@@ -178,23 +200,8 @@ function importCharFileChanged({ target: { files } }) {
   importCharFileElement.value = ''
 }
 
-function setBindings() {
-  exportCharLink.addEventListener('click', exportJSON)
-  importCharLink.addEventListener('click', importCharClicked)
-  importCharFileElement.addEventListener('change', importCharFileChanged)
 
-  charNameElement.addEventListener('change', charNameChanged)
-  charExperienceElement.addEventListener('change', charExperienceChanged)
-}
-
-function unregisterBindings() {
-  exportCharLink.removeEventListener('click', exportJSON)
-  importCharLink.removeEventListener('click', importCharClicked)
-  importCharFileElement.removeEventListener('change', importCharFileChanged)
-
-  charNameElement.removeEventListener('change', charNameChanged)
-  charExperienceElement.removeEventListener('change', charExperienceChanged)
-}
+// REGISTER WEBCOMPONENTS
 
 function registerCustomElements() {
   Ability.register()
