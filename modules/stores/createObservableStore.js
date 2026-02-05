@@ -1,10 +1,11 @@
 import { MissingPathError } from '../errors.js'
 import { resolvePath, } from '../helpers.js'
 
+export const ALL = '*'
+
 export default function createObservableStore(initialState) {
   const state = Object.seal({ ...initialState })
   const listeners = new Map()
-  // const ALL = '*'
 
   const pathPartsCache = new Map()
   function getPathParts(path) {
@@ -64,16 +65,17 @@ export default function createObservableStore(initialState) {
       }
 
       if (shouldNotify) for (const callback of callbacks) callback()
+      if (shouldNotify) for (const callback of listeners.get(ALL) ?? []) callback()
     },
 
     /**
      * Subscribe to a specific path.
      *
-     * The callback receives the current value at the subscribed path
-     * whenever that path (or a child path) is updated.
+     * The callback is triggered whenever that path (or a child path) is updated.
+     * Pass `ALL` (`'*'`) to listen to any update.
      *
-     * @param {string} stateKey - Dot-separated path to observe.
-     * @param {(value: any) => void} callback - Listener called on updates.
+     * @param {string} stateKey - Dot-separated path to observe or `ALL`.
+     * @param {() => void} callback - Listener called on updates (no value passed).
      * @returns {() => void} Unsubscribe function.
      * @throws {MissingPathError} If stateKey is missing or falsy.
      */
