@@ -19,7 +19,7 @@ export class OriginSelect extends AbstractSelect {
     console.info('-- OriginSelect.#refreshList')
     populateSelect(
       this._selectElement,
-      getOriginList().map(originName => ({ value: originName, text: t._(`statics.origins.${originName}`), })),
+      getOriginList().map(originName => ({ value: originName, text: t._(`statics.origins.${originName}.name`), })),
       {
         placeholder: t._('components.OriginSelect.chooseOne'),
       }

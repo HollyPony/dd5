@@ -29,7 +29,7 @@ export class ClassSelect extends AbstractSelect {
     console.info('-- ClassSelect.#refreshList')
     populateSelect(
       this._selectElement,
-      getClassesList().map(className => ({ value: className, text: t._(`statics.classes.${className}`), })),
+      getClassesList().map(className => ({ value: className, text: t._(`statics.classes.${className}.name`), })),
       {
         placeholder: t._('components.ClassSelect.chooseOne'),
       },
