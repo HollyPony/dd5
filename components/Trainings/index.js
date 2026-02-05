@@ -4,6 +4,7 @@ import { createElement, fillElement } from '../../modules/domlib.js'
 import { ARMOR_CATEGORY } from '../../modules/data/equipments.js'
 import { t, i18n } from '../../modules/i18n.js'
 
+// TODO: Review this whole file
 export class Trainings extends AbstractComponent {
   static get tagName() { return 'trainings-block' }
   static get _componentPath() { return '/components/Trainings' }
@@ -32,6 +33,7 @@ export class Trainings extends AbstractComponent {
   _registerEvents() {
     this._pushEvents(
       charSheet.subscribe('charClass', this.#refreshTrainings),
+      charSheet.subscribe('classTools', this.#refreshTrainings),
       charSheet.subscribe('feats', this.#refreshTrainings),
     )
   }
@@ -64,8 +66,8 @@ export class Trainings extends AbstractComponent {
   #refreshToolsProficiency = () => {
     const toolProficiencies = charSheet.getToolProficiencies() || []
     const toolItems = toolProficiencies.length === 0
-      ? [createElement('p', t._('components.Trainings.tools.none'), { class: 'text-muted' })]
-      : []
+      ? createElement('p', t._('components.Trainings.tools.none'), { class: 'text-muted' })
+      : toolProficiencies.map(tool => createElement('p', t._(`statics.TOOLS.${tool.replace('TOOLS_', '')}.name`)))
     fillElement(this.#toolsListElement, toolItems)
   }
 

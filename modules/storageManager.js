@@ -54,6 +54,7 @@ export function toCharsheet(jsSource) {
     },
     classSkills: jsSource?.classSkills.map(skill => SKILLS[skill]) ?? [],
     expertSkills: jsSource?.expertSkills?.map(skill => SKILLS[skill]) ?? [],
+    classTools: jsSource?.classTools ?? [],
     equipments: jsSource?.equipments ?? [],
   }
 }
@@ -100,6 +101,7 @@ export function toJSON(jsData) {
     },
     classSkills: jsData.classSkills,
     expertSkills: jsData.expertSkills,
+    classTools: jsData.classTools,
     equipments: jsData.equipments
   }, reviver, 2)
 }

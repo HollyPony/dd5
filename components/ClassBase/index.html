@@ -2,16 +2,25 @@
   <div id="JSSet" class="accordion class-feature-base">
     <div class="accordion-item">
       <div class="accordion-header d-flex align-items-center position-relative">
-        <!-- <span class="position-absolute top-0 start-0 translate-middle p-2 bg-danger border rounded-circle z-4">
-        </span> -->
-
         <button class="accordion-button shadow-none py-2 collapsed action-required" type="button"
           data-bs-toggle="collapse" data-bs-target="JSSet" data-i18n="components.ClassBase.title">
         </button>
-
       </div>
+
       <div id="JSSet" class="accordion-collapse collapse" data-bs-parent="JSSet">
         <div class="accordion-body p-0">
+          <!-- Class desc -->
+          <div class="card border-0 description">
+            <div class="card-header rounded-0">
+              <span class="card-title">TODO: Description</span>
+            </div>
+            <div class="card-body">
+              <div class="">TODO tr trucn en markdown</div>
+            </div>
+          </div>
+
+
+          <!-- Skills -->
           <div class="card border-0 skills">
             <div class="card-header rounded-0">
               <span class="d-flex action-required" data-i18n="components.ClassBase.skills.title"></span>
@@ -22,11 +31,15 @@
               <div class="d-flex flex-wrap gap-3 list"></div>
             </div>
           </div>
-        </div>
-        <div class="card border-0">
-          <div class="card-header rounded-0" data-i18n="components.ClassBase.tools.title"></div>
-          <div class="card-body">
-            <div class="card-text">card text</div>
+
+          <!-- Tools -->
+          <div class="card border-0 tools">
+            <div class="card-header rounded-0">
+              <span class="d-flex action-required" data-i18n="components.ClassBase.tools.title"></span>
+            </div>
+            <div class="card-body">
+              <div class="tools-groups d-flex flex-column gap-3"></div>
+            </div>
           </div>
         </div>
       </div>

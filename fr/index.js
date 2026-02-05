@@ -116,10 +116,15 @@ export default {
       title: `Caractéristiques de classe`,
       skills: {
         title: `Maîtrises de compétence`,
-        remaining: `Il reste {remaining} compétence(s) à sélectionner`
+        remaining: `Il reste {remaining} compétence(s) à choisir`,
+        notConcerned: `Il n'y a pas de compétences à choisir`,
       },
       tools: {
-        title: `Maîtrises d'outils`
+        title: `Maîtrises d'outils`,
+        remaining: `Il reste {remaining} outil(s) à choisir`,
+        remainingGroup: `Il reste {remaining} {from} à choisir`,
+        notConcerned: `Il n'y a pas de maitrîses d'outils à choisir`,
+        forced: `Outils maitrîsé :`
       },
     },
     ClassFeature: {
@@ -344,6 +349,8 @@ Vous ne pouvez avoir qu'une créature à la fois sous l'effet de cette aptitude.
       heavy: 'Armures lourdes',
       shield: 'Boucliers',
     },
+    TOOL_CATEGORY_Artisan: `outils d'artisanat`,
+    TOOL_CATEGORY_MusicalInstrument: `instruments de musique`,
     armors: {
       padded: `Armure matelassée`,
       leather: `Armure de cuir`,
@@ -359,7 +366,7 @@ Vous ne pouvez avoir qu'une créature à la fois sous l'effet de cette aptitude.
       plate: `Harnois`,
       shield: `Bouclier`,
     },
-    tools: {
+    TOOLS: {
       alchemistsSupplies: { name: `Matériel d'Alchemiste`, usage: ``, },
       brewersSupplies: { name: `Matériel de brasseur`, usage: ``, },
       calligraphersSupplies: { name: `Matériel de calligraphe`, usage: ``, },
@@ -390,21 +397,16 @@ Vous ne pouvez avoir qu'une créature à la fois sous l'effet de cette aptitude.
         }
       },
       herbalismKit: { name: `Matériel d'herboriste`, usage: ``, },
-      musicalInstrument: {
-        name: `Instrument de musique`, usage: ``,
-        variants: {
-          bagpipes: 'Cornemuse',
-          drum: 'Tambour',
-          dulcimer: 'Tympanon',
-          flute: 'Flûte',
-          horn: 'Cor',
-          lute: 'Luth',
-          lyre: 'Lyre',
-          panFlute: 'Flûte de Pan',
-          shawm: 'Chalemie',
-          viol: 'Viole',
-        },
-      },
+      bagpipes: { name: `Cornemuse`, usage: ``, },
+      drum: { name: `Tambour`, usage: ``, },
+      dulcimer: { name: `Tympanon`, usage: ``, },
+      flute: { name: `Flûte`, usage: ``, },
+      horn: { name: `Cor`, usage: ``, },
+      lute: { name: `Luth`, usage: ``, },
+      lyre: { name: `Lyre`, usage: ``, },
+      panFlute: { name: `Flûte de Pan`, usage: ``, },
+      shawm: { name: `Chalemie`, usage: ``, },
+      viol: { name: `Viole`, usage: ``, },
       navigatorsTools: { name: `Instruments de navigateur`, usage: ``, },
       poisonersKit: { name: `Matériel d'empoisonneur'`, usage: ``, },
       thievesTools: { name: `Outils de voleur`, usage: ``, },

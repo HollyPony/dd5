@@ -1,9 +1,10 @@
 import { InvalidClassNameError, InvalidSubClassNameError } from '../errors.js'
 import { Enum, f, } from '../helpers.js'
 import { EFFECT, DICES as D, SKILLS, ABILITY, } from '../common.js'
-import { ARMOR_CATEGORY, INSTRUMENTS, TOOL_CATEGORY, TOOLS, WEAPON_CATEGORY, WEAPON_PROPERTY } from './equipments.js'
+import { ARMOR_CATEGORY, TOOL_CATEGORY, TOOLS, WEAPON_CATEGORY, WEAPON_PROPERTY } from './equipments.js'
 
-const INSERTION_TYPE = Enum({
+export const INSERTION_TYPE = Enum({
+  _meta: 'INSERTION_TYPE.meta',
   forced: 'INSERTION_TYPE.forced',
   select: 'INSERTION_TYPE.select',
 })
@@ -63,7 +64,7 @@ const classes = f({
       [WEAPON_CATEGORY.simpleRanged]: [],
     }),
     toolProficiencies: f([
-      { type: INSERTION_TYPE.select, count: 3, from: INSTRUMENTS, }
+      { type: INSERTION_TYPE.select, max: 3, from: TOOL_CATEGORY.MusicalInstrument, }
     ]),
     armorProficiencies: f([ARMOR_CATEGORY.Light,]),
     shieldProficiency: false,
@@ -110,7 +111,7 @@ const classes = f({
       [WEAPON_CATEGORY.simpleRanged]: [],
     }),
     toolProficiencies: f([
-      { type: INSERTION_TYPE.forced, value: TOOLS.herbalismKit }
+      { type: INSERTION_TYPE.forced, tools: [TOOLS.herbalismKit] }
     ]),
     armorProficiencies: f([ARMOR_CATEGORY.Light,]),
     shieldProficiency: true,
@@ -161,8 +162,10 @@ const classes = f({
       [WEAPON_CATEGORY.martialMelee]: [WEAPON_PROPERTY.Light],
       [WEAPON_CATEGORY.martialRanged]: [WEAPON_PROPERTY.Light],
     }),
-    toolProficiencies: f([ // TODO: select one function
-      { type: INSERTION_TYPE.select, max: 1, from: TOOL_CATEGORY.Artisan, } // TODO
+    toolProficiencies: f([
+      { type: INSERTION_TYPE._meta, totalMax: 1, },
+      { type: INSERTION_TYPE.select, max: 1, from: TOOL_CATEGORY.Artisan, },
+      { type: INSERTION_TYPE.select, max: 1, from: TOOL_CATEGORY.MusicalInstrument },
     ]),
     armorProficiencies: f([]),
     shieldProficiency: false,
@@ -341,7 +344,7 @@ const classes = f({
       [WEAPON_CATEGORY.martialRanged]: [WEAPON_PROPERTY.Finesse, WEAPON_PROPERTY.Light],
     }),
     toolProficiencies: f([
-      { type: INSERTION_TYPE.forced, value: TOOLS.thievesTools, }
+      { type: INSERTION_TYPE.forced, tools: [TOOLS.thievesTools], }
     ]),
     armorProficiencies: f([ARMOR_CATEGORY.Light,]),
     shieldProficiency: false,
@@ -365,7 +368,7 @@ const classes = f({
       [WEAPON_CATEGORY.simpleMelee]: [],
       [WEAPON_CATEGORY.simpleRanged]: [],
     }),
-    toolProficiencies: f({}),
+    toolProficiencies: f([]),
     armorProficiencies: f([]),
     shieldProficiency: false,
     subClasses: f({
@@ -388,7 +391,7 @@ const classes = f({
       [WEAPON_CATEGORY.simpleMelee]: [],
       [WEAPON_CATEGORY.simpleRanged]: [],
     }),
-    toolProficiencies: f({}),
+    toolProficiencies: f([]),
     armorProficiencies: f([ARMOR_CATEGORY.Light,]),
     shieldProficiency: false,
     subClasses: f({
@@ -411,7 +414,7 @@ const classes = f({
       [WEAPON_CATEGORY.simpleMelee]: [],
       [WEAPON_CATEGORY.simpleRanged]: [],
     }),
-    toolProficiencies: f({}),
+    toolProficiencies: f([]),
     armorProficiencies: f([]),
     shieldProficiency: false,
     subClasses: f({

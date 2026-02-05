@@ -68,6 +68,7 @@ function createCharSheetStore() {
     }),
     classSkills: [],
     expertSkills: [],
+    classTools: [],
     feats: [],
     equipments: [],
     equiped: s({
@@ -173,6 +174,7 @@ function createCharSheetStore() {
   function getCharSize() { return get('charSize') }
   function getClassSkills() { return get('classSkills') }
   function getExpertSkills() { return get('expertSkills') }
+  function getClassTools() { return get('classTools') }
 
   function getProficiencyBonus() { return get('proficiencyBonus') }
   function getCharClass() { return get('charClass') }
@@ -236,7 +238,10 @@ function createCharSheetStore() {
   }
 
   function getToolProficiencies() {
-    return get('charClass')?.toolProficiencies
+    const classTools = get('classTools') ?? []
+    const forced = (get('charClass')?.toolProficiencies ?? [])
+      .reduce((acc, rule) => acc.concat(rule?.type === 'INSERTION_TYPE.forced' ? rule.tools : []), [])
+    return Array.from(new Set([].concat(forced, classTools)))
   }
 
   /* TODO: update if
@@ -292,6 +297,7 @@ function createCharSheetStore() {
     getCharSize,
     getClassSkills,
     getExpertSkills,
+    getClassTools,
 
     // Computed
     getProficiencyBonus,
@@ -335,6 +341,7 @@ function createCharSheetStore() {
       charOrigin: getOrigin(charOriginName),
       classSkills: [],
       expertSkills: [],
+      classTools: [],
     })
     // TODO: handle skill from origin ?
     // TODO: remove also classSkills choosed due to conflicts with origin ones
@@ -346,6 +353,7 @@ function createCharSheetStore() {
       charClass: getClass(className, undefined, get('charLevel')),
       classSkills: [],
       expertSkills: [],
+      classTools: [],
     })
 
     // TODO: refresh this datas with event
@@ -430,6 +438,14 @@ function createCharSheetStore() {
     set({ 'expertSkills': get('expertSkills').filter(_skill => _skill !== skill) })
   }
 
+  function classToolsAdd(tool) {
+    set({ 'classTools': get('classTools').concat(tool) })
+  }
+
+  function classToolsRemove(tool) {
+    set({ 'classTools': get('classTools').filter(_tool => _tool !== tool) })
+  }
+
   const helpers = {
     isDisabledSkill,
     isCheckedSkill,
@@ -438,11 +454,14 @@ function createCharSheetStore() {
     classSkillsRemove,
     expertSkillsAdd,
     expertSkillsRemove,
+    classToolsAdd,
+    classToolsRemove,
     toJSON() { return storeManager.toJSON(store.get()) }
   }
 
   return {
     init,
+    get,
     ...getters,
     ...setters,
     ...helpers,

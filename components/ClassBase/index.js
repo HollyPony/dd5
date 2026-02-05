@@ -2,15 +2,22 @@ import { AbstractComponent } from '../AbstractComponent/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
 import { t, i18n } from '../../modules/i18n.js'
 import { createElement, fillElement } from '../../modules/domlib.js'
+import { EQUIPMENT_TYPE, getEquipments, INSTRUMENTS } from '../../modules/data/equipments.js'
+import { INSERTION_TYPE } from '../../modules/data/classes.js'
 
 export class ClassBase extends AbstractComponent {
   static get tagName() { return 'class-base' }
   static get _componentPath() { return '/components/ClassBase' }
 
   #baseFeatureButtonElement
+
+  #skillsContainerElement
   #skillsActionRequiredElement
-  #skillsChooseLabel
-  #skillsList
+  #skillsChooseLabelElement
+  #skillsListElement
+  #toolsContainerElement
+  #toolsActionRequiredElement
+  #toolsGroupsElement
 
   _connectedCallback() {
     console.info('-- ClassBase.connectedCallback')
@@ -28,14 +35,18 @@ export class ClassBase extends AbstractComponent {
     baseFeatureAccordionElement.id = baseAccordionItemId
     baseFeatureAccordionElement.dataset.bsParent = `#${baseAccordionId}`
 
-    const skillContainer = accordionBodyElement.querySelector('.card.skills')
-    this.#skillsActionRequiredElement = skillContainer.querySelector('.card-header > .action-required')
-    this.#skillsChooseLabel = skillContainer.querySelector('.card-body > .card-title.choose')
-    this.#skillsList = skillContainer.querySelector('.card-body > .list')
+    this.#skillsContainerElement = accordionBodyElement.querySelector('.card.skills')
+    this.#skillsActionRequiredElement = this.#skillsContainerElement.querySelector('.card-header > .action-required')
+    this.#skillsChooseLabelElement = this.#skillsContainerElement.querySelector('.card-body > .card-title.choose')
+    this.#skillsListElement = this.#skillsContainerElement.querySelector('.card-body > .list')
+
+    this.#toolsContainerElement = baseFeatureAccordionElement.querySelector('.card.tools')
+    this.#toolsActionRequiredElement = this.#toolsContainerElement.querySelector('.card-header > .action-required')
+    this.#toolsGroupsElement = this.#toolsContainerElement.querySelector('.card-body > .tools-groups')
 
     this.#refreshActionsRequired()
-    this.#refreshSkillsChooseLabel()
-    this.#refreshSkillsList()
+    this.#refreshSkills()
+    this.#refreshTools()
 
     i18n.applyTranslations(this)
   }
@@ -43,54 +54,184 @@ export class ClassBase extends AbstractComponent {
   _registerEvents() {
     this._pushEvents(
       charSheet.subscribe('classSkills', this.#skillsChanged),
+      charSheet.subscribe('classTools', this.#toolsChanged),
     )
   }
 
   #refreshActionsRequired() {
     console.info('-- ClassBase.refreshActionsRequired')
+
+    const toolsMetaMaxTotal = charSheet.getCharClass()?.toolProficiencies
+      ?.find(rule => rule.type === INSERTION_TYPE._meta && rule.totalMax)?.totalMax
+    const toolsMaxTotal = toolsMetaMaxTotal
+      || charSheet.getCharClass()?.toolProficiencies
+        ?.filter(rule => rule.type === INSERTION_TYPE.select)
+        .reduce((acc, rule) => acc + rule.max, 0)
+      || 0
+
     const actionsRequired = {
-      skills: (charSheet.getCharClass()?.skills.nb - charSheet.getClassSkills().length) > 0
+      skills: (charSheet.getCharClass()?.skills.nb - charSheet.getClassSkills().length) > 0,
+      tools: toolsMaxTotal - charSheet.getClassTools().length > 0,
     }
 
     this.#skillsActionRequiredElement.classList[actionsRequired.skills ? 'add' : 'remove']('show')
+    this.#toolsActionRequiredElement.classList[actionsRequired.tools ? 'add' : 'remove']('show')
     const hasActionRequired = Object.values(actionsRequired).some(i => i)
     this.#baseFeatureButtonElement.classList[hasActionRequired ? 'add' : 'remove']('show')
     this._observable('actionRequired').set(hasActionRequired ?? false)
   }
 
+  #refreshSkills() {
+    console.info('-- ClassBase.refreshSkills')
+
+    if (!charSheet.getCharClass()?.skills)
+      return this.#skillsContainerElement.classList.add('d-none')
+    this.#skillsContainerElement.classList.remove('d-none')
+
+    this.#refreshSkillsChooseLabel()
+    this.#refreshSkillsList()
+  }
+
   #refreshSkillsChooseLabel() {
     console.info('-- ClassBase.refreshSkillsChooseLabel')
-    fillElement(this.#skillsChooseLabel, t.tn('components.ClassBase.skills.remaining', {
-      remaining: charSheet.getCharClass()?.skills.nb - charSheet.getClassSkills().length
-    }))
+    const classSkills = charSheet.getCharClass()?.skills
+    if (classSkills) {
+      const remaining = classSkills.nb - charSheet.getClassSkills().length
+      fillElement(this.#skillsChooseLabelElement, t.tn('components.ClassBase.skills.remaining', { remaining }))
+    } else {
+      fillElement(this.#skillsChooseLabelElement, t.tn('components.ClassBase.skills.notConcerned',))
+    }
   }
 
   #refreshSkillsList() {
     console.info('-- ClassBase.refreshSkillsList')
-    fillElement(this.#skillsList, charSheet.getCharClass()?.skills.list.map(skill => createElement('div', [
-      createElement('input', null, {
-        type: 'checkbox', class: 'btn-check', id: `${skill.name}.${this._id}`,
-        checked: charSheet.getClassSkills().includes(skill),
-        disabled: charSheet.isDisabledSkill(skill),
-        eventListeners: {
-          change: ({ target: { checked } }) => charSheet[checked ? 'classSkillsAdd' : 'classSkillsRemove'](skill)
+    fillElement(this.#skillsListElement, charSheet.getCharClass()?.skills.list.map(skill => {
+      const skillId = `${skill.name}.${this._id}`
+      return createElement('div', [
+        createElement('input', null, {
+          type: 'checkbox', class: 'btn-check', id: skillId,
+          checked: charSheet.getClassSkills().includes(skill),
+          disabled: charSheet.isDisabledSkill(skill),
+          eventListeners: {
+            change: ({ target: { checked } }) => charSheet[checked ? 'classSkillsAdd' : 'classSkillsRemove'](skill)
+          }
+        }),
+        createElement('label', t._(`statics.${skill.name}`), { class: 'btn btn-outline-primary', for: skillId }),
+      ])
+    }))
+  }
+
+  #refreshTools() {
+    console.info('-- ClassBase.refreshTools')
+
+    if (!charSheet.getCharClass()?.toolProficiencies?.length)
+      return this.#toolsContainerElement.classList.add('d-none')
+    this.#toolsContainerElement.classList.remove('d-none')
+
+    const metaTotalMax = charSheet.getCharClass()?.toolProficiencies
+      .find(rule => rule.type === INSERTION_TYPE._meta && rule.totalMax)?.totalMax
+    const totalMax = metaTotalMax
+      || charSheet.getCharClass()?.toolProficiencies
+        .filter(rule => rule.type === INSERTION_TYPE.select)
+        .reduce((acc, rule) => acc + rule.max, 0)
+      || 0
+
+    this.#refreshToolsGroups(totalMax)
+  }
+
+  #refreshToolsGroups(totalMax) {
+    const classTools = charSheet.getClassTools()
+    const totalSelected = classTools.length
+    const totalRemaining = totalMax - totalSelected
+
+    const groups = charSheet.getCharClass()?.toolProficiencies?.map((rule, groupIndex) => {
+      const groupChildren = []
+
+      switch (rule.type) {
+        case INSERTION_TYPE.select: {
+          const tools = getEquipments({ type: EQUIPMENT_TYPE.TOOL })
+            .filter(tool => tool.category === rule.from)
+            .map(tool => tool.name)
+
+          const groupSelected = classTools.filter(tool => tools.includes(tool))
+          const groupRemaining = Math.max(0, rule.max - groupSelected.length)
+          const remaining = Math.min(totalRemaining, groupRemaining)
+
+          groupChildren.push(createElement('div', t.tn('components.ClassBase.tools.remainingGroup', {
+            remaining, from: t._(`statics.${rule.from}`)
+          }), { class: 'card-title' }))
+          groupChildren.push(createElement('div', tools.map(tool => {
+            const toolId = `${tool}.${this._id}.tools.${groupIndex}`
+            const isChecked = groupSelected.includes(tool)
+            const isCheckedElseWhere = false // TODO: + check is checked from elsewhere eg. feats
+            return createElement('div', [
+              createElement('input', null, {
+                type: 'checkbox',
+                class: 'btn-check',
+                id: toolId,
+                checked: isChecked,
+                disabled: isCheckedElseWhere || (!isChecked && remaining === 0),
+                eventListeners: {
+                  change: ({ target: { checked } }) => charSheet[checked ? 'classToolsAdd' : 'classToolsRemove'](tool)
+                }
+              }),
+              createElement(
+                'label',
+                t._(`statics.TOOLS.${tool.replace('TOOLS_', '')}.name`),
+                { class: 'btn btn-outline-primary', for: toolId }
+              ),
+            ])
+          }), { class: 'd-flex flex-wrap gap-3' }))
+          return createElement('div', groupChildren, { class: 'tools-group' })
         }
-      }),
-      createElement('label', t._(`statics.${skill.name}`), { class: 'btn btn-outline-primary', for: `${skill.name}.${this._id}` }),
-    ])))
+        case INSERTION_TYPE.forced: {
+          groupChildren.push(createElement(
+            'div',
+            t.tn('components.ClassBase.tools.forced'),
+            { class: 'card-title' }
+          ))
+          groupChildren.push(createElement('div', rule.tools.map(tool => {
+            const toolId = `${tool}.${this._id}.tools.${groupIndex}`
+            return createElement('div', [
+              createElement('input', null, {
+                type: 'checkbox',
+                class: 'btn-check',
+                id: toolId,
+                checked: true,
+                disabled: true,
+              }),
+              createElement(
+                'label',
+                t._(`statics.TOOLS.${tool.replace('TOOLS_', '')}.name`),
+                { class: 'btn btn-outline-primary', for: toolId }
+              ),
+            ])
+          }), { class: 'd-flex flex-wrap gap-3' }))
+
+          return createElement('div', groupChildren, { class: 'tools-group' })
+        }
+      }
+    })
+    fillElement(this.#toolsGroupsElement, groups.filter(Boolean))
+    this.#toolsGroupsElement.classList[groups.length ? 'remove' : 'add']('d-none')
   }
 
   #skillsChanged = () => {
     console.info('-- ClassBase.skillsChanged')
     this.#refreshActionsRequired()
-    this.#refreshSkillsChooseLabel()
-    this.#refreshSkillsList()
+    this.#refreshSkills()
+  }
+
+  #toolsChanged = () => {
+    console.info('-- ClassBase.toolsChanged')
+    this.#refreshActionsRequired()
+    this.#refreshTools()
   }
 
   _i18nChanged = () => {
     console.info('-- ClassBase.i18nChanged')
     i18n.applyTranslations(this)
-    this.#refreshSkillsChooseLabel()
-    this.#refreshSkillsList()
+    this.#refreshSkills()
+    this.#refreshTools()
   }
 }
