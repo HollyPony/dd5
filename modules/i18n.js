@@ -18,12 +18,13 @@ export default async function init() {
   ].filter(lang => Boolean(lang) && availableLanguages.includes(lang))
 
   for (const lang of candidates) {
-    try {
-      await changeLang(lang)
-      return language
-    } catch (error) {
-      // try next candidate
-    }
+    // TODO: handle specifics catch and display precise error
+    // try {
+    await changeLang(lang)
+    return language
+    // } catch (error) {
+    //   // try next candidate
+    // }
   }
 
   console.warn(`No translation file found, fallback to empty translations`)
