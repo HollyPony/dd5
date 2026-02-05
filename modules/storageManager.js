@@ -1,4 +1,5 @@
 import { ABILITY, SKILLS, } from './common.js'
+import { StorageError } from './errors.js'
 
 // // TODO: remove once at least web storage imported
 // export const mock = {
@@ -104,4 +105,140 @@ export function toJSON(jsData) {
     classTools: jsData.classTools,
     equipments: jsData.equipments
   }, reviver, 2)
+}
+
+const STORAGE_PREFIX = 'dd5'
+const STORAGE_VERSION = 1
+const SAVES_INDEX_KEY = `${STORAGE_PREFIX}.savesIndex`
+const LAST_SAVE_KEY = `${STORAGE_PREFIX}.lastSaveId`
+const SAVE_KEY_PREFIX = `${STORAGE_PREFIX}.save.`
+const AUTOSAVE_ID = 'autosave'
+const AUTOSAVE_NAME = 'Dernière modification'
+
+function getLocalStorage() {
+  try {
+    if (!('localStorage' in window)) throw new Error('localStorage is not available')
+    return window.localStorage
+  } catch (error) {
+    throw StorageError('Local storage is not available', error)
+  }
+}
+
+function keyForSave(id) {
+  return `${SAVE_KEY_PREFIX}${id}`
+}
+
+function safeParseJSON(raw, errorMessage) {
+  try {
+    return JSON.parse(raw)
+  } catch (error) {
+    throw StorageError(errorMessage ?? 'Invalid JSON data', error)
+  }
+}
+
+function readIndex(storage) {
+  const raw = storage.getItem(SAVES_INDEX_KEY)
+  if (!raw) return []
+  const index = safeParseJSON(raw, 'Invalid saves index')
+  if (!Array.isArray(index)) throw StorageError('Invalid saves index format')
+  return index
+}
+
+function writeIndex(storage, index) {
+  storage.setItem(SAVES_INDEX_KEY, JSON.stringify(index))
+}
+
+function upsertIndexEntry(index, entry) {
+  const next = index.filter(item => item.id !== entry.id)
+  next.push(entry)
+  return next
+}
+
+function normalizeName(name, fallback = 'Sans nom') {
+  return (name ?? '').toString().trim() || fallback
+}
+
+export function listSaves({ includeAutosave = false } = {}) {
+  const storage = getLocalStorage()
+  const index = readIndex(storage)
+  const filtered = includeAutosave ? index : index.filter(item => !item?.isAutosave)
+  return filtered.sort((a, b) => (b?.updatedAt ?? 0) - (a?.updatedAt ?? 0))
+}
+
+export function saveCharsheet(jsData, { id, name, isAutosave = false } = {}) {
+  const storage = getLocalStorage()
+  const saveId = id ?? crypto.randomUUID()
+  const updatedAt = Date.now()
+  const resolvedName = normalizeName(name, normalizeName(jsData?.charName, 'Sans nom'))
+  const jsonData = typeof jsData === 'string' ? jsData : toJSON(jsData)
+
+  const entry = {
+    id: saveId,
+    name: resolvedName,
+    updatedAt,
+    version: STORAGE_VERSION,
+    isAutosave,
+    data: jsonData,
+  }
+
+  storage.setItem(keyForSave(saveId), JSON.stringify(entry))
+
+  const nextIndex = upsertIndexEntry(readIndex(storage), {
+    id: saveId,
+    name: resolvedName,
+    updatedAt,
+    isAutosave,
+  })
+  writeIndex(storage, nextIndex)
+  storage.setItem(LAST_SAVE_KEY, saveId)
+
+  return entry
+}
+
+export function saveAutosave(jsData) {
+  return saveCharsheet(jsData, { id: AUTOSAVE_ID, name: AUTOSAVE_NAME, isAutosave: true })
+}
+
+export function loadCharsheet(id) {
+  if (!id) throw StorageError('A save id is required')
+  const raw = getLocalStorage().getItem(keyForSave(id))
+  if (!raw) return null
+
+  const entry = safeParseJSON(raw, `Invalid save entry '${id}'`)
+  const jsonData = entry?.data
+  if (!jsonData) throw StorageError(`Missing data for save '${id}'`)
+
+  return typeof jsonData === 'string' ? fromJSON(jsonData) : jsonData
+}
+
+export function loadLastCharsheet() {
+  const storage = getLocalStorage()
+  const lastId = storage.getItem(LAST_SAVE_KEY)
+  if (lastId) {
+    const data = loadCharsheet(lastId)
+    if (data) return data
+  }
+
+  const list = listSaves({ includeAutosave: true })
+  if (!list.length) return null
+
+  const data = loadCharsheet(list[0].id)
+  if (data) storage.setItem(LAST_SAVE_KEY, list[0].id)
+  return data
+}
+
+export function deleteSave(id) {
+  if (!id) throw StorageError('A save id is required')
+  const storage = getLocalStorage()
+  storage.removeItem(keyForSave(id))
+
+  const nextIndex = readIndex(storage).filter(item => item.id !== id)
+  writeIndex(storage, nextIndex)
+
+  const lastId = storage.getItem(LAST_SAVE_KEY)
+  if (lastId === id) {
+    const next = listSaves({ includeAutosave: true })[0]
+    if (next) storage.setItem(LAST_SAVE_KEY, next.id)
+    else storage.removeItem(LAST_SAVE_KEY)
+  }
 }

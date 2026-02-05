@@ -60,3 +60,11 @@ export function ImportError(message, ...props) {
     args: props,
   })
 }
+
+export function StorageError(message, ...props) {
+  return createCustomError({
+    name: 'StorageError',
+    message: message || 'Storage error',
+    args: props,
+  })
+}

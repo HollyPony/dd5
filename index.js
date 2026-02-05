@@ -16,11 +16,14 @@ import { Specs } from './components/Specs/index.js'
 import { AbstractComponent } from './components/AbstractComponent/index.js'
 
 import { DICES as D, } from './modules/common.js'
+import { ALL } from './modules/stores/createObservableStore.js'
 import initTranslations, { i18n } from '/modules/i18n.js'
 import charSheet from './modules/stores/charSheet.store.js'
 import { ExportError, ImportError } from './modules/errors.js'
+import { debounce } from './modules/helpers.js'
+import { fromJSON, loadLastCharsheet, saveAutosave } from './modules/storageManager.js'
 
-import { fromJSON } from './modules/storageManager.js'
+const AUTOSAVE_DELAY_MS = 600
 
 /////////////////////////////////////////////////////////////////////////
 // ELEMENTS TO UPDATE ///////////////////////////////////////////////////
@@ -103,6 +106,7 @@ function registerSubscriptions() {
     charSheet.subscribe('equiped', refreshArmorClass),
     charSheet.subscribe('feats', refreshArmorClass),
     charSheet.subscribe('modifiers', refreshArmorClass),
+    charSheet.subscribe(ALL, debounce(() => saveAutosave(charSheet.toJSON()), AUTOSAVE_DELAY_MS)),
     i18n.subscribe(() => AbstractComponent.notifyI18nChanged()),
   )
 }
@@ -226,7 +230,7 @@ function registerCustomElements() {
 /////////////////////////////////////////////////////////////////////////
 
 function initApp() {
-  charSheet.init()
+  charSheet.init(loadLastCharsheet())
 
   refreshAll()
 

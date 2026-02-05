@@ -37,6 +37,14 @@ export function isObject(value) {
   return value && typeof value === 'object' && !Array.isArray(value)
 }
 
+export function debounce(fn, delayMs = 0) {
+  let timerId
+  return (...args) => {
+    clearTimeout(timerId)
+    timerId = setTimeout(() => fn(...args), delayMs)
+  }
+}
+
 /**
  * Navigates inside `obj` with `path` string,
  *
