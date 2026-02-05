@@ -161,9 +161,6 @@ const classes = f({
       [WEAPON_CATEGORY.martialMelee]: [WEAPON_PROPERTY.Light],
       [WEAPON_CATEGORY.martialRanged]: [WEAPON_PROPERTY.Light],
     }),
-    // TODO: remove ?
-    // getWeaponProficienciesFilter: (armor) => [WEAPON_CATEGORY.simpleMelee, WEAPON_CATEGORY.simpleRanged].includes(weapon.category) ||
-    //   ([WEAPON_CATEGORY.martialMelee, WEAPON_CATEGORY.martialRanged].includes(weapon.category) && weapon.properties.includes(WEAPON_PROPERTY.Light)),
     toolProficiencies: f([ // TODO: select one function
       { type: INSERTION_TYPE.select, max: 1, from: TOOL_CATEGORY.Artisan, } // TODO
     ]),
