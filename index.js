@@ -123,7 +123,7 @@ function setBindings() {
   importCharLink.addEventListener('click', importCharClicked)
   importCharFileElement.addEventListener('change', importCharFileChanged)
 
-  charNameElement.addEventListener('change', charNameChanged)
+  charNameElement.addEventListener('input', charNameChanged)
   charExperienceElement.addEventListener('change', charExperienceChanged)
 }
 
@@ -233,7 +233,7 @@ function initApp() {
   setBindings()
   registerCustomElements()
   registerSubscriptions()
-  window.addEventListener('beforeunload', destroyApp)
+  window.addEventListener('pagehide', destroyApp)
 
   initTranslations()
 }
@@ -241,7 +241,7 @@ function initApp() {
 function destroyApp() {
   unregisterSubscriptions()
   unregisterBindings()
-  window.removeEventListener('beforeunload', destroyApp)
+  window.removeEventListener('pagehide', destroyApp)
 }
 
 initApp()
