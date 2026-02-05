@@ -37,6 +37,10 @@ export default {
     name: `Ermite`,
     description: `Vous avez passé des années en isolement, loin des sociétés civilisées, recherchant solitude, méditation ou vérité intérieure. Ce temps seul vous a marqué profondément avant d’entrer dans le monde.`
   },
+  merchant: {
+    name: `Marchand`,
+    description: `Vous avez parcouru routes et marchés, négociant biens et informations entre villes et royaumes. Le commerce vous a appris l’art du marchandage, la valeur de l’or et l’importance des relations avant de vous mener sur la voie de l’aventure.`,
+  },
   noble: {
     name: `Noble`,
     description: `Vous avez grandi dans la richesse et le pouvoir d’une lignée noble. L’influence sociale, l’étiquette et les responsabilités politiques vous ont formé avant que vous ne choisissiez la vie d’aventure.`
