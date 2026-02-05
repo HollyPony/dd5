@@ -36,7 +36,7 @@ function removeAllChildren(element) {
 /**
  * Fill element
  * @param {*} element to fill with ...
- * @param {HTMLElement[]|HTMLElement} items to put on element
+ * @param {null|undefined|string|HTMLElement|string[]|HTMLElement[]} items if provided, append all children as textContext or direct as Element
  * @param {*} params could be { clear: true } default. To clear content of element before fill
  * @returns the element
  */
@@ -46,7 +46,7 @@ export function fillElement(element, items = [], params = { clear: true }) {
   }
 
   const fragment = document.createDocumentFragment()
-  Array().concat(items).forEach(item => fragment.appendChild(item))
+  Array().concat(items).forEach(item => fragment.appendChild(typeof item === 'string' ? document.createTextNode(item) : item))
   element.appendChild(fragment)
   return element
 }
