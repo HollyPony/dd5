@@ -42,6 +42,7 @@ export class Ability extends AbstractComponent {
     this.#save.label.appendChild(t.tn('ability.save.label'))
 
     this.#refreshScore()
+    this.#refreshSkills()
   }
 
   _registerEvents() {
@@ -59,8 +60,6 @@ export class Ability extends AbstractComponent {
 
     const score = charSheet.getAbilityScore(this.ability)
     this.#scoreElement.value = score
-
-    this.#scoreElement.dispatchEvent(new Event('change'))
   }
 
   #refreshSave() {
