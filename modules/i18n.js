@@ -7,7 +7,7 @@ const getDocumentLanguage = () => document.documentElement?.lang || navigator.la
 const subscribers = new Set()
 
 let translations = null
-let language = DEFAULT_LANGUAGE
+let language = null
 
 export default async function init() {
   const requested = getDocumentLanguage()
@@ -46,7 +46,14 @@ async function changeLang(lang) {
 }
 
 function _(path, interpolations) {
+  if (!language) return path
   const value = resolvePath(translations || {}, path) ?? path
+  if (value === undefined || value === null || typeof value !== 'string') {
+    console.warn(
+      `Missing translation key: '${path}' (lang: '${language}')`,
+      new Error('i18n.missing').stack
+    )
+  }
   return strObjInterpolation(typeof value === 'string' ? value : path, interpolations)
 }
 
