@@ -22,7 +22,7 @@ import charSheet from './modules/stores/charSheet.store.js'
 import { ExportError, ImportError } from './modules/errors.js'
 import { debounce, } from './modules/helpers.js'
 import charSheetService from './modules/services/charSheet.service.js'
-import { createElement, fillElement, } from './modules/domlib.js'
+import { createElement, domSubscribe, fillElement, } from './modules/domlib.js'
 
 const AUTOSAVE_DELAY_MS = 600
 
@@ -32,7 +32,7 @@ const AUTOSAVE_DELAY_MS = 600
 
 const charNameElement = document.getElementsByName('charName')[0]
 const charLevelElement = document.getElementsByName('charLevel')[0]
-const charExperienceElement = document.getElementsByName('experiencepoints')[0] // TODO: Update level with experience ?
+const charExperienceElement = document.getElementsByName('experiencepoints')[0]
 const exportCharLink = document.getElementById("exportCharLink")
 const importCharLink = document.getElementById("importCharLink")
 const importCharFileElement = document.getElementById("importCharFile")
@@ -103,6 +103,16 @@ const subscriptions = []
 
 function registerSubscriptions() {
   subscriptions.push(
+    // Dom html events
+    domSubscribe(exportCharLink, 'click', exportJSONClicked),
+    domSubscribe(importCharLink, 'click', importCharClicked),
+    domSubscribe(importCharFileElement, 'change', importCharFileChanged),
+    domSubscribe(savedCharactersList, 'click', savedCharacterClicked),
+    domSubscribe(createCharacterLink, 'click', createCharacterClicked),
+    domSubscribe(charNameElement, 'input', charNameChanged),
+    domSubscribe(charExperienceElement, 'change', charExperienceChanged),
+
+    // Observable events
     charSheet.subscribe('charName', refreshCharName),
     charSheet.subscribe('charExperience', refreshCharExperience),
     charSheet.subscribe('charLevel', refreshCharLevel),
@@ -124,30 +134,6 @@ function registerSubscriptions() {
 
 function unregisterSubscriptions() {
   while (subscriptions.length) subscriptions.pop()?.()
-}
-
-/////////////////////////////////////////////////////////////////////////
-// CONNECT HTML EVENTS //////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
-
-function setBindings() {
-  exportCharLink.addEventListener('click', exportJSONClicked)
-  importCharLink.addEventListener('click', importCharClicked)
-  importCharFileElement.addEventListener('change', importCharFileChanged)
-  savedCharactersList?.addEventListener('click', savedCharacterClicked)
-  createCharacterLink?.addEventListener('click', createCharacterClicked)
-  charNameElement.addEventListener('input', charNameChanged)
-  charExperienceElement.addEventListener('change', charExperienceChanged)
-}
-
-function unregisterBindings() {
-  exportCharLink.removeEventListener('click', exportJSONClicked)
-  importCharLink.removeEventListener('click', importCharClicked)
-  importCharFileElement.removeEventListener('change', importCharFileChanged)
-  savedCharactersList?.removeEventListener('click', savedCharacterClicked)
-  createCharacterLink?.removeEventListener('click', createCharacterClicked)
-  charNameElement.removeEventListener('change', charNameChanged)
-  charExperienceElement.removeEventListener('change', charExperienceChanged)
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -247,7 +233,6 @@ function registerCustomElements() {
 async function initApp() {
   await initTranslations()
 
-  setBindings()
   registerCustomElements()
   registerSubscriptions()
   window.addEventListener('pagehide', destroyApp)
