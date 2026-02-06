@@ -97,6 +97,10 @@ function renderCharAlignment() {
   document.getElementsByName('alignment')[0].value = charSheet.getCharAlignment()
 }
 
+function renderJSONOutput() {
+  document.getElementById('jsonOutput').textContent = JSON.stringify(charSheet.get(), null, 2)
+}
+
 /////////////////////////////////////////////////////////////////////////
 // SUBSCRIPTIONS ////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
@@ -130,7 +134,7 @@ function registerSubscriptions() {
     charSheet.subscribe('modifiers', renderArmorClass),
     charSheet.subscribe(ALL, renderJSONOutput),
     charSheet.subscribe(ALL, debounce(() => charSheetService.save(), AUTOSAVE_DELAY_MS)),
-    charSheetService.subscribeCharSheetsList(refreshSavedCharSheets),
+    charSheetService.subscribeCharSheetsList(renderSavedCharSheets),
     i18n.subscribe(() => AbstractComponent.notifyI18nChanged()),
   )
 }

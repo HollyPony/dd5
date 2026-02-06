@@ -51,6 +51,10 @@
             <input id="importCharFile" type="file" class="d-none" accept=".json,.char,application/json" />
             <a id="importCharLink" class="nav-link" download="data.json" href="" data-i18n="navbar.importChar"></a>
           </li>
+          <li class="nav-item">
+            <a id="jsonOutputLink" class="nav-link" href="#" role="button" data-bs-toggle="modal"
+              data-bs-target="#jsonOutputModal" data-i18n="navbar.jsonOutput"></a>
+          </li>
         </ul>
       </div>
     </div>
@@ -195,6 +199,7 @@
               <species-traits class="flex-grow-1 flex-basis-0"></species-traits>
               <feats-block class="flex-grow-1 flex-basis-0"></feats-block>
             </div>
+
           </div>
         </div>
       </div>
@@ -204,6 +209,22 @@
       <input name="alignment" class="form-control" placeholder="Lawful Good" />
     </form>
   </main>
+
+  <div class="modal fade" id="jsonOutputModal" tabindex="-1" aria-labelledby="jsonOutputModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="jsonOutputModalLabel" data-i18n="jsonOutput.title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <pre id="jsonOutput" class="mb-0 small"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3"></div>
 
   <!-- External lib -->
