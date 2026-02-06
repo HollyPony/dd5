@@ -27,7 +27,7 @@ export function createElement(type, children = [], { eventListeners = {}, ...att
  * @param {HTMLElement} element The element to process
  * @returns undefined
  */
-function removeAllChildren(element) {
+export function removeAllChildren(element) {
   if (element) {
     while (element.firstChild) { element.removeChild(element.firstChild) }
   }
