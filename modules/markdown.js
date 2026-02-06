@@ -1,4 +1,4 @@
-import { createElement } from "./domlib.js";
+import { createElement } from './domlib.js';
 
 /**
  * Markdown parser minimal (CommonMark partiel) → DOM Element
