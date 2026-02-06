@@ -47,7 +47,7 @@ function diceToString({ number, dice }) {
 // DISPLAY UPDATES
 
 function refreshCharName() {
-  document.getElementsByName('charName')[0].value = charSheet.getCharName()
+  charNameElement.value = charSheet.getCharName()
 }
 
 function refreshCharExperience() {
