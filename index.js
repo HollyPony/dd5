@@ -49,9 +49,11 @@ function diceToString({ number, dice }) {
   return D[dice] ? `${number}d${dice}` : 'err' // TODO:
 }
 
-// DISPLAY UPDATES
+/////////////////////////////////////////////////////////////////////////
+// DOM RENDERS //////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
 
-function refreshSavedCharSheets() {
+function renderSavedCharSheets() {
   const saves = charSheetService.getList(false)
 
   fillElement(savedCharactersListTitle, t._(saves.length ? 'navbar.savedCharacters' : 'navbar.noCharacters'))
@@ -66,32 +68,32 @@ function refreshSavedCharSheets() {
   ))
 }
 
-function refreshCharName() {
+function renderCharName() {
   charNameElement.value = charSheet.getCharName()
   fillElement(currentCharacterName, charSheet.getCharName() || t._('navbar.unnamedCharacter'))
 }
 
-function refreshCharExperience() {
+function renderCharExperience() {
   charExperienceElement.value = charSheet.getCharExperience()
 }
 
-function refreshCharLevel() {
+function renderCharLevel() {
   charLevelElement.value = charSheet.getCharLevel()
 }
 
-function refreshArmorClass() {
+function renderArmorClass() {
   document.getElementsByName('armorClass')[0].value = charSheet.getArmorClass()
 }
 
-function refreshHitPointMax() {
+function renderHitPointMax() {
   document.getElementsByName('hitPointMax')[0].value = charSheet.getHitPointMax()
 }
 
-function refreshHitDiceMax() {
+function renderHitDiceMax() {
   document.getElementsByName('hitDiceMax')[0].value = diceToString(charSheet.getHitDiceMax())
 }
 
-function refreshCharAlignment() {
+function renderCharAlignment() {
   document.getElementsByName('alignment')[0].value = charSheet.getCharAlignment()
 }
 
@@ -113,19 +115,20 @@ function registerSubscriptions() {
     domSubscribe(charExperienceElement, 'change', charExperienceChanged),
 
     // Observable events
-    charSheet.subscribe('charName', refreshCharName),
-    charSheet.subscribe('charExperience', refreshCharExperience),
-    charSheet.subscribe('charLevel', refreshCharLevel),
-    charSheet.subscribe('charLevel', refreshHitPointMax),
-    charSheet.subscribe('charClass', refreshHitPointMax),
-    charSheet.subscribe('modifiers', refreshHitPointMax),
-    charSheet.subscribe('charLevel', refreshHitDiceMax),
-    charSheet.subscribe('charClass', refreshHitDiceMax),
-    charSheet.subscribe('charAlignment', refreshCharAlignment),
-    charSheet.subscribe('charClass', refreshArmorClass),
-    charSheet.subscribe('equiped', refreshArmorClass),
-    charSheet.subscribe('feats', refreshArmorClass),
-    charSheet.subscribe('modifiers', refreshArmorClass),
+    charSheet.subscribe('charName', renderCharName),
+    charSheet.subscribe('charExperience', renderCharExperience),
+    charSheet.subscribe('charLevel', renderCharLevel),
+    charSheet.subscribe('charLevel', renderHitPointMax),
+    charSheet.subscribe('charClass', renderHitPointMax),
+    charSheet.subscribe('modifiers', renderHitPointMax),
+    charSheet.subscribe('charLevel', renderHitDiceMax),
+    charSheet.subscribe('charClass', renderHitDiceMax),
+    charSheet.subscribe('charAlignment', renderCharAlignment),
+    charSheet.subscribe('charClass', renderArmorClass),
+    charSheet.subscribe('equiped', renderArmorClass),
+    charSheet.subscribe('feats', renderArmorClass),
+    charSheet.subscribe('modifiers', renderArmorClass),
+    charSheet.subscribe(ALL, renderJSONOutput),
     charSheet.subscribe(ALL, debounce(() => charSheetService.save(), AUTOSAVE_DELAY_MS)),
     charSheetService.subscribeCharSheetsList(refreshSavedCharSheets),
     i18n.subscribe(() => AbstractComponent.notifyI18nChanged()),
