@@ -1,10 +1,7 @@
-import { createObservable } from '../../modules/helpers.js'
-
 export class AbstractComponent extends HTMLElement {
   _id
 
   #events = []
-  #observables = new Map()
 
   #isLoaded = false
 
@@ -32,11 +29,11 @@ export class AbstractComponent extends HTMLElement {
 
   constructor() {
     super()
+    this._id = crypto.randomUUID()
   }
 
   async connectedCallback() {
     console.info('-- AbstractComponent.connectedCallback')
-    this._id = crypto.randomUUID()
     AbstractComponent.#instances.add(this)
 
     const template = await this.constructor._template
@@ -77,16 +74,9 @@ export class AbstractComponent extends HTMLElement {
     this._unregisterEvents?.()
 
     for (const unregister of this.#events) unregister()
-    this.#events.length = 0
-
-    this.#observables.clear()
   }
 
   _pushEvents(...events) {
     this.#events.push(...events)
-  }
-
-  _observable(name) {
-    return this.#observables.get(name) || this.#observables.set(name, createObservable()).get(name)
   }
 }

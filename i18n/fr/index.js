@@ -21,6 +21,11 @@ export default {
     appTitle: 'Création de personnage',
     exportChar: 'Télécharger',
     importChar: 'Importer',
+    characters: 'Personnages',
+    newCharacter: 'Nouveau personnage',
+    savedCharacters: 'Personnages enregistrés',
+    noCharacters: 'Aucun personnage',
+    unnamedCharacter: 'Personnage sans nom',
   },
   charName: {
     label: 'Nom du personnage',

@@ -29,7 +29,7 @@ export function createElement(type, children = [], { eventListeners = {}, ...att
  */
 export function removeAllChildren(element) {
   if (element) {
-    while (element.firstChild) { element.removeChild(element.firstChild) }
+    while (element.firstChild) element.removeChild(element.firstChild)
   }
   return element
 }

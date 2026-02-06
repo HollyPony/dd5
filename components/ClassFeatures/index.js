@@ -25,7 +25,7 @@ export class ClassFeatures extends AbstractComponent {
     this.#refreshActionRequired()
 
     const baseFeatureElement = this.querySelector('class-base')
-    const subscription = baseFeatureElement._observable('actionRequired').subscribe(this.#actionRequiredChanged)
+    const subscription = baseFeatureElement._observable.subscribe('actionRequired', this.#actionRequiredChanged)
     baseFeatureElement._pushEvents(subscription)
 
     i18n.applyTranslations(this)
@@ -55,7 +55,7 @@ export class ClassFeatures extends AbstractComponent {
 
     let hasActionRequired = false
     for (const element of this.querySelectorAll('class-base, class-feature')) {
-      hasActionRequired = element._observable('actionRequired').get()
+      hasActionRequired = element._actionRequired
       if (hasActionRequired) break;
     }
     this.#mainRequiredBadgeElement.classList[hasActionRequired ? 'add' : 'remove']('show')
@@ -72,7 +72,7 @@ export class ClassFeatures extends AbstractComponent {
       'data-feature': feature.name,
     })
 
-    const subscritpion = classFeature._observable('actionRequired').subscribe(this.#actionRequiredChanged)
+    const subscritpion = classFeature._observable.subscribe('actionRequired', this.#actionRequiredChanged)
     classFeature._pushEvents(subscritpion)
     return classFeature
   }

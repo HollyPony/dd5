@@ -2,8 +2,9 @@ import { AbstractComponent } from '../AbstractComponent/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
 import { t, i18n } from '../../modules/i18n.js'
 import { createElement, fillElement } from '../../modules/domlib.js'
-import { EQUIPMENT_TYPE, getEquipments, INSTRUMENTS } from '../../modules/data/equipments.js'
+import { EQUIPMENT_TYPE, getEquipments, } from '../../modules/data/equipments.js'
 import { INSERTION_TYPE } from '../../modules/data/classes.js'
+import { createObservable } from '../../modules/helpers.js'
 
 export class ClassBase extends AbstractComponent {
   static get tagName() { return 'class-base' }
@@ -18,6 +19,9 @@ export class ClassBase extends AbstractComponent {
   #toolsContainerElement
   #toolsActionRequiredElement
   #toolsGroupsElement
+
+  _actionRequired = false
+  _observable = createObservable()
 
   _connectedCallback() {
     console.info('-- ClassBase.connectedCallback')
@@ -78,7 +82,10 @@ export class ClassBase extends AbstractComponent {
     this.#toolsActionRequiredElement.classList[actionsRequired.tools ? 'add' : 'remove']('show')
     const hasActionRequired = Object.values(actionsRequired).some(i => i)
     this.#baseFeatureButtonElement.classList[hasActionRequired ? 'add' : 'remove']('show')
-    this._observable('actionRequired').set(hasActionRequired ?? false)
+
+    this._actionRequired = hasActionRequired ?? false
+    this._observable.notify('actionRequired')
+
   }
 
   #refreshSkills() {

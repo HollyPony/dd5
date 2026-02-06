@@ -6,7 +6,61 @@ import { EQUIPED_CATEGORY, EQUIPMENT_TYPE, getEquipment, } from '../data/equipme
 import { getLevelFromExperience } from '../data/leveling.js'
 import { s } from '../helpers.js'
 import createObservableStore from './createObservableStore.js'
-import * as storeManager from '../storageManager.js'
+
+const initialData = {
+  // Raw part
+  charName: '',
+  charExperience: 0,
+  charLevel: 1,
+  charClassName: '',
+  charSubClassName: null,
+  charOriginName: '',
+  charSpeciesName: '',
+  charAlignment: '',
+  charSizeCategory: '',
+  charSize: '',
+  attributes: s({
+    [ABILITY.strength]: 10,
+    [ABILITY.dexterity]: 10,
+    [ABILITY.constitution]: 10,
+    [ABILITY.wisdom]: 10,
+    [ABILITY.intelligence]: 10,
+    [ABILITY.charisma]: 10,
+  }),
+
+  // Computed part
+  proficiencyBonus: 0,
+  charClass: null,
+  charOrigin: null,
+  charSpecies: null,
+  modifiers: s({
+    [ABILITY.strength]: 0,
+    [ABILITY.dexterity]: 0,
+    [ABILITY.constitution]: 0,
+    [ABILITY.wisdom]: 0,
+    [ABILITY.intelligence]: 0,
+    [ABILITY.charisma]: 0,
+  }),
+  saves: s({
+    [ABILITY.strength]: 0,
+    [ABILITY.dexterity]: 0,
+    [ABILITY.constitution]: 0,
+    [ABILITY.wisdom]: 0,
+    [ABILITY.intelligence]: 0,
+    [ABILITY.charisma]: 0,
+  }),
+  classSkills: [],
+  expertSkills: [],
+  classTools: [],
+  feats: [],
+  equipments: [],
+  equiped: s({
+    [EQUIPED_CATEGORY.WEAPON]: [],
+    [EQUIPED_CATEGORY.ARMOR]: null,
+    [EQUIPED_CATEGORY.SHIELD]: null,
+    [EQUIPED_CATEGORY.OTHER]: [],
+  }),
+}
 
 function applyEffect(item, effect, options, callback) {
   if (item?.effects?.[effect]
@@ -24,60 +78,7 @@ function computeAbilityModifier(score) {
 }
 
 function createCharSheetStore() {
-  const store = createObservableStore({
-    // Raw part
-    charName: '',
-    charExperience: 0,
-    charLevel: 1,
-    charClassName: '',
-    charSubClassName: null,
-    charOriginName: '',
-    charSpeciesName: '',
-    charAlignment: '',
-    charSizeCategory: '',
-    charSize: '',
-    attributes: s({
-      [ABILITY.strength]: 10,
-      [ABILITY.dexterity]: 10,
-      [ABILITY.constitution]: 10,
-      [ABILITY.wisdom]: 10,
-      [ABILITY.intelligence]: 10,
-      [ABILITY.charisma]: 10,
-    }),
-
-    // Computed part
-    proficiencyBonus: 0,
-    charClass: null,
-    charOrigin: null,
-    charSpecies: null,
-    modifiers: s({
-      [ABILITY.strength]: 0,
-      [ABILITY.dexterity]: 0,
-      [ABILITY.constitution]: 0,
-      [ABILITY.wisdom]: 0,
-      [ABILITY.intelligence]: 0,
-      [ABILITY.charisma]: 0,
-    }),
-    saves: s({
-      [ABILITY.strength]: 0,
-      [ABILITY.dexterity]: 0,
-      [ABILITY.constitution]: 0,
-      [ABILITY.wisdom]: 0,
-      [ABILITY.intelligence]: 0,
-      [ABILITY.charisma]: 0,
-    }),
-    classSkills: [],
-    expertSkills: [],
-    classTools: [],
-    feats: [],
-    equipments: [],
-    equiped: s({
-      [EQUIPED_CATEGORY.WEAPON]: [],
-      [EQUIPED_CATEGORY.ARMOR]: null,
-      [EQUIPED_CATEGORY.SHIELD]: null,
-      [EQUIPED_CATEGORY.OTHER]: [],
-    }),
-  })
+  const store = createObservableStore(initialData)
 
   const { get, set, } = store
 
@@ -100,8 +101,7 @@ function createCharSheetStore() {
     return modifierScore + (proficiencyBonus * proficiencyMultiplier)
   }
 
-  function init(payload, notify = false) {
-    const charData = storeManager.toCharsheet(payload)
+  function init(charData, notify = false) {
     const charLevel = getLevelFromExperience(charData.charExperience)
     const proficiencyBonus = _computeProficiencyBonus(charLevel)
     const charOrigin = getOrigin(charData.charOriginName)
@@ -158,6 +158,10 @@ function createCharSheetStore() {
     // TODO: init species traits
 
     // TODO: init feats
+  }
+
+  function reset(notify) {
+    init(initialData, notify)
   }
 
   function getEquiped(category = null) { return category ? get('equiped')[category] : get('equiped') }
@@ -456,11 +460,11 @@ function createCharSheetStore() {
     expertSkillsRemove,
     classToolsAdd,
     classToolsRemove,
-    toJSON() { return storeManager.toJSON(store.get()) }
   }
 
   return {
     init,
+    reset,
     get,
     ...getters,
     ...setters,

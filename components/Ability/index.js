@@ -25,23 +25,23 @@ export class Ability extends AbstractComponent {
     this.ability = ABILITY[this.dataset.ability]
 
     this.#labelElement = this.querySelector('[data-wc-id]')
-    this.#labelElement.appendChild(t.tn(`statics.${this.ability}`))
-
     this.#scoreElement = this.querySelector('.ability-score')
     this.#modifierElement = this.querySelector('.ability-modifier')
-
     this.#save = {
       check: this.querySelector('.save-check'),
       score: this.querySelector('.save-score'),
       label: this.querySelector('.save-label'),
     }
-
     this.#skillsContainer = this.querySelector('.skills')
+
     this.#skills = Object.values(SKILLS).filter(skill => skill.ability === this.ability)
 
-    this.#save.label.appendChild(t.tn('ability.save.label'))
+    fillElement(this.#labelElement, t.tn(`statics.${this.ability}`))
+    fillElement(this.#save.label, t.tn('ability.save.label'))
 
     this.#refreshScore()
+    this.#refreshModifier()
+    this.#refreshSave()
     this.#refreshSkills()
   }
 
@@ -62,6 +62,12 @@ export class Ability extends AbstractComponent {
     this.#scoreElement.value = score
   }
 
+  #refreshModifier = () => {
+    console.info('-- Ability.#refreshModifier', this.ability)
+    const modifier = charSheet.getAbilityModifier(this.ability)
+    this.#modifierElement.value = signDisplay(modifier)
+  }
+
   #refreshSave() {
     console.info('-- Ability.#refreshSave', this.ability)
     this.#save.score.textContent = signDisplay(charSheet.getAbilitySave(this.ability))
@@ -72,24 +78,21 @@ export class Ability extends AbstractComponent {
     console.info('-- Ability.#refreshSkills', this.ability)
 
     this.#skillsContainer.classList[this.#skills.length > 0 ? 'add' : 'remove']('ability-card-content')
-    fillElement(this.#skillsContainer, this.#skills.map(this.#createSkill))
-  }
-
-  #createSkill = (skill) => {
-    console.info('-- Ability.#appendSkill', this.ability)
-    const isExpert = charSheet.isExpertSkill(skill)
-    return createElement('div', [
-      createElement('input', null, {
-        name: `${skill.name}.${this._id}`,
-        type: 'checkbox', class: `form-check-input checkbox-readonly skill-check${isExpert ? ' expert' : ''}`,
-        tabindex: '-1',
-        checked: charSheet.isCheckedSkill(skill),
-      }),
-      createElement('span', signDisplay(charSheet.getSkillScore(skill)), { class: 'skill-score' }),
-      createElement('label', t._(`statics.${skill.name}`), {
-        id: `${skill.name}.${this._id}`,
-      }),
-    ], { class: 'form-check' })
+    fillElement(this.#skillsContainer, this.#skills.map((skill) => {
+      const isExpert = charSheet.isExpertSkill(skill)
+      return createElement('div', [
+        createElement('input', null, {
+          name: `${skill.name}.${this._id}`,
+          type: 'checkbox', class: `form-check-input checkbox-readonly skill-check${isExpert ? ' expert' : ''}`,
+          tabindex: '-1',
+          checked: charSheet.isCheckedSkill(skill),
+        }),
+        createElement('span', signDisplay(charSheet.getSkillScore(skill)), { class: 'skill-score' }),
+        createElement('label', t._(`statics.${skill.name}`), {
+          id: `${skill.name}.${this._id}`,
+        }),
+      ], { class: 'form-check' })
+    }))
   }
 
   #scoreChanged = ({ target: { value }, isTrusted }) => {
@@ -104,12 +107,17 @@ export class Ability extends AbstractComponent {
     this.#modifierElement.value = signDisplay(modifier)
 
     this.#refreshSave()
+    this.#refreshModifier()
+    this.#refreshSave()
     this.#refreshSkills()
   }
 
   #levelChanged = () => {
     console.info('-- Ability.#levelChanged', this.ability)
     this.#refreshScore()
+    this.#refreshModifier()
+    this.#refreshSave()
+    this.#refreshSkills()
   }
 
   #skillsChanged = () => {

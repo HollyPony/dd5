@@ -1,10 +1,14 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
 import { t, i18n } from '../../modules/i18n.js'
+import { createObservable } from '../../modules/helpers.js'
 
 export class ClassFeature extends AbstractComponent {
   static get tagName() { return 'class-feature' }
   static get _componentPath() { return '/components/ClassFeature' }
+
+  _actionRequired = false
+  _observable = createObservable()
 
   #accordionParent
   #feature
@@ -28,7 +32,8 @@ export class ClassFeature extends AbstractComponent {
     this.#refreshTexts()
     this.#refreshDescription()
 
-    this._observable('actionRequired').set(false)
+    this._actionRequired = false
+    this._observable.notify('actionRequired')
 
     i18n.applyTranslations(this)
   }

@@ -17,11 +17,12 @@ import { AbstractComponent } from './components/AbstractComponent/index.js'
 
 import { DICES as D, } from './modules/common.js'
 import { ALL } from './modules/stores/createObservableStore.js'
-import initTranslations, { i18n } from '/modules/i18n.js'
+import initTranslations, { t, i18n } from '/modules/i18n.js'
 import charSheet from './modules/stores/charSheet.store.js'
 import { ExportError, ImportError } from './modules/errors.js'
-import { debounce } from './modules/helpers.js'
-import { fromJSON, loadLastCharsheet, saveAutosave } from './modules/storageManager.js'
+import { debounce, } from './modules/helpers.js'
+import charSheetService from './modules/services/charSheet.service.js'
+import { createElement, fillElement, } from './modules/domlib.js'
 
 const AUTOSAVE_DELAY_MS = 600
 
@@ -35,6 +36,10 @@ const charExperienceElement = document.getElementsByName('experiencepoints')[0] 
 const exportCharLink = document.getElementById("exportCharLink")
 const importCharLink = document.getElementById("importCharLink")
 const importCharFileElement = document.getElementById("importCharFile")
+const createCharacterLink = document.getElementById("createCharacterLink")
+const savedCharactersListTitle = document.getElementById("savedCharactersListTitle")
+const savedCharactersList = document.getElementById("savedCharactersList")
+const currentCharacterName = document.getElementById("currentCharacterName")
 
 /////////////////////////////////////////////////////////////////////////
 // DISPLAY HELPERS //////////////////////////////////////////////////////
@@ -46,8 +51,24 @@ function diceToString({ number, dice }) {
 
 // DISPLAY UPDATES
 
+function refreshSavedCharSheets() {
+  const saves = charSheetService.getList(false)
+
+  fillElement(savedCharactersListTitle, t._(saves.length ? 'navbar.savedCharacters' : 'navbar.noCharacters'))
+  fillElement(savedCharactersList, createElement(
+    'div',
+    saves.map(save => createElement('a', save.name || t._('navbar.unnamedCharacter'), {
+      href: '',
+      class: 'list-group-item list-group-item-action',
+      'data-save-Id': save.id,
+    })),
+    { class: 'list-group list-group-flush' }
+  ))
+}
+
 function refreshCharName() {
   charNameElement.value = charSheet.getCharName()
+  fillElement(currentCharacterName, charSheet.getCharName() || t._('navbar.unnamedCharacter'))
 }
 
 function refreshCharExperience() {
@@ -74,17 +95,6 @@ function refreshCharAlignment() {
   document.getElementsByName('alignment')[0].value = charSheet.getCharAlignment()
 }
 
-
-function refreshAll() {
-  refreshCharName()
-  refreshCharExperience()
-  refreshCharLevel()
-  refreshHitPointMax()
-  refreshHitDiceMax()
-  refreshCharAlignment()
-  refreshArmorClass()
-}
-
 /////////////////////////////////////////////////////////////////////////
 // SUBSCRIPTIONS ////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
@@ -106,16 +116,14 @@ function registerSubscriptions() {
     charSheet.subscribe('equiped', refreshArmorClass),
     charSheet.subscribe('feats', refreshArmorClass),
     charSheet.subscribe('modifiers', refreshArmorClass),
-    charSheet.subscribe(ALL, debounce(() => saveAutosave(charSheet.toJSON()), AUTOSAVE_DELAY_MS)),
+    charSheet.subscribe(ALL, debounce(() => charSheetService.save(), AUTOSAVE_DELAY_MS)),
+    charSheetService.subscribeCharSheetsList(refreshSavedCharSheets),
     i18n.subscribe(() => AbstractComponent.notifyI18nChanged()),
   )
 }
 
 function unregisterSubscriptions() {
-  while (subscriptions.length) {
-    const unsubscribe = subscriptions.pop()
-    if (unsubscribe) unsubscribe()
-  }
+  while (subscriptions.length) subscriptions.pop()?.()
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -123,19 +131,21 @@ function unregisterSubscriptions() {
 /////////////////////////////////////////////////////////////////////////
 
 function setBindings() {
-  exportCharLink.addEventListener('click', exportJSON)
+  exportCharLink.addEventListener('click', exportJSONClicked)
   importCharLink.addEventListener('click', importCharClicked)
   importCharFileElement.addEventListener('change', importCharFileChanged)
-
+  savedCharactersList?.addEventListener('click', savedCharacterClicked)
+  createCharacterLink?.addEventListener('click', createCharacterClicked)
   charNameElement.addEventListener('input', charNameChanged)
   charExperienceElement.addEventListener('change', charExperienceChanged)
 }
 
 function unregisterBindings() {
-  exportCharLink.removeEventListener('click', exportJSON)
+  exportCharLink.removeEventListener('click', exportJSONClicked)
   importCharLink.removeEventListener('click', importCharClicked)
   importCharFileElement.removeEventListener('change', importCharFileChanged)
-
+  savedCharactersList?.removeEventListener('click', savedCharacterClicked)
+  createCharacterLink?.removeEventListener('click', createCharacterClicked)
   charNameElement.removeEventListener('change', charNameChanged)
   charExperienceElement.removeEventListener('change', charExperienceChanged)
 }
@@ -144,24 +154,43 @@ function unregisterBindings() {
 // EVENTS ///////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
-function charNameChanged({ target: { value } }) {
-  charSheet.setCharName(value)
+function createCharacterClicked(event) {
+  event.preventDefault()
+  charSheetService.create()
 }
 
-function charExperienceChanged({ target: { value } }) {
-  charSheet.setCharExperience(value)
+function savedCharacterClicked(event) {
+  event.preventDefault()
+  const saveId = event.target.dataset?.saveId
+  if (!saveId) return
+
+  charSheetService.load(saveId)
 }
 
-/////////////////////////////////////////////////////////////////////////
-// STORAGE //////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
+function importCharClicked(event) {
+  event.preventDefault()
+  importCharFileElement.click()
+}
 
-function exportJSON(event) {
+async function importCharFileChanged({ target: { files } }) {
+  if (!files?.length) return
+
+  try {
+    const jsonText = await files[0].text()
+    // TODO: ask for new or erase current. Currently it default to new
+    charSheetService.importJSON(jsonText)
+  } catch (error) {
+    throw new ImportError(error?.message)
+  }
+  importCharFileElement.value = ''
+}
+
+function exportJSONClicked(event) {
   event?.preventDefault()
 
   let json
   try {
-    json = charSheet.toJSON()
+    json = charSheetService.exportJSON()
   } catch (error) {
     throw new ExportError(error?.message)
   }
@@ -182,26 +211,12 @@ function exportJSON(event) {
   }, 0)
 }
 
-async function importFromJSONFile(file) {
-  try {
-    const jsonText = await file.text()
-    const jsData = fromJSON(jsonText)
-    charSheet.init(jsData, true)
-    refreshAll()
-  } catch (error) {
-    throw new ImportError(error?.message)
-  }
+function charNameChanged({ target: { value } }) {
+  charSheet.setCharName(value)
 }
 
-function importCharClicked(event) {
-  event.preventDefault()
-  importCharFileElement.click()
-}
-
-function importCharFileChanged({ target: { files } }) {
-  if (!files?.length) return
-  importFromJSONFile(files[0])
-  importCharFileElement.value = ''
+function charExperienceChanged({ target: { value } }) {
+  charSheet.setCharExperience(value)
 }
 
 
@@ -229,17 +244,14 @@ function registerCustomElements() {
 // POPULATE /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
-function initApp() {
-  charSheet.init(loadLastCharsheet())
-
-  refreshAll()
+async function initApp() {
+  await initTranslations()
 
   setBindings()
   registerCustomElements()
   registerSubscriptions()
   window.addEventListener('pagehide', destroyApp)
-
-  initTranslations()
+  charSheetService.init()
 }
 
 function destroyApp() {
