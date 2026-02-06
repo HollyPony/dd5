@@ -1,11 +1,11 @@
-import { AbstractComponent } from '../AbstractComponent/index.js'
-import charSheet from '../../modules/stores/charSheet.store.js'
-import { t, i18n } from '../../modules/i18n.js'
-import { createObservable } from '../../modules/helpers.js'
+import { AbstractComponent } from '../../AbstractComponent/index.js'
+import charSheet from '../../../modules/stores/charSheet.store.js'
+import { t, i18n } from '../../../modules/i18n.js'
+import { createObservable } from '../../../modules/helpers.js'
 
 export class ClassFeature extends AbstractComponent {
   static get tagName() { return 'class-feature' }
-  static get _componentPath() { return '/components/ClassFeature' }
+  static get _componentPath() { return '/components/ClassFeatures/ClassFeature' }
 
   _actionRequired = false
   _observable = createObservable()
