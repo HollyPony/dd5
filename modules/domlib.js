@@ -25,12 +25,13 @@ export function createElement(type, children = [], { eventListeners = {}, ...att
 /**
  * Remove every child of an element
  * @param {HTMLElement} element The element to process
- * @returns undefined
+ * @returns element for chaining
  */
 export function removeAllChildren(element) {
   if (element) {
     while (element.firstChild) { element.removeChild(element.firstChild) }
   }
+  return element
 }
 
 /**
