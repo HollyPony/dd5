@@ -12,6 +12,8 @@ export class ClassBase extends AbstractComponent {
 
   #baseFeatureButtonElement
 
+  #descriptionContainerElement
+  #descriptionBodyElement
   #skillsContainerElement
   #skillsActionRequiredElement
   #skillsChooseLabelElement
@@ -39,6 +41,9 @@ export class ClassBase extends AbstractComponent {
     baseFeatureAccordionElement.id = baseAccordionItemId
     baseFeatureAccordionElement.dataset.bsParent = `#${baseAccordionId}`
 
+    this.#descriptionContainerElement = accordionBodyElement.querySelector('.card.description')
+    this.#descriptionBodyElement = this.#descriptionContainerElement.querySelector('.card-body')
+
     this.#skillsContainerElement = accordionBodyElement.querySelector('.card.skills')
     this.#skillsActionRequiredElement = this.#skillsContainerElement.querySelector('.card-header > .action-required')
     this.#skillsChooseLabelElement = this.#skillsContainerElement.querySelector('.card-body > .card-title.choose')
@@ -48,21 +53,23 @@ export class ClassBase extends AbstractComponent {
     this.#toolsActionRequiredElement = this.#toolsContainerElement.querySelector('.card-header > .action-required')
     this.#toolsGroupsElement = this.#toolsContainerElement.querySelector('.card-body > .tools-groups')
 
-    this.#refreshActionsRequired()
-    this.#refreshSkills()
-    this.#refreshTools()
+    this.#renderActionsRequired()
+    this.#renderDescription()
+    this.#renderSkills()
+    this.#renderTools()
 
     i18n.applyTranslations(this)
   }
 
   _registerEvents() {
     this._pushEvents(
+      charSheet.subscribe('charClassName', this.#charClassNameChanged),
       charSheet.subscribe('classSkills', this.#skillsChanged),
       charSheet.subscribe('classTools', this.#toolsChanged),
     )
   }
 
-  #refreshActionsRequired() {
+  #renderActionsRequired() {
     console.info('-- ClassBase.refreshActionsRequired')
 
     const toolsMetaMaxTotal = charSheet.getCharClass()?.toolProficiencies
@@ -85,10 +92,13 @@ export class ClassBase extends AbstractComponent {
 
     this._actionRequired = hasActionRequired ?? false
     this._observable.notify('actionRequired')
-
   }
 
-  #refreshSkills() {
+  #renderDescription() {
+    fillElement(this.#descriptionBodyElement, t.md(`statics.classes.${charSheet.getCharClassName()}.description`))
+  }
+
+  #renderSkills() {
     console.info('-- ClassBase.refreshSkills')
 
     if (!charSheet.getCharClass()?.skills)
@@ -128,7 +138,7 @@ export class ClassBase extends AbstractComponent {
     }))
   }
 
-  #refreshTools() {
+  #renderTools() {
     console.info('-- ClassBase.refreshTools')
 
     if (!charSheet.getCharClass()?.toolProficiencies?.length)
@@ -223,22 +233,27 @@ export class ClassBase extends AbstractComponent {
     this.#toolsGroupsElement.classList[groups.length ? 'remove' : 'add']('d-none')
   }
 
+  #charClassNameChanged = () => {
+    this.#renderDescription()
+  }
+
   #skillsChanged = () => {
     console.info('-- ClassBase.skillsChanged')
-    this.#refreshActionsRequired()
-    this.#refreshSkills()
+    this.#renderActionsRequired()
+    this.#renderSkills()
   }
 
   #toolsChanged = () => {
     console.info('-- ClassBase.toolsChanged')
-    this.#refreshActionsRequired()
-    this.#refreshTools()
+    this.#renderActionsRequired()
+    this.#renderTools()
   }
 
   _i18nChanged = () => {
     console.info('-- ClassBase.i18nChanged')
     i18n.applyTranslations(this)
-    this.#refreshSkills()
-    this.#refreshTools()
+    this.#renderDescription()
+    this.#renderSkills()
+    this.#renderTools()
   }
 }
