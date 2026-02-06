@@ -2,7 +2,7 @@ import { AbstractSelect } from '../AbstractSelect/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
 import { getList as getClassesList, } from '../../modules/data/classes.js'
 import { populateSelect, } from '../../modules/domlib.js'
-import { domSubscribe } from '../../modules/helpers.js'
+import { domSubscribe } from "../../modules/domlib.js"
 import { t } from '../../modules/i18n.js'
 
 export class ClassSelect extends AbstractSelect {

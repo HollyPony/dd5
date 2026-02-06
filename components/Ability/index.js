@@ -2,7 +2,8 @@ import { AbstractComponent } from '../AbstractComponent/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
 import { createElement, fillElement, } from '../../modules/domlib.js'
 import { ABILITY, SKILLS, } from '../../modules/common.js'
-import { domSubscribe, signDisplay, } from '../../modules/helpers.js'
+import { signDisplay, } from '../../modules/helpers.js'
+import { domSubscribe } from "../../modules/domlib.js"
 import { t } from '../../modules/i18n.js'
 
 // const ModifierChangedEventName = 'Ability.modifierChanged'

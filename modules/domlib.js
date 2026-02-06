@@ -78,3 +78,10 @@ export function populateSelect(selectElement, items, params = {
       : createElement('option', item.text, { value: item.value, disabled: item.disabled })
     ), { clear: params.clear ?? true })
 }
+
+export function domSubscribe(domElement, eventName, handler, options) {
+  domElement.addEventListener(eventName, handler, options)
+
+  return () => domElement.removeEventListener(eventName, handler, options)
+}
+

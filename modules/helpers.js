@@ -94,19 +94,6 @@ export function resolvePath(obj, path, { strict = false } = {}) {
     current = current[part]
   }
   return current
-  // Reduce version less efficient
-  // try {
-  // return path.split('.').reduce((acc, keyPath) => acc[keyPath], obj)
-  // } catch {
-  //   return path
-  // }
 }
 
-
-
-export function domSubscribe(domElement, eventName, handler, options) {
-  domElement.addEventListener(eventName, handler, options)
-
-  return () => domElement.removeEventListener(eventName, handler, options)
-}
 

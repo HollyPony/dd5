@@ -2,7 +2,7 @@
 import charSheet from '../../modules/stores/charSheet.store.js'
 import { getList as getSpeciesList, } from '../../modules/data/species.js'
 import { populateSelect, } from '../../modules/domlib.js'
-import { domSubscribe } from '../../modules/helpers.js'
+import { domSubscribe } from "../../modules/domlib.js"
 import { t } from '../../modules/i18n.js'
 
 export class SpeciesSelect extends AbstractSelect {
