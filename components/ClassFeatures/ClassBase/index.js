@@ -1,14 +1,14 @@
-import { AbstractComponent } from '../AbstractComponent/index.js'
-import charSheet from '../../modules/stores/charSheet.store.js'
-import { t, i18n } from '../../modules/i18n.js'
-import { createElement, fillElement } from '../../modules/domlib.js'
-import { EQUIPMENT_TYPE, getEquipments, } from '../../modules/data/equipments.js'
-import { INSERTION_TYPE } from '../../modules/data/classes.js'
-import { createObservable } from '../../modules/helpers.js'
+import { AbstractComponent } from '../../AbstractComponent/index.js'
+import charSheet from '../../../modules/stores/charSheet.store.js'
+import { t, i18n } from '../../../modules/i18n.js'
+import { createElement, fillElement } from '../../../modules/domlib.js'
+import { EQUIPMENT_TYPE, getEquipments, } from '../../../modules/data/equipments.js'
+import { INSERTION_TYPE } from '../../../modules/data/classes.js'
+import { createObservable } from '../../../modules/helpers.js'
 
 export class ClassBase extends AbstractComponent {
   static get tagName() { return 'class-base' }
-  static get _componentPath() { return '/components/ClassBase' }
+  static get _componentPath() { return '/components/ClassFeatures/ClassBase' }
 
   #baseFeatureButtonElement
 
