@@ -17,7 +17,7 @@ import { AbstractComponent } from './components/AbstractComponent/index.js'
 
 import { DICES as D, } from './modules/common.js'
 import { ALL } from './modules/stores/createObservableStore.js'
-import initTranslations, { t, i18n } from '/modules/i18n.js'
+import initTranslations, { t, i18n } from './modules/i18n.js'
 import charSheet from './modules/stores/charSheet.store.js'
 import { ExportError, ImportError } from './modules/errors.js'
 import { debounce, } from './modules/helpers.js'
