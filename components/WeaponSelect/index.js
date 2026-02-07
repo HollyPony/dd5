@@ -7,16 +7,10 @@ import { t } from '../../modules/i18n.js'
 export class WeaponSelect extends AbstractSelect {
   static get tagName() { return 'weapon-select' }
 
-  // async connectedCallback() {
-  //   await super.connectedCallback()
-  // }
-
   _registerEvents() {
     this._pushEvents(
       domSubscribe(this._selectElement, 'change', this.#selectChanged),
     )
-
-    // document.addEventListener("userData.charOriginChanged", this._refreshValue)
   }
 
   _refreshList = () => {
