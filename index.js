@@ -242,14 +242,14 @@ async function initApp() {
 
   registerCustomElements()
   registerSubscriptions()
-  window.addEventListener('pagehide', destroyApp)
+
+  subscriptions.push(domSubscribe(window, 'pagehide', destroyApp))
+
   charSheetService.init()
 }
 
 function destroyApp() {
   unregisterSubscriptions()
-  unregisterBindings()
-  window.removeEventListener('pagehide', destroyApp)
 }
 
 initApp()
