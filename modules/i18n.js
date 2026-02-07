@@ -1,6 +1,6 @@
-import { removeAllChildren } from './domlib.js';
+import { removeAllChildren } from './domlib.js'
 import { TechnicalError, } from './errors.js'
-import { resolvePath } from './helpers.js';
+import { resolvePath } from './helpers.js'
 import parseMarkdown from './markdown.js'
 
 const DEFAULT_LANGUAGE = 'fr'
