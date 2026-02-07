@@ -19,10 +19,11 @@ import { DICES as D, } from './modules/common.js'
 import { ALL } from './modules/stores/createObservableStore.js'
 import initTranslations, { t, i18n } from './modules/i18n.js'
 import charSheet from './modules/stores/charSheet.store.js'
-import { ExportError, ImportError } from './modules/errors.js'
+import { TechnicalError, } from './modules/errors.js'
 import { debounce, } from './modules/helpers.js'
 import charSheetService from './modules/services/charSheet.service.js'
 import { createElement, domSubscribe, fillElement, } from './modules/domlib.js'
+import './modules/toast.js'
 
 const AUTOSAVE_DELAY_MS = 600
 
@@ -173,7 +174,7 @@ async function importCharFileChanged({ target: { files } }) {
     // TODO: ask for new or erase current. Currently it default to new
     charSheetService.importJSON(jsonText)
   } catch (error) {
-    throw new ImportError(error?.message)
+    throw new TechnicalError(error)
   }
   importCharFileElement.value = ''
 }
@@ -185,7 +186,7 @@ function exportJSONClicked(event) {
   try {
     json = charSheetService.exportJSON()
   } catch (error) {
-    throw new ExportError(error?.message)
+    throw new TechnicalError(error)
   }
 
   const blob = new Blob([json], { type: "application/json" })

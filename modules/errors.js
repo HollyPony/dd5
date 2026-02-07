@@ -1,12 +1,19 @@
-import { showErrorToast } from './toast.js'
+import { createObservable, f } from './helpers.js'
 
-function createCustomError({ name, message, data = {}, args = [] }) {
-  const err = new Error(message, ...args)
-  Object.setPrototypeOf(err, createCustomError.prototype)
-  err.name = name
-  Object.assign(err, data)
-  showErrorToast(err)
-  return err
+export const observables = f({
+  TECHNICAL: Symbol(),
+  CUSTOM: Symbol(),
+})
+const { notify, subscribe } = createObservable()
+export { subscribe }
+
+function createCustomError({ name, message, args = [] }) {
+  const error = new Error(message, ...args)
+  Object.setPrototypeOf(error, createCustomError.prototype)
+  error.name = name
+  error.stack = ''
+  notify(observables.CUSTOM, error)
+  return error
 }
 createCustomError.prototype = Object.create(Error.prototype, { constructor: { value: createCustomError, } })
 
@@ -14,7 +21,6 @@ export function InvalidClassNameError(className, ...props) {
   return createCustomError({
     name: 'InvalidClassNameError',
     message: `Invalid Class '${className}'`,
-    data: { className },
     args: props,
   })
 }
@@ -23,7 +29,6 @@ export function InvalidSubClassNameError(subClassName, className, ...props) {
   return createCustomError({
     name: 'InvalidSubClassNameError',
     message: `Invalid SubClass '${subClassName}' for '${className}'`,
-    data: { className, subClassName },
     args: props,
   })
 }
@@ -45,26 +50,16 @@ export function MissingPathError(...props) {
   })
 }
 
-export function ExportError(message, ...props) {
-  return createCustomError({
-    name: 'ExportError',
-    message: message || 'Export failed',
-    args: props,
-  })
-}
-
-export function ImportError(message, ...props) {
-  return createCustomError({
-    name: 'ImportError',
-    message: message || 'Import failed',
-    args: props,
-  })
-}
-
 export function StorageError(message, ...props) {
   return createCustomError({
     name: 'StorageError',
     message: message || 'Storage error',
     args: props,
   })
+}
+
+export function TechnicalError(error) {
+  console.error(error)
+  notify(observables.TECHNICAL, error)
+  return error
 }

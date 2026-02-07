@@ -1,4 +1,5 @@
 import { removeAllChildren } from './domlib.js';
+import { TechnicalError, } from './errors.js'
 import { resolvePath } from './helpers.js';
 import parseMarkdown from './markdown.js'
 
@@ -29,14 +30,11 @@ export default async function init() {
   ].filter(lang => Boolean(lang) && availableLanguages.includes(lang))
 
   for (const lang of candidates) {
-    // TODO: handle specifics catch and display precise error
-    try {
-      await changeLang(lang)
-      return language
-    } catch (error) {
-      console.warn(error)
-      // try next candidate
-    }
+    const langLoaded = await changeLang(lang)
+      .then(result => result)
+      .catch(() => undefined)
+
+    if (langLoaded) return langLoaded
   }
 
   console.warn(`No translation file found, fallback to empty translations`)
@@ -52,8 +50,12 @@ export default async function init() {
  * @returns {Promise<string>} The applied language.
  */
 async function changeLang(lang) {
-  translations = (await import(`../i18n/${lang}/index.js`)).default
-  language = lang
+  try {
+    translations = (await import(`../i18n/${lang}/index.js`)).default
+  } catch (error) {
+    throw new TechnicalError(error)
+  }
+   language = lang
   applyTranslations()
   notify()
   return lang
