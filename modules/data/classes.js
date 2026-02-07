@@ -157,7 +157,7 @@ const classes = f({
       list: f([SKILLS.acrobatics, SKILLS.athletics, SKILLS.history, SKILLS.insight, SKILLS.religion, SKILLS.stealth]),
     }),
     weaponProficiencies: f({
-      [WEAPON_CATEGORY.simpleMelee]: [], // TODO: is all weapons with Finesse and Light or just martials ?
+      [WEAPON_CATEGORY.simpleMelee]: [],
       [WEAPON_CATEGORY.simpleRanged]: [],
       [WEAPON_CATEGORY.martialMelee]: [WEAPON_PROPERTY.Light],
       [WEAPON_CATEGORY.martialRanged]: [WEAPON_PROPERTY.Light],
