@@ -60,23 +60,38 @@ export function signDisplay(score) { return nfWithSign.format(score) }
 export function isObject(value) {
   return value && typeof value === 'object' && !Array.isArray(value)
 }
-
+/**
+ * Creates a debounced version of the provided function that delays its execution
+ * until after a specified wait time has elapsed since the last time it was invoked.
+ *
+ * @example
+ * const debouncedLog = debounce(console.log, 200)
+ * debouncedLog('Hello') // Will log "Hello" after 200ms if not called again within 200ms
+ *
+ * @param {Function} fn - The function to debounce.
+ * @param {number} [delayMs=0] - The number of milliseconds to delay execution.
+ * @returns {Function} A new debounced function.
+ */
 export function debounce(fn, delayMs = 0) {
   let timerId
-  return (...args) => {
+  return (...params) => {
     clearTimeout(timerId)
-    timerId = setTimeout(() => fn(...args), delayMs)
+    timerId = setTimeout(fn, delayMs, ...params)
   }
 }
 
 /**
  * Navigates inside `obj` with `path` string,
  *
- * Usage:
- * objNavigate({a: {b: 123}}, "a.b") // returns 123
+ * @example
+ * objNavigate("a.b", {a: {b: 123}}) // returns 123
  *
- * Returns undefined if variable is not found.
- * Fails silently.
+ * @param {object} obj - The object to resolve the path from.
+ * @param {string} path - Dot-separated path (e.g. "a.b.c").
+ * @param {object} [options] - Resolution options.
+ * @param {boolean} [options.strict=false] - Whether to throw an error when the path is invalid.
+ * @returns {*} The resolved value, or undefined if the path is invalid and strict mode is disabled.
+ * @throws {ReferenceError} If strict mode is enabled and the path is invalid.
  */
 export function resolvePath(obj, path, { strict = false } = {}) {
   const parts = path.split('.')
@@ -96,4 +111,12 @@ export function resolvePath(obj, path, { strict = false } = {}) {
   return current
 }
 
-
+/**
+ * Resolve a promise after given duration.
+ *
+ * @param {number} seconds - Wainting duration.
+ * @returns {Promise<void>} Resolve after time spent.
+ */
+export function wait(seconds) {
+  return new Promise(resolve => setTimeout(resolve, seconds * 1000))
+}
