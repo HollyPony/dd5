@@ -119,6 +119,8 @@ function registerSubscriptions() {
     domSubscribe(charNameElement, 'input', charNameChanged),
     domSubscribe(charExperienceElement, 'change', charExperienceChanged),
 
+    domSubscribe(window, 'pagehide', pageHided),
+
     // Observable events
     charSheet.subscribe('charName', renderCharName),
     charSheet.subscribe('charExperience', renderCharExperience),
@@ -213,6 +215,10 @@ function charExperienceChanged({ target: { value } }) {
   charSheet.setCharExperience(value)
 }
 
+function pageHided() {
+  unregisterSubscriptions()
+}
+
 /////////////////////////////////////////////////////////////////////////
 // REGISTER WEBCOMPONENTS
 /////////////////////////////////////////////////////////////////////////
@@ -245,13 +251,7 @@ async function initApp() {
   registerCustomElements()
   registerSubscriptions()
 
-  subscriptions.push(domSubscribe(window, 'pagehide', destroyApp))
-
   charSheetService.init()
-}
-
-function destroyApp() {
-  unregisterSubscriptions()
 }
 
 initApp()
