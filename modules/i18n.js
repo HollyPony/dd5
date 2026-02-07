@@ -6,7 +6,7 @@ const DEFAULT_LANGUAGE = 'fr'
 const availableLanguages = ['fr']
 const langChangeSubscribers = new Set()
 
-let translations = null
+let translations = {}
 let language = null
 
 /**
@@ -68,7 +68,7 @@ async function changeLang(lang) {
  */
 function _(path, interpolations) {
   if (!language) return path
-  const value = resolvePath(translations || {}, path) ?? path
+  const value = resolvePath(translations, path) ?? path
   if (value === undefined || value === null || typeof value !== 'string') {
     console.warn(
       `Missing translation key: '${path}' (lang: '${language}')`,
