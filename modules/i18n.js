@@ -8,7 +8,7 @@ const availableLanguages = ['fr']
 const langChangeSubscribers = new Set()
 
 let translations = {}
-let language = null
+let currentLang = null
 
 /**
  * Resolve the language requested by the document or browser.
@@ -38,7 +38,6 @@ export default async function init() {
   }
 
   console.warn(`No translation file found, fallback to empty translations`)
-  translations = {}
   applyTranslations()
   notify()
   return DEFAULT_LANGUAGE
@@ -55,7 +54,7 @@ async function changeLang(lang) {
   } catch (error) {
     throw new TechnicalError(error)
   }
-   language = lang
+  currentLang = lang
   applyTranslations()
   notify()
   return lang
@@ -69,11 +68,11 @@ async function changeLang(lang) {
  * @returns {string}
  */
 function _(path, interpolations) {
-  if (!language) return path
+  if (!currentLang) return path
   const value = resolvePath(translations, path) ?? path
   if (value === undefined || value === null || typeof value !== 'string') {
     console.warn(
-      `Missing translation key: '${path}' (lang: '${language}')`,
+      `Missing translation key: '${path}' (lang: '${currentLang}')`,
       new Error('i18n.missing').stack
     )
   }
