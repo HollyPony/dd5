@@ -196,10 +196,6 @@ function exportJSONClicked(event) {
     link.download = charSheet.getCharName().replace(/[^a-zA-Z0-9 ]/g, '').trim() || 'TheCharacterWithNoName'
     link.href = url
     link.click()
-
-    setTimeout(() => {
-      URL.revokeObjectURL(url)
-    }, 0)
   } catch (error) {
     throw new TechnicalError(error)
   } finally {
