@@ -1,5 +1,6 @@
 ﻿import { AbstractComponent } from '../AbstractComponent/index.js'
-import charSheet from '../../modules/stores/charSheet.store.js'
+import charSheetStore from '../../modules/stores/charSheet.store.js'
+import charSheetObserver from '../../modules/stores/charSheet.observer.js'
 import { createElement, replaceElement } from '../../modules/domlib.js'
 import { spells } from '../../modules/data/spells.js'
 import { t, i18n } from '../../modules/i18n.js'
@@ -23,7 +24,7 @@ export class SpeciesTraits extends AbstractComponent {
 
   _registerEvents() {
     this._pushEvents(
-      charSheet.subscribe('charSpecies', this.#refreshTraits),
+      charSheetObserver.subscribe('charSpecies', this.#refreshTraits),
     )
   }
 
@@ -33,8 +34,8 @@ export class SpeciesTraits extends AbstractComponent {
   }
 
   #refreshTraits = () => {
-    const species = charSheet.getCharSpecies()
-    const speciesName = charSheet.getCharSpeciesName()
+    const species = charSheetStore.getCharSpecies()
+    const speciesName = charSheetStore.getCharSpeciesName()
     if (!species) {
       replaceElement(this.#descriptionElement, [
         createElement('div', t._('components.SpeciesTraits.empty'), { class: 'text-muted px-2 py-2' }),

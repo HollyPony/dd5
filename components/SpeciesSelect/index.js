@@ -1,5 +1,6 @@
 ﻿import { AbstractSelect } from '../AbstractSelect/index.js'
-import charSheet from '../../modules/stores/charSheet.store.js'
+import charSheetStore from '../../modules/stores/charSheet.store.js'
+import charSheetObserver from '../../modules/stores/charSheet.observer.js'
 import { getList as getSpeciesList, } from '../../modules/data/species.js'
 import { populateSelect, } from '../../modules/domlib.js'
 import { domSubscribe } from '../../modules/domlib.js'
@@ -11,7 +12,7 @@ export class SpeciesSelect extends AbstractSelect {
   _registerEvents() {
     this._pushEvents(
       domSubscribe(this._selectElement, 'change', this.#selectChanged),
-      charSheet.subscribe('charSpeciesName', this._refreshValue),
+      charSheetObserver.subscribe('charSpeciesName', this._refreshValue),
     )
   }
 
@@ -38,13 +39,13 @@ export class SpeciesSelect extends AbstractSelect {
 
   _refreshValue = () => {
     console.info('-- SpeciesSelect.#refreshValue')
-    this._selectElement.value = charSheet.getCharSpeciesName() || ''
+    this._selectElement.value = charSheetStore.getCharSpeciesName() || ''
   }
 
   #selectChanged = ({ target: { value } }) => {
     console.info('-- SpeciesSelect.#selectChanged', value)
     // TODO: alert skills lost
-    charSheet.setCharSpeciesName(value)
+    charSheetStore.setCharSpeciesName(value)
   }
 }
 

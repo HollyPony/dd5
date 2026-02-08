@@ -21,15 +21,17 @@ export default {
     appTitle: 'Création de personnage',
     exportChar: 'Télécharger',
     importChar: 'Importer',
-    jsonOutput: 'JSON',
+    debug: 'Debug',
     characters: 'Personnages',
     newCharacter: 'Nouveau personnage',
     savedCharacters: 'Personnages enregistrés',
     noCharacters: 'Aucun personnage',
     unnamedCharacter: 'Personnage sans nom',
   },
-  jsonOutput: {
-    title: 'JSON du personnage',
+  modals: {
+    jsonOutput: {
+      title: 'JSON du personnage',
+    },
   },
   charName: {
     label: 'Nom du personnage',

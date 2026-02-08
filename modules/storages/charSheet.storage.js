@@ -1,5 +1,5 @@
 import { StorageError } from '../errors.js'
-import { createObservable } from '../helpers.js'
+import { createObservable } from '../createObservable.js'
 import { buildStorage } from './localStorage.helper.js'
 
 const PREFIX_KEY = 'charsheet'

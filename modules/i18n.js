@@ -37,7 +37,6 @@ export default async function init() {
   }
 
   console.warn(`No translation file found, fallback to empty translations`)
-  applyTranslations()
   notify()
   return DEFAULT_LANGUAGE
 }
@@ -54,7 +53,6 @@ async function changeLang(lang) {
     throw new TechnicalError(error)
   }
   currentLang = lang
-  applyTranslations()
   notify()
   return lang
 }

@@ -1,9 +1,9 @@
-import { observables as errors, subscribe as errorSubscribe } from './errors.js'
+import observer, { observables as errors } from '../index.observer.js'
 
 const toastContainer = document.getElementById('toastContainer')
 
-errorSubscribe(errors.TECHNICAL, showErrorToast)
-errorSubscribe(errors.CUSTOM, showErrorToast)
+observer.subscribe(errors.ERROR_TECHNICAL, showErrorToast)
+observer.subscribe(errors.ERROR_CUSTOM, showErrorToast)
 
 export function showToast({ title, message, variant = 'danger', delay = 5000, autohide = true } = {}) {
   if (!toastContainer) return

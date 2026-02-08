@@ -1,5 +1,6 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
-import charSheet from '../../modules/stores/charSheet.store.js'
+import charSheetStore from '../../modules/stores/charSheet.store.js'
+import charSheetObserver from '../../modules/stores/charSheet.observer.js'
 import { createElement, replaceElement, } from '../../modules/domlib.js'
 import { ABILITY, SKILLS, } from '../../modules/common.js'
 import { signDisplay, } from '../../modules/helpers.js'
@@ -50,29 +51,29 @@ export class Ability extends AbstractComponent {
     this._pushEvents(
       // TODO: trigger per input ?
       domSubscribe(this.#scoreElement, 'change', this.#scoreChanged),
-      charSheet.subscribe('charLevel', this.#levelChanged),
-      charSheet.subscribe('classSkills', this.#skillsChanged),
-      charSheet.subscribe('expertSkills', this.#skillsChanged),
+      charSheetObserver.subscribe('charLevel', this.#levelChanged),
+      charSheetObserver.subscribe('classSkills', this.#skillsChanged),
+      charSheetObserver.subscribe('expertSkills', this.#skillsChanged),
     )
   }
 
   #refreshScore = () => {
     console.info('-- Ability.#refreshScore', this.ability)
 
-    const score = charSheet.getAbilityScore(this.ability)
+    const score = charSheetStore.getAbilityScore(this.ability)
     this.#scoreElement.value = score
   }
 
   #refreshModifier = () => {
     console.info('-- Ability.#refreshModifier', this.ability)
-    const modifier = charSheet.getAbilityModifier(this.ability)
+    const modifier = charSheetStore.getAbilityModifier(this.ability)
     this.#modifierElement.value = signDisplay(modifier)
   }
 
   #refreshSave() {
     console.info('-- Ability.#refreshSave', this.ability)
-    this.#save.score.textContent = signDisplay(charSheet.getAbilitySave(this.ability))
-    this.#save.check.checked = charSheet.getCharClass()?.saves?.includes(this.ability)
+    this.#save.score.textContent = signDisplay(charSheetStore.getAbilitySave(this.ability))
+    this.#save.check.checked = charSheetStore.getCharClass()?.saves?.includes(this.ability)
   }
 
   #refreshSkills() {
@@ -80,15 +81,15 @@ export class Ability extends AbstractComponent {
 
     this.#skillsContainer.classList[this.#skills.length > 0 ? 'add' : 'remove']('ability-card-content')
     replaceElement(this.#skillsContainer, this.#skills.map((skill) => {
-      const isExpert = charSheet.isExpertSkill(skill)
+      const isExpert = charSheetStore.isExpertSkill(skill)
       return createElement('div', [
         createElement('input', null, {
           name: `${skill.name}.${this._id}`,
           type: 'checkbox', class: `form-check-input checkbox-readonly skill-check${isExpert ? ' expert' : ''}`,
           tabindex: '-1',
-          checked: charSheet.isCheckedSkill(skill),
+          checked: charSheetStore.isCheckedSkill(skill),
         }),
-        createElement('span', signDisplay(charSheet.getSkillScore(skill)), { class: 'skill-score' }),
+        createElement('span', signDisplay(charSheetStore.getSkillScore(skill)), { class: 'skill-score' }),
         createElement('label', t._(`statics.${skill.name}`), {
           id: `${skill.name}.${this._id}`,
         }),
@@ -101,10 +102,10 @@ export class Ability extends AbstractComponent {
 
     if (isTrusted) {
       // TODO: Am I sure about that ?
-      charSheet.setAbilityScore(this.ability, Number(value))
+      charSheetStore.setAbilityScore(this.ability, Number(value))
     }
 
-    const modifier = charSheet.getAbilityModifier(this.ability)
+    const modifier = charSheetStore.getAbilityModifier(this.ability)
     this.#modifierElement.value = signDisplay(modifier)
 
     this.#refreshSave()

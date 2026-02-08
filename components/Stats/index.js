@@ -1,5 +1,6 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
-import charSheet from '../../modules/stores/charSheet.store.js'
+import charSheetStore from '../../modules/stores/charSheet.store.js'
+import charSheetObserver from '../../modules/stores/charSheet.observer.js'
 import { i18n } from '../../modules/i18n.js'
 import { signDisplay } from '../../modules/helpers.js'
 
@@ -17,12 +18,12 @@ export class Stats extends AbstractComponent {
 
   _registerEvents() {
     this._pushEvents(
-      charSheet.subscribe('proficiencyBonus', this.#refreshProficiencyBonus),
+      charSheetObserver.subscribe('proficiencyBonus', this.#refreshProficiencyBonus),
     )
   }
 
   #refreshProficiencyBonus = () => {
-    const bonus = charSheet.getProficiencyBonus()
+    const bonus = charSheetStore.getProficiencyBonus()
     this.#proficiencyBonusElement.value = signDisplay(bonus)
   }
 

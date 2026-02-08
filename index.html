@@ -52,8 +52,8 @@
             <a id="importCharLink" class="nav-link" download="data.json" href="" data-i18n="navbar.importChar"></a>
           </li>
           <li class="nav-item">
-            <a id="jsonOutputLink" class="nav-link" href="#" role="button" data-bs-toggle="modal"
-              data-bs-target="#jsonOutputModal" data-i18n="navbar.jsonOutput"></a>
+            <a class="nav-link" role="button" data-bs-toggle="modal" data-bs-target="#debugModal"
+              data-i18n="navbar.debug"></a>
           </li>
         </ul>
       </div>
@@ -210,12 +210,11 @@
     </form>
   </main>
 
-  <div class="modal fade" id="jsonOutputModal" tabindex="-1" aria-labelledby="jsonOutputModalLabel"
-    aria-hidden="true">
+  <div class="modal fade" id="debugModal" tabindex="-1" aria-labelledby="debugModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="jsonOutputModalLabel" data-i18n="jsonOutput.title"></h5>
+          <h5 class="modal-title" id="debugModalLabel" data-i18n="modals.jsonOutput.title"></h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">

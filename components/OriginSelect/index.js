@@ -1,5 +1,6 @@
 import { AbstractSelect } from '../AbstractSelect/index.js'
-import charSheet from '../../modules/stores/charSheet.store.js'
+import charSheetStore from '../../modules/stores/charSheet.store.js'
+import charSheetObserver from '../../modules/stores/charSheet.observer.js'
 import { getList as getOriginList, } from '../../modules/data/origins.js'
 import { populateSelect, } from '../../modules/domlib.js'
 import { domSubscribe } from '../../modules/domlib.js'
@@ -11,7 +12,7 @@ export class OriginSelect extends AbstractSelect {
   _registerEvents() {
     this._pushEvents(
       domSubscribe(this._selectElement, 'change', this.#selectChanged),
-      charSheet.subscribe('charOriginName', this._refreshValue),
+      charSheetObserver.subscribe('charOriginName', this._refreshValue),
     )
   }
 
@@ -28,12 +29,12 @@ export class OriginSelect extends AbstractSelect {
 
   _refreshValue = () => {
     console.info('-- OriginSelect.#refreshValue')
-    this._selectElement.value = charSheet.getCharOriginName() || ''
+    this._selectElement.value = charSheetStore.getCharOriginName() || ''
   }
 
   #selectChanged = ({ target: { value } }) => {
     console.info('-- OriginSelect.#selectChanged', value)
     // TODO: alert skills lost
-    charSheet.setCharOriginName(value)
+    charSheetStore.setCharOriginName(value)
   }
 }

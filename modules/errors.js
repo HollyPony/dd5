@@ -1,18 +1,11 @@
-import { createObservable, f } from './helpers.js'
-
-export const observables = f({
-  TECHNICAL: Symbol(),
-  CUSTOM: Symbol(),
-})
-const { notify, subscribe } = createObservable()
-export { subscribe }
+import observer, { observables } from '../index.observer.js'
 
 function createCustomError({ name, message, args = [] }) {
   const error = new Error(message, ...args)
   Object.setPrototypeOf(error, createCustomError.prototype)
   error.name = name
   error.stack = ''
-  notify(observables.CUSTOM, error)
+  observer.notify(observables.ERROR_CUSTOM, error)
   return error
 }
 createCustomError.prototype = Object.create(Error.prototype, { constructor: { value: createCustomError, } })
@@ -60,6 +53,6 @@ export function StorageError(message, ...props) {
 
 export function TechnicalError(error) {
   console.error(error)
-  notify(observables.TECHNICAL, error)
+  observer.notify(observables.ERROR_TECHNICAL, error)
   return error
 }

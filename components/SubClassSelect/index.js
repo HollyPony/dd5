@@ -1,5 +1,6 @@
 import { AbstractSelect } from '../AbstractSelect/index.js'
-import charSheet from '../../modules/stores/charSheet.store.js'
+import charSheetStore from '../../modules/stores/charSheet.store.js'
+import charSheetObserver from '../../modules/stores/charSheet.observer.js'
 import { getSubClasses, } from '../../modules/data/classes.js'
 import { populateSelect, } from '../../modules/domlib.js'
 import { domSubscribe } from '../../modules/domlib.js'
@@ -11,9 +12,9 @@ export class SubClassSelect extends AbstractSelect {
   _registerEvents() {
     this._pushEvents(
       domSubscribe(this._selectElement, 'change', this.#selectChanged),
-      charSheet.subscribe('charLevel', this.#charLevelChanged),
-      charSheet.subscribe('charClass', this.#charClassChanged),
-      charSheet.subscribe('charSubClassName', this._refreshValue),
+      charSheetObserver.subscribe('charLevel', this.#charLevelChanged),
+      charSheetObserver.subscribe('charClass', this.#charClassChanged),
+      charSheetObserver.subscribe('charSubClassName', this._refreshValue),
     )
   }
 
@@ -21,26 +22,26 @@ export class SubClassSelect extends AbstractSelect {
     console.info('-- SubClassSelect.#refreshList')
     populateSelect(
       this._selectElement,
-      getSubClasses(charSheet.getCharClassName()).map(subClassName => ({
+      getSubClasses(charSheetStore.getCharClassName()).map(subClassName => ({
         value: subClassName,
-        text: t._(`statics.subClasses.${charSheet.getCharClassName()}.${subClassName}`),
+        text: t._(`statics.subClasses.${charSheetStore.getCharClassName()}.${subClassName}`),
       })),
       {
-        placeholder: t._((charSheet.getCharLevel() < 3 || !charSheet.getCharClassName()) ? `subClasses.select.unavailable` : `subClasses.select.chooseOne`)
+        placeholder: t._((charSheetStore.getCharLevel() < 3 || !charSheetStore.getCharClassName()) ? `subClasses.select.unavailable` : `subClasses.select.chooseOne`)
       }
     )
   }
 
   _refreshValue = () => {
     console.info('-- SubClassSelect.#refreshValue')
-    this._selectElement.value = charSheet.getCharLevel() > 2 && charSheet.getCharSubClassName() || ''
-    this._selectElement.disabled = charSheet.getCharLevel() < 3
+    this._selectElement.value = charSheetStore.getCharLevel() > 2 && charSheetStore.getCharSubClassName() || ''
+    this._selectElement.disabled = charSheetStore.getCharLevel() < 3
   }
 
   #selectChanged = ({ target: { value } }) => {
     console.info('-- SubClassSelect.#selectChanged', value)
     // TODO: alert skills lost
-    charSheet.setCharSubClassName(value)
+    charSheetStore.setCharSubClassName(value)
   }
 
   #charLevelChanged = () => {

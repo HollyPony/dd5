@@ -1,5 +1,6 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
-import charSheet from '../../modules/stores/charSheet.store.js'
+import charSheetStore from '../../modules/stores/charSheet.store.js'
+import charSheetObserver from '../../modules/stores/charSheet.observer.js'
 import { createElement, replaceElement } from '../../modules/domlib.js'
 import { i18n } from '../../modules/i18n.js'
 
@@ -34,8 +35,8 @@ export class ClassFeatures extends AbstractComponent {
   _registerEvents() {
     this._pushEvents(
       // TODO: had a class features changed ????
-      charSheet.subscribe('charLevel', this.#levelChanged),
-      charSheet.subscribe('charClass', this.#classChanged),
+      charSheetObserver.subscribe('charLevel', this.#levelChanged),
+      charSheetObserver.subscribe('charClass', this.#classChanged),
     )
   }
 
@@ -46,7 +47,7 @@ export class ClassFeatures extends AbstractComponent {
   #refreshFeatures() {
     console.info('-- ClassFeatures.#refreshFeatures',)
 
-    const featureElements = charSheet.getCharClass()?.features?.map(this.#createFeature) ?? []
+    const featureElements = charSheetStore.getCharClass()?.features?.map(this.#createFeature) ?? []
     replaceElement(this.#featuresElement, featureElements)
   }
 

@@ -1,5 +1,6 @@
 import { AbstractComponent } from '../../AbstractComponent/index.js'
-import charSheet from '../../../modules/stores/charSheet.store.js'
+import charSheetStore from '../../../modules/stores/charSheet.store.js'
+import charSheetObserver from '../../../modules/stores/charSheet.observer.js'
 import { t, i18n } from '../../../modules/i18n.js'
 import { createElement, replaceElement } from '../../../modules/domlib.js'
 import { EQUIPMENT_TYPE, getEquipments, } from '../../../modules/data/equipments.js'
@@ -63,26 +64,26 @@ export class ClassBase extends AbstractComponent {
 
   _registerEvents() {
     this._pushEvents(
-      charSheet.subscribe('charClassName', this.#charClassNameChanged),
-      charSheet.subscribe('classSkills', this.#skillsChanged),
-      charSheet.subscribe('classTools', this.#toolsChanged),
+      charSheetObserver.subscribe('charClassName', this.#charClassNameChanged),
+      charSheetObserver.subscribe('classSkills', this.#skillsChanged),
+      charSheetObserver.subscribe('classTools', this.#toolsChanged),
     )
   }
 
   #renderActionsRequired() {
     console.info('-- ClassBase.refreshActionsRequired')
 
-    const toolsMetaMaxTotal = charSheet.getCharClass()?.toolProficiencies
+    const toolsMetaMaxTotal = charSheetStore.getCharClass()?.toolProficiencies
       ?.find(rule => rule.type === INSERTION_TYPE._meta && rule.totalMax)?.totalMax
     const toolsMaxTotal = toolsMetaMaxTotal
-      || charSheet.getCharClass()?.toolProficiencies
+      || charSheetStore.getCharClass()?.toolProficiencies
         ?.filter(rule => rule.type === INSERTION_TYPE.select)
         .reduce((acc, rule) => acc + rule.max, 0)
       || 0
 
     const actionsRequired = {
-      skills: (charSheet.getCharClass()?.skills.nb - charSheet.getClassSkills().length) > 0,
-      tools: toolsMaxTotal - charSheet.getClassTools().length > 0,
+      skills: (charSheetStore.getCharClass()?.skills.nb - charSheetStore.getClassSkills().length) > 0,
+      tools: toolsMaxTotal - charSheetStore.getClassTools().length > 0,
     }
 
     this.#skillsActionRequiredElement.classList[actionsRequired.skills ? 'add' : 'remove']('show')
@@ -95,13 +96,13 @@ export class ClassBase extends AbstractComponent {
   }
 
   #renderDescription() {
-    replaceElement(this.#descriptionBodyElement, t.md(`statics.classes.${charSheet.getCharClassName()}.description`))
+    replaceElement(this.#descriptionBodyElement, t.md(`statics.classes.${charSheetStore.getCharClassName()}.description`))
   }
 
   #renderSkills() {
     console.info('-- ClassBase.refreshSkills')
 
-    if (!charSheet.getCharClass()?.skills)
+    if (!charSheetStore.getCharClass()?.skills)
       return this.#skillsContainerElement.classList.add('d-none')
     this.#skillsContainerElement.classList.remove('d-none')
 
@@ -111,9 +112,9 @@ export class ClassBase extends AbstractComponent {
 
   #refreshSkillsChooseLabel() {
     console.info('-- ClassBase.refreshSkillsChooseLabel')
-    const classSkills = charSheet.getCharClass()?.skills
+    const classSkills = charSheetStore.getCharClass()?.skills
     if (classSkills) {
-      const remaining = classSkills.nb - charSheet.getClassSkills().length
+      const remaining = classSkills.nb - charSheetStore.getClassSkills().length
       replaceElement(this.#skillsChooseLabelElement, t.tn('components.ClassBase.skills.remaining', { remaining }))
     } else {
       replaceElement(this.#skillsChooseLabelElement, t.tn('components.ClassBase.skills.notConcerned',))
@@ -122,15 +123,15 @@ export class ClassBase extends AbstractComponent {
 
   #refreshSkillsList() {
     console.info('-- ClassBase.refreshSkillsList')
-    replaceElement(this.#skillsListElement, charSheet.getCharClass()?.skills.list.map(skill => {
+    replaceElement(this.#skillsListElement, charSheetStore.getCharClass()?.skills.list.map(skill => {
       const skillId = `${skill.name}.${this._id}`
       return createElement('div', [
         createElement('input', null, {
           type: 'checkbox', class: 'btn-check', id: skillId,
-          checked: charSheet.getClassSkills().includes(skill),
-          disabled: charSheet.isDisabledSkill(skill),
+          checked: charSheetStore.getClassSkills().includes(skill),
+          disabled: charSheetStore.isDisabledSkill(skill),
           eventListeners: {
-            change: ({ target: { checked } }) => charSheet[checked ? 'classSkillsAdd' : 'classSkillsRemove'](skill)
+            change: ({ target: { checked } }) => charSheetStore[checked ? 'classSkillsAdd' : 'classSkillsRemove'](skill)
           }
         }),
         createElement('label', t._(`statics.${skill.name}`), { class: 'btn btn-outline-primary', for: skillId }),
@@ -141,14 +142,14 @@ export class ClassBase extends AbstractComponent {
   #renderTools() {
     console.info('-- ClassBase.refreshTools')
 
-    if (!charSheet.getCharClass()?.toolProficiencies?.length)
+    if (!charSheetStore.getCharClass()?.toolProficiencies?.length)
       return this.#toolsContainerElement.classList.add('d-none')
     this.#toolsContainerElement.classList.remove('d-none')
 
-    const metaTotalMax = charSheet.getCharClass()?.toolProficiencies
+    const metaTotalMax = charSheetStore.getCharClass()?.toolProficiencies
       .find(rule => rule.type === INSERTION_TYPE._meta && rule.totalMax)?.totalMax
     const totalMax = metaTotalMax
-      || charSheet.getCharClass()?.toolProficiencies
+      || charSheetStore.getCharClass()?.toolProficiencies
         .filter(rule => rule.type === INSERTION_TYPE.select)
         .reduce((acc, rule) => acc + rule.max, 0)
       || 0
@@ -157,11 +158,11 @@ export class ClassBase extends AbstractComponent {
   }
 
   #refreshToolsGroups(totalMax) {
-    const classTools = charSheet.getClassTools()
+    const classTools = charSheetStore.getClassTools()
     const totalSelected = classTools.length
     const totalRemaining = totalMax - totalSelected
 
-    const groups = charSheet.getCharClass()?.toolProficiencies?.map((rule, groupIndex) => {
+    const groups = charSheetStore.getCharClass()?.toolProficiencies?.map((rule, groupIndex) => {
       const groupChildren = []
 
       switch (rule.type) {
@@ -189,7 +190,7 @@ export class ClassBase extends AbstractComponent {
                 checked: isChecked,
                 disabled: isCheckedElseWhere || (!isChecked && remaining === 0),
                 eventListeners: {
-                  change: ({ target: { checked } }) => charSheet[checked ? 'classToolsAdd' : 'classToolsRemove'](tool)
+                  change: ({ target: { checked } }) => charSheetStore[checked ? 'classToolsAdd' : 'classToolsRemove'](tool)
                 }
               }),
               createElement(

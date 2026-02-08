@@ -21,30 +21,6 @@ export const O = target => {
   })
 }
 
-export function createObservable() {
-  const listenersMap = new Map()
-
-  function getDefault(key) {
-    if (!listenersMap.has(key)) listenersMap.set(key, new Set())
-    return listenersMap.get(key)
-  }
-
-  function notify(key, ...params) {
-    if (listenersMap.has(key))
-      for (const listener of listenersMap.get(key)) listener(...params)
-  }
-
-  function subscribe(key, callback) {
-    getDefault(key).add(callback)
-    return () => listenersMap.get(key).delete(callback)
-  }
-
-  return {
-    notify,
-    subscribe,
-  }
-}
-
 const nfWithSign = new Intl.NumberFormat(undefined, {
   signDisplay: "exceptZero"
 })

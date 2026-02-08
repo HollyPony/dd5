@@ -1,5 +1,6 @@
 import { AbstractSelect } from '../AbstractSelect/index.js'
-import charSheet from '../../modules/stores/charSheet.store.js'
+import charSheetStore from '../../modules/stores/charSheet.store.js'
+import charSheetObserver from '../../modules/stores/charSheet.observer.js'
 import { getList as getClassesList, } from '../../modules/data/classes.js'
 import { populateSelect, } from '../../modules/domlib.js'
 import { domSubscribe } from '../../modules/domlib.js'
@@ -21,7 +22,7 @@ export class ClassSelect extends AbstractSelect {
   _registerEvents() {
     this._pushEvents(
       domSubscribe(this._selectElement, 'change', this.#selectChanged),
-      charSheet.subscribe('charClass', this._refreshValue),
+      charSheetObserver.subscribe('charClass', this._refreshValue),
     )
   }
 
@@ -38,11 +39,11 @@ export class ClassSelect extends AbstractSelect {
 
   _refreshValue = () => {
     console.info('-- ClassSelect.#refreshValue')
-    this._selectElement.value = charSheet.getCharClassName() || ''
+    this._selectElement.value = charSheetStore.getCharClassName() || ''
   }
 
   #selectChanged = ({ target: { value } }) => {
     console.info('-- ClassSelect.#selectChanged', value)
-    charSheet.setCharClassName(value)
+    charSheetStore.setCharClassName(value)
   }
 }

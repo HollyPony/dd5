@@ -5,7 +5,8 @@ import { EFFECT, ABILITY, DICE, SKILLS, } from '../common.js'
 import { EQUIPED_CATEGORY, EQUIPMENT_TYPE, getEquipment, } from '../data/equipments.js'
 import { getLevelFromExperience } from '../data/leveling.js'
 import { s } from '../helpers.js'
-import createObservableStore from './createObservableStore.js'
+import observer from './charSheet.observer.js'
+import createStore from './createStore.js'
 
 const initialData = {
   // Raw part
@@ -78,7 +79,7 @@ function computeAbilityModifier(score) {
 }
 
 function createCharSheetStore() {
-  const store = createObservableStore(initialData)
+  const store = createStore(initialData, observer)
 
   const { get, set, } = store
 
@@ -101,7 +102,7 @@ function createCharSheetStore() {
     return modifierScore + (proficiencyBonus * proficiencyMultiplier)
   }
 
-  function init(charData, notify = false) {
+  function init(charData) {
     const charLevel = getLevelFromExperience(charData.charExperience)
     const proficiencyBonus = _computeProficiencyBonus(charLevel)
     const charOrigin = getOrigin(charData.charOriginName)
@@ -151,7 +152,7 @@ function createCharSheetStore() {
       modifiers,
       equiped,
       saves,
-    }, notify)
+    })
 
     // TODO: init class features
 
@@ -160,8 +161,8 @@ function createCharSheetStore() {
     // TODO: init feats
   }
 
-  function reset(notify) {
-    init(initialData, notify)
+  function reset() {
+    init(initialData)
   }
 
   function getEquiped(category = null) { return category ? get('equiped')[category] : get('equiped') }
@@ -469,7 +470,6 @@ function createCharSheetStore() {
     ...getters,
     ...setters,
     ...helpers,
-    subscribe: store.subscribe
   }
 }
 

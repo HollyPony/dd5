@@ -16,24 +16,25 @@ import { Specs } from './components/Specs/index.js'
 import { AbstractComponent } from './components/AbstractComponent/index.js'
 
 import { DICES as D, } from './modules/common.js'
-import { ALL } from './modules/stores/createObservableStore.js'
 import initTranslations, { t, i18n } from './modules/i18n.js'
-import charSheet from './modules/stores/charSheet.store.js'
+import charSheetStore from './modules/stores/charSheet.store.js'
+import charSheetObserver from './modules/stores/charSheet.observer.js'
 import { TechnicalError, } from './modules/errors.js'
-import { debounce, } from './modules/helpers.js'
 import charSheetService from './modules/services/charSheet.service.js'
 import { createElement, domSubscribe, replaceElement, } from './modules/domlib.js'
 import './modules/toast.js'
-
-const AUTOSAVE_DELAY_MS = 600
 
 /////////////////////////////////////////////////////////////////////////
 // ELEMENTS TO UPDATE ///////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
 const charNameElement = document.getElementsByName('charName')[0]
-const charLevelElement = document.getElementsByName('charLevel')[0]
 const charExperienceElement = document.getElementsByName('experiencepoints')[0]
+const charLevelElement = document.getElementsByName('charLevel')[0]
+const armorClassElement = document.getElementsByName('armorClass')[0]
+const hitPointMaxElement = document.getElementsByName('hitPointMax')[0]
+const hitDiceMaxElement = document.getElementsByName('hitDiceMax')[0]
+const charAlignmentElement = document.getElementsByName('alignment')[0]
 const exportCharLink = document.getElementById("exportCharLink")
 const importCharLink = document.getElementById("importCharLink")
 const importCharFileElement = document.getElementById("importCharFile")
@@ -41,6 +42,10 @@ const createCharacterLink = document.getElementById("createCharacterLink")
 const savedCharactersListTitle = document.getElementById("savedCharactersListTitle")
 const savedCharactersList = document.getElementById("savedCharactersList")
 const currentCharacterName = document.getElementById("currentCharacterName")
+const debugOutputElement = document.getElementById('jsonOutput')
+const debugModal = document.getElementById('debugModal')
+
+const translations = document.querySelectorAll('[data-i18n], [data-i18n-attributes]')
 
 /////////////////////////////////////////////////////////////////////////
 // DISPLAY HELPERS //////////////////////////////////////////////////////
@@ -70,80 +75,68 @@ function renderSavedCharSheets() {
 }
 
 function renderCharName() {
-  charNameElement.value = charSheet.getCharName()
-  replaceElement(currentCharacterName, charSheet.getCharName() || t._('navbar.unnamedCharacter'))
+  charNameElement.value = charSheetStore.getCharName()
+  replaceElement(currentCharacterName, charSheetStore.getCharName() || t._('navbar.unnamedCharacter'))
 }
 
 function renderCharExperience() {
-  charExperienceElement.value = charSheet.getCharExperience()
+  charExperienceElement.value = charSheetStore.getCharExperience()
 }
 
 function renderCharLevel() {
-  charLevelElement.value = charSheet.getCharLevel()
+  charLevelElement.value = charSheetStore.getCharLevel()
 }
 
 function renderArmorClass() {
-  document.getElementsByName('armorClass')[0].value = charSheet.getArmorClass()
+  armorClassElement.value = charSheetStore.getArmorClass()
 }
 
 function renderHitPointMax() {
-  document.getElementsByName('hitPointMax')[0].value = charSheet.getHitPointMax()
+  hitPointMaxElement.value = charSheetStore.getHitPointMax()
 }
 
 function renderHitDiceMax() {
-  document.getElementsByName('hitDiceMax')[0].value = diceToString(charSheet.getHitDiceMax())
+  hitDiceMaxElement.value = diceToString(charSheetStore.getHitDiceMax())
 }
 
 function renderCharAlignment() {
-  document.getElementsByName('alignment')[0].value = charSheet.getCharAlignment()
+  charAlignmentElement.value = charSheetStore.getCharAlignment()
 }
 
 function renderJSONOutput() {
-  document.getElementById('jsonOutput').textContent = JSON.stringify(charSheet.get(), null, 2)
-}
+  const defaultOpenLevels = 1
+  function renderJsonTree(value, keyLabel, level = 0) {
+    const type = Array.isArray(value) ? 'array' : (value === null ? 'null' : typeof value)
 
-/////////////////////////////////////////////////////////////////////////
-// SUBSCRIPTIONS ////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
+    if (type === 'object' || type === 'array') {
+      const container = level === 0
+        ? createElement()
+        : createElement('div', null, { style: 'padding-left: 1rem;' })
 
-const subscriptions = []
+      const entries = type === 'array' ? value.entries() : Object.entries(value)
+      for (const [k, v] of entries) {
+        container.appendChild(renderJsonTree(v, String(k), level + 1))
+      }
 
-function registerSubscriptions() {
-  subscriptions.push(
-    // Dom html events
-    domSubscribe(exportCharLink, 'click', exportJSONClicked),
-    domSubscribe(importCharLink, 'click', importCharClicked),
-    domSubscribe(importCharFileElement, 'change', importCharFileChanged),
-    domSubscribe(savedCharactersList, 'click', savedCharacterClicked),
-    domSubscribe(createCharacterLink, 'click', createCharacterClicked),
-    domSubscribe(charNameElement, 'input', charNameChanged),
-    domSubscribe(charExperienceElement, 'change', charExperienceChanged),
+      return level === 0
+        ? createElement(null, container)
+        : createElement('details',
+          [
+            createElement('summary',
+              keyLabel ? `${keyLabel} (${type})` : type
+            ),
+            container
+          ],
+          { open: defaultOpenLevels > level })
+    }
 
-    domSubscribe(window, 'pagehide', pageHided),
-
-    // Observable events
-    charSheet.subscribe('charName', renderCharName),
-    charSheet.subscribe('charExperience', renderCharExperience),
-    charSheet.subscribe('charLevel', renderCharLevel),
-    charSheet.subscribe('charLevel', renderHitPointMax),
-    charSheet.subscribe('charClass', renderHitPointMax),
-    charSheet.subscribe('modifiers', renderHitPointMax),
-    charSheet.subscribe('charLevel', renderHitDiceMax),
-    charSheet.subscribe('charClass', renderHitDiceMax),
-    charSheet.subscribe('charAlignment', renderCharAlignment),
-    charSheet.subscribe('charClass', renderArmorClass),
-    charSheet.subscribe('equiped', renderArmorClass),
-    charSheet.subscribe('feats', renderArmorClass),
-    charSheet.subscribe('modifiers', renderArmorClass),
-    charSheet.subscribe(ALL, renderJSONOutput),
-    charSheet.subscribe(ALL, debounce(() => charSheetService.save(), AUTOSAVE_DELAY_MS)),
-    charSheetService.subscribeCharSheetsList(renderSavedCharSheets),
-    i18n.subscribe(() => AbstractComponent.notifyI18nChanged()),
-  )
-}
-
-function unregisterSubscriptions() {
-  while (subscriptions.length) subscriptions.pop()?.()
+    const leaf = document.createElement('div')
+    leaf.textContent = keyLabel ? `${keyLabel}: ${JSON.stringify(value)}` : JSON.stringify(value)
+    return leaf
+  }
+  // TODO: render by tab state / storage format (json)
+  // jsonOutputElement.replaceChildren(renderJsonTree(charSheetStore.get()))
+  debugOutputElement.replaceChildren(renderJsonTree(charSheetService.toSaveData(charSheetStore.get())))
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -193,7 +186,7 @@ function exportJSONClicked(event) {
     url = URL.createObjectURL(blob)
     const link = document.createElement('a')
 
-    link.download = charSheet.getCharName().replace(/[^a-zA-Z0-9 ]/g, '').trim() || 'TheCharacterWithNoName'
+    link.download = charSheetStore.getCharName().replace(/[^a-zA-Z0-9 ]/g, '').trim() || 'TheCharacterWithNoName'
     link.href = url
     link.click()
   } catch (error) {
@@ -208,11 +201,19 @@ function exportJSONClicked(event) {
 }
 
 function charNameChanged({ target: { value } }) {
-  charSheet.setCharName(value)
+  charSheetStore.setCharName(value)
 }
 
 function charExperienceChanged({ target: { value } }) {
-  charSheet.setCharExperience(value)
+  charSheetStore.setCharExperience(value)
+}
+
+function translationsChanged() {
+  for (const element of translations) {
+    i18n.applyTranslation(element)
+  }
+  renderSavedCharSheets()
+  renderCharName()
 }
 
 function pageHided() {
@@ -242,16 +243,68 @@ function registerCustomElements() {
 }
 
 /////////////////////////////////////////////////////////////////////////
+// SUBSCRIPTIONS ////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+const subscriptions = []
+
+function registerRenders() {
+  subscriptions.push(
+    ...charSheetObserver.subscribes({
+      'charName': [renderCharName],
+      'charExperience': [renderCharExperience],
+      'charLevel': [renderCharLevel, renderHitPointMax, renderHitDiceMax],
+      'charClass': [renderHitPointMax, renderHitDiceMax, renderArmorClass],
+      'modifiers': [renderHitPointMax, renderArmorClass],
+      'charAlignment': [renderCharAlignment],
+      'equiped': [renderArmorClass],
+      'feats': [renderArmorClass],
+    }),
+    charSheetService.subscribeCharSheetsList(renderSavedCharSheets),
+  )
+}
+
+function registerDomEvents() {
+  subscriptions.push(
+    // Dom html events
+    domSubscribe(exportCharLink, 'click', exportJSONClicked),
+    domSubscribe(importCharLink, 'click', importCharClicked),
+    domSubscribe(importCharFileElement, 'change', importCharFileChanged),
+    domSubscribe(savedCharactersList, 'click', savedCharacterClicked),
+    domSubscribe(createCharacterLink, 'click', createCharacterClicked),
+    domSubscribe(charNameElement, 'input', charNameChanged),
+    domSubscribe(charExperienceElement, 'change', charExperienceChanged),
+    domSubscribe(debugModal, 'show.bs.modal', renderJSONOutput),
+
+    domSubscribe(window, 'pagehide', pageHided),
+  )
+}
+
+function registerTranslationsUpdates() {
+  subscriptions.push(
+    i18n.subscribe(() => AbstractComponent.notifyI18nChanged()),
+    i18n.subscribe(() => translationsChanged()),
+  )
+}
+
+function unregisterSubscriptions() {
+  while (subscriptions.length) subscriptions.pop()?.()
+  charSheetService.unregister()
+}
+
+/////////////////////////////////////////////////////////////////////////
 // POPULATE /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
 async function initApp() {
-  await initTranslations()
-
-  registerCustomElements()
-  registerSubscriptions()
-
+  registerRenders()
   charSheetService.init()
+
+  registerDomEvents()
+  registerTranslationsUpdates()
+  registerCustomElements()
+
+  initTranslations()
 }
 
 initApp()

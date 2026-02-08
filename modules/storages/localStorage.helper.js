@@ -1,4 +1,4 @@
-import { createObservable } from '../helpers.js'
+import { createObservable } from '../createObservable.js'
 
 const APP_PREFIX_KEY = 'dd5'
 

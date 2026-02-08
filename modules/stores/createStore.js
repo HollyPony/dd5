@@ -1,11 +1,9 @@
-import { MissingPathError } from '../errors.js'
 import { resolvePath, } from '../helpers.js'
 
 export const ALL = '*'
 
-export default function createObservableStore(initialState) {
+export default function createStore(initialState, observer) {
   const state = Object.seal({ ...initialState })
-  const listeners = new Map()
 
   const pathPartsCache = new Map()
   function getPathParts(path) {
@@ -52,11 +50,11 @@ export default function createObservableStore(initialState) {
         currentTarget[pathParts[pathParts.length - 1]] = value
 
         // Notify
-        if (shouldNotify) {
+        if (observer && shouldNotify) {
           let key
           for (const part of pathParts) {
             key = key ? key + '.' + part : part
-            const bucket = listeners.get(key)
+            const bucket = observer.getListeners(key)
             if (bucket) {
               for (const listener of bucket) callbacks.add(listener)
             }
@@ -64,28 +62,8 @@ export default function createObservableStore(initialState) {
         }
       }
 
-      if (shouldNotify) for (const callback of callbacks) callback()
-      if (shouldNotify) for (const callback of listeners.get(ALL) ?? []) callback()
-    },
-
-    /**
-     * Subscribe to a specific path.
-     *
-     * The callback is triggered whenever that path (or a child path) is updated.
-     * Pass `ALL` (`'*'`) to listen to any update.
-     *
-     * @param {string} stateKey - Dot-separated path to observe or `ALL`.
-     * @param {() => void} callback - Listener called on updates (no value passed).
-     * @returns {() => void} Unsubscribe function.
-     * @throws {MissingPathError} If stateKey is missing or falsy.
-     */
-    subscribe(stateKey, callback) {
-      if (!stateKey) throw new MissingPathError()
-      if (!listeners.has(stateKey)) {
-        listeners.set(stateKey, new Set())
-      }
-      listeners.get(stateKey).add(callback)
-      return () => listeners.get(stateKey).delete(callback)
+      if (observer && shouldNotify) for (const callback of callbacks) callback()
+      if (observer && shouldNotify) observer.notify(ALL)
     },
   }
 }

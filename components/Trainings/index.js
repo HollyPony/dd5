@@ -1,5 +1,6 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
-import charSheet from '../../modules/stores/charSheet.store.js'
+import charSheetStore from '../../modules/stores/charSheet.store.js'
+import charSheetObserver from '../../modules/stores/charSheet.observer.js'
 import { createElement, replaceElement } from '../../modules/domlib.js'
 import { ARMOR_CATEGORY } from '../../modules/data/equipments.js'
 import { t, i18n } from '../../modules/i18n.js'
@@ -32,9 +33,9 @@ export class Trainings extends AbstractComponent {
 
   _registerEvents() {
     this._pushEvents(
-      charSheet.subscribe('charClass', this.#refreshTrainings),
-      charSheet.subscribe('classTools', this.#refreshTrainings),
-      charSheet.subscribe('feats', this.#refreshTrainings),
+      charSheetObserver.subscribe('charClass', this.#refreshTrainings),
+      charSheetObserver.subscribe('classTools', this.#refreshTrainings),
+      charSheetObserver.subscribe('feats', this.#refreshTrainings),
     )
   }
 
@@ -45,15 +46,15 @@ export class Trainings extends AbstractComponent {
   }
 
   #refreshArmors = () => {
-    const armorProficiencies = charSheet.getArmorProficiencies() || []
+    const armorProficiencies = charSheetStore.getArmorProficiencies() || []
     this.#armorLightElement.checked = armorProficiencies.includes(ARMOR_CATEGORY.Light)
     this.#armorMediumElement.checked = armorProficiencies.includes(ARMOR_CATEGORY.Medium)
     this.#armorHeavyElement.checked = armorProficiencies.includes(ARMOR_CATEGORY.Heavy)
-    this.#shieldElement.checked = charSheet.getShieldProficiency()
+    this.#shieldElement.checked = charSheetStore.getShieldProficiency()
   }
 
   #refreshWeaponProficiencies = () => {
-    const weaponProficiencies = charSheet.getWeaponProficiencies() || []
+    const weaponProficiencies = charSheetStore.getWeaponProficiencies() || []
     const weaponItems = weaponProficiencies.length === 0
       ? [createElement('p', t._('components.Trainings.weapons.none'), { class: 'text-muted' })]
       : weaponProficiencies.map(proficiency => createElement('p', t._(['components.Trainings.weapons']
@@ -64,7 +65,7 @@ export class Trainings extends AbstractComponent {
   }
 
   #refreshToolsProficiency = () => {
-    const toolProficiencies = charSheet.getToolProficiencies() || []
+    const toolProficiencies = charSheetStore.getToolProficiencies() || []
     const toolItems = toolProficiencies.length === 0
       ? createElement('p', t._('components.Trainings.tools.none'), { class: 'text-muted' })
       : toolProficiencies.map(tool => createElement('p', t._(`statics.TOOLS.${tool.replace('TOOLS_', '')}.name`)))

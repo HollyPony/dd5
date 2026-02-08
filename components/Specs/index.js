@@ -1,5 +1,6 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
-import charSheet from '../../modules/stores/charSheet.store.js'
+import charSheetStore from '../../modules/stores/charSheet.store.js'
+import charSheetObserver from '../../modules/stores/charSheet.observer.js'
 import { i18n } from '../../modules/i18n.js'
 
 export class Specs extends AbstractComponent {
@@ -29,42 +30,42 @@ export class Specs extends AbstractComponent {
 
   _registerEvents() {
     this._pushEvents(
-      charSheet.subscribe('modifiers', this.#refreshInitiative),
-      charSheet.subscribe('charSpecies', this.#refreshSpeed),
-      charSheet.subscribe('equiped', this.#refreshSpeed),
-      charSheet.subscribe('feats', this.#refreshSpeed),
-      charSheet.subscribe('charSizeCategory', this.#refreshSize),
-      charSheet.subscribe('charSize', this.#refreshSize),
-      charSheet.subscribe('classSkills', this.#refreshPassivePerception),
-      charSheet.subscribe('expertSkills', this.#refreshPassivePerception),
-      charSheet.subscribe('modifiers', this.#refreshPassivePerception),
+      charSheetObserver.subscribe('modifiers', this.#refreshInitiative),
+      charSheetObserver.subscribe('charSpecies', this.#refreshSpeed),
+      charSheetObserver.subscribe('equiped', this.#refreshSpeed),
+      charSheetObserver.subscribe('feats', this.#refreshSpeed),
+      charSheetObserver.subscribe('charSizeCategory', this.#refreshSize),
+      charSheetObserver.subscribe('charSize', this.#refreshSize),
+      charSheetObserver.subscribe('classSkills', this.#refreshPassivePerception),
+      charSheetObserver.subscribe('expertSkills', this.#refreshPassivePerception),
+      charSheetObserver.subscribe('modifiers', this.#refreshPassivePerception),
     )
   }
 
   #refreshInitiative = () => {
     if (this.#initiativeElement) {
-      this.#initiativeElement.value = charSheet.getInitiative()
+      this.#initiativeElement.value = charSheetStore.getInitiative()
     }
   }
 
   #refreshSpeed = () => {
     if (this.#speedElement) {
-      this.#speedElement.value = charSheet.getCharSpeed()
+      this.#speedElement.value = charSheetStore.getCharSpeed()
     }
   }
 
   #refreshSize = () => {
     if (this.#sizeCategoryElement) {
-      this.#sizeCategoryElement.value = charSheet.getCharSizeCategory()
+      this.#sizeCategoryElement.value = charSheetStore.getCharSizeCategory()
     }
     if (this.#sizeElement) {
-      this.#sizeElement.value = charSheet.getCharSize() || ''
+      this.#sizeElement.value = charSheetStore.getCharSize() || ''
     }
   }
 
   #refreshPassivePerception = () => {
     if (this.#passivePerceptionElement) {
-      this.#passivePerceptionElement.value = charSheet.getPassivePerception()
+      this.#passivePerceptionElement.value = charSheetStore.getPassivePerception()
     }
   }
 
