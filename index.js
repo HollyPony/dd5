@@ -22,7 +22,7 @@ import charSheet from './modules/stores/charSheet.store.js'
 import { TechnicalError, } from './modules/errors.js'
 import { debounce, } from './modules/helpers.js'
 import charSheetService from './modules/services/charSheet.service.js'
-import { createElement, domSubscribe, fillElement, } from './modules/domlib.js'
+import { createElement, domSubscribe, replaceElement, } from './modules/domlib.js'
 import './modules/toast.js'
 
 const AUTOSAVE_DELAY_MS = 600
@@ -57,8 +57,8 @@ function diceToString({ number, dice }) {
 function renderSavedCharSheets() {
   const saves = charSheetService.getList(false)
 
-  fillElement(savedCharactersListTitle, t._(saves.length ? 'navbar.savedCharacters' : 'navbar.noCharacters'))
-  fillElement(savedCharactersList, createElement(
+  replaceElement(savedCharactersListTitle, t._(saves.length ? 'navbar.savedCharacters' : 'navbar.noCharacters'))
+  replaceElement(savedCharactersList, createElement(
     'div',
     saves.map(save => createElement('a', save.name || t._('navbar.unnamedCharacter'), {
       href: '',
@@ -71,7 +71,7 @@ function renderSavedCharSheets() {
 
 function renderCharName() {
   charNameElement.value = charSheet.getCharName()
-  fillElement(currentCharacterName, charSheet.getCharName() || t._('navbar.unnamedCharacter'))
+  replaceElement(currentCharacterName, charSheet.getCharName() || t._('navbar.unnamedCharacter'))
 }
 
 function renderCharExperience() {

@@ -1,6 +1,6 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
-import { createElement, fillElement } from '../../modules/domlib.js'
+import { createElement, replaceElement } from '../../modules/domlib.js'
 import { ARMOR_CATEGORY } from '../../modules/data/equipments.js'
 import { t, i18n } from '../../modules/i18n.js'
 
@@ -60,7 +60,7 @@ export class Trainings extends AbstractComponent {
         .concat(proficiency.length === 1 ? [proficiency, 'all'] : proficiency)
         .join('.')
       )))
-    fillElement(this.#weaponsListElement, weaponItems)
+    replaceElement(this.#weaponsListElement, weaponItems)
   }
 
   #refreshToolsProficiency = () => {
@@ -68,7 +68,7 @@ export class Trainings extends AbstractComponent {
     const toolItems = toolProficiencies.length === 0
       ? createElement('p', t._('components.Trainings.tools.none'), { class: 'text-muted' })
       : toolProficiencies.map(tool => createElement('p', t._(`statics.TOOLS.${tool.replace('TOOLS_', '')}.name`)))
-    fillElement(this.#toolsListElement, toolItems)
+    replaceElement(this.#toolsListElement, toolItems)
   }
 
   _i18nChanged = () => {

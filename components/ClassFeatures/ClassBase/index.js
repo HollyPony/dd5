@@ -1,10 +1,10 @@
 import { AbstractComponent } from '../../AbstractComponent/index.js'
 import charSheet from '../../../modules/stores/charSheet.store.js'
 import { t, i18n } from '../../../modules/i18n.js'
-import { createElement, fillElement } from '../../../modules/domlib.js'
+import { createElement, replaceElement } from '../../../modules/domlib.js'
 import { EQUIPMENT_TYPE, getEquipments, } from '../../../modules/data/equipments.js'
 import { INSERTION_TYPE } from '../../../modules/data/classes.js'
-import { createObservable } from '../../../modules/helpers.js'
+import { createObservable } from '../../../modules/createObservable.js'
 
 export class ClassBase extends AbstractComponent {
   static get tagName() { return 'class-base' }
@@ -95,7 +95,7 @@ export class ClassBase extends AbstractComponent {
   }
 
   #renderDescription() {
-    fillElement(this.#descriptionBodyElement, t.md(`statics.classes.${charSheet.getCharClassName()}.description`))
+    replaceElement(this.#descriptionBodyElement, t.md(`statics.classes.${charSheet.getCharClassName()}.description`))
   }
 
   #renderSkills() {
@@ -114,15 +114,15 @@ export class ClassBase extends AbstractComponent {
     const classSkills = charSheet.getCharClass()?.skills
     if (classSkills) {
       const remaining = classSkills.nb - charSheet.getClassSkills().length
-      fillElement(this.#skillsChooseLabelElement, t.tn('components.ClassBase.skills.remaining', { remaining }))
+      replaceElement(this.#skillsChooseLabelElement, t.tn('components.ClassBase.skills.remaining', { remaining }))
     } else {
-      fillElement(this.#skillsChooseLabelElement, t.tn('components.ClassBase.skills.notConcerned',))
+      replaceElement(this.#skillsChooseLabelElement, t.tn('components.ClassBase.skills.notConcerned',))
     }
   }
 
   #refreshSkillsList() {
     console.info('-- ClassBase.refreshSkillsList')
-    fillElement(this.#skillsListElement, charSheet.getCharClass()?.skills.list.map(skill => {
+    replaceElement(this.#skillsListElement, charSheet.getCharClass()?.skills.list.map(skill => {
       const skillId = `${skill.name}.${this._id}`
       return createElement('div', [
         createElement('input', null, {
@@ -229,7 +229,7 @@ export class ClassBase extends AbstractComponent {
         }
       }
     })
-    fillElement(this.#toolsGroupsElement, groups.filter(Boolean))
+    replaceElement(this.#toolsGroupsElement, groups.filter(Boolean))
     this.#toolsGroupsElement.classList[groups.length ? 'remove' : 'add']('d-none')
   }
 

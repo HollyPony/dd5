@@ -1,4 +1,3 @@
-import { removeAllChildren } from './domlib.js'
 import { TechnicalError, } from './errors.js'
 import { resolvePath } from './helpers.js'
 import parseMarkdown from './markdown.js'
@@ -127,7 +126,7 @@ function applyTranslation(element) {
       : undefined
 
     const result = (markdown ? md : tn)(path, interpolations)
-    if (result) removeAllChildren(element).appendChild(result)
+    if (result) element.replaceChildren(result)
   }
 
   const attributesRaw = element.dataset.i18nAttributes

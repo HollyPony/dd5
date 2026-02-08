@@ -1,6 +1,6 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
-import { createElement, fillElement, } from '../../modules/domlib.js'
+import { createElement, replaceElement, } from '../../modules/domlib.js'
 import { ABILITY, SKILLS, } from '../../modules/common.js'
 import { signDisplay, } from '../../modules/helpers.js'
 import { domSubscribe } from '../../modules/domlib.js'
@@ -37,8 +37,8 @@ export class Ability extends AbstractComponent {
 
     this.#skills = Object.values(SKILLS).filter(skill => skill.ability === this.ability)
 
-    fillElement(this.#labelElement, t.tn(`statics.${this.ability}`))
-    fillElement(this.#save.label, t.tn('ability.save.label'))
+    replaceElement(this.#labelElement, t.tn(`statics.${this.ability}`))
+    replaceElement(this.#save.label, t.tn('ability.save.label'))
 
     this.#refreshScore()
     this.#refreshModifier()
@@ -79,7 +79,7 @@ export class Ability extends AbstractComponent {
     console.info('-- Ability.#refreshSkills', this.ability)
 
     this.#skillsContainer.classList[this.#skills.length > 0 ? 'add' : 'remove']('ability-card-content')
-    fillElement(this.#skillsContainer, this.#skills.map((skill) => {
+    replaceElement(this.#skillsContainer, this.#skills.map((skill) => {
       const isExpert = charSheet.isExpertSkill(skill)
       return createElement('div', [
         createElement('input', null, {
@@ -128,8 +128,8 @@ export class Ability extends AbstractComponent {
 
   _i18nChanged = () => {
     console.info('-- Ability.#i18nChanged', this.ability)
-    fillElement(this.#labelElement, t.tn(`statics.${this.ability}`))
-    fillElement(this.#save.label, t.tn('ability.save.label'))
+    replaceElement(this.#labelElement, t.tn(`statics.${this.ability}`))
+    replaceElement(this.#save.label, t.tn('ability.save.label'))
     this.#refreshSkills()
   }
 

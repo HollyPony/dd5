@@ -1,6 +1,6 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
-import { createElement, fillElement } from '../../modules/domlib.js'
+import { createElement, replaceElement } from '../../modules/domlib.js'
 import { i18n } from '../../modules/i18n.js'
 
 export class ClassFeatures extends AbstractComponent {
@@ -47,7 +47,7 @@ export class ClassFeatures extends AbstractComponent {
     console.info('-- ClassFeatures.#refreshFeatures',)
 
     const featureElements = charSheet.getCharClass()?.features?.map(this.#createFeature) ?? []
-    fillElement(this.#featuresElement, featureElements)
+    replaceElement(this.#featuresElement, featureElements)
   }
 
   #refreshActionRequired() {

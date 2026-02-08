@@ -1,71 +1,83 @@
+const BOOLEAN_ATTRIBUTES = new Set([
+  'allowfullscreen', 'async', 'autofocus', 'autoplay', 'checked', 'controls',
+  'default', 'defer', 'disabled', 'formnovalidate', 'hidden', 'inert', 'ismap',
+  'itemscope', 'loop', 'multiple', 'muted', 'novalidate', 'nomodule', 'open',
+  'required', 'reversed', 'selected', 'shadowrootclonable',
+  'shadowrootcustomelementregistry', 'shadowrootdelegatesfocus'
+])
+
 /**
- * Create an HTMLElement
- * @param {string} type the name of the element to create. e.g. div
- * @param {null|undefined|string|HTMLElement|string[]|HTMLElement[]} children if provided, append all children as textContext or direct as Element
+ * Normalize a value into a DOM Node.
+ * @param {any} item
+ * @returns {Node}
+ */
+export function toNode(item) {
+  return item instanceof Node ? item : document.createTextNode(item)
+}
+
+/**
+ * Append one or many children to a parent, normalizing values to Nodes.
+ * Fails fast if a non-renderable value is provided.
+ * @param {Node} parent
+ * @param {null|undefined|string|number|Node|(string|number|Node)[]} children
+ */
+export function appendChild(parent, children) {
+  if (children != null) {
+    if (Array.isArray(children)) for (const child of children) parent.appendChild(toNode(child))
+    else parent.appendChild(toNode(children))
+  }
+}
+
+/**
+ * Create an HTMLElement or a DocumentFragment.
+ * @param {string} type Element tag name. Falsy creates a DocumentFragment.
+ * @param {null|undefined|string|number|Node|(string|number|Node)[]} children if provided, append all children as textContext or direct as Element
  * @param {object} props 
- * @param {object} props.eventListeners { [eventType]: callbackFunction } element
+ * @param {Record<string, Function>} [props.eventListeners] Map of eventName -> handler.
  * @param {attributes} ...props Rest of props used as element attributes
- * @returns 
+ * @returns {HTMLElement|DocumentFragment}
  */
 export function createElement(type, children = [], { eventListeners = {}, ...attributes } = {}) {
   const element = type ? document.createElement(type) : document.createDocumentFragment()
-  Object.entries(attributes).forEach(([name, value]) => {
-    switch (name) {
-      case 'checked':
-      case 'disabled': return value ? element.setAttribute(name, 'true') : element.removeAttribute(name)
-      default: return (value !== undefined) && element.setAttribute(name, value)
-    }
-  })
-  Array().concat(children).filter(child => child)
-    .forEach(child => element.appendChild(typeof child === 'string' ? document.createTextNode(child) : child))
-  Object.entries(eventListeners).forEach(params => element.addEventListener(...params))
+  for (const [name, value] of Object.entries(attributes))
+    value !== undefined && (BOOLEAN_ATTRIBUTES.has(name)
+      ? value && element.setAttribute(name, '')
+      : element.setAttribute(name, value))
+
+  appendChild(element, children)
+
+  for (const [eventName, callback] of Object.entries(eventListeners))
+    element.addEventListener(eventName, callback)
   return element
 }
 
 /**
- * Remove every child of an element
- * @param {HTMLElement} element The element to process
- * @returns element for chaining
+ * Replace all children of an element with provided content.
+ * @param {Element} element to fill with ...
+ * @param {null|undefined|string|number|Node|(string|number|Node)[]} children if provided, append all children as textContext or direct as Element
+ * @returns {Element} the element
  */
-export function removeAllChildren(element) {
-  if (element) {
-    while (element.firstChild) element.removeChild(element.firstChild)
-  }
-  return element
-}
-
-/**
- * Fill element
- * @param {*} element to fill with ...
- * @param {null|undefined|string|HTMLElement|string[]|HTMLElement[]} items if provided, append all children as textContext or direct as Element
- * @param {*} params could be { clear: true } default. To clear content of element before fill
- * @returns the element
- */
-export function fillElement(element, items = [], params = { clear: true }) {
-  if (params.clear) {
-    removeAllChildren(element)
-  }
-
+export function replaceElement(element, children = []) {
   const fragment = document.createDocumentFragment()
-  Array().concat(items).forEach(item => fragment.appendChild(typeof item === 'string' ? document.createTextNode(item) : item))
-  element.appendChild(fragment)
+
+  appendChild(fragment, children)
+
+  element.replaceChildren(fragment)
   return element
 }
 
 /**
- * Append options / optgroups from `items` to the provided `selectElement`
+ * Populate a <select> with options and optgroups.
  * @param {HTMLSelectElement} selectElement The <select> Element to append the <option> elements
  * @param {object[]} items the element to append
  * @param {object} params Some params...
- * @param {boolean} [params.clear=false] `true` to clear previous content. Call `removeAllChildren` on `selectElement`
  * @param {string} [params.placeholder=null] Append an `<option>` as first element with this `placeholder` as textContent and value to `''` (empty string)
- * @returns the selectElement for chaining or re-use. (ie. for `.value = ` ...)
+ * @returns {HTMLSelectElement} the selectElement for chaining or re-use. (ie. for `.value = ` ...)
  */
 export function populateSelect(selectElement, items, params = {
-  clear: true,
   placeholder: null
 }) {
-  return fillElement(selectElement, Array()
+  return replaceElement(selectElement, Array()
     .concat(params.placeholder && ({ value: '', text: params.placeholder, disabled: true }))
     .concat(items)
     .filter(item => item)
@@ -76,9 +88,16 @@ export function populateSelect(selectElement, items, params = {
         { label: item.label }
       )
       : createElement('option', item.text, { value: item.value, disabled: item.disabled })
-    ), { clear: params.clear ?? true })
+    ))
 }
-
+/**
+ * Subscribe to a DOM event and return the unsubscribe function.
+ * @param {EventTarget} domElement
+ * @param {string} eventName
+ * @param {Function} handler
+ * @param {object|boolean} [options]
+ * @returns {Function} Unsubscribe callback.
+ */
 export function domSubscribe(domElement, eventName, handler, options) {
   domElement.addEventListener(eventName, handler, options)
 

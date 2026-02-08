@@ -1,6 +1,6 @@
 ﻿import { AbstractComponent } from '../AbstractComponent/index.js'
 import charSheet from '../../modules/stores/charSheet.store.js'
-import { createElement, fillElement } from '../../modules/domlib.js'
+import { createElement, replaceElement } from '../../modules/domlib.js'
 import { spells } from '../../modules/data/spells.js'
 import { t, i18n } from '../../modules/i18n.js'
 
@@ -36,14 +36,14 @@ export class SpeciesTraits extends AbstractComponent {
     const species = charSheet.getCharSpecies()
     const speciesName = charSheet.getCharSpeciesName()
     if (!species) {
-      fillElement(this.#descriptionElement, [
+      replaceElement(this.#descriptionElement, [
         createElement('div', t._('components.SpeciesTraits.empty'), { class: 'text-muted px-2 py-2' }),
       ])
-      fillElement(this.#traitsListElement, [])
+      replaceElement(this.#traitsListElement, [])
       return
     }
 
-    fillElement(this.#descriptionElement, this.#buildSpeciesDescription(speciesName))
+    replaceElement(this.#descriptionElement, this.#buildSpeciesDescription(speciesName))
 
     const traitsItems = (species.traits || []).map((trait, index) => {
       const traitName = t._(`statics.traits.${trait.name}.name`)
@@ -85,7 +85,7 @@ export class SpeciesTraits extends AbstractComponent {
       )
     ))
 
-    fillElement(this.#traitsListElement, [
+    replaceElement(this.#traitsListElement, [
       ...traitsItems,
       ...spellItems,
       ...resistanceItems,
