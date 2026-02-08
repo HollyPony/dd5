@@ -177,34 +177,38 @@ async function importCharFileChanged({ target: { files } }) {
     charSheetService.importJSON(jsonText)
   } catch (error) {
     throw new TechnicalError(error)
+  } finally {
+    importCharFileElement.value = ''
   }
-  importCharFileElement.value = ''
 }
 
 function exportJSONClicked(event) {
   event?.preventDefault()
 
-  let json
+  let url
   try {
-    json = charSheetService.exportJSON()
+    const json = charSheetService.exportJSON()
+
+    const blob = new Blob([json], { type: "application/json" })
+    url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+
+    link.download = charSheet.getCharName().replace(/[^a-zA-Z0-9 ]/g, '').trim() || 'TheCharacterWithNoName'
+    link.href = url
+    link.click()
+
+    setTimeout(() => {
+      URL.revokeObjectURL(url)
+    }, 0)
   } catch (error) {
     throw new TechnicalError(error)
+  } finally {
+    if (url) {
+      setTimeout(() => {
+        URL.revokeObjectURL(url)
+      }, 0)
+    }
   }
-
-  const blob = new Blob([json], { type: "application/json" })
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement('a')
-
-
-  // const safeName = (charSheet.getCharName() || '').replace(/[^a-zA-Z0-9 ]/g, '').trim()
-  link.download = charSheet.getCharName().replace(/[^a-zA-Z0-9 ]/g, '').trim() || 'TheCharacterWithNoName'
-  link.href = url
-  link.click()
-
-  // nettoyage mémoire
-  setTimeout(() => {
-    URL.revokeObjectURL(url)
-  }, 0)
 }
 
 function charNameChanged({ target: { value } }) {
