@@ -18,7 +18,9 @@ export class AbstractComponent extends HTMLElement {
   static _templatePromise
   static get _template() {
     if (!this._templatePromise) {
-      this._templatePromise = fetch(`${this._componentPath}/index.html`)
+      // TODO
+      // this._templatePromise = fetch(`${this._componentPath}/index.html`)
+      this._templatePromise = fetch(`${window.APP_PATH}${this._componentPath}/index.html`)
         .then(result => result.text())
         .then(html => new DOMParser()
           .parseFromString(html, 'text/html')
