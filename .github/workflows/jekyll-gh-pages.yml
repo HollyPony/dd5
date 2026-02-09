@@ -47,7 +47,7 @@ jobs:
     steps:
       - name: Generate runtime config
         run: |
-          echo "window.APP_URL = '${{ vars.APP_URL }}';" > public/env.js
+          echo "window.APP_URL = '${{ vars.APP_URL }}';" > env.js
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
