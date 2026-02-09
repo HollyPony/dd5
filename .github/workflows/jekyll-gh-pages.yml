@@ -31,9 +31,11 @@ jobs:
         uses: actions/checkout@v4
       - name: Generate runtime config
         run: |
+          OWNER="${{ github.repository_owner }}"
+          REPO="${{ github.event.repository.name }}"
           cat <<'EOF' > env.js
           window.DD5_APP_URL = '${{ vars.DD5_APP_URL }}'
-          window.DD5_APP_URL_FOR_CSS = '${{ steps.deployment.outputs.page_url }}'
+          window.DD5_APP_URL_FOR_CSS ='https://${OWNER}.github.io/${REPO}/'
           window.ENV = '${{ vars.ENV }}'
           EOF
       - name: Upload artifact
