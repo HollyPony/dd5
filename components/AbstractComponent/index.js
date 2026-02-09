@@ -41,7 +41,7 @@ export class AbstractComponent extends HTMLElement {
     const template = await this.constructor._template
     this.appendChild(template.content.cloneNode(true), true)
 
-    const STYLE_ID = `${this.constructor.name}`
+    const STYLE_ID = `--webcomponent-css-${this.constructor.name}-id`
 
     if (!document.getElementById(STYLE_ID) && this.constructor._componentPath) {
       const stylesheetLink = document.createElement('link')
