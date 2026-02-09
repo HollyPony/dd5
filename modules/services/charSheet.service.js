@@ -59,6 +59,6 @@ export default {
   remove: charSheetStorage.remove,
   subscribeCharSheetsList: charSheetStorage.subscribeCharSheetsList,
   unregister() {
-    disableAutoSave()
+    charSheetObserver.unsubscribe()
   }
 }
