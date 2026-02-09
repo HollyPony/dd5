@@ -33,6 +33,7 @@ jobs:
         run: |
           cat <<'EOF' > env.js
           window.DD5_APP_URL = '${{ vars.DD5_APP_URL }}'
+          window.DD5_APP_URL_FOR_CSS = '${{ steps.deployment.outputs.page_url }}'
           window.ENV = '${{ vars.ENV }}'
           EOF
       - name: Upload artifact
