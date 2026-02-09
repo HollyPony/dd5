@@ -23,22 +23,19 @@ concurrency:
 jobs:
   # Build job
   build:
+    environment:
+      name: github-pages
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      # - name: Setup Page
-      #   uses: actions/configure-pages@v5
       - name: Generate runtime config
         run: |
           echo "window.APP_URL = '${{ vars.APP_URL }}';" > env.js
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./
-          destination: ./_site
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./
 
   # Deployment job
   deploy:
