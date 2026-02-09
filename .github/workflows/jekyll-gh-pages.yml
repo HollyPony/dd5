@@ -29,11 +29,11 @@ jobs:
         uses: actions/checkout@v4
       # - name: Setup Page
       #   uses: actions/configure-pages@v5
-      # - name: Build with Jekyll
-      #   uses: actions/jekyll-build-pages@v1
-      #   with:
-      #     source: ./
-      #     destination: ./_site
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
       - name: Generate runtime config
         run: |
           echo "window.APP_URL = '${{ vars.APP_URL }}';" > env.js
