@@ -1,6 +1,6 @@
 import { AbstractComponent } from '../../AbstractComponent/index.js'
 import charSheet from '../../../modules/stores/charSheet.store.js'
-import { t, i18n } from '../../../modules/i18n.js'
+import { t } from '../../../modules/i18n.js'
 import { createObservable } from '../../../modules/createObservable.js'
 
 export class ClassFeature extends AbstractComponent {
@@ -34,8 +34,6 @@ export class ClassFeature extends AbstractComponent {
 
     this._actionRequired = false
     this._observable.notify('actionRequired')
-
-    i18n.applyTranslations(this)
   }
 
   #refreshTexts() {
@@ -54,7 +52,6 @@ export class ClassFeature extends AbstractComponent {
   }
 
   _i18nChanged = () => {
-    i18n.applyTranslations(this)
     this.#refreshTexts()
     this.#refreshDescription()
   }

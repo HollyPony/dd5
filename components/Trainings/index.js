@@ -3,7 +3,7 @@ import charSheetStore from '../../modules/stores/charSheet.store.js'
 import charSheetObserver from '../../modules/stores/charSheet.observer.js'
 import { createElement, replaceElement } from '../../modules/domlib.js'
 import { ARMOR_CATEGORY } from '../../modules/data/equipments.js'
-import { t, i18n } from '../../modules/i18n.js'
+import { t } from '../../modules/i18n.js'
 
 // TODO: Review this whole file
 export class Trainings extends AbstractComponent {
@@ -28,7 +28,6 @@ export class Trainings extends AbstractComponent {
     this.#toolsListElement = this.querySelector('.trainings-tools-list')
 
     this.#refreshTrainings()
-    i18n.applyTranslations(this)
   }
 
   _registerEvents() {
@@ -73,6 +72,7 @@ export class Trainings extends AbstractComponent {
   }
 
   _i18nChanged = () => {
-    this.#refreshTrainings()
+    this.#refreshWeaponProficiencies()
+    this.#refreshToolsProficiency()
   }
 }

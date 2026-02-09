@@ -1,7 +1,7 @@
 import { AbstractComponent } from '../../AbstractComponent/index.js'
 import charSheetStore from '../../../modules/stores/charSheet.store.js'
 import charSheetObserver from '../../../modules/stores/charSheet.observer.js'
-import { t, i18n } from '../../../modules/i18n.js'
+import { t } from '../../../modules/i18n.js'
 import { createElement, replaceElement } from '../../../modules/domlib.js'
 import { EQUIPMENT_TYPE, getEquipments, } from '../../../modules/data/equipments.js'
 import { INSERTION_TYPE } from '../../../modules/data/classes.js'
@@ -58,8 +58,6 @@ export class ClassBase extends AbstractComponent {
     this.#renderDescription()
     this.#renderSkills()
     this.#renderTools()
-
-    i18n.applyTranslations(this)
   }
 
   _registerEvents() {
@@ -252,9 +250,9 @@ export class ClassBase extends AbstractComponent {
 
   _i18nChanged = () => {
     console.info('-- ClassBase.i18nChanged')
-    i18n.applyTranslations(this)
     this.#renderDescription()
-    this.#renderSkills()
-    this.#renderTools()
+    this.#refreshSkillsChooseLabel()
+    this.#refreshSkillsList()
+    this.#refreshToolsGroups()
   }
 }

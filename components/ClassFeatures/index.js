@@ -2,7 +2,6 @@ import { AbstractComponent } from '../AbstractComponent/index.js'
 import charSheetStore from '../../modules/stores/charSheet.store.js'
 import charSheetObserver from '../../modules/stores/charSheet.observer.js'
 import { createElement, replaceElement } from '../../modules/domlib.js'
-import { i18n } from '../../modules/i18n.js'
 
 export class ClassFeatures extends AbstractComponent {
   static get tagName() { return 'class-features' }
@@ -28,8 +27,6 @@ export class ClassFeatures extends AbstractComponent {
     const baseFeatureElement = this.querySelector('class-base')
     const subscription = baseFeatureElement._observable.subscribe('actionRequired', this.#actionRequiredChanged)
     baseFeatureElement._pushEvents(subscription)
-
-    i18n.applyTranslations(this)
   }
 
   _registerEvents() {

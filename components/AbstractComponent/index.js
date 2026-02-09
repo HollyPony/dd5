@@ -1,9 +1,11 @@
+import { i18n } from '../../modules/i18n.js'
+
 export class AbstractComponent extends HTMLElement {
   _id
 
   #events = []
 
-  #isLoaded = false
+  _isLoaded = false
 
   static #instances = new Set()
   static get tagName() { return null }
@@ -54,15 +56,22 @@ export class AbstractComponent extends HTMLElement {
     await this._connectedCallback?.()
 
     this.#registerEvents()
-    this.#isLoaded = true
+
+    i18n.applyTranslations(this)
+    this._isLoaded = true
   }
 
   async disconnectedCallback() {
     console.info('-- AbstractComponent.disconnectedCallback')
-    this.#isLoaded = false
+    this._isLoaded = false
     AbstractComponent.#instances.delete(this)
     await this._disconnectedCallback?.()
     this.#unregisterEvents()
+  }
+
+  _abstract_i18nChanged() {
+    i18n.applyTranslations(this)
+    this._i18nChanged?.()
   }
 
   #registerEvents() {

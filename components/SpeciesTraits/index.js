@@ -3,7 +3,7 @@ import charSheetStore from '../../modules/stores/charSheet.store.js'
 import charSheetObserver from '../../modules/stores/charSheet.observer.js'
 import { createElement, replaceElement } from '../../modules/domlib.js'
 import { spells } from '../../modules/data/spells.js'
-import { t, i18n } from '../../modules/i18n.js'
+import { t } from '../../modules/i18n.js'
 
 const spellNameByRef = new Map(Object.entries(spells).map(([name, spell]) => [spell, name]))
 
@@ -19,7 +19,6 @@ export class SpeciesTraits extends AbstractComponent {
     this.#descriptionElement = this.querySelector('.species-description')
     this.#traitsListElement.id = `species-traits-${this._id}`
     this.#refreshTraits()
-    i18n.applyTranslations(this)
   }
 
   _registerEvents() {
@@ -29,7 +28,6 @@ export class SpeciesTraits extends AbstractComponent {
   }
 
   _i18nChanged = () => {
-    i18n.applyTranslations(this)
     this.#refreshTraits()
   }
 

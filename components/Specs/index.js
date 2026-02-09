@@ -1,7 +1,6 @@
 import { AbstractComponent } from '../AbstractComponent/index.js'
 import charSheetStore from '../../modules/stores/charSheet.store.js'
 import charSheetObserver from '../../modules/stores/charSheet.observer.js'
-import { i18n } from '../../modules/i18n.js'
 
 export class Specs extends AbstractComponent {
   static get tagName() { return 'specs-block' }
@@ -24,8 +23,6 @@ export class Specs extends AbstractComponent {
     this.#refreshSpeed()
     this.#refreshSize()
     this.#refreshPassivePerception()
-
-    i18n.applyTranslations(this)
   }
 
   _registerEvents() {
@@ -67,9 +64,5 @@ export class Specs extends AbstractComponent {
     if (this.#passivePerceptionElement) {
       this.#passivePerceptionElement.value = charSheetStore.getPassivePerception()
     }
-  }
-
-  _i18nChanged = () => {
-    i18n.applyTranslations(this)
   }
 }

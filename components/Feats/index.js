@@ -6,10 +6,10 @@ export class Feats extends AbstractComponent {
   static get _componentPath() { return '/components/Feats' }
 
   _connectedCallback() {
-    i18n.applyTranslations(this)
+    // i18n.applyTranslations(this)
   }
 
   _i18nChanged = () => {
-    i18n.applyTranslations(this)
+    // i18n.applyTranslations(this)
   }
 }
