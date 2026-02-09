@@ -20,7 +20,7 @@ export class AbstractComponent extends HTMLElement {
     if (!this._templatePromise) {
       // TODO
       // this._templatePromise = fetch(`${this._componentPath}/index.html`)
-      this._templatePromise = fetch(`${window.APP_URL}${this._componentPath}/index.html`)
+      this._templatePromise = fetch(`${window.DD5_APP_URL}${this._componentPath}/index.html`)
         .then(result => result.text())
         .then(html => new DOMParser()
           .parseFromString(html, 'text/html')
@@ -47,7 +47,7 @@ export class AbstractComponent extends HTMLElement {
       const stylesheetLink = document.createElement('link')
       stylesheetLink.id = STYLE_ID
       stylesheetLink.setAttribute('rel', 'stylesheet')
-      stylesheetLink.setAttribute('href', `${window.APP_URL}${this.constructor._componentPath}/index.css`)
+      stylesheetLink.setAttribute('href', `${this.constructor._componentPath}/index.css`)
       document.head.appendChild(stylesheetLink)
     }
 
