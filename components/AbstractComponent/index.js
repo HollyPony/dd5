@@ -20,7 +20,7 @@ export class AbstractComponent extends HTMLElement {
     if (!this._templatePromise) {
       // TODO
       // this._templatePromise = fetch(`${this._componentPath}/index.html`)
-      this._templatePromise = fetch(`${window.APP_PATH}${this._componentPath}/index.html`)
+      this._templatePromise = fetch(`${window.APP_URL}${this._componentPath}/index.html`)
         .then(result => result.text())
         .then(html => new DOMParser()
           .parseFromString(html, 'text/html')
