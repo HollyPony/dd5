@@ -47,7 +47,7 @@ export class AbstractComponent extends HTMLElement {
       const stylesheetLink = document.createElement('link')
       stylesheetLink.id = STYLE_ID
       stylesheetLink.setAttribute('rel', 'stylesheet')
-      stylesheetLink.setAttribute('href', `${window.DD5_APP_URL_FOR_CSS}${this.constructor._componentPath}/index.css`)
+      stylesheetLink.setAttribute('href', `${window.DD5_APP_URL}${this.constructor._componentPath}/index.css`)
       document.head.appendChild(stylesheetLink)
     }
 

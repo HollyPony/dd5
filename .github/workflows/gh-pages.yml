@@ -34,8 +34,8 @@ jobs:
           OWNER="${{ github.repository_owner }}"
           REPO="${{ github.event.repository.name }}"
           cat <<EOF > env.js
-          window.DD5_APP_URL = '${{ vars.DD5_APP_URL }}'
-          window.DD5_APP_URL_FOR_CSS = 'https://${OWNER}.github.io/${REPO}/'
+          window.DD5_APP_URL = 'https://${OWNER}.github.io/${REPO}/'
+          window.DD5_GITHUB_RAW_URL = '${{ vars.DD5_APP_URL }}'
           window.ENV = '${{ vars.ENV }}'
           EOF
       - name: Upload artifact
