@@ -12,11 +12,6 @@ export class AbstractComponent extends HTMLElement {
   static get tagName() { return null }
   static _modulePath = undefined
   static register({ tagName, ...options } = {}) { customElements.define(tagName ?? this.tagName, this, options) }
-  static notifyI18nChanged() {
-    for (const instance of AbstractComponent.#instances) {
-      instance._isLoaded && instance._abstract_i18nChanged?.()
-    }
-  }
 
   static _templatePromise
   static _getTemplate(url, fileName) {
@@ -42,6 +37,17 @@ export class AbstractComponent extends HTMLElement {
     }
   }
 
+  static #i18nUnsubscribe = undefined
+  static #i18nSubscribe() {
+    if (!AbstractComponent.#i18nUnsubscribe) {
+      AbstractComponent.#i18nUnsubscribe = i18n.subscribe(() => {
+        for (const instance of AbstractComponent.#instances) {
+          instance._isLoaded && instance._abstract_i18nChanged()
+        }
+      })
+    }
+  }
+
   constructor() {
     super()
     this._id = crypto.randomUUID()
@@ -64,6 +70,7 @@ export class AbstractComponent extends HTMLElement {
     this.#registerEvents()
 
     i18n.applyTranslations(this)
+    AbstractComponent.#i18nSubscribe()
     this._isLoaded = true
   }
 
@@ -71,6 +78,10 @@ export class AbstractComponent extends HTMLElement {
     console.info('-- AbstractComponent.disconnectedCallback')
     this._isLoaded = false
     AbstractComponent.#instances.delete(this)
+    if (AbstractComponent.#instances.size === 0) {
+      AbstractComponent.#i18nUnsubscribe?.()
+      AbstractComponent.#i18nUnsubscribe = undefined
+    }
     await this._disconnectedCallback?.()
     this.#unregisterEvents()
   }

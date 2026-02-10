@@ -13,7 +13,6 @@ import { WeaponsCantrip } from './webComponents/WeaponsCantrip/WeaponsCantrip.js
 import { SpeciesTraits } from './webComponents/SpeciesTraits/SpeciesTraits.js'
 import { Feats } from './webComponents/Feats/Feats.js'
 import { Specs } from './webComponents/Specs/Specs.js'
-import { AbstractComponent } from './webComponents/AbstractComponent/AbstractComponent.js'
 
 import { DICES as D, } from './modules/common.js'
 import initTranslations, { t, i18n } from './modules/i18n.js'
@@ -282,7 +281,6 @@ function registerDomEvents() {
 
 function registerTranslationsUpdates() {
   subscriptions.push(
-    i18n.subscribe(() => AbstractComponent.notifyI18nChanged()),
     i18n.subscribe(() => translationsChanged()),
   )
 }
