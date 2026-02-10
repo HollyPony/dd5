@@ -7,7 +7,7 @@ const availableLanguages = ['fr']
 const langChangeSubscribers = new Set()
 
 let translations = {}
-let currentLang = null
+export let currentLang = null
 
 /**
  * Resolve the language requested by the document or browser.
@@ -49,11 +49,11 @@ export default async function init() {
 async function changeLang(lang) {
   try {
     translations = (await import(`../i18n/${lang}/index.js`)).default
+    currentLang = lang
+    notify()
   } catch (error) {
     throw new TechnicalError(error)
   }
-  currentLang = lang
-  notify()
   return lang
 }
 

@@ -1,12 +1,10 @@
-import { i18n } from '../../modules/i18n.js'
+import { currentLang, i18n } from '../../modules/i18n.js'
 const APP_URL = window.DD5_APP_URL
 
 export class AbstractComponent extends HTMLElement {
   _id
 
   #events = []
-
-  _isLoaded = false
 
   static #instances = new Set()
   static get tagName() { return null }
@@ -37,14 +35,27 @@ export class AbstractComponent extends HTMLElement {
     }
   }
 
+  _langApplied = undefined
   static #i18nUnsubscribe = undefined
   static #i18nSubscribe() {
     if (!AbstractComponent.#i18nUnsubscribe) {
       AbstractComponent.#i18nUnsubscribe = i18n.subscribe(() => {
-        for (const instance of AbstractComponent.#instances) {
-          instance._isLoaded && instance._abstract_i18nChanged()
+        if (currentLang) {
+          for (const instance of AbstractComponent.#instances) {
+            if (instance._langApplied !== currentLang) {
+              instance._langApplied = currentLang
+              instance.#applyTranslations()
+              instance._i18nChanged?.()
+            }
+          }
         }
       })
+    }
+  }
+
+  #applyTranslations() {
+    if (this._langApplied) {
+      i18n.applyTranslations(this)
     }
   }
 
@@ -55,7 +66,6 @@ export class AbstractComponent extends HTMLElement {
 
   async connectedCallback() {
     console.info('-- AbstractComponent.connectedCallback')
-    AbstractComponent.#instances.add(this)
 
     const modulePath = `${APP_URL}${this.constructor._modulePath ?? new URL('.', import.meta.url).pathname}`
     const moduleName = this.constructor._moduleName ?? this.constructor.name
@@ -69,14 +79,15 @@ export class AbstractComponent extends HTMLElement {
 
     this.#registerEvents()
 
-    i18n.applyTranslations(this)
+    this._langApplied = currentLang
+    this.#applyTranslations()
+    AbstractComponent.#instances.add(this)
     AbstractComponent.#i18nSubscribe()
-    this._isLoaded = true
   }
 
   async disconnectedCallback() {
     console.info('-- AbstractComponent.disconnectedCallback')
-    this._isLoaded = false
+    this._langApplied = undefined
     AbstractComponent.#instances.delete(this)
     if (AbstractComponent.#instances.size === 0) {
       AbstractComponent.#i18nUnsubscribe?.()
@@ -84,11 +95,6 @@ export class AbstractComponent extends HTMLElement {
     }
     await this._disconnectedCallback?.()
     this.#unregisterEvents()
-  }
-
-  _abstract_i18nChanged() {
-    i18n.applyTranslations(this)
-    this._i18nChanged?.()
   }
 
   #registerEvents() {
