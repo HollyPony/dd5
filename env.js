@@ -1,1 +1,0 @@
-window.DD5_APP_URL = ''

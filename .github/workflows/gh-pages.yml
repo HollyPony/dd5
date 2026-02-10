@@ -33,10 +33,12 @@ jobs:
         run: |
           OWNER="${{ github.repository_owner }}"
           REPO="${{ github.event.repository.name }}"
-          cat <<EOF > env.js
-          window.DD5_APP_URL = 'https://${OWNER}.github.io/${REPO}/'
-          window.DD5_GITHUB_RAW_URL = '${{ vars.DD5_GITHUB_RAW_URL }}'
-          window.ENV = '${{ vars.ENV }}'
+          cat <<EOF > modules/env.js
+          export default {
+            APP_URL: 'https://${OWNER}.github.io/${REPO}/',
+            GITHUB_RAW_URL: '${{ vars.DD5_GITHUB_RAW_URL }}',
+            ENV: '${{ vars.ENV }}'
+          }
           EOF
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

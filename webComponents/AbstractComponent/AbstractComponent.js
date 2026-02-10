@@ -1,5 +1,5 @@
 import { currentLang, i18n } from '../../modules/i18n.js'
-const APP_URL = window.DD5_APP_URL
+import env from '../../modules/env.js'
 
 export class AbstractComponent extends HTMLElement {
   _id
@@ -67,7 +67,7 @@ export class AbstractComponent extends HTMLElement {
   async connectedCallback() {
     console.info('-- AbstractComponent.connectedCallback')
 
-    const modulePath = `${APP_URL}${this.constructor._modulePath ?? new URL('.', import.meta.url).pathname}`
+    const modulePath = `${env.APP_URL}${this.constructor._modulePath ?? new URL('.', import.meta.url).pathname}`
     const moduleName = this.constructor._moduleName ?? this.constructor.name
 
     const template = await this.constructor._getTemplate(modulePath, `${moduleName}.html`)
