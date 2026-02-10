@@ -228,7 +228,7 @@ export class ClassBase extends AbstractComponent {
           return createElement('div', groupChildren, { class: 'tools-group' })
         }
       }
-    })
+    }) ?? []
     replaceElement(this.#toolsGroupsElement, groups.filter(Boolean))
     this.#toolsGroupsElement.classList[groups.length ? 'remove' : 'add']('d-none')
   }
