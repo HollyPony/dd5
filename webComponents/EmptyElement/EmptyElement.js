@@ -48,4 +48,15 @@ export class Empty extends HTMLElement {
   #unregisterEvents() {
     console.info('-- Mother.unregisterEvents')
   }
+  // static get observedAttributes() {
+  //   return ['score']
+  // }
+  // attributeChangedCallback(name, oldValue, newValue) {
+  //   console.info('-- Ability.attributeChangedCallback', name, oldValue, newValue);
+  //   // this.querySelector('.ability-score').value = newValue;
+  //   switch (name) {
+  //     case 'score': return this.#updateScore(oldValue, newValue)
+  //     case 'value': return this.#updateValue(oldValue, newValue)
+  //   }
+  // }
 }
