@@ -94,6 +94,7 @@ export class ClassBase extends AbstractComponent {
   }
 
   #renderDescription() {
+    console.info('-- ClassBase.#renderDescription')
     replaceElement(this.#descriptionBodyElement, t.md(`statics.classes.${charSheetStore.getCharClassName()}.description`))
   }
 
