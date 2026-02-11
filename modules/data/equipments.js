@@ -1,4 +1,4 @@
-import { f, Enum, } from '../helpers.js'
+import { Enum, f } from '../helpers.js'
 import {
   ABILITY, DICES, DICE, EFFECT,
 }

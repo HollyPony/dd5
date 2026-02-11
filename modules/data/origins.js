@@ -1,5 +1,5 @@
 // P.178
-import { f, } from '../helpers.js'
+import { f } from '../helpers.js'
 import { SKILLS } from '../common.js'
 
 export const origins = f({

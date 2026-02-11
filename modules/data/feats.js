@@ -1,6 +1,6 @@
 // P.200
-import { f, } from '../helpers.js'
-import { ABILITY, EFFECT, } from '../common.js'
+import { f } from '../helpers.js'
+import { ABILITY, EFFECT } from '../common.js'
 
 const FEAT_CATEGORY = f({
   ORIGINS: Symbol('feat_category_origins'),

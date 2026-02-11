@@ -1,4 +1,4 @@
-import { f, } from '../lib.js'
+import { f } from '../lib.js'
 
 export const alignments = f([
   'lg', // Lawful Good

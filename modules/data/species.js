@@ -1,6 +1,6 @@
 // P.187
-import { f, } from '../helpers.js'
-import { spells, } from './spells.js'
+import { f } from '../helpers.js'
+import { spells } from './spells.js'
 
 const species = f({
   aasimar: f({ // P.187
