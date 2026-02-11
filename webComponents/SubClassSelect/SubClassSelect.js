@@ -1,9 +1,8 @@
 import { AbstractSelect } from '../AbstractSelect/AbstractSelect.js'
 import charSheetStore from '../../modules/stores/charSheet.store.js'
 import charSheetObserver from '../../modules/stores/charSheet.observer.js'
-import { getSubClasses, } from '../../modules/data/classes.js'
-import { populateSelect, } from '../../modules/domlib.js'
-import { domSubscribe } from '../../modules/domlib.js'
+import { getSubClasses } from '../../modules/data/classes.js'
+import { domSubscribe, populateSelect } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'
 
 export class SubClassSelect extends AbstractSelect {

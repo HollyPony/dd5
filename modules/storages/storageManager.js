@@ -1,5 +1,4 @@
-
-import { ABILITY, SKILLS, } from '../common.js'
+import { ABILITY, SKILLS } from '../common.js'
 
 // // TODO: remove once at least web storage imported
 // export const mock = {

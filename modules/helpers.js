@@ -41,7 +41,7 @@ export function isObject(value) {
  * until after a specified wait time has elapsed since the last time it was invoked.
  *
  * @example
- * const debouncedLog = debounce(console.log, 200)
+ * const debouncedLog = debounce(console.info, 200)
  * debouncedLog('Hello') // Will log "Hello" after 200ms if not called again within 200ms
  *
  * @param {Function} fn - The function to debounce.

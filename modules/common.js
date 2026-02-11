@@ -1,5 +1,5 @@
-import { BadDiceError, } from './errors.js'
-import { Enum, } from './helpers.js' // TODO: Of break completion
+import { BadDiceError } from './errors.js'
+import { Enum } from './helpers.js' // TODO: Of break completion
 
 export function DICE(number, dice,) {
   if (!DICES[dice]) throw new BadDiceError(dice) // TODO: Custom err

@@ -1,4 +1,4 @@
-import { TechnicalError, } from './errors.js'
+import { TechnicalError } from './errors.js'
 import { resolvePath } from './helpers.js'
 import parseMarkdown from './markdown.js'
 

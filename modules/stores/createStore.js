@@ -1,4 +1,4 @@
-import { resolvePath, } from '../helpers.js'
+import { resolvePath } from '../helpers.js'
 
 export const ALL = '*'
 

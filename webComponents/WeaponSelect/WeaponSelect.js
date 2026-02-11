@@ -1,7 +1,6 @@
 import { AbstractSelect } from '../AbstractSelect/AbstractSelect.js'
 import { getWeapons } from '../../modules/data/equipments.js'
-import { populateSelect, } from '../../modules/domlib.js'
-import { domSubscribe } from '../../modules/domlib.js'
+import { domSubscribe, populateSelect } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'
 
 export class WeaponSelect extends AbstractSelect {

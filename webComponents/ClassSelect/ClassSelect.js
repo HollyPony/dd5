@@ -1,23 +1,12 @@
 import { AbstractSelect } from '../AbstractSelect/AbstractSelect.js'
 import charSheetStore from '../../modules/stores/charSheet.store.js'
 import charSheetObserver from '../../modules/stores/charSheet.observer.js'
-import { getList as getClassesList, } from '../../modules/data/classes.js'
-import { populateSelect, } from '../../modules/domlib.js'
-import { domSubscribe } from '../../modules/domlib.js'
+import { getList as getClassesList } from '../../modules/data/classes.js'
+import { domSubscribe, populateSelect } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'
 
 export class ClassSelect extends AbstractSelect {
   static get tagName() { return 'class-select' }
-
-  // async connectedCallback() {
-  //   await super.connectedCallback()
-
-  //   const stylesheet = document.createElement('link')
-  //   stylesheet.setAttribute('rel', 'stylesheet')
-  //   stylesheet.setAttribute('href', `/components/ClassSelect/index.css`)
-
-  //   this.appendChild(stylesheet)
-  // }
 
   _registerEvents() {
     this._pushEvents(

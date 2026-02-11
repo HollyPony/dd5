@@ -1,9 +1,8 @@
 import { AbstractSelect } from '../AbstractSelect/AbstractSelect.js'
 import charSheetStore from '../../modules/stores/charSheet.store.js'
 import charSheetObserver from '../../modules/stores/charSheet.observer.js'
-import { getList as getOriginList, } from '../../modules/data/origins.js'
-import { populateSelect, } from '../../modules/domlib.js'
-import { domSubscribe } from '../../modules/domlib.js'
+import { getList as getOriginList } from '../../modules/data/origins.js'
+import { domSubscribe, populateSelect } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'
 
 export class OriginSelect extends AbstractSelect {
