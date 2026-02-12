@@ -57,20 +57,39 @@ export function debounce(fn, delayMs = 0) {
 }
 
 /**
+ * Normalize a path to path parts.
+ *
+ * @param {string | symbol | Array<string | symbol>} path
+ * @returns {Array<string | symbol>}
+ * @throws {TypeError} If path type is not supported.
+ */
+export function getPathParts(path) {
+  if (Array.isArray(path)) return path
+  if (typeof path === 'symbol') return [path]
+  if (typeof path === 'string') return path.split('.')
+  // TODO: Custom Error
+  throw new TypeError(`Unsupported path type: ${typeof path}`)
+}
+
+/**
  * Navigates inside `obj` with `path` string,
  *
  * @example
  * objNavigate("a.b", {a: {b: 123}}) // returns 123
  *
  * @param {object} obj - The object to resolve the path from.
- * @param {string} path - Dot-separated path (e.g. "a.b.c").
+ * @param {string | symbol | Array<string | symbol>} path - Dot-separated path, symbol key, or path segments.
  * @param {object} [options] - Resolution options.
  * @param {boolean} [options.strict=false] - Whether to throw an error when the path is invalid.
  * @returns {*} The resolved value, or undefined if the path is invalid and strict mode is disabled.
  * @throws {ReferenceError} If strict mode is enabled and the path is invalid.
  */
 export function resolvePath(obj, path, { strict = false } = {}) {
-  const parts = Array.isArray(path) ? path : String(path).split('.')
+  const parts = Array.isArray(path)
+    ? path
+    : typeof path === 'symbol'
+      ? [path]
+      : String(path).split('.')
   let current = obj
 
   for (const part of parts) {

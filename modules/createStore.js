@@ -1,14 +1,8 @@
-import { resolvePath } from './helpers.js'
+import { getPathParts, resolvePath } from './helpers.js'
 
 export default function createStore(initialState, eventBus) {
   const state = Object.seal({ ...initialState })
-
-  function getPathParts(path) {
-    if (Array.isArray(path)) return path
-    if (typeof path === 'string') return path.split('.')
-    // TODO: Custom Error
-    throw new TypeError(`Unsupported path type: ${typeof path}`)
-  }
+  const isEnumerable = Object.prototype.propertyIsEnumerable
 
   return {
     /**
@@ -16,9 +10,9 @@ export default function createStore(initialState, eventBus) {
      *
      * If no path is provided, returns the raw state object (no copy).
      *
-     * @param {string} [path] - Dot-separated path (e.g. "a.b.c").
+     * @param {string | symbol | Array<string | symbol>} [path] - Path key (dot-separated string, symbol, or segments array).
      * @returns {*} The resolved value, or the raw state when no path is provided.
-     * @throws {ReferenceError} If the path is invalid
+     * @throws {ReferenceError} If the path is invalid.
      */
     get(path) {
       return path ? resolvePath(state, path, { strict: true }) : state
@@ -32,27 +26,31 @@ export default function createStore(initialState, eventBus) {
      * When multiple paths are updated in a single set, callbacks are de-duplicated
      * and invoked once per update (no value is passed).
      *
-     * @param {Object<string, *>} pathMap - Patch object where keys are paths.
+     * @param {Object<string | symbol, *> | Map<string | symbol | Array<string | symbol>, *>} pathMap - Patch map where keys are paths.
      * @param {boolean} [shouldNotify=true] - Whether to notify listeners.
      * @returns {void}
-     * @throws {ReferenceError} If a path segment is invalid.
+     * @throws {TypeError} If one path key has an unsupported type.
      */
     set(pathMap, shouldNotify = true) {
       const targets = new Set()
+      const entries = pathMap instanceof Map
+        ? [...pathMap.entries()]
+        : Reflect.ownKeys(pathMap)
+          .filter(path => isEnumerable.call(pathMap, path))
+          .map(path => [path, Reflect.get(pathMap, path)])
 
-      for (const [path, value] of Object.entries(pathMap)) {
+      for (const [path, value] of entries) {
         const pathParts = getPathParts(path)
         let currentTarget = state
 
         // Assign
         for (const part of pathParts.slice(0, -1)) currentTarget = currentTarget[part]
-        currentTarget[pathParts[pathParts.length - 1]] = value
+        Reflect.set(currentTarget, pathParts[pathParts.length - 1], value)
 
         // Notify
         if (eventBus && shouldNotify) {
-          let key
-          for (const part of pathParts) {
-            key = key ? `${key}.${part}` : part
+          for (let i = 0; i < pathParts.length; i++) {
+            const key = pathParts.slice(0, i + 1)
             targets.add({ key, payload: value })
           }
         }

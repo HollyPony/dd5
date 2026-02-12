@@ -1,75 +1,87 @@
-import { MissingPathError } from './errors.js'
+import { getPathParts } from './helpers.js'
 
-export const ANY = '*'
+export const ANY = Symbol('*')
+
+function createNode() {
+  return {
+    listeners: new Set(),
+    children: new Map(),
+  }
+}
 
 /**
- * Ensure a listener bucket exists for a key, then return it.
+ * Resolve a node for a path.
  *
- * @param {Map<string, Set<Function>>} listenersMap - Internal key->listeners registry.
- * @param {string} key - Event key/path.
- * @returns {Set<Function>} Listener set bound to the key.
- * @throws {MissingPathError} When key is missing or falsy.
+ * @param {{ listeners: Set<Function>, children: Map<string | symbol, any> }} nodeTree - Root node.
+ * @param {Array<string | symbol>} pathParts - Normalized path parts.
+ * @param {boolean} [create=false] - Create missing nodes.
+ * @returns {{ listeners: Set<Function>, children: Map<string | symbol, any> } | undefined}
  */
-function getListeners(listenersMap, key) {
-  if (!key) throw new MissingPathError()
-  if (!listenersMap.has(key)) listenersMap.set(key, new Set())
-  return listenersMap.get(key)
+function getNode(nodeTree, pathParts, create = false) {
+  let node = nodeTree
+  for (const part of pathParts) {
+    if (!node.children.has(part)) {
+      if (!create) return undefined
+      node.children.set(part, createNode())
+    }
+    node = node.children.get(part)
+  }
+  return node
 }
 
 /**
  * Emit multiple targets and de-duplicate callback execution.
  * A callback runs at most once per batch.
  *
- * @param {Map<string, Set<Function>>} listenersMap - Internal key->listeners registry.
- * @param {Array<{ key: string, payload?: any, params?: any[] }>} targets - Events to emit.
+ * @param {{ listeners: Set<Function>, children: Map<string | symbol, any> }} nodeTree - Root node.
+ * @param {Array<{ key: string | symbol | Array<string | symbol>, payload?: any, params?: any[] }> | Set<{ key: string | symbol | Array<string | symbol>, payload?: any, params?: any[] }>} targets - Events to emit.
  * @returns {void}
- * @throws {MissingPathError} When one target key is missing or falsy.
+ * @throws {TypeError} When one target key has an unsupported type.
  */
-function emitBatch(listenersMap, targets) {
+function emitBatch(nodeTree, targets) {
   const callbacks = new Set()
 
-  for (const event of targets) {
+  for (const event of [...targets]) {
     const { key, payload, params = [] } = event
-    if (!key) throw new MissingPathError(`${key}`)
+    const pathParts = getPathParts(key)
+    const node = getNode(nodeTree, pathParts)
+    if (!node) continue
 
-    if (!listenersMap.has(key)) continue
-    for (const listener of listenersMap.get(key)) {
+    for (const listener of node.listeners) {
       if (callbacks.has(listener)) continue
       callbacks.add(listener)
       listener(payload, ...params)
     }
   }
 
-  if (listenersMap.has(ANY))
-    for (const listener of listenersMap.get(ANY)) {
-      listener()
-    }
+  for (const listener of getNode(nodeTree, ANY)?.listeners) listener()
 }
 
 /**
  * Subscribe one callback to one key.
  *
- * @param {Map<string, Set<Function>>} listenersMap - Internal key->listeners registry.
- * @param {string} key - Event key/path.
+ * @param {{ listeners: Set<Function>, children: Map<string | symbol, any> }} nodeTree - Root node.
+ * @param {string | symbol | Array<string | symbol>} key - Event key/path.
  * @param {Function} callback - Listener function.
  * @returns {() => boolean} Unsubscribe function.
- * @throws {MissingPathError} When key is missing or falsy.
+ * @throws {TypeError} When key has an unsupported type.
  */
-function on(listenersMap, key, callback) {
-  getListeners(listenersMap, key).add(callback)
-  return () => off(listenersMap, key, callback)
+function on(nodeTree, key, callback) {
+  const node = getNode(nodeTree, getPathParts(key), true)
+  node.listeners.add(callback)
+  return () => off(nodeTree, key, callback)
 }
 
 /**
  * Subscribe one callback to multiple keys.
  *
- * @param {Map<string, Set<Function>>} listenersMap - Internal key->listeners registry.
- * @param {string[]} keys - List of event keys/paths.
+ * @param {{ listeners: Set<Function>, children: Map<string | symbol, any> }} nodeTree - Root node.
+ * @param {Array<string | symbol | Array<string | symbol>>} keys - List of event keys/paths.
  * @param {Function} callback - Listener function.
  * @returns {Array<() => boolean>} Unsubscribe functions.
  */
-function onMany(listenersMap, keys, callback) {
-  return [...new Set(keys)].map(key => on(listenersMap, key, callback))
+function onMany(nodeTree, keys, callback) {
+  return [...new Set(keys)].map(key => on(nodeTree, key, callback))
 }
 
 /**
@@ -78,22 +90,29 @@ function onMany(listenersMap, keys, callback) {
  * Supported forms:
  * - Object: { key: callback | callback[] }
  * - Map: new Map([[keyOrKeys, callbackOrCallbacks]])
- *   where keyOrKeys is string or string[].
+ *   where keyOrKeys is string, symbol, path array, or list of string keys.
  *
- * @param {Map<string, Set<Function>>} listenersMap
- * @param {Record<string, Function | Function[]> | Map<string | string[], Function | Function[]>} [subscriptions={}]
+ * @param {{ listeners: Set<Function>, children: Map<string | symbol, any> }} nodeTree - Root node.
+ * @param {Record<string | symbol, Function | Function[]> | Map<string | symbol | Array<string | symbol> | string[], Function | Function[]>} [subscriptions={}]
  * @returns {Array<() => boolean>}
  */
-function onMap(listenersMap, subscriptions = {}) {
-  const entries = subscriptions instanceof Map ? [...subscriptions.entries()] : Object.entries(subscriptions)
+function onMap(nodeTree, subscriptions = {}) {
+  const isEnumerable = Object.prototype.propertyIsEnumerable
+  const entries = subscriptions instanceof Map
+    ? [...subscriptions.entries()]
+    : Reflect.ownKeys(subscriptions)
+      .filter(key => isEnumerable.call(subscriptions, key))
+      .map(key => [key, Reflect.get(subscriptions, key)])
+
   return entries.flatMap(([keyOrKeys, cbOrCbs]) => {
-    const keys = Array.isArray(keyOrKeys) ? keyOrKeys : [keyOrKeys]
+    const isManyKeys = Array.isArray(keyOrKeys) && keyOrKeys.every(key => typeof key === 'string')
+    const keys = isManyKeys ? keyOrKeys : [keyOrKeys]
     const callbacks = Array.isArray(cbOrCbs) ? cbOrCbs : [cbOrCbs]
 
     return callbacks.flatMap(callback =>
       keys.length > 1
-        ? onMany(listenersMap, keys, callback)
-        : on(listenersMap, keys[0], callback)
+        ? onMany(nodeTree, keys, callback)
+        : on(nodeTree, keys[0], callback)
     )
   })
 }
@@ -101,27 +120,27 @@ function onMap(listenersMap, subscriptions = {}) {
 /**
  * Temporarily remove one callback from one key.
  *
- * @param {Map<string, Set<Function>>} listenersMap - Internal key->listeners registry.
- * @param {string} key - Event key/path.
+ * @param {{ listeners: Set<Function>, children: Map<string | symbol, any> }} nodeTree - Root node.
+ * @param {string | symbol | Array<string | symbol>} key - Event key/path.
  * @param {Function} callback - Listener function.
  * @returns {() => void} Resume function.
  */
-function mute(listenersMap, key, callback) {
-  off(listenersMap, key, callback)
-  return function resume() { on(listenersMap, key, callback) } // Resume
+function mute(nodeTree, key, callback) {
+  off(nodeTree, key, callback)
+  return function resume() { on(nodeTree, key, callback) } // Resume
 }
 
 /**
  * Suspend one callback while a function executes, then resume it.
  *
- * @param {Map<string, Set<Function>>} listenersMap - Internal key->listeners registry.
- * @param {string} key - Event key/path.
+ * @param {{ listeners: Set<Function>, children: Map<string | symbol, any> }} nodeTree - Root node.
+ * @param {string | symbol | Array<string | symbol>} key - Event key/path.
  * @param {Function} callback - Listener function.
  * @returns {<T>(fn: () => T) => T} Wrapper that suspends during fn execution.
  */
-function muteWhile(listenersMap, key, callback) {
+function muteWhile(nodeTree, key, callback) {
   return (fn) => {
-    const resume = mute(listenersMap, key, callback)
+    const resume = mute(nodeTree, key, callback)
     try {
       return fn()
     } finally {
@@ -133,45 +152,49 @@ function muteWhile(listenersMap, key, callback) {
 /**
  * Unsubscribe one callback from one key.
  *
- * @param {Map<string, Set<Function>>} listenersMap - Internal key->listeners registry.
- * @param {string} key - Event key/path.
+ * @param {{ listeners: Set<Function>, children: Map<string | symbol, any> }} nodeTree - Root node.
+ * @param {string | symbol | Array<string | symbol>} key - Event key/path.
  * @param {Function} callback - Listener function.
  * @returns {boolean} True when callback was removed.
- * @throws {MissingPathError} When key is missing or falsy.
+ * @throws {TypeError} When key has an unsupported type.
  */
-function off(listenersMap, key, callback) {
-  return getListeners(listenersMap, key).delete(callback)
+function off(nodeTree, key, callback) {
+  const node = getNode(nodeTree, getPathParts(key))
+  if (!node) return false
+  return node.listeners.delete(callback)
 }
 
 /**
  * Create a lightweight key-based event hub.
  *
  * @returns {{
- *   emit: (key: string, payload?: any, params?: any[]) => void,
- *   emitBatch: (targets: Array<{ key: string, payload?: any, params?: any[] }>) => void,
- *   on: (key: string, callback: Function) => () => boolean,
- *   onMany: (keys: string[], callback: Function) => Array<() => boolean>,
- *   onMap: (subscriptions?: Record<string, Function | Function[]>) => Array<() => boolean>,
- *   off: (key: string, callback: Function) => boolean,
- *   mute: (key: string, callback: Function) => () => void,
- *   muteWhile: (key: string, callback: Function) => <T>(fn: () => T) => T
+ *   emit: (key: string | symbol | Array<string | symbol>, payload?: any, params?: any[]) => void,
+ *   emitBatch: (targets: Array<{ key: string | symbol | Array<string | symbol>, payload?: any, params?: any[] }>) => void,
+ *   on: (key: string | symbol | Array<string | symbol>, callback: Function) => () => boolean,
+ *   onMany: (keys: Array<string | symbol | Array<string | symbol>>, callback: Function) => Array<() => boolean>,
+ *   onMap: (subscriptions?: Record<string | symbol, Function | Function[]> | Map<string | symbol | Array<string | symbol> | string[], Function | Function[]>) => Array<() => boolean>,
+ *   onAny: (callback: Function) => { off: () => boolean, muteWhile: () => <T>(fn: () => T) => T },
+ *   off: (key: string | symbol | Array<string | symbol>, callback: Function) => boolean,
+ *   mute: (key: string | symbol | Array<string | symbol>, callback: Function) => () => void,
+ *   muteWhile: (key: string | symbol | Array<string | symbol>, callback: Function) => <T>(fn: () => T) => T
  * }}
  */
-export default function createEventBus(eventBusName) {
-  const listenersMap = new Map()
+export default function createEventBus() {
+  const nodeTree = createNode()
 
   return {
-    emit: (key, payload, params = []) => emitBatch(listenersMap, [{ key, payload, params }]),
-    emitBatch: (targets) => emitBatch(listenersMap, targets),
-    on: (key, callback) => on(listenersMap, key, callback),
+    emit: (key, payload, params = []) => emitBatch(nodeTree, [{ key, payload, params }]),
+    emitBatch: (targets) => emitBatch(nodeTree, targets),
+    on: (key, callback) => on(nodeTree, key, callback),
+    // Rebind onAny functions to avoid expose ANY Symbol
     onAny: (callback) => ({
-      muteWhile: () => muteWhile(listenersMap, ANY, callback),
-      off: on(listenersMap, ANY, callback),
+      muteWhile: () => muteWhile(nodeTree, ANY, callback),
+      off: on(nodeTree, ANY, callback),
     }),
-    onMany: (keys, callback) => onMany(listenersMap, keys, callback),
-    onMap: (subscriptions) => onMap(listenersMap, subscriptions),
-    off: (key, callback) => off(listenersMap, key, callback),
-    mute: (key, callback) => mute(listenersMap, key, callback),
-    muteWhile: (key, callback) => muteWhile(listenersMap, key, callback),
+    onMany: (keys, callback) => onMany(nodeTree, keys, callback),
+    onMap: (subscriptions) => onMap(nodeTree, subscriptions),
+    off: (key, callback) => off(nodeTree, key, callback),
+    mute: (key, callback) => mute(nodeTree, key, callback),
+    muteWhile: (key, callback) => muteWhile(nodeTree, key, callback),
   }
 }
