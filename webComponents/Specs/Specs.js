@@ -1,6 +1,5 @@
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
-import charSheetStore from '../../modules/stores/charSheet.store.js'
-import charSheetObserver from '../../modules/stores/charSheet.observer.js'
+import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 
 export class Specs extends AbstractComponent {
   static get tagName() { return 'specs-block' }
@@ -19,39 +18,39 @@ export class Specs extends AbstractComponent {
     this.#sizeElement = this.querySelector('[name="specs.size"]')
     this.#passivePerceptionElement = this.querySelector('[name="specs.passivePerception"]')
 
-    this.#refreshInitiative()
-    this.#refreshSpeed()
-    this.#refreshSize()
-    this.#refreshPassivePerception()
+    this.#renderInitiative()
+    this.#renderSpeed()
+    this.#renderSize()
+    this.#renderPassivePerception()
   }
 
   _registerEvents() {
     this._pushEvents(
-      charSheetObserver.subscribe('modifiers', this.#refreshInitiative),
-      charSheetObserver.subscribe('charSpecies', this.#refreshSpeed),
-      charSheetObserver.subscribe('equiped', this.#refreshSpeed),
-      charSheetObserver.subscribe('feats', this.#refreshSpeed),
-      charSheetObserver.subscribe('charSizeCategory', this.#refreshSize),
-      charSheetObserver.subscribe('charSize', this.#refreshSize),
-      charSheetObserver.subscribe('classSkills', this.#refreshPassivePerception),
-      charSheetObserver.subscribe('expertSkills', this.#refreshPassivePerception),
-      charSheetObserver.subscribe('modifiers', this.#refreshPassivePerception),
+      charSheetStore.on('initiative', this.#renderInitiative),
+      charSheetStore.on('charSpecies', this.#renderSpeed),
+      charSheetStore.on('equiped', this.#renderSpeed),
+      charSheetStore.on('feats', this.#renderSpeed),
+      charSheetStore.on('charSizeCategory', this.#renderSize),
+      charSheetStore.on('charSize', this.#renderSize),
+      charSheetStore.on('classSkills', this.#renderPassivePerception),
+      charSheetStore.on('expertSkills', this.#renderPassivePerception),
+      charSheetStore.on('modifiers', this.#renderPassivePerception),
     )
   }
 
-  #refreshInitiative = () => {
+  #renderInitiative = () => {
     if (this.#initiativeElement) {
       this.#initiativeElement.value = charSheetStore.getInitiative()
     }
   }
 
-  #refreshSpeed = () => {
+  #renderSpeed = () => {
     if (this.#speedElement) {
       this.#speedElement.value = charSheetStore.getCharSpeed()
     }
   }
 
-  #refreshSize = () => {
+  #renderSize = () => {
     if (this.#sizeCategoryElement) {
       this.#sizeCategoryElement.value = charSheetStore.getCharSizeCategory()
     }
@@ -60,7 +59,7 @@ export class Specs extends AbstractComponent {
     }
   }
 
-  #refreshPassivePerception = () => {
+  #renderPassivePerception = () => {
     if (this.#passivePerceptionElement) {
       this.#passivePerceptionElement.value = charSheetStore.getPassivePerception()
     }

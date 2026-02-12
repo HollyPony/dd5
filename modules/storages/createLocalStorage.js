@@ -1,10 +1,10 @@
-import { createObservable } from '../createObservable.js'
+import createEventBus from '../createEventBus.js'
 
 const APP_PREFIX_KEY = 'dd5'
 
-export function buildStorage(prefix) {
+export default function createLocalStorage(prefix) {
   const cache = {}
-  const observable = createObservable()
+  const eventBus = createEventBus()
 
   function buildKey(key) {
     return [APP_PREFIX_KEY, prefix, key].filter(_ => _).join('.')
@@ -19,7 +19,7 @@ export function buildStorage(prefix) {
     const _key = buildKey(key)
     window.localStorage.setItem(_key, value)
     cache[_key] = value
-    observable.notify(key, value)
+    eventBus.emit(key, value)
   }
 
   function removeItem(key) {
@@ -42,6 +42,6 @@ export function buildStorage(prefix) {
     removeItem,
     getJSONItem,
     setJSONItem,
-    subscribe: observable.subscribe,
+    on: eventBus.on,
   }
 }

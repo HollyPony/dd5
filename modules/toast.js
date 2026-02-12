@@ -1,9 +1,9 @@
-import observer, { observables as errors } from '../index.observer.js'
+import indexEventBus, { observables as errors } from '../index.eventBus.js'
 
 const toastContainer = document.getElementById('toastContainer')
 
-observer.subscribe(errors.ERROR_TECHNICAL, showErrorToast)
-observer.subscribe(errors.ERROR_CUSTOM, showErrorToast)
+indexEventBus.on(errors.ERROR_TECHNICAL, showErrorToast)
+indexEventBus.on(errors.ERROR_CUSTOM, showErrorToast)
 
 export function showToast({ title, message, variant = 'danger', delay = 5000, autohide = true } = {}) {
   if (!toastContainer) return

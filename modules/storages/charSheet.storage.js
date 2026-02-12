@@ -1,6 +1,6 @@
 import { StorageError } from '../errors.js'
-import { createObservable } from '../createObservable.js'
-import { buildStorage } from './localStorage.helper.js'
+import createEventBus from '../createEventBus.js'
+import createLocalStorage from './createLocalStorage.js'
 
 const PREFIX_KEY = 'charsheet'
 const STORAGE_VERSION = 1
@@ -8,10 +8,10 @@ const STORAGE_VERSION = 1
 const CHARACTER_LIST_KEY = 'charSheetsListSaved'
 const CHARACTER_SAVE_KEY = 'saves'
 
-const storage = buildStorage(PREFIX_KEY)
+const storage = createLocalStorage(PREFIX_KEY)
 
 const CHAR_LIST_CHANGED = 'charListChanged'
-const observable = createObservable()
+const eventBus = createEventBus()
 
 let currentId = undefined
 
@@ -34,7 +34,7 @@ function getLastSaveId() {
 
 function create() {
   currentId = crypto.randomUUID()
-  observable.notify(CHAR_LIST_CHANGED)
+  eventBus.emit(CHAR_LIST_CHANGED)
 }
 
 function get(id) {
@@ -49,7 +49,7 @@ function get(id) {
   const shouldNotify = currentId !== id
   currentId = id
 
-  if (shouldNotify) observable.notify(CHAR_LIST_CHANGED)
+  if (shouldNotify) eventBus.emit(CHAR_LIST_CHANGED)
   return entry.data
 }
 
@@ -86,7 +86,7 @@ function remove(id) {
   setCharSheetsList(getList().filter(item => item.id !== id))
 
   currentId = undefined
-  observable.notify(CHAR_LIST_CHANGED)
+  eventBus.emit(CHAR_LIST_CHANGED)
 }
 
 export default {
@@ -96,8 +96,7 @@ export default {
   get,
   save,
   remove,
-  subscribeCharSheetsList(callback) {
-    observable.subscribe(CHAR_LIST_CHANGED, callback)
+  onCharListChanged(callback) {
+    return eventBus.on(CHAR_LIST_CHANGED, callback)
   },
 }
-

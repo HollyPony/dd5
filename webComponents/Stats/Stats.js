@@ -1,6 +1,5 @@
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
-import charSheetStore from '../../modules/stores/charSheet.store.js'
-import charSheetObserver from '../../modules/stores/charSheet.observer.js'
+import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import { signDisplay } from '../../modules/helpers.js'
 
 export class Stats extends AbstractComponent {
@@ -11,16 +10,16 @@ export class Stats extends AbstractComponent {
 
   _connectedCallback() {
     this.#proficiencyBonusElement = this.querySelector('[name="proficiencybonus"]')
-    this.#refreshProficiencyBonus()
+    this.#renderProficiencyBonus()
   }
 
   _registerEvents() {
     this._pushEvents(
-      charSheetObserver.subscribe('proficiencyBonus', this.#refreshProficiencyBonus),
+      charSheetStore.on('proficiencyBonus', this.#renderProficiencyBonus),
     )
   }
 
-  #refreshProficiencyBonus = () => {
+  #renderProficiencyBonus = () => {
     const bonus = charSheetStore.getProficiencyBonus()
     this.#proficiencyBonusElement.value = signDisplay(bonus)
   }

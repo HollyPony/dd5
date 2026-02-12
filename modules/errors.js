@@ -1,11 +1,11 @@
-import observer, { observables } from '../index.observer.js'
+import indexEventBus, { observables } from '../index.eventBus.js'
 
 function createCustomError({ name, message, args = [] }) {
   const error = new Error(message, ...args)
   Object.setPrototypeOf(error, createCustomError.prototype)
   error.name = name
   error.stack = ''
-  observer.notify(observables.ERROR_CUSTOM, error)
+  indexEventBus.emit(observables.ERROR_CUSTOM, error)
   return error
 }
 createCustomError.prototype = Object.create(Error.prototype, { constructor: { value: createCustomError, } })
@@ -35,10 +35,10 @@ export function BadDiceError(dice, ...props) {
   })
 }
 
-export function MissingPathError(...props) {
+export function MissingPathError(message, ...props) {
   return createCustomError({
     name: 'MissingPathError',
-    message: `A 'path' is required`,
+    message: message ?? `A 'path' is required`,
     args: props,
   })
 }
@@ -53,6 +53,6 @@ export function StorageError(message, ...props) {
 
 export function TechnicalError(error) {
   console.error(error)
-  observer.notify(observables.ERROR_TECHNICAL, error)
+  indexEventBus.emit(observables.ERROR_TECHNICAL, error)
   return error
 }

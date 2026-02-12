@@ -1,11 +1,10 @@
 import { AbstractComponent } from '../../AbstractComponent/AbstractComponent.js'
-import charSheetStore from '../../../modules/stores/charSheet.store.js'
-import charSheetObserver from '../../../modules/stores/charSheet.observer.js'
-import { t } from '../../../modules/i18n.js'
+import charSheetStore, { properties as charSheetProps } from '../../../modules/stores/charSheet.derived.store.js'
 import { createElement, replaceElement } from '../../../modules/domlib.js'
-import { EQUIPMENT_TYPE, getEquipments, } from '../../../modules/data/equipments.js'
 import { INSERTION_TYPE } from '../../../modules/data/classes.js'
-import { createObservable } from '../../../modules/createObservable.js'
+import createEventBus from '../../../modules/createEventBus.js'
+import { EQUIPMENT_TYPE, getEquipments } from '../../../modules/data/equipments.js'
+import { t } from '../../../modules/i18n.js'
 
 export class ClassBase extends AbstractComponent {
   static get tagName() { return 'class-base' }
@@ -24,7 +23,7 @@ export class ClassBase extends AbstractComponent {
   #toolsGroupsElement
 
   _actionRequired = false
-  _observable = createObservable()
+  _eventBus = createEventBus()
 
   _connectedCallback() {
     console.info('-- ClassBase.connectedCallback')
@@ -62,14 +61,16 @@ export class ClassBase extends AbstractComponent {
 
   _registerEvents() {
     this._pushEvents(
-      charSheetObserver.subscribe('charClassName', this.#charClassNameChanged),
-      charSheetObserver.subscribe('classSkills', this.#skillsChanged),
-      charSheetObserver.subscribe('classTools', this.#toolsChanged),
+      charSheetStore.onMap({
+        [charSheetProps.charClassName]: [this.#renderDescription],
+        [charSheetProps.classSkills]: [this.#renderActionsRequired, this.#renderSkills],
+        [charSheetProps.classTools]: [this.#renderActionsRequired, this.#renderTools],
+      }),
     )
   }
 
-  #renderActionsRequired() {
-    console.info('-- ClassBase.refreshActionsRequired')
+  #renderActionsRequired = () => {
+    console.info('-- ClassBase.#renderActionsRequired')
 
     const toolsMetaMaxTotal = charSheetStore.getCharClass()?.toolProficiencies
       ?.find(rule => rule.type === INSERTION_TYPE._meta && rule.totalMax)?.totalMax
@@ -90,27 +91,45 @@ export class ClassBase extends AbstractComponent {
     this.#baseFeatureButtonElement.classList[hasActionRequired ? 'add' : 'remove']('show')
 
     this._actionRequired = hasActionRequired ?? false
-    this._observable.notify('actionRequired')
+    this._eventBus.emit('actionRequired')
   }
 
-  #renderDescription() {
+  #renderDescription = () => {
     console.info('-- ClassBase.#renderDescription')
     replaceElement(this.#descriptionBodyElement, t.md(`statics.classes.${charSheetStore.getCharClassName()}.description`))
   }
 
-  #renderSkills() {
-    console.info('-- ClassBase.refreshSkills')
+  #renderSkills = () => {
+    console.info('-- ClassBase.#renderSkills')
 
     if (!charSheetStore.getCharClass()?.skills)
       return this.#skillsContainerElement.classList.add('d-none')
     this.#skillsContainerElement.classList.remove('d-none')
 
-    this.#refreshSkillsChooseLabel()
-    this.#refreshSkillsList()
+    this.#renderSkillsChooseLabel()
+    this.#renderSkillsList()
   }
 
-  #refreshSkillsChooseLabel() {
-    console.info('-- ClassBase.refreshSkillsChooseLabel')
+  #renderTools = () => {
+    console.info('-- ClassBase.#renderTools')
+
+    if (!charSheetStore.getCharClass()?.toolProficiencies?.length)
+      return this.#toolsContainerElement.classList.add('d-none')
+    this.#toolsContainerElement.classList.remove('d-none')
+
+    const metaTotalMax = charSheetStore.getCharClass()?.toolProficiencies
+      .find(rule => rule.type === INSERTION_TYPE._meta && rule.totalMax)?.totalMax
+    const totalMax = metaTotalMax
+      || charSheetStore.getCharClass()?.toolProficiencies
+        .filter(rule => rule.type === INSERTION_TYPE.select)
+        .reduce((acc, rule) => acc + rule.max, 0)
+      || 0
+
+    this.#renderToolsGroups(totalMax)
+  }
+
+  #renderSkillsChooseLabel() {
+    console.info('-- ClassBase.#renderSkillsChooseLabel')
     const classSkills = charSheetStore.getCharClass()?.skills
     if (classSkills) {
       const remaining = classSkills.nb - charSheetStore.getClassSkills().length
@@ -120,8 +139,8 @@ export class ClassBase extends AbstractComponent {
     }
   }
 
-  #refreshSkillsList() {
-    console.info('-- ClassBase.refreshSkillsList')
+  #renderSkillsList() {
+    console.info('-- ClassBase.#renderSkillsList')
     replaceElement(this.#skillsListElement, charSheetStore.getCharClass()?.skills.list.map(skill => {
       const skillId = `${skill.name}.${this._id}`
       return createElement('div', [
@@ -138,25 +157,8 @@ export class ClassBase extends AbstractComponent {
     }))
   }
 
-  #renderTools() {
-    console.info('-- ClassBase.refreshTools')
-
-    if (!charSheetStore.getCharClass()?.toolProficiencies?.length)
-      return this.#toolsContainerElement.classList.add('d-none')
-    this.#toolsContainerElement.classList.remove('d-none')
-
-    const metaTotalMax = charSheetStore.getCharClass()?.toolProficiencies
-      .find(rule => rule.type === INSERTION_TYPE._meta && rule.totalMax)?.totalMax
-    const totalMax = metaTotalMax
-      || charSheetStore.getCharClass()?.toolProficiencies
-        .filter(rule => rule.type === INSERTION_TYPE.select)
-        .reduce((acc, rule) => acc + rule.max, 0)
-      || 0
-
-    this.#refreshToolsGroups(totalMax)
-  }
-
-  #refreshToolsGroups(totalMax) {
+  #renderToolsGroups(totalMax) {
+    console.info('-- ClassBase.#renderToolsGroups')
     const classTools = charSheetStore.getClassTools()
     const totalSelected = classTools.length
     const totalRemaining = totalMax - totalSelected
@@ -233,27 +235,11 @@ export class ClassBase extends AbstractComponent {
     this.#toolsGroupsElement.classList[groups.length ? 'remove' : 'add']('d-none')
   }
 
-  #charClassNameChanged = () => {
-    this.#renderDescription()
-  }
-
-  #skillsChanged = () => {
-    console.info('-- ClassBase.skillsChanged')
-    this.#renderActionsRequired()
-    this.#renderSkills()
-  }
-
-  #toolsChanged = () => {
-    console.info('-- ClassBase.toolsChanged')
-    this.#renderActionsRequired()
-    this.#renderTools()
-  }
-
   _i18nChanged = () => {
-    console.info('-- ClassBase.i18nChanged')
+    console.info('-- ClassBase._i18nChanged')
     this.#renderDescription()
-    this.#refreshSkillsChooseLabel()
-    this.#refreshSkillsList()
-    this.#refreshToolsGroups()
+    this.#renderSkillsChooseLabel()
+    this.#renderSkillsList()
+    this.#renderToolsGroups()
   }
 }

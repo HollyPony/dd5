@@ -1,6 +1,5 @@
 import { AbstractSelect } from '../AbstractSelect/AbstractSelect.js'
-import charSheetStore from '../../modules/stores/charSheet.store.js'
-import charSheetObserver from '../../modules/stores/charSheet.observer.js'
+import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import { getList as getOriginList } from '../../modules/data/origins.js'
 import { domSubscribe, populateSelect } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'
@@ -11,12 +10,12 @@ export class OriginSelect extends AbstractSelect {
   _registerEvents() {
     this._pushEvents(
       domSubscribe(this._selectElement, 'change', this.#selectChanged),
-      charSheetObserver.subscribe('charOriginName', this._refreshValue),
+      charSheetStore.on('charOriginName', this._renderValue),
     )
   }
 
-  _refreshList = () => {
-    console.info('-- OriginSelect.#refreshList')
+  _renderList = () => {
+    console.info('-- OriginSelect.#renderList')
     populateSelect(
       this._selectElement,
       getOriginList().map(originName => ({ value: originName, text: t._(`statics.origins.${originName}.name`), })),
@@ -26,8 +25,8 @@ export class OriginSelect extends AbstractSelect {
     )
   }
 
-  _refreshValue = () => {
-    console.info('-- OriginSelect.#refreshValue')
+  _renderValue = () => {
+    console.info('-- OriginSelect.#renderValue')
     this._selectElement.value = charSheetStore.getCharOriginName() || ''
   }
 

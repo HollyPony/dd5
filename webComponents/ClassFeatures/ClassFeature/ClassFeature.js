@@ -1,14 +1,14 @@
 import { AbstractComponent } from '../../AbstractComponent/AbstractComponent.js'
-import charSheet from '../../../modules/stores/charSheet.store.js'
+import charSheetStore from '../../../modules/stores/charSheet.derived.store.js'
 import { t } from '../../../modules/i18n.js'
-import { createObservable } from '../../../modules/createObservable.js'
+import createEventBus from '../../../modules/createEventBus.js'
 
 export class ClassFeature extends AbstractComponent {
   static get tagName() { return 'class-feature' }
   static _modulePath = new URL('.', import.meta.url).pathname
 
   _actionRequired = false
-  _observable = createObservable()
+  _eventBus = createEventBus()
 
   #accordionParent
   #feature
@@ -19,7 +19,7 @@ export class ClassFeature extends AbstractComponent {
     console.info('-- ClassFeature.connectedCallback')
 
     this.#accordionParent = this.dataset.accordion
-    this.#feature = charSheet.getCharClass()?.features.find(feature => feature.name === this.dataset.feature)
+    this.#feature = charSheetStore.getCharClass()?.features.find(feature => feature.name === this.dataset.feature)
 
     this.#titleElement = this.querySelector('.accordion-header > .feature-title')
     this.#titleElement.dataset.bsTarget = `#${this._id}`
@@ -29,30 +29,30 @@ export class ClassFeature extends AbstractComponent {
     content.id = this._id
     content.dataset.bsParent = `#${this.#accordionParent}`
 
-    this.#refreshTexts()
-    this.#refreshDescription()
+    this.#renderTexts()
+    this.#renderDescription()
 
     this._actionRequired = false
-    this._observable.notify('actionRequired')
+    this._eventBus.emit('actionRequired')
   }
 
-  #refreshTexts() {
+  #renderTexts() {
     while (this.#titleElement.firstChild) { this.#titleElement.removeChild(this.#titleElement.firstChild) }
     this.#titleElement.appendChild(t.md('components.ClassFeature.name', {
       level: this.#feature.atLevel,
-      featureName: t._(`statics.class-features.${charSheet.getCharClassName()}.${this.#feature.name}.name`)
+      featureName: t._(`statics.class-features.${charSheetStore.getCharClassName()}.${this.#feature.name}.name`)
     }))
   }
 
-  #refreshDescription() {
+  #renderDescription() {
     while (this.#descriptionElement.firstChild) { this.#descriptionElement.removeChild(this.#descriptionElement.firstChild) }
     this.#descriptionElement.appendChild(
-      t.md(`statics.class-features.${charSheet.getCharClassName()}.${this.#feature.name}.description`)
+      t.md(`statics.class-features.${charSheetStore.getCharClassName()}.${this.#feature.name}.description`)
     )
   }
 
   _i18nChanged = () => {
-    this.#refreshTexts()
-    this.#refreshDescription()
+    this.#renderTexts()
+    this.#renderDescription()
   }
 }

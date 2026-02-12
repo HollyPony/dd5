@@ -1,19 +1,17 @@
 import { fromJSON, fromSaveData, toJSON, toSaveData } from '../storages/storageManager.js'
 import charSheetStorage from '../storages/charSheet.storage.js'
-import charSheetStore from '../stores/charSheet.store.js'
-import charSheetObserver from '../stores/charSheet.observer.js'
-import { ALL, } from '../stores/createStore.js'
+import charSheetStore from '../stores/charSheet.authority.store.js'
 import { debounce } from '../helpers.js'
 
 const AUTOSAVE_DELAY = 600
 
-const autosaveCallback = debounce(save, AUTOSAVE_DELAY)
+let autosaveEventTarget = null
 
 function init() {
   const id = charSheetStorage.getLastSaveId()
   id ? load(id) : create()
 
-  charSheetObserver.subscribe(ALL, autosaveCallback)
+  autosaveEventTarget = charSheetStore.onAny(debounce(save, AUTOSAVE_DELAY))
 }
 
 function create() {
@@ -32,12 +30,12 @@ function load(id) {
 }
 
 function save() {
-  return charSheetStorage.save(toSaveData(charSheetStore.get()))
+  return charSheetStorage.save(getSavedData())
 }
 
 function importJSON(json) {
   const data = fromJSON(json)
-  charSheetObserver.suspendWhile(ALL, autosaveCallback)(() => {
+  autosaveEventTarget.muteWhile()(() => {
     charSheetStore.init(data)
     save()
   })
@@ -47,18 +45,23 @@ function exportJSON() {
   return toJSON(charSheetStore.get())
 }
 
+function getSavedData() {
+  return toSaveData(charSheetStore.get())
+}
+
 export default {
   init,
   create,
   getList,
   load,
   save,
-  toSaveData,
+  getSavedData,
   importJSON,
   exportJSON,
   remove: charSheetStorage.remove,
-  subscribeCharSheetsList: charSheetStorage.subscribeCharSheetsList,
+  subscribeCharSheetsList: charSheetStorage.onCharListChanged,
   unregister() {
-    charSheetObserver.unsubscribe()
-  }
+    autosaveEventTarget?.off()
+    autosaveEventTarget = null
+  },
 }

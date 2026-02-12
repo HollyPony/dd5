@@ -1,13 +1,13 @@
-import { resolvePath } from '../helpers.js'
+import { resolvePath } from './helpers.js'
 
-export const ALL = '*'
-
-export default function createStore(initialState, observer) {
+export default function createStore(initialState, eventBus) {
   const state = Object.seal({ ...initialState })
 
-  const pathPartsCache = new Map()
   function getPathParts(path) {
-    return pathPartsCache.get(path) ?? pathPartsCache.set(path, path.split('.')).get(path)
+    if (Array.isArray(path)) return path
+    if (typeof path === 'string') return path.split('.')
+    // TODO: Custom Error
+    throw new TypeError(`Unsupported path type: ${typeof path}`)
   }
 
   return {
@@ -38,32 +38,37 @@ export default function createStore(initialState, observer) {
      * @throws {ReferenceError} If a path segment is invalid.
      */
     set(pathMap, shouldNotify = true) {
-      const callbacks = new Set()
+      const targets = new Set()
+
       for (const [path, value] of Object.entries(pathMap)) {
         const pathParts = getPathParts(path)
         let currentTarget = state
 
         // Assign
-        for (const part of pathParts.slice(0, -1)) {
-          currentTarget = currentTarget[part]
-        }
+        for (const part of pathParts.slice(0, -1)) currentTarget = currentTarget[part]
         currentTarget[pathParts[pathParts.length - 1]] = value
 
         // Notify
-        if (observer && shouldNotify) {
+        if (eventBus && shouldNotify) {
           let key
           for (const part of pathParts) {
-            key = key ? key + '.' + part : part
-            const bucket = observer.getListeners(key)
-            if (bucket) {
-              for (const listener of bucket) callbacks.add(listener)
-            }
+            key = key ? `${key}.${part}` : part
+            targets.add({ key, payload: value })
           }
         }
       }
 
-      if (observer && shouldNotify) for (const callback of callbacks) callback()
-      if (observer && shouldNotify) observer.notify(ALL)
+      if (eventBus && shouldNotify) {
+        eventBus.emitBatch(targets)
+      }
     },
+
+    on: eventBus.on,
+    onAny: eventBus.onAny,
+    onMany: eventBus.onMany,
+    onMap: eventBus.onMap,
+    off: eventBus.off,
+    mute: eventBus.mute,
+    muteWhile: eventBus.muteWhile,
   }
 }

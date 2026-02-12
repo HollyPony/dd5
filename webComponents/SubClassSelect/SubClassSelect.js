@@ -1,6 +1,5 @@
 import { AbstractSelect } from '../AbstractSelect/AbstractSelect.js'
-import charSheetStore from '../../modules/stores/charSheet.store.js'
-import charSheetObserver from '../../modules/stores/charSheet.observer.js'
+import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import { getSubClasses } from '../../modules/data/classes.js'
 import { domSubscribe, populateSelect } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'
@@ -11,14 +10,15 @@ export class SubClassSelect extends AbstractSelect {
   _registerEvents() {
     this._pushEvents(
       domSubscribe(this._selectElement, 'change', this.#selectChanged),
-      charSheetObserver.subscribe('charLevel', this.#charLevelChanged),
-      charSheetObserver.subscribe('charClass', this.#charClassChanged),
-      charSheetObserver.subscribe('charSubClassName', this._refreshValue),
+      // TODO: avoid *change and use subscribeMany on selective refresh
+      charSheetStore.on('charLevel', this.#charLevelChanged),
+      charSheetStore.on('charClassName', this.#charClassChanged),
+      charSheetStore.on('charSubClassName', this._renderValue),
     )
   }
 
-  _refreshList = () => {
-    console.info('-- SubClassSelect.#refreshList')
+  _renderList = () => {
+    console.info('-- SubClassSelect.#renderList')
     populateSelect(
       this._selectElement,
       getSubClasses(charSheetStore.getCharClassName()).map(subClassName => ({
@@ -31,8 +31,8 @@ export class SubClassSelect extends AbstractSelect {
     )
   }
 
-  _refreshValue = () => {
-    console.info('-- SubClassSelect.#refreshValue')
+  _renderValue = () => {
+    console.info('-- SubClassSelect.#renderValue')
     this._selectElement.value = charSheetStore.getCharLevel() > 2 && charSheetStore.getCharSubClassName() || ''
     this._selectElement.disabled = charSheetStore.getCharLevel() < 3
   }
@@ -45,13 +45,13 @@ export class SubClassSelect extends AbstractSelect {
 
   #charLevelChanged = () => {
     console.info('-- SubClassSelect.#charLevelChanged')
-    this._refreshList()
-    this._refreshValue()
+    this._renderList()
+    this._renderValue()
   }
 
   #charClassChanged = () => {
     console.info('-- SubClassSelect.#charClassChanged')
-    this._refreshList()
-    this._refreshValue()
+    this._renderList()
+    this._renderValue()
   }
 }

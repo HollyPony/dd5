@@ -1,6 +1,5 @@
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
-import charSheetStore from '../../modules/stores/charSheet.store.js'
-import charSheetObserver from '../../modules/stores/charSheet.observer.js'
+import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import { createElement, replaceElement } from '../../modules/domlib.js'
 
 export class ClassFeatures extends AbstractComponent {
@@ -20,41 +19,36 @@ export class ClassFeatures extends AbstractComponent {
     this.#featuresElement = this.querySelector('.class-features')
     this.#featuresElement.id = `accordion-features-${this._id}`
 
-    this.#refreshBaseFeature()
-    this.#refreshFeatures()
-    this.#refreshActionRequired()
+    this.#renderFeatures()
+    this.#renderActionRequired()
 
     const baseFeatureElement = this.querySelector('class-base')
-    const subscription = baseFeatureElement._observable.subscribe('actionRequired', this.#actionRequiredChanged)
+    const subscription = baseFeatureElement._eventBus.on('actionRequired', this.#actionRequiredChanged)
     baseFeatureElement._pushEvents(subscription)
   }
 
   _registerEvents() {
     this._pushEvents(
       // TODO: had a class features changed ????
-      charSheetObserver.subscribe('charLevel', this.#levelChanged),
-      charSheetObserver.subscribe('charClass', this.#classChanged),
+      charSheetStore.on('charLevel', this.#levelChanged),
+      charSheetStore.on('charClass', this.#classChanged),
     )
   }
 
-  #refreshBaseFeature() {
-    console.info('-- ClassFeatures.#refreshBaseFeature',)
-  }
-
-  #refreshFeatures() {
-    console.info('-- ClassFeatures.#refreshFeatures',)
+  #renderFeatures() {
+    console.info('-- ClassFeatures.#renderFeatures',)
 
     const featureElements = charSheetStore.getCharClass()?.features?.map(this.#createFeature) ?? []
     replaceElement(this.#featuresElement, featureElements)
   }
 
-  #refreshActionRequired() {
-    console.info('-- ClassFeatures.#refreshActionRequired',)
+  #renderActionRequired() {
+    console.info('-- ClassFeatures.#renderActionRequired',)
 
     let hasActionRequired = false
     for (const element of this.querySelectorAll('class-base, class-feature')) {
       hasActionRequired = element._actionRequired
-      if (hasActionRequired) break;
+      if (hasActionRequired) break
     }
     this.#mainRequiredBadgeElement.classList[hasActionRequired ? 'add' : 'remove']('show')
   }
@@ -70,14 +64,14 @@ export class ClassFeatures extends AbstractComponent {
       'data-feature': feature.name,
     })
 
-    const subscritpion = classFeature._observable.subscribe('actionRequired', this.#actionRequiredChanged)
-    classFeature._pushEvents(subscritpion)
+    const subscription = classFeature._eventBus.on('actionRequired', this.#actionRequiredChanged)
+    classFeature._pushEvents(subscription)
     return classFeature
   }
 
   #actionRequiredChanged = () => {
     console.info('-- ClassFeatures.actionRequiredChanged')
-    this.#refreshActionRequired()
+    this.#renderActionRequired()
   }
 
   #levelChanged = () => {
@@ -89,8 +83,7 @@ export class ClassFeatures extends AbstractComponent {
   #classChanged = () => {
     console.info('-- ClassFeatures.#classChanged',)
 
-    this.#refreshBaseFeature()
-    this.#refreshFeatures()
-    this.#refreshActionRequired()
+    this.#renderFeatures()
+    this.#renderActionRequired()
   }
 }

@@ -1,6 +1,5 @@
-﻿import { AbstractSelect } from '../AbstractSelect/AbstractSelect.js'
-import charSheetStore from '../../modules/stores/charSheet.store.js'
-import charSheetObserver from '../../modules/stores/charSheet.observer.js'
+import { AbstractSelect } from '../AbstractSelect/AbstractSelect.js'
+import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import { getList as getSpeciesList } from '../../modules/data/species.js'
 import { domSubscribe, populateSelect } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'
@@ -11,12 +10,12 @@ export class SpeciesSelect extends AbstractSelect {
   _registerEvents() {
     this._pushEvents(
       domSubscribe(this._selectElement, 'change', this.#selectChanged),
-      charSheetObserver.subscribe('charSpeciesName', this._refreshValue),
+      charSheetStore.on('charSpeciesName', this._renderValue),
     )
   }
 
-  _refreshList = () => {
-    console.info('-- SpeciesSelect.#refreshList')
+  _renderList = () => {
+    console.info('-- SpeciesSelect.#renderList')
     populateSelect(
       this._selectElement,
       getSpeciesList().map(species => (
@@ -36,8 +35,8 @@ export class SpeciesSelect extends AbstractSelect {
       })
   }
 
-  _refreshValue = () => {
-    console.info('-- SpeciesSelect.#refreshValue')
+  _renderValue = () => {
+    console.info('-- SpeciesSelect.#renderValue')
     this._selectElement.value = charSheetStore.getCharSpeciesName() || ''
   }
 
@@ -47,4 +46,3 @@ export class SpeciesSelect extends AbstractSelect {
     charSheetStore.setCharSpeciesName(value)
   }
 }
-

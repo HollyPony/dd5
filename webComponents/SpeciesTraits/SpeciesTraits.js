@@ -1,6 +1,5 @@
-﻿import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
-import charSheetStore from '../../modules/stores/charSheet.store.js'
-import charSheetObserver from '../../modules/stores/charSheet.observer.js'
+import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
+import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import { createElement, replaceElement } from '../../modules/domlib.js'
 import { spells } from '../../modules/data/spells.js'
 import { t } from '../../modules/i18n.js'
@@ -18,20 +17,20 @@ export class SpeciesTraits extends AbstractComponent {
     this.#traitsListElement = this.querySelector('.species-traits-list')
     this.#descriptionElement = this.querySelector('.species-description')
     this.#traitsListElement.id = `species-traits-${this._id}`
-    this.#refreshTraits()
+    this.#renderTraits()
   }
 
   _registerEvents() {
     this._pushEvents(
-      charSheetObserver.subscribe('charSpecies', this.#refreshTraits),
+      charSheetStore.on('charSpecies', this.#renderTraits),
     )
   }
 
   _i18nChanged = () => {
-    this.#refreshTraits()
+    this.#renderTraits()
   }
 
-  #refreshTraits = () => {
+  #renderTraits = () => {
     const species = charSheetStore.getCharSpecies()
     const speciesName = charSheetStore.getCharSpeciesName()
     if (!species) {

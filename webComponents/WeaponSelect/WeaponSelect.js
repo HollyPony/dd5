@@ -12,8 +12,8 @@ export class WeaponSelect extends AbstractSelect {
     )
   }
 
-  _refreshList = () => {
-    console.info('-- WeaponSelect.#refreshList')
+  _renderList = () => {
+    console.info('-- WeaponSelect._renderList')
 
     populateSelect(
       this._selectElement,
@@ -36,8 +36,8 @@ export class WeaponSelect extends AbstractSelect {
       })
   }
 
-  _refreshValue = () => {
-    console.info('-- WeaponSelect.#refreshValue')
+  _renderValue = () => {
+    console.info('-- WeaponSelect._renderValue')
     this._selectElement.value = ''
   }
 

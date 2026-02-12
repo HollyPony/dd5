@@ -111,6 +111,6 @@ export class AbstractComponent extends HTMLElement {
   }
 
   _pushEvents(...events) {
-    this.#events.push(...events)
+    this.#events.push(...events.flat())
   }
 }

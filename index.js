@@ -1,26 +1,10 @@
-import { Ability } from './webComponents/Ability/Ability.js'
-import { OriginSelect } from './webComponents/OriginSelect/OriginSelect.js'
-import { SpeciesSelect } from './webComponents/SpeciesSelect/SpeciesSelect.js'
-import { ClassSelect } from './webComponents/ClassSelect/ClassSelect.js'
-import { SubClassSelect } from './webComponents/SubClassSelect/SubClassSelect.js'
-import { ClassFeatures } from './webComponents/ClassFeatures/ClassFeatures.js'
-import { ClassBase } from './webComponents/ClassFeatures/ClassBase/ClassBase.js'
-import { ClassFeature } from './webComponents/ClassFeatures/ClassFeature/ClassFeature.js'
-import { WeaponSelect } from './webComponents/WeaponSelect/WeaponSelect.js'
-import { Trainings } from './webComponents/Trainings/Trainings.js'
-import { Stats } from './webComponents/Stats/Stats.js'
-import { WeaponsCantrip } from './webComponents/WeaponsCantrip/WeaponsCantrip.js'
-import { SpeciesTraits } from './webComponents/SpeciesTraits/SpeciesTraits.js'
-import { Feats } from './webComponents/Feats/Feats.js'
-import { Specs } from './webComponents/Specs/Specs.js'
-
 import { DICES as D, } from './modules/common.js'
 import initTranslations, { t, i18n } from './modules/i18n.js'
-import charSheetStore from './modules/stores/charSheet.store.js'
-import charSheetObserver from './modules/stores/charSheet.observer.js'
+import charSheetStore from './modules/stores/charSheet.derived.store.js'
 import { TechnicalError, } from './modules/errors.js'
 import charSheetService from './modules/services/charSheet.service.js'
 import { createElement, domSubscribe, replaceElement, } from './modules/domlib.js'
+import registerWebComponents from './index.webmodules.js'
 import './modules/toast.js'
 
 /////////////////////////////////////////////////////////////////////////
@@ -133,9 +117,9 @@ function renderJSONOutput() {
     leaf.textContent = keyLabel ? `${keyLabel}: ${JSON.stringify(value)}` : JSON.stringify(value)
     return leaf
   }
-  // TODO: render by tab state / storage format (json)
+  // TODO: render by tab state / savedState format
   // jsonOutputElement.replaceChildren(renderJsonTree(charSheetStore.get()))
-  debugOutputElement.replaceChildren(renderJsonTree(charSheetService.toSaveData(charSheetStore.get())))
+  debugOutputElement.replaceChildren(renderJsonTree(charSheetService.getSavedData()))
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -220,28 +204,6 @@ function pageHided() {
 }
 
 /////////////////////////////////////////////////////////////////////////
-// REGISTER WEBCOMPONENTS
-/////////////////////////////////////////////////////////////////////////
-
-function registerCustomElements() {
-  Ability.register()
-  OriginSelect.register()
-  SpeciesSelect.register()
-  ClassSelect.register()
-  SubClassSelect.register()
-  ClassFeatures.register()
-  ClassBase.register()
-  ClassFeature.register()
-  WeaponSelect.register()
-  Trainings.register()
-  Stats.register()
-  Specs.register()
-  WeaponsCantrip.register()
-  SpeciesTraits.register()
-  Feats.register()
-}
-
-/////////////////////////////////////////////////////////////////////////
 // SUBSCRIPTIONS ////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
@@ -249,7 +211,7 @@ const subscriptions = []
 
 function registerRenders() {
   subscriptions.push(
-    ...charSheetObserver.subscribes({
+    ...charSheetStore.onMap({
       'charName': [renderCharName],
       'charExperience': [renderCharExperience],
       'charLevel': [renderCharLevel, renderHitPointMax, renderHitDiceMax],
@@ -300,7 +262,7 @@ async function initApp() {
 
   registerDomEvents()
   registerTranslationsUpdates()
-  registerCustomElements()
+  registerWebComponents()
 
   initTranslations()
 }
