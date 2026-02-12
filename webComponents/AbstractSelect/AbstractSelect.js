@@ -13,16 +13,16 @@ export class AbstractSelect extends AbstractComponent {
 
     this._selectElement = this.querySelector('select')
 
-    this._refreshList()
-    this._refreshValue()
+    this._renderList()
+    this._renderValue()
   }
 
-  _refreshList = () => { }
+  _renderList = () => { }
 
-  _refreshValue = () => { }
+  _renderValue = () => { }
 
   _i18nChanged = () => {
-    this._refreshList()
-    this._refreshValue()
+    this._renderList()
+    this._renderValue()
   }
 }
