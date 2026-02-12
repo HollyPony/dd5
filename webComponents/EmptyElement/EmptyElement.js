@@ -1,53 +1,35 @@
-const componentPath = '/components/empty'
+import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
 
-export class Empty extends HTMLElement {
-  #id
-
-  static #templatePromise
-  static get template() {
-    if (!this.#templatePromise) {
-      this.#templatePromise = fetch(`${componentPath}/index.html`)
-        .then(result => result.text())
-        .then(html => new DOMParser()
-          .parseFromString(html, 'text/html')
-          .querySelector('template'))
-    }
-    return this.#templatePromise
-  }
+export class Empty extends AbstractComponent {
+  static get tagName() { return 'empty-element' }
+  static _modulePath = new URL('.', import.meta.url).pathname
 
   constructor() {
     super()
   }
 
-  async connectedCallback() {
-    console.info('-- Mother.connectedCallback')
+  async _connectedCallback() {
+    console.info('-- Empty.connectedCallback')
 
-    const template = await this.constructor.template
+    //   const stylesheet = document.createElement('link')
+    //   stylesheet.setAttribute('rel', 'stylesheet')
+    //   stylesheet.setAttribute('href', `/components/ClassSelect/index.css`)
 
-    const stylesheet = document.createElement('link')
-    stylesheet.setAttribute('rel', 'stylesheet')
-    stylesheet.setAttribute('href', `${componentPath}/index.css`)
-
-    this.appendChild(stylesheet)
-    this.appendChild(template.content.cloneNode(true), true)
-
-    this.#id = crypto.randomUUID()
-
-    this.#registerEvents()
+    //   this.appendChild(stylesheet)
   }
 
-  disconnectedCallback() {
-    console.info('-- Mother.disconnectedCallback')
-    this.#unregisterEvents()
+  _disconnectedCallback() {
+    console.info('-- Empty.disconnectedCallback')
   }
 
-  #registerEvents() {
-    console.info('-- Mother.registerEvents')
+  _registerEvents() {
+    console.info('-- Empty.registerEvents')
   }
 
-  #unregisterEvents() {
-    console.info('-- Mother.unregisterEvents')
+  _unregisterEvents() {
+    console.info('-- Empty.unregisterEvents')
   }
+
   // static get observedAttributes() {
   //   return ['score']
   // }
