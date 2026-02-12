@@ -70,19 +70,18 @@ export function debounce(fn, delayMs = 0) {
  * @throws {ReferenceError} If strict mode is enabled and the path is invalid.
  */
 export function resolvePath(obj, path, { strict = false } = {}) {
-  const parts = path.split('.')
+  const parts = Array.isArray(path) ? path : String(path).split('.')
   let current = obj
+
   for (const part of parts) {
     if (current == null) {
-      if (strict) {
-        throw new ReferenceError(`Path '${path}' is invalid at '${part}'`)
-      }
+      if (strict) throw new ReferenceError(`Path '${path.toString()}' is invalid at '${part.toString()}'`)
       return undefined
     }
-    if (strict && !(part in current)) {
-      throw new ReferenceError(`Path '${path}' is invalid at '${part}'`)
+    if (strict && !Reflect.has(current, part)) {
+      throw new ReferenceError(`Path '${path.toString()}' is invalid at '${part.toString()}'`)
     }
-    current = current[part]
+    current = Reflect.get(current, part)
   }
   return current
 }
