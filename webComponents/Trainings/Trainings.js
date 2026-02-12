@@ -1,5 +1,5 @@
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
-import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
+import charSheetStore, { properties as charSheetProps } from '../../modules/stores/charSheet.derived.store.js'
 import { createElement, replaceElement } from '../../modules/domlib.js'
 import { ARMOR_CATEGORY } from '../../modules/data/equipments.js'
 import { t } from '../../modules/i18n.js'
@@ -32,7 +32,7 @@ export class Trainings extends AbstractComponent {
   _registerEvents() {
     this._pushEvents(
       charSheetStore.onMany(
-        ['charClass', 'classTools', 'feats'],
+        [charSheetProps.charClass, charSheetProps.classTools, charSheetProps.feats],
         this.#renderTrainings
       ),
     )

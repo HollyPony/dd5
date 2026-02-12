@@ -1,5 +1,5 @@
 import { AbstractSelect } from '../AbstractSelect/AbstractSelect.js'
-import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
+import charSheetStore, { properties as charSheetProps } from '../../modules/stores/charSheet.derived.store.js'
 import { getList as getOriginList } from '../../modules/data/origins.js'
 import { domSubscribe, populateSelect } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'
@@ -10,7 +10,7 @@ export class OriginSelect extends AbstractSelect {
   _registerEvents() {
     this._pushEvents(
       domSubscribe(this._selectElement, 'change', this.#selectChanged),
-      charSheetStore.on('charOriginName', this._renderValue),
+      charSheetStore.on(charSheetProps.charOriginName, this._renderValue),
     )
   }
 

@@ -1,5 +1,5 @@
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
-import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
+import charSheetStore, { properties as charSheetProps } from '../../modules/stores/charSheet.derived.store.js'
 import { createElement, replaceElement } from '../../modules/domlib.js'
 import { spells } from '../../modules/data/spells.js'
 import { t } from '../../modules/i18n.js'
@@ -22,7 +22,7 @@ export class SpeciesTraits extends AbstractComponent {
 
   _registerEvents() {
     this._pushEvents(
-      charSheetStore.on('charSpecies', this.#renderTraits),
+      charSheetStore.on(charSheetProps.charSpecies, this.#renderTraits),
     )
   }
 

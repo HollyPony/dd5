@@ -1,7 +1,7 @@
 import { ABILITY } from '../common.js'
 import { s } from '../helpers.js'
 import createStore from '../createStore.js'
-import createEventBus, { ANY } from '../createEventBus.js'
+import createEventBus from '../createEventBus.js'
 
 export const properties = s({
   charName: 'charName', // Sym ?
@@ -48,15 +48,15 @@ function normalizeSavedData(source = {}) {
   const attributes = source?.attributes ?? {}
   return {
     [properties.charName]: source?.charName ?? '',
-    charExperience: source?.charExperience ?? 0,
-    charClassName: source?.charClassName ?? '',
-    charSubClassName: source?.charSubClassName ?? null,
-    charOriginName: source?.charOriginName ?? '',
-    charSpeciesName: source?.charSpeciesName ?? '',
-    charAlignment: source?.charAlignment ?? '',
-    charSizeCategory: source?.charSizeCategory ?? '',
-    charSize: source?.charSize ?? '',
-    attributes: s({
+    [properties.charExperience]: source?.charExperience ?? 0,
+    [properties.charClassName]: source?.charClassName ?? '',
+    [properties.charSubClassName]: source?.charSubClassName ?? null,
+    [properties.charOriginName]: source?.charOriginName ?? '',
+    [properties.charSpeciesName]: source?.charSpeciesName ?? '',
+    [properties.charAlignment]: source?.charAlignment ?? '',
+    [properties.charSizeCategory]: source?.charSizeCategory ?? '',
+    [properties.charSize]: source?.charSize ?? '',
+    [properties.attributes]: s({
       [ABILITY.strength]: attributes[ABILITY.strength] ?? 10,
       [ABILITY.dexterity]: attributes[ABILITY.dexterity] ?? 10,
       [ABILITY.constitution]: attributes[ABILITY.constitution] ?? 10,
@@ -64,10 +64,10 @@ function normalizeSavedData(source = {}) {
       [ABILITY.intelligence]: attributes[ABILITY.intelligence] ?? 10,
       [ABILITY.charisma]: attributes[ABILITY.charisma] ?? 10,
     }),
-    classSkills: (source?.classSkills ?? []).slice(),
-    expertSkills: (source?.expertSkills ?? []).slice(),
-    classTools: (source?.classTools ?? []).slice(),
-    equipments: (source?.equipments ?? []).map(equipment => ({ ...equipment })),
+    [properties.classSkills]: (source?.classSkills ?? []).slice(),
+    [properties.expertSkills]: (source?.expertSkills ?? []).slice(),
+    [properties.classTools]: (source?.classTools ?? []).slice(),
+    [properties.equipments]: (source?.equipments ?? []).map(equipment => ({ ...equipment })),
   }
 }
 
@@ -100,66 +100,66 @@ function createCharSheetStorageStore() {
   function getEquipments() { return get(properties.equipments) }
 
   // Save this name. Test it
-  function setCharName(charName) { set({ charName }) }
+  function setCharName(charName) { set({ [properties.charName]: charName }) }
   function setCharExperience(charExperience) {
     const experience = parseInt(charExperience)
     if (!experience) return
-    set({ charExperience: experience })
+    set({ [properties.charExperience]: experience })
   }
   function setCharOriginName(charOriginName) {
     set({
-      charOriginName,
-      classSkills: [],
-      expertSkills: [],
-      classTools: [],
+      [properties.charOriginName]: charOriginName,
+      [properties.classSkills]: [],
+      [properties.expertSkills]: [],
+      [properties.classTools]: [],
     })
     // TODO: handle skill from origin ?
     // TODO: remove also classSkills choosed due to conflicts with origin ones
   }
   function setCharClassName(charClassName) {
     set({
-      charClassName,
-      charSubClassName: null,
-      classSkills: [],
-      expertSkills: [],
-      classTools: [],
+      [properties.charClassName]: charClassName,
+      [properties.charSubClassName]: null,
+      [properties.classSkills]: [],
+      [properties.expertSkills]: [],
+      [properties.classTools]: [],
     })
   }
   function setCharSubClassName(charSubClassName) {
-    set({ charSubClassName })
+    set({ [properties.charSubClassName]: charSubClassName })
   }
   function setCharSpeciesName(charSpeciesName) {
-    set({ charSpeciesName })
+    set({ [properties.charSpeciesName]: charSpeciesName })
 
     // // TODO: Handle what changed on species changed
   }
 
   function setAbilityScore(ability, score) {
-    set({ [`attributes.${ability}`]: score })
+    set({ [[properties.attributes, ability].join('.')]: score })
   }
 
   function classSkillsAdd(skill) {
-    set({ 'classSkills': getClassSkills().concat(skill) })
+    set({ [properties.classSkills]: getClassSkills().concat(skill) })
   }
 
   function classSkillsRemove(skill) {
-    set({ 'classSkills': getClassSkills().filter(_skill => _skill !== skill) })
+    set({ [properties.classSkills]: getClassSkills().filter(_skill => _skill !== skill) })
   }
 
   function expertSkillsAdd(skill) {
-    set({ 'expertSkills': getExpertSkills().concat(skill) })
+    set({ [properties.expertSkills]: getExpertSkills().concat(skill) })
   }
 
   function expertSkillsRemove(skill) {
-    set({ 'expertSkills': getExpertSkills().filter(_skill => _skill !== skill) })
+    set({ [properties.expertSkills]: getExpertSkills().filter(_skill => _skill !== skill) })
   }
 
   function classToolsAdd(tool) {
-    set({ 'classTools': getClassTools().concat(tool) })
+    set({ [properties.classTools]: getClassTools().concat(tool) })
   }
 
   function classToolsRemove(tool) {
-    set({ 'classTools': getClassTools().filter(_tool => _tool !== tool) })
+    set({ [properties.classTools]: getClassTools().filter(_tool => _tool !== tool) })
   }
 
   return {

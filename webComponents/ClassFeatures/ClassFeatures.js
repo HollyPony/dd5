@@ -1,5 +1,5 @@
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
-import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
+import charSheetStore, { properties as charSheetProps } from '../../modules/stores/charSheet.derived.store.js'
 import { createElement, replaceElement } from '../../modules/domlib.js'
 
 export class ClassFeatures extends AbstractComponent {
@@ -30,8 +30,10 @@ export class ClassFeatures extends AbstractComponent {
   _registerEvents() {
     this._pushEvents(
       // TODO: had a class features changed ????
-      charSheetStore.on('charLevel', this.#levelChanged),
-      charSheetStore.on('charClass', this.#classChanged),
+      charSheetStore.onMap({
+        [charSheetProps.charLevel]: [this.#levelChanged],
+        [charSheetProps.charClass]: [this.#classChanged],
+      }),
     )
   }
 

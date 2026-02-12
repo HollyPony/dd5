@@ -73,16 +73,29 @@ function onMany(listenersMap, keys, callback) {
 }
 
 /**
- * Subscribe groups of callbacks by key.
+ * Subscribe callbacks by key(s).
  *
- * @param {Map<string, Set<Function>>} listenersMap - Internal key->listeners registry.
- * @param {Record<string, Function[]>} [subscriptions={}] - { key: callbacks[] } map.
- * @returns {Array<() => boolean>} Unsubscribe functions.
+ * Supported forms:
+ * - Object: { key: callback | callback[] }
+ * - Map: new Map([[keyOrKeys, callbackOrCallbacks]])
+ *   where keyOrKeys is string or string[].
+ *
+ * @param {Map<string, Set<Function>>} listenersMap
+ * @param {Record<string, Function | Function[]> | Map<string | string[], Function | Function[]>} [subscriptions={}]
+ * @returns {Array<() => boolean>}
  */
 function onMap(listenersMap, subscriptions = {}) {
-  return Object.entries(subscriptions).flatMap(([key, callbacks = []]) =>
-    callbacks.map(callback => on(listenersMap, key, callback))
-  )
+  const entries = subscriptions instanceof Map ? [...subscriptions.entries()] : Object.entries(subscriptions)
+  return entries.flatMap(([keyOrKeys, cbOrCbs]) => {
+    const keys = Array.isArray(keyOrKeys) ? keyOrKeys : [keyOrKeys]
+    const callbacks = Array.isArray(cbOrCbs) ? cbOrCbs : [cbOrCbs]
+
+    return callbacks.flatMap(callback =>
+      keys.length > 1
+        ? onMany(listenersMap, keys, callback)
+        : on(listenersMap, keys[0], callback)
+    )
+  })
 }
 
 /**
@@ -138,7 +151,7 @@ function off(listenersMap, key, callback) {
  *   emitBatch: (targets: Array<{ key: string, payload?: any, params?: any[] }>) => void,
  *   on: (key: string, callback: Function) => () => boolean,
  *   onMany: (keys: string[], callback: Function) => Array<() => boolean>,
- *   onMap: (subscriptions?: Record<string, Function[]>) => Array<() => boolean>,
+ *   onMap: (subscriptions?: Record<string, Function | Function[]>) => Array<() => boolean>,
  *   off: (key: string, callback: Function) => boolean,
  *   mute: (key: string, callback: Function) => () => void,
  *   muteWhile: (key: string, callback: Function) => <T>(fn: () => T) => T

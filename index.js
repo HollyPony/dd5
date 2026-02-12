@@ -1,6 +1,6 @@
 import { DICES as D, } from './modules/common.js'
 import initTranslations, { t, i18n } from './modules/i18n.js'
-import charSheetStore from './modules/stores/charSheet.derived.store.js'
+import charSheetStore, { properties as charSheetProps } from './modules/stores/charSheet.derived.store.js'
 import { TechnicalError, } from './modules/errors.js'
 import charSheetService from './modules/services/charSheet.service.js'
 import { createElement, domSubscribe, replaceElement, } from './modules/domlib.js'
@@ -212,14 +212,14 @@ const subscriptions = []
 function registerRenders() {
   subscriptions.push(
     ...charSheetStore.onMap({
-      'charName': [renderCharName],
-      'charExperience': [renderCharExperience],
-      'charLevel': [renderCharLevel, renderHitPointMax, renderHitDiceMax],
-      'charClass': [renderHitPointMax, renderHitDiceMax, renderArmorClass],
-      'modifiers': [renderHitPointMax, renderArmorClass],
-      'charAlignment': [renderCharAlignment],
-      'equiped': [renderArmorClass],
-      'feats': [renderArmorClass],
+      [charSheetProps.charName]: [renderCharName],
+      [charSheetProps.charExperience]: [renderCharExperience],
+      [charSheetProps.charLevel]: [renderCharLevel, renderHitPointMax, renderHitDiceMax],
+      [charSheetProps.charClass]: [renderHitPointMax, renderHitDiceMax, renderArmorClass],
+      [charSheetProps.modifiers]: [renderHitPointMax, renderArmorClass],
+      [charSheetProps.charAlignment]: [renderCharAlignment],
+      [charSheetProps.equiped]: [renderArmorClass],
+      [charSheetProps.feats]: [renderArmorClass],
     }),
     charSheetService.subscribeCharSheetsList(renderSavedCharSheets),
   )

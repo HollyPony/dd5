@@ -1,4 +1,5 @@
 import { ABILITY, SKILLS } from '../common.js'
+import { properties } from '../stores/charSheet.authority.store.js'
 
 // // TODO: remove once at least web storage imported
 // export const mock = {
@@ -33,29 +34,31 @@ import { ABILITY, SKILLS } from '../common.js'
 //   ],
 // }
 
-export function fromSaveData(jsSource) {
+export function fromSaveData(storedSource) {
+  const [charClassName = '', charSubClassName = ''] = (storedSource?.class ?? '').split('.')
+
   return {
-    charName: jsSource?.name ?? '',
-    charOriginName: jsSource?.origin ?? '',
-    charClassName: jsSource?.class?.split('.')[0] ?? '',
-    charSubClassName: jsSource?.class?.split('.')[1] ?? '',
-    charSpeciesName: jsSource?.species ?? '',
-    charExperience: jsSource?.experience ?? 0,
-    charAlignment: jsSource?.alignment ?? '',
-    charSizeCategory: jsSource?.sizeCategory ?? '',
-    charSize: jsSource?.size ?? 0,
-    attributes: {
-      [ABILITY.strength]: jsSource?.attributes.strength ?? 10,
-      [ABILITY.dexterity]: jsSource?.attributes.dexterity ?? 10,
-      [ABILITY.constitution]: jsSource?.attributes.constitution ?? 10,
-      [ABILITY.wisdom]: jsSource?.attributes.wisdom ?? 10,
-      [ABILITY.intelligence]: jsSource?.attributes.intelligence ?? 10,
-      [ABILITY.charisma]: jsSource?.attributes.charisma ?? 10,
+    [properties.charName]: storedSource?.name ?? '',
+    [properties.charOriginName]: storedSource?.origin ?? '',
+    [properties.charClassName]: charClassName,
+    [properties.charSubClassName]: charSubClassName || null,
+    [properties.charSpeciesName]: storedSource?.species ?? '',
+    [properties.charExperience]: storedSource?.experience ?? 0,
+    [properties.charAlignment]: storedSource?.alignment ?? '',
+    [properties.charSizeCategory]: storedSource?.sizeCategory ?? '',
+    [properties.charSize]: storedSource?.size ?? 0,
+    [properties.attributes]: {
+      [ABILITY.strength]: storedSource?.attributes.strength ?? 10,
+      [ABILITY.dexterity]: storedSource?.attributes.dexterity ?? 10,
+      [ABILITY.constitution]: storedSource?.attributes.constitution ?? 10,
+      [ABILITY.wisdom]: storedSource?.attributes.wisdom ?? 10,
+      [ABILITY.intelligence]: storedSource?.attributes.intelligence ?? 10,
+      [ABILITY.charisma]: storedSource?.attributes.charisma ?? 10,
     },
-    classSkills: jsSource?.classSkills.map(skill => SKILLS[skill]) ?? [],
-    expertSkills: jsSource?.expertSkills?.map(skill => SKILLS[skill]) ?? [],
-    classTools: jsSource?.classTools ?? [],
-    equipments: jsSource?.equipments ?? [],
+    [properties.classSkills]: storedSource?.classSkills?.map(skill => SKILLS[skill]) ?? [],
+    [properties.expertSkills]: storedSource?.expertSkills?.map(skill => SKILLS[skill]) ?? [],
+    [properties.classTools]: storedSource?.classTools ?? [],
+    [properties.equipments]: storedSource?.equipments ?? [],
   }
 }
 
@@ -71,29 +74,32 @@ export function fromJSON(jsonData) {
 }
 
 export function toSaveData(jsData) {
+  const charClassName = jsData[properties.charClassName]
+  const charSubClassName = jsData[properties.charSubClassName]
+
   return {
-    name: jsData.charName,
-    origin: jsData.charOriginName,
-    class: jsData.charClassName
-      ? (jsData.charSubClassName ? `${jsData.charClassName}.${jsData.charSubClassName}` : jsData.charClassName)
+    name: jsData[properties.charName],
+    origin: jsData[properties.charOriginName],
+    class: charClassName
+      ? (charSubClassName ? `${charClassName}.${charSubClassName}` : charClassName)
       : undefined,
-    species: jsData.charSpeciesName,
-    experience: jsData.charExperience,
-    alignment: jsData.charAlignment,
-    sizeCategory: jsData.charSizeCategory,
-    size: jsData.charSize,
+    species: jsData[properties.charSpeciesName],
+    experience: jsData[properties.charExperience],
+    alignment: jsData[properties.charAlignment],
+    sizeCategory: jsData[properties.charSizeCategory],
+    size: jsData[properties.charSize],
     attributes: {
-      strength: jsData.attributes[ABILITY.strength],
-      dexterity: jsData.attributes[ABILITY.dexterity],
-      constitution: jsData.attributes[ABILITY.constitution],
-      wisdom: jsData.attributes[ABILITY.wisdom],
-      intelligence: jsData.attributes[ABILITY.intelligence],
-      charisma: jsData.attributes[ABILITY.charisma],
+      strength: jsData[properties.attributes][ABILITY.strength],
+      dexterity: jsData[properties.attributes][ABILITY.dexterity],
+      constitution: jsData[properties.attributes][ABILITY.constitution],
+      wisdom: jsData[properties.attributes][ABILITY.wisdom],
+      intelligence: jsData[properties.attributes][ABILITY.intelligence],
+      charisma: jsData[properties.attributes][ABILITY.charisma],
     },
-    classSkills: Object.keys(SKILLS).filter(key => jsData.classSkills.includes(SKILLS[key])),
-    expertSkills: Object.keys(SKILLS).filter(key => jsData.expertSkills.includes(SKILLS[key])),
-    classTools: jsData.classTools,
-    equipments: jsData.equipments
+    classSkills: Object.keys(SKILLS).filter(key => jsData[properties.classSkills].includes(SKILLS[key])),
+    expertSkills: Object.keys(SKILLS).filter(key => jsData[properties.expertSkills].includes(SKILLS[key])),
+    classTools: jsData[properties.classTools],
+    equipments: jsData[properties.equipments]
   }
 }
 
@@ -107,7 +113,6 @@ export function toJSON(jsData) {
     // }
     return value
   }
-
 
   return JSON.stringify(toSaveData(jsData), reviver, 2)
 }

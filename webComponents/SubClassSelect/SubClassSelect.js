@@ -1,5 +1,5 @@
 import { AbstractSelect } from '../AbstractSelect/AbstractSelect.js'
-import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
+import charSheetStore, { properties as charSheetProps } from '../../modules/stores/charSheet.derived.store.js'
 import { getSubClasses } from '../../modules/data/classes.js'
 import { domSubscribe, populateSelect } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'
@@ -11,9 +11,11 @@ export class SubClassSelect extends AbstractSelect {
     this._pushEvents(
       domSubscribe(this._selectElement, 'change', this.#selectChanged),
       // TODO: avoid *change and use subscribeMany on selective refresh
-      charSheetStore.on('charLevel', this.#charLevelChanged),
-      charSheetStore.on('charClassName', this.#charClassChanged),
-      charSheetStore.on('charSubClassName', this._renderValue),
+      charSheetStore.onMap({
+        [charSheetProps.charLevel]: [this.#charLevelChanged],
+        [charSheetProps.charClassName]: [this.#charClassChanged],
+        [charSheetProps.charSubClassName]: [this._renderValue],
+      }),
     )
   }
 

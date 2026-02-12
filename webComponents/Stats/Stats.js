@@ -1,5 +1,5 @@
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
-import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
+import charSheetStore, { properties as charSheetProps } from '../../modules/stores/charSheet.derived.store.js'
 import { signDisplay } from '../../modules/helpers.js'
 
 export class Stats extends AbstractComponent {
@@ -15,7 +15,7 @@ export class Stats extends AbstractComponent {
 
   _registerEvents() {
     this._pushEvents(
-      charSheetStore.on('proficiencyBonus', this.#renderProficiencyBonus),
+      charSheetStore.on(charSheetProps.proficiencyBonus, this.#renderProficiencyBonus),
     )
   }
 

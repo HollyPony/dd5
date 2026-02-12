@@ -1,5 +1,5 @@
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
-import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
+import charSheetStore, { properties as charSheetProps } from '../../modules/stores/charSheet.derived.store.js'
 
 export class Specs extends AbstractComponent {
   static get tagName() { return 'specs-block' }
@@ -26,15 +26,12 @@ export class Specs extends AbstractComponent {
 
   _registerEvents() {
     this._pushEvents(
-      charSheetStore.on('initiative', this.#renderInitiative),
-      charSheetStore.on('charSpecies', this.#renderSpeed),
-      charSheetStore.on('equiped', this.#renderSpeed),
-      charSheetStore.on('feats', this.#renderSpeed),
-      charSheetStore.on('charSizeCategory', this.#renderSize),
-      charSheetStore.on('charSize', this.#renderSize),
-      charSheetStore.on('classSkills', this.#renderPassivePerception),
-      charSheetStore.on('expertSkills', this.#renderPassivePerception),
-      charSheetStore.on('modifiers', this.#renderPassivePerception),
+      charSheetStore.onMap(new Map([
+        [charSheetProps.initiative, this.#renderInitiative],
+        [[charSheetProps.charSpecies, charSheetProps.equiped, charSheetProps.feats], this.#renderSpeed],
+        [[charSheetProps.charSizeCategory, charSheetProps.charSize], this.#renderSize],
+        [[charSheetProps.classSkills, charSheetProps.expertSkills, charSheetProps.modifiers], this.#renderPassivePerception],
+      ]))
     )
   }
 

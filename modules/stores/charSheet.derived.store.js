@@ -6,7 +6,7 @@ import { EQUIPED_CATEGORY, EQUIPMENT_TYPE, getEquipment } from '../data/equipmen
 import { getLevelFromExperience } from '../data/leveling.js'
 import { s } from '../helpers.js'
 import createStore from '../createStore.js'
-import authorityStore, { initialData as authorityInitialData, properties as authorityProperyies } from './charSheet.authority.store.js'
+import authorityStore, { initialData as authorityInitialData, properties as authorityProperties } from './charSheet.authority.store.js'
 import createEventBus from '../createEventBus.js'
 
 export const properties = s(Object.assign({
@@ -20,7 +20,7 @@ export const properties = s(Object.assign({
   saves: 'saves', // Sym ?
   feats: 'feats', // Sym ?
   equiped: 'equiped', // Sym ?
-}, authorityProperyies))
+}, authorityProperties))
 
 const initialData = {
   ...authorityInitialData,
@@ -217,20 +217,20 @@ function createCharSheetStore() {
   }
 
   authorityStore.onMap({
-    'charName': [computeCharName],
-    'charExperience': [computeExperience],
-    'charOriginName': [computeOrigin],
-    'charClassName': [computeClass],
-    'charSubClassName': [computeClass],
-    'charSpeciesName': [computeSpecies],
-    'charAlignment': [computeAlignment],
-    'charSizeCategory': [computeSizeCategory],
-    'charSize': [computeSize],
-    'classSkills': [computeClassSkills],
-    'expertSkills': [computeExpertSkills],
-    'classTools': [computeClassTools],
-    'attributes': [computeAttributes],
-    'equipments': [computeEquipments],
+    [properties.charName]: [computeCharName],
+    [properties.charExperience]: [computeExperience],
+    [properties.charOriginName]: [computeOrigin],
+    [properties.charClassName]: [computeClass],
+    [properties.charSubClassName]: [computeClass],
+    [properties.charSpeciesName]: [computeSpecies],
+    [properties.charAlignment]: [computeAlignment],
+    [properties.charSizeCategory]: [computeSizeCategory],
+    [properties.charSize]: [computeSize],
+    [properties.classSkills]: [computeClassSkills],
+    [properties.expertSkills]: [computeExpertSkills],
+    [properties.classTools]: [computeClassTools],
+    [properties.attributes]: [computeAttributes],
+    [properties.equipments]: [computeEquipments],
   });
 
   (function initState() {
