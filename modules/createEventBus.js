@@ -36,7 +36,7 @@ function getNode(nodeTree, pathParts, create = false) {
  * @param {{ listeners: Set<Function>, children: Map<string | symbol, any> }} nodeTree - Root node.
  * @param {Array<{ key: string | symbol | Array<string | symbol>, payload?: any, params?: any[] }> | Set<{ key: string | symbol | Array<string | symbol>, payload?: any, params?: any[] }>} targets - Events to emit.
  * @returns {void}
- * @throws {TypeError} When one target key has an unsupported type.
+ * @throws {MissingPathError} When one target key has an unsupported type.
  */
 function emitBatch(nodeTree, targets) {
   const callbacks = new Set()
@@ -64,7 +64,7 @@ function emitBatch(nodeTree, targets) {
  * @param {string | symbol | Array<string | symbol>} key - Event key/path.
  * @param {Function} callback - Listener function.
  * @returns {() => boolean} Unsubscribe function.
- * @throws {TypeError} When key has an unsupported type.
+ * @throws {MissingPathError} When key has an unsupported type.
  */
 function on(nodeTree, key, callback) {
   const node = getNode(nodeTree, getPathParts(key), true)
@@ -156,7 +156,7 @@ function muteWhile(nodeTree, key, callback) {
  * @param {string | symbol | Array<string | symbol>} key - Event key/path.
  * @param {Function} callback - Listener function.
  * @returns {boolean} True when callback was removed.
- * @throws {TypeError} When key has an unsupported type.
+ * @throws {MissingPathError} When key has an unsupported type.
  */
 function off(nodeTree, key, callback) {
   const node = getNode(nodeTree, getPathParts(key))

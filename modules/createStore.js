@@ -29,7 +29,7 @@ export default function createStore(initialState, eventBus) {
      * @param {Object<string | symbol, *> | Map<string | symbol | Array<string | symbol>, *>} pathMap - Patch map where keys are paths.
      * @param {boolean} [shouldNotify=true] - Whether to notify listeners.
      * @returns {void}
-     * @throws {TypeError} If one path key has an unsupported type.
+     * @throws {MissingPathError} If one path key has an unsupported type.
      */
     set(pathMap, shouldNotify = true) {
       const targets = new Set()

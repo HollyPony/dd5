@@ -1,3 +1,5 @@
+import { MissingPathError } from './errors.js'
+
 // Shotcut for freeze function
 export const f = Object.freeze
 
@@ -61,14 +63,13 @@ export function debounce(fn, delayMs = 0) {
  *
  * @param {string | symbol | Array<string | symbol>} path
  * @returns {Array<string | symbol>}
- * @throws {TypeError} If path type is not supported.
+ * @throws {MissingPathError} If path type is not supported.
  */
 export function getPathParts(path) {
   if (Array.isArray(path)) return path
   if (typeof path === 'symbol') return [path]
   if (typeof path === 'string') return path.split('.')
-  // TODO: Custom Error
-  throw new TypeError(`Unsupported path type: ${typeof path}`)
+  throw MissingPathError(`Unsupported path type: ${typeof path}`)
 }
 
 /**
