@@ -446,7 +446,6 @@ export default function (className, subClassName, level) {
     ...classBase
   } = classes[className]
 
-
   const {
     features: subClassFeatures,
     weaponProficiencies: subClassWeaponProficiencies,

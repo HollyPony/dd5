@@ -103,4 +103,3 @@ export function domSubscribe(domElement, eventName, handler, options) {
 
   return () => domElement.removeEventListener(eventName, handler, options)
 }
-

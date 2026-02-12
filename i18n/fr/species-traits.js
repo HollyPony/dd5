@@ -1,4 +1,4 @@
-﻿// IA: generated description: TODO review
+// IA: generated description: TODO review
 
 export default {
   darkvision: {
@@ -153,5 +153,3 @@ La révélation se termine si vous êtes neutralisé, ou si vous y mettez fin (a
     description: `**Thaumaturgie.** Vous connaissez le tour de magie ***Thaumaturgie***. Il utilise la même caractéristique d’incantation que vos sorts d’***Héritage fiélon***.`
   },
 }
-
-

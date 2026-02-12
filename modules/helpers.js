@@ -15,7 +15,7 @@ export const O = target => {
       if (!(prop in target)) {
         throw new ReferenceError(`'${prop}' is not found in Object`)
       } else {
-        return Reflect.get(...arguments);
+        return Reflect.get(...arguments)
       }
     },
   })

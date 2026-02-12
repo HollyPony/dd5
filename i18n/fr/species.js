@@ -1,4 +1,4 @@
-﻿// IA: generated descriptions: TODO review
+// IA: generated descriptions: TODO review
 
 export default {
   aasimar: {
@@ -219,7 +219,3 @@ Ils sont souvent perçus avec méfiance, mais leur volonté et leur charisme peu
     description: `Lignée issue des Hells, disciplinée et implacable. Elle évoque les pactes, la hiérarchie et les flammes infernales.`
   },
 }
-
-
-
-
