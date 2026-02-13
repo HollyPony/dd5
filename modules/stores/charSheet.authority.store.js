@@ -1,9 +1,9 @@
 import { ABILITY } from '../common.js'
-import { s } from '../helpers.js'
+import { f } from '../helpers.js'
 import createStore from '../createStore.js'
 import createEventBus from '../createEventBus.js'
 
-export const properties = s({
+export const properties = f({
   charName: Symbol('charName'),
   charExperience: Symbol('charExperience'),
   charClassName: Symbol('charClassName'),
@@ -20,7 +20,7 @@ export const properties = s({
   equipments: Symbol('equipments'),
 })
 
-export const initialData = {
+export const initialData = f({
   [properties.charName]: '',
   [properties.charExperience]: 0,
   [properties.charClassName]: '',
@@ -30,7 +30,7 @@ export const initialData = {
   [properties.charAlignment]: '',
   [properties.charSizeCategory]: '',
   [properties.charSize]: '',
-  [properties.attributes]: s({
+  [properties.attributes]: f({
     [ABILITY.strength]: 10,
     [ABILITY.dexterity]: 10,
     [ABILITY.constitution]: 10,
@@ -42,41 +42,14 @@ export const initialData = {
   [properties.expertSkills]: [],
   [properties.classTools]: [],
   [properties.equipments]: [],
-}
-
-function normalizeSavedData(source = {}) {
-  const attributes = source?.attributes ?? {}
-  return {
-    [properties.charName]: source?.charName ?? '',
-    [properties.charExperience]: source?.charExperience ?? 0,
-    [properties.charClassName]: source?.charClassName ?? '',
-    [properties.charSubClassName]: source?.charSubClassName ?? null,
-    [properties.charOriginName]: source?.charOriginName ?? '',
-    [properties.charSpeciesName]: source?.charSpeciesName ?? '',
-    [properties.charAlignment]: source?.charAlignment ?? '',
-    [properties.charSizeCategory]: source?.charSizeCategory ?? '',
-    [properties.charSize]: source?.charSize ?? '',
-    [properties.attributes]: s({
-      [ABILITY.strength]: attributes[ABILITY.strength] ?? 10,
-      [ABILITY.dexterity]: attributes[ABILITY.dexterity] ?? 10,
-      [ABILITY.constitution]: attributes[ABILITY.constitution] ?? 10,
-      [ABILITY.wisdom]: attributes[ABILITY.wisdom] ?? 10,
-      [ABILITY.intelligence]: attributes[ABILITY.intelligence] ?? 10,
-      [ABILITY.charisma]: attributes[ABILITY.charisma] ?? 10,
-    }),
-    [properties.classSkills]: (source?.classSkills ?? []).slice(),
-    [properties.expertSkills]: (source?.expertSkills ?? []).slice(),
-    [properties.classTools]: (source?.classTools ?? []).slice(),
-    [properties.equipments]: (source?.equipments ?? []).map(equipment => ({ ...equipment })),
-  }
-}
+})
 
 function createCharSheetStorageStore() {
   const store = createStore(initialData, createEventBus())
   const { get, set, } = store
 
-  function init(charData) {
-    set(normalizeSavedData(charData))
+  function init(charData = {}) {
+    set(charData)
   }
 
   function reset() {

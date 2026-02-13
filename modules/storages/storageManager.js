@@ -1,65 +1,33 @@
 import { ABILITY, SKILLS } from '../common.js'
-import { properties } from '../stores/charSheet.authority.store.js'
-
-// // TODO: remove once at least web storage imported
-// export const mock = {
-//   name: 'Doudou McDoubidou',
-//   origin: 'artisan',
-//   class: 'monk',
-//   species: 'goliath.stone',
-//   experience: 300,
-//   alignment: 'neutralGood',
-//   sizeCategory: 'medium',
-//   size: '242',
-//   attributes: {
-//     strength: 12,
-//     dexterity: 17,
-//     constitution: 14,
-//     wisdom: 12,
-//     intelligence: 8,
-//     charisma: 12,
-//   },
-//   classSkills: ['athletics', 'acrobatics'],
-//   expertSkills : [],
-//   equipments: [
-//     {
-//       name: 'SHIELDS_shield',
-//       equiped: false,
-//     },
-//     {
-//       name: 'cloakOfProtection',
-//       hasAttunement: true,
-//       equiped: false,
-//     }
-//   ],
-// }
+import { s } from '../helpers.js'
+import { initialData, properties } from '../stores/charSheet.authority.store.js'
 
 export function fromSaveData(storedSource) {
   const [charClassName = '', charSubClassName = ''] = (storedSource?.class ?? '').split('.')
 
-  return {
-    [properties.charName]: storedSource?.name ?? '',
-    [properties.charOriginName]: storedSource?.origin ?? '',
-    [properties.charClassName]: charClassName,
-    [properties.charSubClassName]: charSubClassName || null,
-    [properties.charSpeciesName]: storedSource?.species ?? '',
-    [properties.charExperience]: storedSource?.experience ?? 0,
-    [properties.charAlignment]: storedSource?.alignment ?? '',
-    [properties.charSizeCategory]: storedSource?.sizeCategory ?? '',
-    [properties.charSize]: storedSource?.size ?? 0,
-    [properties.attributes]: {
-      [ABILITY.strength]: storedSource?.attributes.strength ?? 10,
-      [ABILITY.dexterity]: storedSource?.attributes.dexterity ?? 10,
-      [ABILITY.constitution]: storedSource?.attributes.constitution ?? 10,
-      [ABILITY.wisdom]: storedSource?.attributes.wisdom ?? 10,
-      [ABILITY.intelligence]: storedSource?.attributes.intelligence ?? 10,
-      [ABILITY.charisma]: storedSource?.attributes.charisma ?? 10,
-    },
-    [properties.classSkills]: storedSource?.classSkills?.map(skill => SKILLS[skill]) ?? [],
-    [properties.expertSkills]: storedSource?.expertSkills?.map(skill => SKILLS[skill]) ?? [],
-    [properties.classTools]: storedSource?.classTools ?? [],
-    [properties.equipments]: storedSource?.equipments ?? [],
-  }
+  return s({
+    [properties.charName]: storedSource?.name ?? initialData[properties.charName] ?? '',
+    [properties.charOriginName]: storedSource?.origin ?? initialData[properties.charOriginName] ?? '',
+    [properties.charClassName]: charClassName ?? initialData[properties.charClassName],
+    [properties.charSubClassName]: charSubClassName ?? initialData[properties.charSubClassName] ?? null,
+    [properties.charSpeciesName]: storedSource?.species ?? initialData[properties.charSpeciesName] ?? '',
+    [properties.charExperience]: storedSource?.experience ?? initialData[properties.charExperience] ?? 0,
+    [properties.charAlignment]: storedSource?.alignment ?? initialData[properties.charAlignment] ?? '',
+    [properties.charSizeCategory]: storedSource?.sizeCategory ?? initialData[properties.charSizeCategory] ?? '',
+    [properties.charSize]: storedSource?.size ?? initialData[properties.charSize] ?? 0,
+    [properties.attributes]: s({
+      [ABILITY.strength]: storedSource?.attributes.strength ?? initialData[properties.attributes][ABILITY.strength] ?? 10,
+      [ABILITY.dexterity]: storedSource?.attributes.dexterity ?? initialData[properties.attributes][ABILITY.dexterity] ?? 10,
+      [ABILITY.constitution]: storedSource?.attributes.constitution ?? initialData[properties.attributes][ABILITY.constitution] ?? 10,
+      [ABILITY.wisdom]: storedSource?.attributes.wisdom ?? initialData[properties.attributes][ABILITY.wisdom] ?? 10,
+      [ABILITY.intelligence]: storedSource?.attributes.intelligence ?? initialData[properties.attributes][ABILITY.intelligence] ?? 10,
+      [ABILITY.charisma]: storedSource?.attributes.charisma ?? initialData[properties.attributes][ABILITY.charisma] ?? 10,
+    }),
+    [properties.classSkills]: storedSource?.classSkills?.map(skill => SKILLS[skill]) ?? initialData[properties.classSkills] ?? [],
+    [properties.expertSkills]: storedSource?.expertSkills?.map(skill => SKILLS[skill]) ?? initialData[properties.expertSkills] ?? [],
+    [properties.classTools]: storedSource?.classTools?.slice() ?? initialData[properties.classTools] ?? [],
+    [properties.equipments]: (storedSource?.equipments ?? initialData[properties.equipments] ?? []).map(equipment => ({ ...equipment })),
+  })
 }
 
 export function fromJSON(jsonData) {
