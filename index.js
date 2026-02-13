@@ -152,7 +152,7 @@ async function importCharFileChanged({ target: { files } }) {
     // TODO: ask for new or erase current. Currently it default to new
     charSheetService.importJSON(jsonText)
   } catch (error) {
-    throw new TechnicalError(error)
+    new TechnicalError(error)
   } finally {
     importCharFileElement.value = ''
   }
