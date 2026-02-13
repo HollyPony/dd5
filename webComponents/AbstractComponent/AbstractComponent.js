@@ -67,7 +67,8 @@ export class AbstractComponent extends HTMLElement {
   async connectedCallback() {
     console.info('-- AbstractComponent.connectedCallback')
 
-    const modulePath = `${env.APP_URL}${this.constructor._modulePath ?? new URL('.', import.meta.url).pathname}`
+    // const modulePath = `${env.APP_URL}${this.constructor._modulePath ?? new URL('.', import.meta.url).pathname}`
+    const modulePath = `${this.constructor._modulePath ?? new URL('.', import.meta.url).pathname}`
     const moduleName = this.constructor._moduleName ?? this.constructor.name
 
     const template = await this.constructor._getTemplate(modulePath, `${moduleName}.html`)
