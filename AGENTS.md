@@ -11,6 +11,8 @@
 - If you update file, preserve current encoding
 - Do not modify end-of-file newline count unless explicitly requested
 - Do not run repository-wide formatting/normalization commands unless explicitly requested
+- If you modify or create a function, signature or behaviour, think to update the associated JSDoc
+- When you assert Errors, use defined in errors.js or create one accordingly
 
 ## Features
 
