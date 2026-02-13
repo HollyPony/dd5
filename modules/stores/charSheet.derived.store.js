@@ -10,16 +10,18 @@ import authorityStore, { initialData as authorityInitialData, properties as auth
 import createEventBus from '../createEventBus.js'
 
 export const properties = s(Object.assign({
-  charLevel: 'charLevel', // Sym ?
-  proficiencyBonus: 'proficiencyBonus', // Sym ?
-  initiative: 'initiative', // Sym ?
-  charClass: 'charClass', // Sym ?
-  charOrigin: 'charOrigin', // Sym ?
-  charSpecies: 'charSpecies', // Sym ?
-  modifiers: 'modifiers', // Sym ?
-  saves: 'saves', // Sym ?
-  feats: 'feats', // Sym ?
-  equiped: 'equiped', // Sym ?
+  charLevel: Symbol('charLevel'),
+  proficiencyBonus: Symbol('proficiencyBonus'),
+  initiative: Symbol('initiative'),
+  speed: Symbol('speed'),
+  passivePerception: Symbol('passivePerception'),
+  charClass: Symbol('charClass'),
+  charOrigin: Symbol('charOrigin'),
+  charSpecies: Symbol('charSpecies'),
+  modifiers: Symbol('modifiers'),
+  saves: Symbol('saves'),
+  feats: Symbol('feats'),
+  equiped: Symbol('equiped'),
 }, authorityProperties))
 
 const initialData = {
@@ -27,6 +29,8 @@ const initialData = {
   [properties.charLevel]: 1,
   [properties.proficiencyBonus]: 0,
   [properties.initiative]: 0,
+  [properties.speed]: 10,
+  [properties.passivePerception]: 10,
   [properties.charClass]: null,
   [properties.charOrigin]: null,
   [properties.charSpecies]: null,
@@ -75,17 +79,27 @@ function computeAbilityModifier(score) {
 }
 
 function computeModifiers(attributes) {
-  return Object.entries(attributes)
-    .reduce((acc, [ability, score]) =>
-      Object.assign({}, acc, { [ability]: computeAbilityModifier(score) }), {})
+  const isEnumerable = Object.prototype.propertyIsEnumerable
+  const modifiers = {}
+
+  for (const ability of Reflect.ownKeys(attributes)) {
+    if (!isEnumerable.call(attributes, ability)) continue
+    modifiers[ability] = computeAbilityModifier(attributes[ability])
+  }
+
+  return modifiers
 }
 
 function computeSaves(attributes, modifiers, charClass, proficiencyBonus) {
-  return Object.keys(attributes)
-    .reduce((acc, ability) =>
-      Object.assign({}, acc, {
-        [ability]: modifiers[ability] + (charClass?.saves?.includes(ability) ? proficiencyBonus : 0)
-      }), {})
+  const isEnumerable = Object.prototype.propertyIsEnumerable
+  const saves = {}
+
+  for (const ability of Reflect.ownKeys(attributes)) {
+    if (!isEnumerable.call(attributes, ability)) continue
+    saves[ability] = modifiers[ability] + (charClass?.saves?.includes(ability) ? proficiencyBonus : 0)
+  }
+
+  return saves
 }
 
 function computeEquiped(equipments) {
@@ -241,6 +255,13 @@ function createCharSheetStore() {
     const saves = computeSaves(authorityStore.getAttributes(), modifiers, charClass, proficiencyBonus)
     const initiative = modifiers[ABILITY.dexterity]
 
+    // const isProficient = isCheckedSkill(skill)
+    // const isExpert = isExpertSkill(skill)
+    // const proficiencyMultiplier = isProficient ? (isExpert ? 2 : 1) : 0
+    // return getModifier(skill.ability) + (getProficiencyBonus() * proficiencyMultiplier)
+
+    // const passivePerception = getSkillScore(SKILLS.perception) + 10
+
     set({
       [properties.charName]: authorityStore.getCharName(),
       [properties.charExperience]: authorityStore.getCharExperience(),
@@ -281,7 +302,7 @@ function createCharSheetStore() {
   function getSave(ability) { return getSaves()[ability] }
   function getSkillScore(skill) { return _computeSkillScore(skill) }
   function getInitiative() { return get(properties.initiative) }
-  function getPassivePerception() { return getSkillScore(SKILLS.perception) + 10 }
+  function getPassivePerception() { return getSkillScore(SKILLS.perception) + 10 } // get(properties.passivePerception) }
 
   function getEquiped(category = null) { return category ? get(properties.equiped)[category] : get(properties.equiped) }
   function getFeats() { return get(properties.feats) }
@@ -306,9 +327,16 @@ function createCharSheetStore() {
   }
 
   function getWeaponProficiencies() { // TODO: maitrise d'armes
-    return Object.entries(getCharClass()?.weaponProficiencies ?? {})?.map(([category, properties]) =>
-      [].concat(category, properties)
-    )
+    const proficienciesByCategory = getCharClass()?.weaponProficiencies ?? {}
+    const isEnumerable = Object.prototype.propertyIsEnumerable
+    const proficiencies = []
+
+    for (const category of Reflect.ownKeys(proficienciesByCategory)) {
+      if (!isEnumerable.call(proficienciesByCategory, category)) continue
+      proficiencies.push([].concat(category, proficienciesByCategory[category]))
+    }
+
+    return proficiencies
   }
 
   function getArmorProficiencies() {

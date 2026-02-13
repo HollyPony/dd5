@@ -4,20 +4,20 @@ import createStore from '../createStore.js'
 import createEventBus from '../createEventBus.js'
 
 export const properties = s({
-  charName: 'charName', // Sym ?
-  charExperience: 'charExperience', // Sym ?
-  charClassName: 'charClassName', // Sym ?
-  charSubClassName: 'charSubClassName', // Sym ?
-  charOriginName: 'charOriginName', // Sym ?
-  charSpeciesName: 'charSpeciesName', // Sym ?
-  charAlignment: 'charAlignment', // Sym ?
-  charSizeCategory: 'charSizeCategory', // Sym ?
-  charSize: 'charSize', // Sym ?
-  attributes: 'attributes', // Sym ?
-  classSkills: 'classSkills', // Sym ?
-  expertSkills: 'expertSkills', // Sym ?
-  classTools: 'classTools', // Sym ?
-  equipments: 'equipments', // Sym ?
+  charName: Symbol('charName'),
+  charExperience: Symbol('charExperience'),
+  charClassName: Symbol('charClassName'),
+  charSubClassName: Symbol('charSubClassName'),
+  charOriginName: Symbol('charOriginName'),
+  charSpeciesName: Symbol('charSpeciesName'),
+  charAlignment: Symbol('charAlignment'),
+  charSizeCategory: Symbol('charSizeCategory'),
+  charSize: Symbol('charSize'),
+  attributes: Symbol('attributes'),
+  classSkills: Symbol('classSkills'),
+  expertSkills: Symbol('expertSkills'),
+  classTools: Symbol('classTools'),
+  equipments: Symbol('equipments'),
 })
 
 export const initialData = {
@@ -135,7 +135,7 @@ function createCharSheetStorageStore() {
   }
 
   function setAbilityScore(ability, score) {
-    set({ [[properties.attributes, ability].join('.')]: score })
+    set(new Map([[[properties.attributes, ability], score]]))
   }
 
   function classSkillsAdd(skill) {

@@ -54,7 +54,7 @@ function emitBatch(nodeTree, targets) {
     }
   }
 
-  for (const listener of getNode(nodeTree, ANY)?.listeners) listener()
+  for (const listener of getNode(nodeTree, getPathParts(ANY))?.listeners) listener()
 }
 
 /**
@@ -90,10 +90,10 @@ function onMany(nodeTree, keys, callback) {
  * Supported forms:
  * - Object: { key: callback | callback[] }
  * - Map: new Map([[keyOrKeys, callbackOrCallbacks]])
- *   where keyOrKeys is string, symbol, path array, or list of string keys.
+ *   where keyOrKeys is string, symbol, path array, or list of string/symbol keys.
  *
  * @param {{ listeners: Set<Function>, children: Map<string | symbol, any> }} nodeTree - Root node.
- * @param {Record<string | symbol, Function | Function[]> | Map<string | symbol | Array<string | symbol> | string[], Function | Function[]>} [subscriptions={}]
+ * @param {Record<string | symbol, Function | Function[]> | Map<string | symbol | Array<string | symbol> | Array<string | symbol>, Function | Function[]>} [subscriptions={}]
  * @returns {Array<() => boolean>}
  */
 function onMap(nodeTree, subscriptions = {}) {
@@ -105,7 +105,7 @@ function onMap(nodeTree, subscriptions = {}) {
       .map(key => [key, Reflect.get(subscriptions, key)])
 
   return entries.flatMap(([keyOrKeys, cbOrCbs]) => {
-    const isManyKeys = Array.isArray(keyOrKeys) && keyOrKeys.every(key => typeof key === 'string')
+    const isManyKeys = Array.isArray(keyOrKeys) && keyOrKeys.every(key => typeof key === 'string' || typeof key === 'symbol')
     const keys = isManyKeys ? keyOrKeys : [keyOrKeys]
     const callbacks = Array.isArray(cbOrCbs) ? cbOrCbs : [cbOrCbs]
 
