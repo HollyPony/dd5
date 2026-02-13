@@ -107,7 +107,32 @@ export class ClassBase extends AbstractComponent {
     this.#skillsContainerElement.classList.remove('d-none')
 
     this.#renderSkillsChooseLabel()
-    this.#renderSkillsList()
+
+    replaceElement(this.#skillsListElement, charSheetStore.getCharClass()?.skills.list.map(skill => {
+      const skillId = `${skill.name}.${this._id}`
+      return createElement('div', [
+        createElement('input', null, {
+          type: 'checkbox', class: 'btn-check', id: skillId,
+          checked: charSheetStore.getClassSkills().includes(skill),
+          disabled: charSheetStore.isDisabledSkill(skill),
+          eventListeners: {
+            change: ({ target: { checked } }) => charSheetStore[checked ? 'classSkillsAdd' : 'classSkillsRemove'](skill)
+          }
+        }),
+        createElement('label', t._(`statics.${skill.name}`), { class: 'btn btn-outline-primary', for: skillId }),
+      ])
+    }))
+  }
+
+  #renderSkillsChooseLabel() {
+    console.info('-- ClassBase.#renderSkillsChooseLabel')
+    const classSkills = charSheetStore.getCharClass()?.skills
+    if (classSkills) {
+      const remaining = classSkills.nb - charSheetStore.getClassSkills().length
+      replaceElement(this.#skillsChooseLabelElement, t.tn('components.ClassBase.skills.remaining', { remaining }))
+    } else {
+      replaceElement(this.#skillsChooseLabelElement, t.tn('components.ClassBase.skills.notConcerned',))
+    }
   }
 
   #renderTools = () => {
@@ -125,40 +150,6 @@ export class ClassBase extends AbstractComponent {
         .reduce((acc, rule) => acc + rule.max, 0)
       || 0
 
-    this.#renderToolsGroups(totalMax)
-  }
-
-  #renderSkillsChooseLabel() {
-    console.info('-- ClassBase.#renderSkillsChooseLabel')
-    const classSkills = charSheetStore.getCharClass()?.skills
-    if (classSkills) {
-      const remaining = classSkills.nb - charSheetStore.getClassSkills().length
-      replaceElement(this.#skillsChooseLabelElement, t.tn('components.ClassBase.skills.remaining', { remaining }))
-    } else {
-      replaceElement(this.#skillsChooseLabelElement, t.tn('components.ClassBase.skills.notConcerned',))
-    }
-  }
-
-  #renderSkillsList() {
-    console.info('-- ClassBase.#renderSkillsList')
-    replaceElement(this.#skillsListElement, charSheetStore.getCharClass()?.skills.list.map(skill => {
-      const skillId = `${skill.name}.${this._id}`
-      return createElement('div', [
-        createElement('input', null, {
-          type: 'checkbox', class: 'btn-check', id: skillId,
-          checked: charSheetStore.getClassSkills().includes(skill),
-          disabled: charSheetStore.isDisabledSkill(skill),
-          eventListeners: {
-            change: ({ target: { checked } }) => charSheetStore[checked ? 'classSkillsAdd' : 'classSkillsRemove'](skill)
-          }
-        }),
-        createElement('label', t._(`statics.${skill.name}`), { class: 'btn btn-outline-primary', for: skillId }),
-      ])
-    }))
-  }
-
-  #renderToolsGroups(totalMax) {
-    console.info('-- ClassBase.#renderToolsGroups')
     const classTools = charSheetStore.getClassTools()
     const totalSelected = classTools.length
     const totalRemaining = totalMax - totalSelected
@@ -239,7 +230,7 @@ export class ClassBase extends AbstractComponent {
     console.info('-- ClassBase._i18nChanged')
     this.#renderDescription()
     this.#renderSkillsChooseLabel()
-    this.#renderSkillsList()
-    this.#renderToolsGroups()
+    this.#renderSkills()
+    this.#renderTools()
   }
 }
