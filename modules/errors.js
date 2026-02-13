@@ -52,6 +52,7 @@ export function StorageError(message, ...props) {
 }
 
 export function TechnicalError(error) {
+  error.stack = ''
   console.error(error)
   indexEventBus.emit(observables.ERROR_TECHNICAL, error)
   return error

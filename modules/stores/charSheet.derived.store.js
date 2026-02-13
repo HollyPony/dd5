@@ -102,6 +102,48 @@ function computeSaves(attributes, modifiers, charClass, proficiencyBonus) {
   return saves
 }
 
+// TODO: take armor strength + update on armor change
+function computeCharSpeed({
+  charSpecies,
+  charClass,
+  equiped,
+  feats = [],
+  strength,
+}) {
+  let speed = charSpecies?.speed || 0
+  const equipedArmor = equiped?.[EQUIPED_CATEGORY.ARMOR]
+  const equipedShield = equiped?.[EQUIPED_CATEGORY.SHIELD]
+
+  applyEffect(charClass, EFFECT.SpeedModifierEffect, { speed, equipedArmor, equipedShield }, result => speed = result)
+
+  // Heavy rule
+  if (equipedArmor?.strength
+    && !feats.find(feat => feat?.effect?.[EFFECT.ByPassArmorStrengthRequirement])
+    && equipedArmor.strength > strength) {
+    speed += -3
+  }
+
+  return speed
+}
+
+function computePassivePerception({
+  modifiers,
+  proficiencyBonus,
+  originSkills = [],
+  classSkills = [],
+  expertSkills = [],
+}) {
+  const perception = SKILLS.perception
+  // TODO
+  //   const isProficient = isCheckedSkill(skill)
+  // const isExpert = isExpertSkill(skill)
+  const isProficient = originSkills.includes(perception) || classSkills.includes(perception)
+  const isExpert = expertSkills.includes(perception)
+  const proficiencyMultiplier = isProficient ? (isExpert ? 2 : 1) : 0
+  const modifier = modifiers?.[perception.ability] ?? 0
+  return modifier + (proficiencyBonus * proficiencyMultiplier) + 10
+}
+
 function computeEquiped(equipments) {
   return equipments?.filter(equipment => equipment.equiped).reduce((acc, equipment) => {
     const equipmentComputed = Object.assign({}, getEquipment(equipment.name), equipment)
@@ -151,6 +193,20 @@ function createCharSheetStore() {
     const charClass = getClass(authorityStore.getCharClassName(), authorityStore.getCharSubClassName(), charLevel)
     const charSpecies = getSpecies(authorityStore.getCharSpeciesName(), charLevel)
     const saves = computeSaves(authorityStore.getAttributes(), getModifiers(), charClass, proficiencyBonus)
+    const speed = computeCharSpeed({
+      charSpecies,
+      charClass,
+      equiped: getEquiped(),
+      feats: getFeats(),
+      strength: authorityStore.getAttribute(ABILITY.strength),
+    })
+    const passivePerception = computePassivePerception({
+      modifiers: getModifiers(),
+      proficiencyBonus,
+      originSkills: getCharOrigin()?.skills ?? [],
+      classSkills: authorityStore.getClassSkills(),
+      expertSkills: authorityStore.getExpertSkills(),
+    })
 
     set({
       [properties.charExperience]: charExperience,
@@ -159,23 +215,42 @@ function createCharSheetStore() {
       [properties.charClass]: charClass,
       [properties.charSpecies]: charSpecies,
       [properties.saves]: saves,
+      [properties.speed]: speed,
+      [properties.passivePerception]: passivePerception,
     })
   }
 
   function computeClass() {
     const charClass = getClass(authorityStore.getCharClassName(), authorityStore.getCharSubClassName(), getCharLevel())
+    const speed = computeCharSpeed({
+      charSpecies: getCharSpecies(),
+      charClass,
+      equiped: getEquiped(),
+      feats: getFeats(),
+      strength: authorityStore.getAttribute(ABILITY.strength),
+    })
     set({
       [properties.charClassName]: authorityStore.getCharClassName(),
       [properties.charSubClassName]: authorityStore.getCharSubClassName(),
       [properties.charClass]: charClass,
       [properties.saves]: computeSaves(authorityStore.getAttributes(), getModifiers(), charClass, getProficiencyBonus()),
+      [properties.speed]: speed,
     })
   }
 
   function computeSpecies() {
+    const charSpecies = getSpecies(authorityStore.getCharSpeciesName(), getCharLevel())
+    const speed = computeCharSpeed({
+      charSpecies,
+      charClass: getCharClass(),
+      equiped: getEquiped(),
+      feats: getFeats(),
+      strength: authorityStore.getAttribute(ABILITY.strength),
+    })
     set({
       [properties.charSpeciesName]: authorityStore.getCharSpeciesName(),
-      [properties.charSpecies]: getSpecies(authorityStore.getCharSpeciesName(), getCharLevel())
+      [properties.charSpecies]: charSpecies,
+      [properties.speed]: speed,
     })
   }
 
@@ -192,11 +267,33 @@ function createCharSheetStore() {
   }
 
   function computeClassSkills() {
-    set({ [properties.classSkills]: authorityStore.getClassSkills() })
+    const classSkills = authorityStore.getClassSkills()
+    const passivePerception = computePassivePerception({
+      modifiers: getModifiers(),
+      proficiencyBonus: getProficiencyBonus(),
+      originSkills: getCharOrigin()?.skills ?? [],
+      classSkills,
+      expertSkills: authorityStore.getExpertSkills(),
+    })
+    set({
+      [properties.classSkills]: classSkills,
+      [properties.passivePerception]: passivePerception,
+    })
   }
 
   function computeExpertSkills() {
-    set({ [properties.expertSkills]: authorityStore.getExpertSkills() })
+    const expertSkills = authorityStore.getExpertSkills()
+    const passivePerception = computePassivePerception({
+      modifiers: getModifiers(),
+      proficiencyBonus: getProficiencyBonus(),
+      originSkills: getCharOrigin()?.skills ?? [],
+      classSkills: authorityStore.getClassSkills(),
+      expertSkills,
+    })
+    set({
+      [properties.expertSkills]: expertSkills,
+      [properties.passivePerception]: passivePerception,
+    })
   }
 
   function computeClassTools() {
@@ -204,9 +301,18 @@ function createCharSheetStore() {
   }
 
   function computeOrigin() {
+    const charOrigin = getOrigin(authorityStore.getCharOriginName())
+    const passivePerception = computePassivePerception({
+      modifiers: getModifiers(),
+      proficiencyBonus: getProficiencyBonus(),
+      originSkills: charOrigin?.skills ?? [],
+      classSkills: authorityStore.getClassSkills(),
+      expertSkills: authorityStore.getExpertSkills(),
+    })
     set({
       [properties.charOriginName]: authorityStore.getCharOriginName(),
-      [properties.charOrigin]: getOrigin(authorityStore.getCharOriginName())
+      [properties.charOrigin]: charOrigin,
+      [properties.passivePerception]: passivePerception,
     })
   }
 
@@ -215,18 +321,43 @@ function createCharSheetStore() {
     const modifiers = computeModifiers(attributes)
     const saves = computeSaves(attributes, modifiers, getCharClass(), getProficiencyBonus())
     const initiative = modifiers[ABILITY.dexterity]
+    const speed = computeCharSpeed({
+      charSpecies: getCharSpecies(),
+      charClass: getCharClass(),
+      equiped: getEquiped(),
+      feats: getFeats(),
+      strength: attributes[ABILITY.strength],
+    })
+    const passivePerception = computePassivePerception({
+      modifiers,
+      proficiencyBonus: getProficiencyBonus(),
+      originSkills: getCharOrigin()?.skills ?? [],
+      classSkills: authorityStore.getClassSkills(),
+      expertSkills: authorityStore.getExpertSkills(),
+    })
     set({
       [properties.attributes]: attributes,
       [properties.modifiers]: modifiers,
       [properties.saves]: saves,
-      [properties.initiative]: initiative
+      [properties.initiative]: initiative,
+      [properties.speed]: speed,
+      [properties.passivePerception]: passivePerception,
     })
   }
 
   function computeEquipments() {
+    const equiped = computeEquiped(authorityStore.getEquipments())
+    const speed = computeCharSpeed({
+      charSpecies: getCharSpecies(),
+      charClass: getCharClass(),
+      equiped,
+      feats: getFeats(),
+      strength: authorityStore.getAttribute(ABILITY.strength),
+    })
     set({
       [properties.equipments]: authorityStore.getEquipments(),
-      [properties.equiped]: computeEquiped(authorityStore.getEquipments())
+      [properties.equiped]: equiped,
+      [properties.speed]: speed,
     })
   }
 
@@ -250,17 +381,27 @@ function createCharSheetStore() {
   (function initState() {
     const charLevel = getLevelFromExperience(authorityStore.getCharExperience())
     const charClass = getClass(authorityStore.getCharClassName(), authorityStore.getCharSubClassName(), charLevel)
+    const charOrigin = getOrigin(authorityStore.getCharOriginName())
+    const charSpecies = getSpecies(authorityStore.getCharSpeciesName(), charLevel)
     const modifiers = computeModifiers(authorityStore.getAttributes())
     const proficiencyBonus = computeProficiencyBonus(charLevel)
     const saves = computeSaves(authorityStore.getAttributes(), modifiers, charClass, proficiencyBonus)
     const initiative = modifiers[ABILITY.dexterity]
-
-    // const isProficient = isCheckedSkill(skill)
-    // const isExpert = isExpertSkill(skill)
-    // const proficiencyMultiplier = isProficient ? (isExpert ? 2 : 1) : 0
-    // return getModifier(skill.ability) + (getProficiencyBonus() * proficiencyMultiplier)
-
-    // const passivePerception = getSkillScore(SKILLS.perception) + 10
+    const equiped = computeEquiped(authorityStore.getEquipments())
+    const speed = computeCharSpeed({
+      charSpecies,
+      charClass,
+      equiped,
+      feats: initialData[properties.feats],
+      strength: authorityStore.getAttribute(ABILITY.strength),
+    })
+    const passivePerception = computePassivePerception({
+      modifiers,
+      proficiencyBonus,
+      originSkills: charOrigin?.skills ?? [],
+      classSkills: authorityStore.getClassSkills(),
+      expertSkills: authorityStore.getExpertSkills(),
+    })
 
     set({
       [properties.charName]: authorityStore.getCharName(),
@@ -282,12 +423,14 @@ function createCharSheetStore() {
       [properties.proficiencyBonus]: proficiencyBonus,
       [properties.initiative]: initiative,
       [properties.charClass]: charClass,
-      [properties.charOrigin]: getOrigin(authorityStore.getCharOriginName()),
-      [properties.charSpecies]: getSpecies(authorityStore.getCharSpeciesName(), charLevel),
+      [properties.charOrigin]: charOrigin,
+      [properties.charSpecies]: charSpecies,
       [properties.modifiers]: modifiers,
       [properties.saves]: saves,
+      [properties.speed]: speed,
+      [properties.passivePerception]: passivePerception,
       // TODO: init feats here
-      [properties.equiped]: computeEquiped(authorityStore.getEquipments()),
+      [properties.equiped]: equiped,
     })
   })()
 
@@ -302,29 +445,12 @@ function createCharSheetStore() {
   function getSave(ability) { return getSaves()[ability] }
   function getSkillScore(skill) { return _computeSkillScore(skill) }
   function getInitiative() { return get(properties.initiative) }
-  function getPassivePerception() { return getSkillScore(SKILLS.perception) + 10 } // get(properties.passivePerception) }
+  function getPassivePerception() { return get(properties.passivePerception) }
 
   function getEquiped(category = null) { return category ? get(properties.equiped)[category] : get(properties.equiped) }
   function getFeats() { return get(properties.feats) }
 
-  // TODO: take armor strength + update on armor change
-  function getCharSpeed() {
-    let speed = getCharSpecies()?.speed || 0
-
-    const equipedArmor = getEquiped(EQUIPED_CATEGORY.ARMOR)
-    const equipedShield = getEquiped(EQUIPED_CATEGORY.SHIELD)
-    const feats = getFeats() ?? []
-
-    applyEffect(getCharClass(), EFFECT.SpeedModifierEffect, { speed, equipedArmor, equipedShield }, result => speed = result)
-
-    // Heavy rule
-    if (equipedArmor?.strength
-      && !feats.find(feat => feat?.effect?.[EFFECT.ByPassArmorStrengthRequirement])
-      && equipedArmor.strength > authorityStore.getAttribute(ABILITY.strength))
-      speed += -3
-
-    return speed
-  }
+  function getCharSpeed() { return get(properties.speed) }
 
   function getWeaponProficiencies() { // TODO: maitrise d'armes
     const proficienciesByCategory = getCharClass()?.weaponProficiencies ?? {}
