@@ -11,6 +11,7 @@ function init() {
   const id = charSheetStorage.getLastSaveId()
   id ? load(id) : create()
 
+  autosaveEventTarget?.off()
   autosaveEventTarget = charSheetStore.onAny(debounce(save, AUTOSAVE_DELAY))
 }
 
@@ -35,10 +36,13 @@ function save() {
 
 function importJSON(json) {
   const data = fromJSON(json)
-  autosaveEventTarget.muteWhile()(() => {
+  const resume = autosaveEventTarget?.mute()
+  try {
     charSheetStore.init(data)
     save()
-  })
+  } finally {
+    resume?.()
+  }
 }
 
 function exportJSON() {

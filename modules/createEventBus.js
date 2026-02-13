@@ -173,7 +173,7 @@ function off(nodeTree, key, callback) {
  *   on: (key: string | symbol | Array<string | symbol>, callback: Function) => () => boolean,
  *   onMany: (keys: Array<string | symbol | Array<string | symbol>>, callback: Function) => Array<() => boolean>,
  *   onMap: (subscriptions?: Record<string | symbol, Function | Function[]> | Map<string | symbol | Array<string | symbol> | string[], Function | Function[]>) => Array<() => boolean>,
- *   onAny: (callback: Function) => { off: () => boolean, muteWhile: () => <T>(fn: () => T) => T },
+ *   onAny: (callback: Function) => { off: () => boolean, mute: () => () => void, muteWhile: () => <T>(fn: () => T) => T },
  *   off: (key: string | symbol | Array<string | symbol>, callback: Function) => boolean,
  *   mute: (key: string | symbol | Array<string | symbol>, callback: Function) => () => void,
  *   muteWhile: (key: string | symbol | Array<string | symbol>, callback: Function) => <T>(fn: () => T) => T
@@ -188,6 +188,7 @@ export default function createEventBus() {
     on: (key, callback) => on(nodeTree, key, callback),
     // Rebind onAny functions to avoid expose ANY Symbol
     onAny: (callback) => ({
+      mute: () => mute(nodeTree, ANY, callback),
       muteWhile: () => muteWhile(nodeTree, ANY, callback),
       off: on(nodeTree, ANY, callback),
     }),
