@@ -54,7 +54,7 @@ function emitBatch(nodeTree, targets) {
     }
   }
 
-  for (const listener of getNode(nodeTree, getPathParts(ANY))?.listeners) listener()
+  for (const listener of (getNode(nodeTree, getPathParts(ANY))?.listeners ?? [])) listener()
 }
 
 /**
