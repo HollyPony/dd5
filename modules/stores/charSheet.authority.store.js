@@ -15,7 +15,6 @@ export const properties = f({
   charSize: Symbol('charSize'),
   attributes: Symbol('attributes'),
   classSkills: Symbol('classSkills'),
-  expertSkills: Symbol('expertSkills'),
   classTools: Symbol('classTools'),
   equipments: Symbol('equipments'),
 })
@@ -39,7 +38,6 @@ export const initialData = f({
     [ABILITY.charisma]: 10,
   }),
   [properties.classSkills]: [],
-  [properties.expertSkills]: [],
   [properties.classTools]: [],
   [properties.equipments]: [],
 })
@@ -66,7 +64,6 @@ function createCharSheetStorageStore() {
   function getCharSizeCategory() { return get(properties.charSizeCategory) }
   function getCharSize() { return get(properties.charSize) }
   function getClassSkills() { return get(properties.classSkills) }
-  function getExpertSkills() { return get(properties.expertSkills) }
   function getClassTools() { return get(properties.classTools) }
   function getAttributes() { return get(properties.attributes) }
   function getAttribute(ability) { return getAttributes()[ability] }
@@ -83,7 +80,6 @@ function createCharSheetStorageStore() {
     set({
       [properties.charOriginName]: charOriginName,
       [properties.classSkills]: [],
-      [properties.expertSkills]: [],
       [properties.classTools]: [],
     })
     // TODO: handle skill from origin ?
@@ -94,7 +90,6 @@ function createCharSheetStorageStore() {
       [properties.charClassName]: charClassName,
       [properties.charSubClassName]: null,
       [properties.classSkills]: [],
-      [properties.expertSkills]: [],
       [properties.classTools]: [],
     })
   }
@@ -119,14 +114,6 @@ function createCharSheetStorageStore() {
     set({ [properties.classSkills]: getClassSkills().filter(_skill => _skill !== skill) })
   }
 
-  function expertSkillsAdd(skill) {
-    set({ [properties.expertSkills]: getExpertSkills().concat(skill) })
-  }
-
-  function expertSkillsRemove(skill) {
-    set({ [properties.expertSkills]: getExpertSkills().filter(_skill => _skill !== skill) })
-  }
-
   function classToolsAdd(tool) {
     set({ [properties.classTools]: getClassTools().concat(tool) })
   }
@@ -149,7 +136,6 @@ function createCharSheetStorageStore() {
     getCharSizeCategory,
     getCharSize,
     getClassSkills,
-    getExpertSkills,
     getClassTools,
     getAttributes,
     getAttribute,
@@ -163,8 +149,6 @@ function createCharSheetStorageStore() {
     setAbilityScore,
     classSkillsAdd,
     classSkillsRemove,
-    expertSkillsAdd,
-    expertSkillsRemove,
     classToolsAdd,
     classToolsRemove,
 

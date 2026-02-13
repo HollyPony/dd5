@@ -51,8 +51,7 @@ export class Ability extends AbstractComponent {
         [charSheetProps.attributes]: [this.#renderScore],
         [charSheetProps.modifiers]: [this.#renderModifier, this.#renderSkills],
         [charSheetProps.saves]: [this.#renderSave],
-        [charSheetProps.classSkills]: [this.#renderSkills],
-        [charSheetProps.expertSkills]: [this.#renderSkills],
+        [charSheetProps.skills]: [this.#renderSkills],
       }),
     )
   }
@@ -81,15 +80,15 @@ export class Ability extends AbstractComponent {
 
     this.#skillsContainer.classList[this.#skills.length > 0 ? 'add' : 'remove']('ability-card-content')
     replaceElement(this.#skillsContainer, this.#skills.map((skill) => {
-      const isExpert = charSheetStore.isExpertSkill(skill)
+      const userSkill = charSheetStore.getSkill(skill)
       return createElement('div', [
         createElement('input', null, {
           name: `${skill.name}.${this._id}`,
-          type: 'checkbox', class: `form-check-input checkbox-readonly skill-check${isExpert ? ' expert' : ''}`,
+          type: 'checkbox', class: `form-check-input checkbox-readonly skill-check${userSkill?.expert ? ' expert' : ''}`,
           tabindex: '-1',
-          checked: charSheetStore.isCheckedSkill(skill),
+          checked: userSkill?.checked ?? false,
         }),
-        createElement('span', signDisplay(charSheetStore.getSkillScore(skill)), { class: 'skill-score' }),
+        createElement('span', signDisplay(userSkill?.score ?? 0), { class: 'skill-score' }),
         createElement('label', t._(`statics.${skill.name}`), {
           id: `${skill.name}.${this._id}`,
         }),

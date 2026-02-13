@@ -24,7 +24,6 @@ export function fromSaveData(storedSource) {
       [ABILITY.charisma]: storedSource?.attributes.charisma ?? initialData[properties.attributes][ABILITY.charisma] ?? 10,
     }),
     [properties.classSkills]: storedSource?.classSkills?.map(skill => SKILLS[skill]) ?? initialData[properties.classSkills] ?? [],
-    [properties.expertSkills]: storedSource?.expertSkills?.map(skill => SKILLS[skill]) ?? initialData[properties.expertSkills] ?? [],
     [properties.classTools]: storedSource?.classTools?.slice() ?? initialData[properties.classTools] ?? [],
     [properties.equipments]: (storedSource?.equipments ?? initialData[properties.equipments] ?? []).map(equipment => ({ ...equipment })),
   })
@@ -65,7 +64,6 @@ export function toSaveData(jsData) {
       charisma: jsData[properties.attributes][ABILITY.charisma],
     },
     classSkills: Object.keys(SKILLS).filter(key => jsData[properties.classSkills].includes(SKILLS[key])),
-    expertSkills: Object.keys(SKILLS).filter(key => jsData[properties.expertSkills].includes(SKILLS[key])),
     classTools: jsData[properties.classTools],
     equipments: jsData[properties.equipments]
   }
@@ -76,7 +74,6 @@ export function toJSON(jsData) {
   const reviver = (key, value) => {
     // switch (key) {
     //   case 'classSkills': return Object.keys(SKILLS).filter(key => value.includes(SKILLS[key]))
-    //   case 'expertSkills': return Object.keys(SKILLS).filter(key => value.includes(SKILLS[key]))
     //   default: return value
     // }
     return value
