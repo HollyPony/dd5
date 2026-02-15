@@ -123,7 +123,7 @@ export class ClassBase extends AbstractComponent {
     }
 
     replaceElement(this.#skillsListElement, classSkills.list.map(skill => {
-      const skillId = `${skill}.${this._id}`
+      const skillId = `${skill.description}.${this._id}`
       return createElement('div', [
         createElement('input', null, {
           type: 'checkbox', class: 'btn-check', id: skillId,
@@ -137,7 +137,7 @@ export class ClassBase extends AbstractComponent {
             }
           },
         }),
-        createElement('label', t._(`statics.${skill}`), { class: 'btn btn-outline-primary', for: skillId }),
+        createElement('label', t._(`statics.${skill.description}`), { class: 'btn btn-outline-primary', for: skillId }),
       ])
     }))
   }

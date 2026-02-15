@@ -46,26 +46,24 @@ export const EFFECT = Enum({
 })
 
 export const SKILLS = Enum({
-  // Warning: keys used as html className
-  // TODO : use another enum for html binding name ?
-  acrobatics: 'SKILLS_acrobatics',
-  animalHandling: 'SKILLS_animalHandling',
-  arcana: 'SKILLS_arcana',
-  athletics: 'SKILLS_athletics',
-  deception: 'SKILLS_deception',
-  history: 'SKILLS_history',
-  insight: 'SKILLS_insight',
-  intimidation: 'SKILLS_intimidation',
-  investigation: 'SKILLS_investigation',
-  medicine: 'SKILLS_medicine',
-  nature: 'SKILLS_nature',
-  perception: 'SKILLS_perception',
-  performance: 'SKILLS_performance',
-  persuasion: 'SKILLS_persuasion',
-  religion: 'SKILLS_religion',
-  sleightOfHand: 'SKILLS_sleightOfHand',
-  stealth: 'SKILLS_stealth',
-  survival: 'SKILLS_survival',
+  acrobatics: Symbol.for('SKILLS_acrobatics'),
+  animalHandling: Symbol.for('SKILLS_animalHandling'),
+  arcana: Symbol.for('SKILLS_arcana'),
+  athletics: Symbol.for('SKILLS_athletics'),
+  deception: Symbol.for('SKILLS_deception'),
+  history: Symbol.for('SKILLS_history'),
+  insight: Symbol.for('SKILLS_insight'),
+  intimidation: Symbol.for('SKILLS_intimidation'),
+  investigation: Symbol.for('SKILLS_investigation'),
+  medicine: Symbol.for('SKILLS_medicine'),
+  nature: Symbol.for('SKILLS_nature'),
+  perception: Symbol.for('SKILLS_perception'),
+  performance: Symbol.for('SKILLS_performance'),
+  persuasion: Symbol.for('SKILLS_persuasion'),
+  religion: Symbol.for('SKILLS_religion'),
+  sleightOfHand: Symbol.for('SKILLS_sleightOfHand'),
+  stealth: Symbol.for('SKILLS_stealth'),
+  survival: Symbol.for('SKILLS_survival'),
 })
 
 export const SKILL_ABILITY = Enum({
@@ -89,29 +87,27 @@ export const SKILL_ABILITY = Enum({
   [SKILLS.survival]: ABILITY.wisdom,
 })
 
-const cachedSkillNames = Object.values(SKILLS)
+const cachedSkillsValues = Object.values(SKILLS)
 
 /**
- * Resolve and validate a skill enum value.
+ * Validate a skill enum value.
  *
- * @param {string} skillName - Skill enum value.
- * @returns {string} Skill enum value.
+ * @param {symbol} skill - Skill enum value.
+ * @returns {symbol} Same skill enum value.
  * @throws {UnknownSkillError} When skill is unknown.
  */
-export function getSkillByName(skillName) {
-  if (!cachedSkillNames.includes(skillName)) throw UnknownSkillError(skillName)
-  return skillName
+export function validateSkill(skill) {
+  if (!cachedSkillsValues.includes(skill)) throw UnknownSkillError(skill)
+  return skill
 }
 
 /**
  * Resolve and validate ability bound to a skill.
  *
- * @param {string} skillName - Skill enum value.
+ * @param {symbol} skill - Skill enum value.
  * @returns {string} Ability enum value.
  * @throws {UnknownSkillError} When skill is unknown.
  */
-export function getAbilityBySkill(skillName) {
-  const ability = SKILL_ABILITY[skillName]
-  if (!ability) throw UnknownSkillError(skillName)
-  return ability
+export function getAbilityBySkill(skill) {
+  return SKILL_ABILITY[validateSkill(skill)]
 }

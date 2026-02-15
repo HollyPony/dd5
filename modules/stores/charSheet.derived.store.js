@@ -1,7 +1,7 @@
 import getClass from '../data/classes.js'
 import getOrigin from '../data/origins.js'
 import getSpecies from '../data/species.js'
-import { ABILITY, DICE, EFFECT, getAbilityBySkill, getSkillByName, SKILLS } from '../common.js'
+import { ABILITY, DICE, EFFECT, getAbilityBySkill, validateSkill, SKILLS } from '../common.js'
 import { EQUIPED_CATEGORY, EQUIPMENT_TYPE, getEquipment } from '../data/equipments.js'
 import { getLevelFromExperience } from '../data/leveling.js'
 import { s } from '../helpers.js'
@@ -124,7 +124,7 @@ function computeSkills(proficiencyBonus, modifiers, charOrigin, choiceSelections
   const selectedSkills = Object.values(choiceSelections)
     .filter(choiceSelection => choiceSelection?.choice?.target === properties.skills)
     .map(choiceSelection => choiceSelection.payload).flat()
-    .map(getSkillByName)
+    .map(validateSkill)
 
   return s(Object.values(SKILLS).reduce((acc, skill) => {
     const isProficient = originSkills.includes(skill) || selectedSkills.includes(skill)
@@ -419,7 +419,7 @@ function createCharSheetStore() {
   function getCharOrigin() { return get(properties.charOrigin) }
   function getCharSpecies() { return get(properties.charSpecies) }
   function getSkills() { return get(properties.skills) }
-  function getSkill(skill) { return getSkills()?.[getSkillByName(skill)] }
+  function getSkill(skill) { return getSkills()?.[validateSkill(skill)] }
   function getChoiceSelections() { return get(properties.choiceSelections) }
   function getModifiers() { return get(properties.modifiers) }
   function getModifier(ability) { return getModifiers()[ability] }

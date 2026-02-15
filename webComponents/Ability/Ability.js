@@ -35,8 +35,8 @@ export class Ability extends AbstractComponent {
     }
     this.#skillsContainer = this.querySelector('.skills')
 
-    this.#skills = Object.entries(SKILL_ABILITY).reduce(
-      (acc, [skill, ability]) => ability === this.#ability ? acc.concat(skill) : acc,
+    this.#skills = Reflect.ownKeys(SKILL_ABILITY).reduce(
+      (acc, skill) => SKILL_ABILITY[skill] === this.#ability ? acc.concat(skill) : acc,
       []
     )
 
@@ -87,16 +87,17 @@ export class Ability extends AbstractComponent {
     this.#skillsContainer.classList[this.#skills.length > 0 ? 'add' : 'remove']('ability-card-content')
     replaceElement(this.#skillsContainer, this.#skills.map((skill) => {
       const userSkill = charSheetStore.getSkill(skill)
+      const skillId = `${skill.description}.${this._id}`
       return createElement('div', [
         createElement('input', null, {
-          name: `${skill}.${this._id}`,
+          name: skillId,
           type: 'checkbox', class: `form-check-input checkbox-readonly skill-check${userSkill?.expert ? ' expert' : ''}`,
           tabindex: '-1',
           checked: userSkill?.checked ?? false,
         }),
         createElement('span', signDisplay(userSkill?.score ?? 0), { class: 'skill-score' }),
-        createElement('label', t._(`statics.${skill}`), {
-          id: `${skill}.${this._id}`,
+        createElement('label', t._(`statics.${skill.description}`), {
+          id: skillId,
         }),
       ], { class: 'form-check' })
     }))

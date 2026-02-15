@@ -2,6 +2,7 @@ import { StorageError } from '../errors.js'
 import createEventBus from '../createEventBus.js'
 import createLocalStorage from './createLocalStorage.js'
 import properties from '../stores/charSheet.authority.properties.js'
+import derivedProperties from '../stores/charSheet.derived.properties.js'
 import { initialData } from '../stores/charSheet.authority.store.js'
 import { s } from '../helpers.js'
 import { ABILITY } from '../common.js'
@@ -56,6 +57,9 @@ function fromJSONEntry(jsonEntry) {
         target: Symbol.for(value.target),
       }
     }
+    if (key === 'payload' && this?.choice?.target === derivedProperties.skills) {
+      return value.map(skillKey => Symbol.for(skillKey))
+    }
 
     return value
   })
@@ -98,6 +102,9 @@ function toJSONEntry(entry, space = undefined) {
         },
         target: value.target.description,
       }
+    }
+    if (key === 'payload' && this?.choice?.target === derivedProperties.skills) {
+      return value.map(skill => skill.description)
     }
     return value
   }, space)
