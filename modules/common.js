@@ -67,3 +67,10 @@ export const SKILLS = Enum({
   stealth: { name: 'SKILLS_stealth', ability: ABILITY.dexterity, },
   survival: { name: 'SKILLS_survival', ability: ABILITY.wisdom, },
 })
+
+export const getSkillByName = (skillsByName =>
+  (skillName) => skillsByName[skillName]
+)(Object.values(SKILLS).reduce((acc, skill) => {
+  acc[skill.name] = skill
+  return acc
+}, {}))

@@ -1,5 +1,6 @@
 import { AbstractSelect } from '../AbstractSelect/AbstractSelect.js'
-import charSheetStore, { properties as charSheetProps } from '../../modules/stores/charSheet.derived.store.js'
+import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
+import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
 import { getList as getSpeciesList } from '../../modules/data/species.js'
 import { domSubscribe, populateSelect } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'

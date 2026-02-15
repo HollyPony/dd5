@@ -1,5 +1,6 @@
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
-import charSheetStore, { properties as charSheetProps } from '../../modules/stores/charSheet.derived.store.js'
+import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
+import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
 import { createElement, replaceElement } from '../../modules/domlib.js'
 
 export class ClassFeatures extends AbstractComponent {

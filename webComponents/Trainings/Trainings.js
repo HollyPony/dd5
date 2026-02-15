@@ -1,8 +1,11 @@
-import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
-import charSheetStore, { properties as charSheetProps } from '../../modules/stores/charSheet.derived.store.js'
+﻿import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
+import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
+import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
 import { createElement, replaceElement } from '../../modules/domlib.js'
+import { INSERTION_TYPE, SOURCE_KEY } from '../../modules/data/classes.js'
 import { ARMOR_CATEGORY } from '../../modules/data/equipments.js'
 import { t } from '../../modules/i18n.js'
+import { SELECTOR_TYPE } from '../../modules/services/choice.helper.js'
 
 // TODO: Review this whole file
 export class Trainings extends AbstractComponent {
@@ -32,7 +35,7 @@ export class Trainings extends AbstractComponent {
   _registerEvents() {
     this._pushEvents(
       charSheetStore.onMany(
-        [charSheetProps.charClass, charSheetProps.classTools, charSheetProps.feats],
+        [charSheetProps.charClass, charSheetProps.choiceSelections, charSheetProps.feats],
         this.#renderTrainings
       ),
     )
@@ -64,11 +67,29 @@ export class Trainings extends AbstractComponent {
   }
 
   #renderToolsProficiency = () => {
-    const toolProficiencies = charSheetStore.getToolProficiencies() || []
+    const toolProficiencies = this.#resolveToolsProficiencies()
     const toolItems = toolProficiencies.length === 0
       ? createElement('p', t._('components.Trainings.tools.none'), { class: 'text-muted' })
       : toolProficiencies.map(tool => createElement('p', t._(`statics.TOOLS.${tool.replace('TOOLS_', '')}.name`)))
     replaceElement(this.#toolsListElement, toolItems)
+  }
+
+  #resolveToolsProficiencies() {
+    // TODO: toolProficiencies can come from other than class or selections
+    const toolRule = charSheetStore.getCharClass()?.toolProficiencies
+    switch (toolRule?.type) {
+      case INSERTION_TYPE.forced:
+        return toolRule.tools ?? []
+      case INSERTION_TYPE.select:
+        return Object.values(charSheetStore.getChoiceSelections())
+          .filter(selection =>
+            selection?.choice?.selector?.type === SELECTOR_TYPE.CLASS
+            && selection?.choice?.selector?.key === SOURCE_KEY.TOOLS
+          )
+          .flatMap(selection => selection?.payload ?? [])
+      default:
+        return []
+    }
   }
 
   _i18nChanged = () => {

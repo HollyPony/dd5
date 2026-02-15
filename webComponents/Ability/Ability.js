@@ -1,5 +1,6 @@
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
-import charSheetStore, { properties as charSheetProps } from '../../modules/stores/charSheet.derived.store.js'
+import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
+import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
 import { ABILITY, SKILLS } from '../../modules/common.js'
 import { createElement, domSubscribe, replaceElement } from '../../modules/domlib.js'
 import { signDisplay } from '../../modules/helpers.js'

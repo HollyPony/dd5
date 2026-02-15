@@ -28,12 +28,12 @@ export default function createLocalStorage(prefix) {
     delete cache[_key]
   }
 
-  function getJSONItem(key) {
-    return JSON.parse(getItem(key))
+  function getJSONItem(key, reviver) {
+    return JSON.parse(getItem(key, reviver))
   }
 
-  function setJSONItem(key, value) {
-    setItem(key, JSON.stringify(value))
+  function setJSONItem(key, value, replacer, space) {
+    setItem(key, JSON.stringify(value, replacer, space))
   }
 
   return {

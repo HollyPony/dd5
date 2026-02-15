@@ -1,5 +1,6 @@
 import { AbstractComponent } from '../../AbstractComponent/AbstractComponent.js'
-import charSheetStore, { properties as charSheetProps } from '../../../modules/stores/charSheet.derived.store.js'
+import charSheetStore from '../../../modules/stores/charSheet.derived.store.js'
+import charSheetProps from '../../../modules/stores/charSheet.derived.properties.js'
 import { createElement, replaceElement } from '../../../modules/domlib.js'
 import { INSERTION_TYPE } from '../../../modules/data/classes.js'
 import createEventBus from '../../../modules/createEventBus.js'
@@ -62,9 +63,10 @@ export class ClassBase extends AbstractComponent {
   _registerEvents() {
     this._pushEvents(
       charSheetStore.onMap({
-        [charSheetProps.charClassName]: [this.#renderDescription],
-        [charSheetProps.classSkills]: [this.#renderActionsRequired, this.#renderSkills],
-        [charSheetProps.classTools]: [this.#renderActionsRequired, this.#renderTools],
+        [charSheetProps.charClassName]: [this.#renderDescription, this.#renderActionsRequired, this.#renderSkills, this.#renderTools],
+        // TODO: listen skills here. Project to have skills with source and filter on it
+        [charSheetProps.charOriginName]: [this.#renderActionsRequired, this.#renderSkills],
+        [charSheetProps.choiceSelections]: [this.#renderActionsRequired, this.#renderSkills, this.#renderTools],
       }),
     )
   }
@@ -72,25 +74,20 @@ export class ClassBase extends AbstractComponent {
   #renderActionsRequired = () => {
     console.info('-- ClassBase.#renderActionsRequired')
 
-    const toolsMetaMaxTotal = charSheetStore.getCharClass()?.toolProficiencies
-      ?.find(rule => rule.type === INSERTION_TYPE._meta && rule.totalMax)?.totalMax
-    const toolsMaxTotal = toolsMetaMaxTotal
-      || charSheetStore.getCharClass()?.toolProficiencies
-        ?.filter(rule => rule.type === INSERTION_TYPE.select)
-        .reduce((acc, rule) => acc + rule.max, 0)
-      || 0
+    const skillsRule = charSheetStore.getCharClass()?.skills
+    const toolRule = charSheetStore.getCharClass()?.toolProficiencies
 
     const actionsRequired = {
-      skills: (charSheetStore.getCharClass()?.skills.nb - charSheetStore.getClassSkills().length) > 0,
-      tools: toolsMaxTotal - charSheetStore.getClassTools().length > 0,
+      skills: skillsRule && (skillsRule?.nb - (charSheetStore?.getChoicePayload(skillsRule?.choice?.selector)?.length ?? 0) > 0),
+      tools: toolRule && (toolRule?.max - (charSheetStore?.getChoicePayload(toolRule?.choice?.selector)?.length ?? 0) > 0),
     }
+
+    this._actionRequired = Object.values(actionsRequired).some(i => i) ?? false
 
     this.#skillsActionRequiredElement.classList[actionsRequired.skills ? 'add' : 'remove']('show')
     this.#toolsActionRequiredElement.classList[actionsRequired.tools ? 'add' : 'remove']('show')
-    const hasActionRequired = Object.values(actionsRequired).some(i => i)
-    this.#baseFeatureButtonElement.classList[hasActionRequired ? 'add' : 'remove']('show')
+    this.#baseFeatureButtonElement.classList[this._actionRequired ? 'add' : 'remove']('show')
 
-    this._actionRequired = hasActionRequired ?? false
     this._eventBus.emit('actionRequired')
   }
 
@@ -101,107 +98,112 @@ export class ClassBase extends AbstractComponent {
 
   #renderSkills = () => {
     console.info('-- ClassBase.#renderSkills')
+    const classSkills = charSheetStore.getCharClass()?.skills
 
-    if (!charSheetStore.getCharClass()?.skills)
-      return this.#skillsContainerElement.classList.add('d-none')
+    if (!classSkills) {
+      replaceElement(this.#skillsChooseLabelElement, t.tn('components.ClassBase.skills.notConcerned',))
+      this.#skillsContainerElement.classList.add('d-none')
+      return
+    }
+
+    const choice = classSkills?.choice ?? null
+    const choiceSelector = choice?.selector ?? null
+    const choicePayload = charSheetStore?.getChoicePayload(choiceSelector) ?? []
+    const remaining = classSkills.nb - choicePayload.length
+
+    replaceElement(this.#skillsChooseLabelElement, t.tn('components.ClassBase.skills.remaining', { remaining }))
     this.#skillsContainerElement.classList.remove('d-none')
 
-    this.#renderSkillsChooseLabel()
+    const skills = charSheetStore.getSkills()
 
-    replaceElement(this.#skillsListElement, charSheetStore.getCharClass()?.skills.list.map(skill => {
+    function isSkillDisabled(skill) {
+      const isSelected = choicePayload.includes(skill.name)
+      const isMaxReached = choicePayload.length >= (classSkills?.nb ?? 0)
+      return (!classSkills?.list?.includes(skill) && skills[skill.name].checked) || (!isSelected && isMaxReached)
+    }
+
+    replaceElement(this.#skillsListElement, classSkills.list.map(skill => {
       const skillId = `${skill.name}.${this._id}`
       return createElement('div', [
         createElement('input', null, {
           type: 'checkbox', class: 'btn-check', id: skillId,
-          checked: charSheetStore.getClassSkills().includes(skill),
-          disabled: charSheetStore.isDisabledSkill(skill),
+          checked: choicePayload.includes(skill.name),
+          disabled: isSkillDisabled(skill),
           eventListeners: {
-            change: ({ target: { checked } }) => charSheetStore[checked ? 'classSkillsAdd' : 'classSkillsRemove'](skill)
-          }
+            change: ({ target: { checked } }) => {
+              const choiceSet = new Set(choicePayload)
+              choiceSet[checked ? 'add' : 'delete'](skill.name)
+              charSheetStore.setPayloadToSelection(choice, Array.from(choiceSet))
+            }
+          },
         }),
         createElement('label', t._(`statics.${skill.name}`), { class: 'btn btn-outline-primary', for: skillId }),
       ])
     }))
   }
 
-  #renderSkillsChooseLabel() {
-    console.info('-- ClassBase.#renderSkillsChooseLabel')
-    const classSkills = charSheetStore.getCharClass()?.skills
-    if (classSkills) {
-      const remaining = classSkills.nb - charSheetStore.getClassSkills().length
-      replaceElement(this.#skillsChooseLabelElement, t.tn('components.ClassBase.skills.remaining', { remaining }))
-    } else {
-      replaceElement(this.#skillsChooseLabelElement, t.tn('components.ClassBase.skills.notConcerned',))
-    }
-  }
-
   #renderTools = () => {
     console.info('-- ClassBase.#renderTools')
 
-    if (!charSheetStore.getCharClass()?.toolProficiencies?.length)
+    const toolRule = charSheetStore.getCharClass()?.toolProficiencies
+    if (!toolRule?.type)
       return this.#toolsContainerElement.classList.add('d-none')
     this.#toolsContainerElement.classList.remove('d-none')
 
-    const metaTotalMax = charSheetStore.getCharClass()?.toolProficiencies
-      .find(rule => rule.type === INSERTION_TYPE._meta && rule.totalMax)?.totalMax
-    const totalMax = metaTotalMax
-      || charSheetStore.getCharClass()?.toolProficiencies
-        .filter(rule => rule.type === INSERTION_TYPE.select)
-        .reduce((acc, rule) => acc + rule.max, 0)
-      || 0
-
-    const classTools = charSheetStore.getClassTools()
-    const totalSelected = classTools.length
-    const totalRemaining = totalMax - totalSelected
-
-    const groups = charSheetStore.getCharClass()?.toolProficiencies?.map((rule, groupIndex) => {
-      const groupChildren = []
-
-      switch (rule.type) {
-        case INSERTION_TYPE.select: {
+    switch (toolRule.type) {
+      case INSERTION_TYPE.select: {
+        const choice = charSheetStore.getCharClass()?.toolProficiencies?.choice ?? null
+        const choicePayload = charSheetStore.getChoicePayload(choice.selector) ?? []
+        replaceElement(this.#toolsGroupsElement, [toolRule.from].flat().map((group, groupIndex) => {
           const tools = getEquipments({ type: EQUIPMENT_TYPE.TOOL })
-            .filter(tool => tool.category === rule.from)
-            .map(tool => tool.name)
+            .filter(tool => group === tool.category)
 
-          const groupSelected = classTools.filter(tool => tools.includes(tool))
-          const groupRemaining = Math.max(0, rule.max - groupSelected.length)
-          const remaining = Math.min(totalRemaining, groupRemaining)
+          const groupRemaining = Math.max(0, toolRule.max - choicePayload?.length)
 
-          groupChildren.push(createElement('div', t.tn('components.ClassBase.tools.remainingGroup', {
-            remaining, from: t._(`statics.${rule.from}`)
-          }), { class: 'card-title' }))
-          groupChildren.push(createElement('div', tools.map(tool => {
-            const toolId = `${tool}.${this._id}.tools.${groupIndex}`
-            const isChecked = groupSelected.includes(tool)
-            const isCheckedElseWhere = false // TODO: + check is checked from elsewhere eg. feats
-            return createElement('div', [
-              createElement('input', null, {
-                type: 'checkbox',
-                class: 'btn-check',
-                id: toolId,
-                checked: isChecked,
-                disabled: isCheckedElseWhere || (!isChecked && remaining === 0),
-                eventListeners: {
-                  change: ({ target: { checked } }) => charSheetStore[checked ? 'classToolsAdd' : 'classToolsRemove'](tool)
-                }
-              }),
-              createElement(
-                'label',
-                t._(`statics.TOOLS.${tool.replace('TOOLS_', '')}.name`),
-                { class: 'btn btn-outline-primary', for: toolId }
-              ),
-            ])
-          }), { class: 'd-flex flex-wrap gap-3' }))
-          return createElement('div', groupChildren, { class: 'tools-group' })
-        }
-        case INSERTION_TYPE.forced: {
-          groupChildren.push(createElement(
+          return createElement('div', [
+            createElement('div', t.tn('components.ClassBase.tools.remainingGroup', {
+              remaining: groupRemaining, from: t._(`statics.${group}`)
+            }), { class: 'card-title' }),
+            createElement('div', tools.map(tool => {
+              const toolId = `${tool.name}.${this._id}.tools.${groupIndex}`
+              const isChecked = choicePayload?.includes(tool.name) ?? false
+              const isCheckedElseWhere = false // TODO: + disable if checked from elsewhere eg. feats / origin ??
+              return createElement('div', [
+                createElement('input', null, {
+                  type: 'checkbox',
+                  class: 'btn-check',
+                  id: toolId,
+                  checked: isChecked,
+                  disabled: isCheckedElseWhere || (!isChecked && groupRemaining === 0),
+                  eventListeners: {
+                    change: ({ target: { checked } }) => {
+                      const choiceSet = new Set(choicePayload)
+                      choiceSet[checked ? 'add' : 'delete'](tool.name)
+                      charSheetStore.setPayloadToSelection(choice, Array.from(choiceSet))
+                    }
+                  }
+                }),
+                createElement(
+                  'label',
+                  t._(`statics.TOOLS.${tool.name.replace('TOOLS_', '')}.name`),
+                  { class: 'btn btn-outline-primary', for: toolId }
+                ),
+              ])
+            }), { class: 'd-flex flex-wrap gap-3' }),
+          ])
+        }))
+        this.#toolsGroupsElement.classList.remove('d-none')
+        break
+      }
+      case INSERTION_TYPE.forced: {
+        replaceElement(this.#toolsGroupsElement, createElement('div', [
+          createElement(
             'div',
             t.tn('components.ClassBase.tools.forced'),
             { class: 'card-title' }
-          ))
-          groupChildren.push(createElement('div', rule.tools.map(tool => {
-            const toolId = `${tool}.${this._id}.tools.${groupIndex}`
+          ),
+          createElement('div', toolRule.tools.map(tool => {
+            const toolId = `${tool}.${this._id}.tools`
             return createElement('div', [
               createElement('input', null, {
                 type: 'checkbox',
@@ -216,20 +218,21 @@ export class ClassBase extends AbstractComponent {
                 { class: 'btn btn-outline-primary', for: toolId }
               ),
             ])
-          }), { class: 'd-flex flex-wrap gap-3' }))
-
-          return createElement('div', groupChildren, { class: 'tools-group' })
-        }
+          }), { class: 'd-flex flex-wrap gap-3' })
+        ]))
+        this.#toolsGroupsElement.classList.remove('d-none')
+        break
       }
-    }) ?? []
-    replaceElement(this.#toolsGroupsElement, groups.filter(Boolean))
-    this.#toolsGroupsElement.classList[groups.length ? 'remove' : 'add']('d-none')
+      default:
+        replaceElement(this.#toolsGroupsElement, null)
+        this.#toolsGroupsElement.classList.add('d-none')
+        break
+    }
   }
 
   _i18nChanged = () => {
     console.info('-- ClassBase._i18nChanged')
     this.#renderDescription()
-    this.#renderSkillsChooseLabel()
     this.#renderSkills()
     this.#renderTools()
   }

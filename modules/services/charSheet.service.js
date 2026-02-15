@@ -1,4 +1,3 @@
-import { fromJSON, fromSaveData, toJSON, toSaveData } from '../storages/storageManager.js'
 import charSheetStorage from '../storages/charSheet.storage.js'
 import charSheetStore from '../stores/charSheet.authority.store.js'
 import { debounce } from '../helpers.js'
@@ -26,31 +25,27 @@ function getList(includeCurrent) {
 }
 
 function load(id) {
-  const charSheet = fromSaveData(charSheetStorage.get(id))
+  const charSheet = charSheetStorage.get(id)
   charSheetStore.init(charSheet)
 }
 
 function save() {
-  return charSheetStorage.save(getSavedData())
+  return charSheetStorage.save(charSheetStore.get())
 }
 
 function importJSON(json) {
-  const data = fromJSON(json)
+  const entry = charSheetStorage.fromJSONEntry(json)
   const resume = autosaveEventTarget?.mute()
   try {
-    charSheetStore.init(data)
+    charSheetStore.init(entry.data)
     save()
   } finally {
     resume?.()
   }
 }
 
-function exportJSON() {
-  return toJSON(charSheetStore.get())
-}
-
-function getSavedData() {
-  return toSaveData(charSheetStore.get())
+function getJSONEntry() {
+  return charSheetStorage.toJSONEntry(charSheetStore.get())
 }
 
 export default {
@@ -59,9 +54,8 @@ export default {
   getList,
   load,
   save,
-  getSavedData,
   importJSON,
-  exportJSON,
+  getJSONEntry,
   remove: charSheetStorage.remove,
   subscribeCharSheetsList: charSheetStorage.onCharListChanged,
   unregister() {

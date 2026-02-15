@@ -1,6 +1,7 @@
 import { DICES as D, } from './modules/common.js'
 import initTranslations, { t, i18n } from './modules/i18n.js'
-import charSheetStore, { properties as charSheetProps } from './modules/stores/charSheet.derived.store.js'
+import charSheetStore from './modules/stores/charSheet.derived.store.js'
+import charSheetProps from './modules/stores/charSheet.derived.properties.js'
 import { TechnicalError, } from './modules/errors.js'
 import charSheetService from './modules/services/charSheet.service.js'
 import { createElement, domSubscribe, replaceElement, } from './modules/domlib.js'
@@ -119,7 +120,7 @@ function renderJSONOutput() {
   }
   // TODO: render by tab state / savedState format
   // jsonOutputElement.replaceChildren(renderJsonTree(charSheetStore.get()))
-  debugOutputElement.replaceChildren(renderJsonTree(charSheetService.getSavedData()))
+  debugOutputElement.replaceChildren(renderJsonTree(charSheetService.getJSONEntry()))
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -163,7 +164,7 @@ function exportJSONClicked(event) {
 
   let url
   try {
-    const json = charSheetService.exportJSON()
+    const json = charSheetService.getJSONEntry()
 
     const blob = new Blob([json], { type: "application/json" })
     url = URL.createObjectURL(blob)

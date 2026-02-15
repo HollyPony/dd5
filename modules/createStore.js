@@ -1,7 +1,7 @@
-import { getPathParts, resolvePath } from './helpers.js'
+import { getPathParts, resolvePath, s } from './helpers.js'
 
 export default function createStore(initialState, eventBus) {
-  const state = Object.seal({ ...initialState })
+  const state = s({ ...initialState })
   const isEnumerable = Object.prototype.propertyIsEnumerable
 
   return {
@@ -41,9 +41,9 @@ export default function createStore(initialState, eventBus) {
 
       for (const [path, value] of entries) {
         const pathParts = getPathParts(path)
-        let currentTarget = state
 
         // Assign
+        let currentTarget = state
         for (const part of pathParts.slice(0, -1)) currentTarget = currentTarget[part]
         Reflect.set(currentTarget, pathParts[pathParts.length - 1], value)
 

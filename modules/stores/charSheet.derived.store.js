@@ -1,29 +1,15 @@
 import getClass from '../data/classes.js'
 import getOrigin from '../data/origins.js'
 import getSpecies from '../data/species.js'
-import { ABILITY, DICE, EFFECT, SKILLS } from '../common.js'
+import { ABILITY, DICE, EFFECT, getSkillByName, SKILLS } from '../common.js'
 import { EQUIPED_CATEGORY, EQUIPMENT_TYPE, getEquipment } from '../data/equipments.js'
 import { getLevelFromExperience } from '../data/leveling.js'
 import { s } from '../helpers.js'
 import createStore from '../createStore.js'
-import authorityStore, { initialData as authorityInitialData, properties as authorityProperties } from './charSheet.authority.store.js'
+import authorityStore, { initialData as authorityInitialData } from './charSheet.authority.store.js'
 import createEventBus from '../createEventBus.js'
-
-export const properties = s(Object.assign({
-  charLevel: Symbol('charLevel'),
-  proficiencyBonus: Symbol('proficiencyBonus'),
-  skills: Symbol('skills'),
-  initiative: Symbol('initiative'),
-  speed: Symbol('speed'),
-  passivePerception: Symbol('passivePerception'),
-  charClass: Symbol('charClass'),
-  charOrigin: Symbol('charOrigin'),
-  charSpecies: Symbol('charSpecies'),
-  modifiers: Symbol('modifiers'),
-  saves: Symbol('saves'),
-  feats: Symbol('feats'),
-  equiped: Symbol('equiped'),
-}, authorityProperties))
+import { getSelectorKey } from '../services/choice.helper.js'
+import properties from './charSheet.derived.properties.js'
 
 const initialData = {
   ...authorityInitialData,
@@ -132,14 +118,16 @@ function computePassivePerception(skills = {}) {
   return (skills?.[SKILLS.perception.name]?.score ?? 0) + 10
 }
 
-function computeSkills({
-  modifiers = {},
-  proficiencyBonus = 0,
-  originSkills = [],
-  classSkills = [],
-}) {
+function computeSkills(proficiencyBonus, modifiers, charOrigin, choiceSelections) {
+  const originSkills = charOrigin?.skills ?? []
+
+  const selectedSkills = Object.values(choiceSelections)
+    .filter(choiceSelection => choiceSelection?.choice?.target === properties.skills)
+    .map(choiceSelection => choiceSelection.payload).flat()
+    .map(getSkillByName)
+
   return s(Object.values(SKILLS).reduce((acc, skill) => {
-    const isProficient = originSkills.includes(skill) || classSkills.includes(skill)
+    const isProficient = originSkills.includes(skill) || selectedSkills.includes(skill)
     const isExpert = false // TODO: derive from features/feats
     const proficiencyMultiplier = isProficient ? (isExpert ? 2 : 1) : 0
     acc[skill.name] = s({
@@ -187,12 +175,14 @@ function createCharSheetStore() {
   }
 
   function computeExperience() {
+    const modifiers = getModifiers()
+
     const charExperience = authorityStore.getCharExperience()
     const charLevel = getLevelFromExperience(charExperience)
     const proficiencyBonus = computeProficiencyBonus(charLevel)
     const charClass = getClass(authorityStore.getCharClassName(), authorityStore.getCharSubClassName(), charLevel)
     const charSpecies = getSpecies(authorityStore.getCharSpeciesName(), charLevel)
-    const saves = computeSaves(authorityStore.getAttributes(), getModifiers(), charClass, proficiencyBonus)
+    const saves = computeSaves(authorityStore.getAttributes(), modifiers, charClass, proficiencyBonus)
     const speed = computeCharSpeed({
       charSpecies,
       charClass,
@@ -200,12 +190,12 @@ function createCharSheetStore() {
       feats: getFeats(),
       strength: authorityStore.getAttribute(ABILITY.strength),
     })
-    const skills = computeSkills({
-      modifiers: getModifiers(),
+    const skills = computeSkills(
       proficiencyBonus,
-      originSkills: getCharOrigin()?.skills ?? [],
-      classSkills: authorityStore.getClassSkills(),
-    })
+      modifiers,
+      getCharOrigin(),
+      getChoiceSelections(),
+    )
     const passivePerception = computePassivePerception(skills)
 
     set({
@@ -267,37 +257,35 @@ function createCharSheetStore() {
     set({ [properties.charSize]: authorityStore.getCharSize() })
   }
 
-  function computeClassSkills() {
-    const classSkills = authorityStore.getClassSkills()
-    const originSkills = getCharOrigin()?.skills ?? []
-    const skills = computeSkills({
-      modifiers: getModifiers(),
-      proficiencyBonus: getProficiencyBonus(),
-      originSkills,
-      classSkills,
-    })
+  // TODO: remove and implement in each listeners
+  function computeChoicesState() {
+    const charLevel = getLevelFromExperience(authorityStore.getCharExperience())
+    const proficiencyBonus = computeProficiencyBonus(charLevel)
+    const charOrigin = getOrigin(authorityStore.getCharOriginName())
+    const choiceSelections = authorityStore.getChoiceSelections()
+    const skills = computeSkills(
+      proficiencyBonus,
+      getModifiers(),
+      charOrigin,
+      choiceSelections,
+    )
     const passivePerception = computePassivePerception(skills)
+
     set({
-      [properties.classSkills]: classSkills,
+      [properties.choiceSelections]: choiceSelections,
       [properties.passivePerception]: passivePerception,
       [properties.skills]: skills,
     })
   }
 
-  function computeClassTools() {
-    set({ [properties.classTools]: authorityStore.getClassTools() })
-  }
-
   function computeOrigin() {
     const charOrigin = getOrigin(authorityStore.getCharOriginName())
-    const classSkills = authorityStore.getClassSkills()
-    const originSkills = charOrigin?.skills ?? []
-    const skills = computeSkills({
-      modifiers: getModifiers(),
-      proficiencyBonus: getProficiencyBonus(),
-      originSkills,
-      classSkills,
-    })
+    const skills = computeSkills(
+      getProficiencyBonus(),
+      getModifiers(),
+      charOrigin,
+      getChoiceSelections(),
+    )
     const passivePerception = computePassivePerception(skills)
     set({
       [properties.charOriginName]: authorityStore.getCharOriginName(),
@@ -319,12 +307,12 @@ function createCharSheetStore() {
       feats: getFeats(),
       strength: attributes[ABILITY.strength],
     })
-    const skills = computeSkills({
+    const skills = computeSkills(
+      getProficiencyBonus(),
       modifiers,
-      proficiencyBonus: getProficiencyBonus(),
-      originSkills: getCharOrigin()?.skills ?? [],
-      classSkills: authorityStore.getClassSkills(),
-    })
+      getCharOrigin(),
+      getChoiceSelections(),
+    )
     const passivePerception = computePassivePerception(skills)
     set({
       [properties.attributes]: attributes,
@@ -355,27 +343,28 @@ function createCharSheetStore() {
 
   authorityStore.onMap({
     [properties.charName]: [computeCharName],
-    [properties.charExperience]: [computeExperience],
-    [properties.charOriginName]: [computeOrigin],
-    [properties.charClassName]: [computeClass],
-    [properties.charSubClassName]: [computeClass],
+    [properties.charExperience]: [computeExperience, computeChoicesState],
+    [properties.charOriginName]: [computeOrigin, computeChoicesState],
+    [properties.charClassName]: [computeClass, computeChoicesState],
+    [properties.charSubClassName]: [computeClass, computeChoicesState],
     [properties.charSpeciesName]: [computeSpecies],
     [properties.charAlignment]: [computeAlignment],
     [properties.charSizeCategory]: [computeSizeCategory],
     [properties.charSize]: [computeSize],
-    [properties.classSkills]: [computeClassSkills],
-    [properties.classTools]: [computeClassTools],
+    [properties.choiceSelections]: [computeChoicesState],
     [properties.attributes]: [computeAttributes],
     [properties.equipments]: [computeEquipments],
   });
 
   (function initState() {
-    const charLevel = getLevelFromExperience(authorityStore.getCharExperience())
+    const charExperience = authorityStore.getCharExperience()
+    const charLevel = getLevelFromExperience(charExperience)
     const charClass = getClass(authorityStore.getCharClassName(), authorityStore.getCharSubClassName(), charLevel)
     const charOrigin = getOrigin(authorityStore.getCharOriginName())
     const charSpecies = getSpecies(authorityStore.getCharSpeciesName(), charLevel)
     const modifiers = computeModifiers(authorityStore.getAttributes())
     const proficiencyBonus = computeProficiencyBonus(charLevel)
+    const choiceSelections = authorityStore.getChoiceSelections()
     const saves = computeSaves(authorityStore.getAttributes(), modifiers, charClass, proficiencyBonus)
     const initiative = modifiers[ABILITY.dexterity]
     const equiped = computeEquiped(authorityStore.getEquipments())
@@ -386,17 +375,17 @@ function createCharSheetStore() {
       feats: initialData[properties.feats],
       strength: authorityStore.getAttribute(ABILITY.strength),
     })
-    const skills = computeSkills({
-      modifiers,
+    const skills = computeSkills(
       proficiencyBonus,
-      originSkills: charOrigin?.skills ?? [],
-      classSkills: authorityStore.getClassSkills(),
-    })
+      modifiers,
+      charOrigin,
+      choiceSelections,
+    )
     const passivePerception = computePassivePerception(skills)
 
     set({
       [properties.charName]: authorityStore.getCharName(),
-      [properties.charExperience]: authorityStore.getCharExperience(),
+      [properties.charExperience]: charExperience,
       [properties.charClassName]: authorityStore.getCharClassName(),
       [properties.charSubClassName]: authorityStore.getCharSubClassName(),
       [properties.charOriginName]: authorityStore.getCharOriginName(),
@@ -405,8 +394,7 @@ function createCharSheetStore() {
       [properties.charSizeCategory]: authorityStore.getCharSizeCategory(),
       [properties.charSize]: authorityStore.getCharSize(),
       [properties.attributes]: authorityStore.getAttributes(),
-      [properties.classSkills]: authorityStore.getClassSkills(),
-      [properties.classTools]: authorityStore.getClassTools(),
+      [properties.choiceSelections]: choiceSelections,
       [properties.equipments]: authorityStore.getEquipments(),
 
       [properties.charLevel]: charLevel,
@@ -432,6 +420,7 @@ function createCharSheetStore() {
   function getCharSpecies() { return get(properties.charSpecies) }
   function getSkills() { return get(properties.skills) }
   function getSkill(skill) { return getSkills()?.[skill.name] ?? null }
+  function getChoiceSelections() { return get(properties.choiceSelections) }
   function getModifiers() { return get(properties.modifiers) }
   function getModifier(ability) { return getModifiers()[ability] }
   function getSaves() { return get(properties.saves) }
@@ -467,13 +456,6 @@ function createCharSheetStore() {
   function getShieldProficiency() {
     return (getCharClass()?.shieldProficiency ?? false)
       || (getFeats()?.some(feat => feat?.[EFFECT.HasShieldProficiencyEffect]))
-  }
-
-  function getToolProficiencies() {
-    const classTools = authorityStore.getClassTools() ?? []
-    const forced = (getCharClass()?.toolProficiencies ?? [])
-      .reduce((acc, rule) => acc.concat(rule?.type === 'INSERTION_TYPE.forced' ? rule.tools : []), [])
-    return Array.from(new Set([].concat(forced, classTools)))
   }
 
   /* TODO: update if
@@ -525,10 +507,19 @@ function createCharSheetStore() {
 
   function getHitDiceMax() { return DICE(getCharLevel(), getCharClass()?.hitDice ?? 100) }
 
-  function isDisabledSkill(skill) {
-    return (!getCharClass()?.skills?.list.includes(skill))
-      || getCharOrigin()?.skills?.includes(skill)
-      || !authorityStore.getClassSkills().includes(skill) && (authorityStore.getClassSkills().length >= getCharClass()?.skills?.nb ?? 0)
+  function getChoicePayload(selector) {
+    return getChoiceSelections()[getSelectorKey(selector)]?.payload ?? null
+  }
+
+  function setPayloadToSelection(choice, payload) {
+    const selectionKey = getSelectorKey(choice.selector)
+    const selections = getChoiceSelections()
+
+    // TODO: settings choice selection should trigger target update (emit) to refresh
+    authorityStore.setChoiceSelections({
+      ...selections,
+      [selectionKey]: { choice, payload },
+    })
   }
 
   return {
@@ -541,8 +532,6 @@ function createCharSheetStore() {
     getCharAlignment: () => get(properties.charAlignment),
     getCharSizeCategory: () => get(properties.charSizeCategory),
     getCharSize: () => get(properties.charSize),
-    getClassSkills: () => get(properties.classSkills),
-    getClassTools: () => get(properties.classTools),
     getAttribute: authorityStore.getAttribute,
 
     getCharLevel,
@@ -550,8 +539,10 @@ function createCharSheetStore() {
     getCharClass,
     getCharOrigin,
     getCharSpecies,
+    getChoiceSelections, getChoicePayload,
     getModifier,
     getSave,
+    getSkills,
     getSkill,
     getEquiped,
     getInitiative,
@@ -560,11 +551,9 @@ function createCharSheetStore() {
     getWeaponProficiencies,
     getArmorProficiencies,
     getShieldProficiency,
-    getToolProficiencies,
     getArmorClass,
     getHitPointMax,
     getHitDiceMax,
-    isDisabledSkill,
 
     // TODO: Implement this later
     // setCharAlignment: savedStore.setCharAlignment,
@@ -579,10 +568,7 @@ function createCharSheetStore() {
     setCharSpeciesName: authorityStore.setCharSpeciesName,
     setAbilityScore: authorityStore.setAbilityScore,
 
-    classSkillsAdd: authorityStore.classSkillsAdd,
-    classSkillsRemove: authorityStore.classSkillsRemove,
-    classToolsAdd: authorityStore.classToolsAdd,
-    classToolsRemove: authorityStore.classToolsRemove,
+    getChoicePayload, setPayloadToSelection,
 
     on: store.on,
     onMany: store.onMany,
