@@ -15,9 +15,7 @@ Qu’ils viennent de tribus sauvages, de terres gelées ou de régions reculées
 
 Les bardes puisent leur magie dans la création et l’expression artistique. Une ballade bien chantée peut redonner courage à des alliés, tandis qu’un vers mordant peut semer le doute ou la terreur chez un adversaire. Leur polyvalence en fait des aventuriers capables de s’adapter à presque toutes les situations.
 
-Toujours en quête d’histoires nouvelles, les bardes parcourent le monde pour enrichir leur répertoire et laisser leur marque dans la mémoire collective. Ils sont à la fois témoins et acteurs des grandes épopées, façonnant la réalité par le verbe et l’émotion.
-
-### Devenir barde`,
+Toujours en quête d’histoires nouvelles, les bardes parcourent le monde pour enrichir leur répertoire et laisser leur marque dans la mémoire collective. Ils sont à la fois témoins et acteurs des grandes épopées, façonnant la réalité par le verbe et l’émotion.`,
   },
   cleric: {
     name: `Clerc`,
