@@ -17,32 +17,30 @@ export const DICES = Enum({
 })
 
 export const ABILITY = Enum({
-  // Warning: keys used as html className
-  // TODO : use another enum for html binding name ?
-  strength: 'ABILITY_strength',
-  dexterity: 'ABILITY_dexterity',
-  constitution: 'ABILITY_constitution',
-  wisdom: 'ABILITY_wisdom',
-  intelligence: 'ABILITY_intelligence',
-  charisma: 'ABILITY_charisma',
+  strength: Symbol.for('ABILITY.strength'),
+  dexterity: Symbol.for('ABILITY.dexterity'),
+  constitution: Symbol.for('ABILITY.constitution'),
+  wisdom: Symbol.for('ABILITY.wisdom'),
+  intelligence: Symbol.for('ABILITY.intelligence'),
+  charisma: Symbol.for('ABILITY.charisma'),
 })
 
 export const EFFECT = Enum({
-  SpeedModifierEffect: 'EFFECT_SpeedModifierEffect',
-  ACOverrideEffect: 'EFFECT_ACOverrideEffect',
-  ACModifierEffect: 'EFFECT_ACModifierEffect',
-  PBModifierEffect: 'EFFECT_PBModifierEffect',
-  SavesModifierEffect: 'EFFECT_SavesModifierEffect',
-  SubClassChooseEffect: 'EFFECT_SubClassChooseEffect',
-  ImprovementChooseEffect: 'EFFECT_ImprovementChooseEffect',
-  ChooseAbilityImprovmentEffect: 'EFFECT_ChooseAbilityImprovmentEffect',
-  AbilityImprovmentEffect: 'EFFECT_AbilityImprovmentEffect',
-  AddAbilityEffect: 'EFFECT_ImproveAbilityEffect',
-  AddFeatEffect: 'EFFECT_ImproveFeatEffect',
-  ReduceFallDamageEffect: 'EFFECT_ReducedFallDamageEffect',
-  ByPassArmorStrengthRequirementEffect: 'EFFECT_ByPassArmorStrengthRequirementEffect',
-  HasArmorProficiencyEffect: 'EFFECT_HasArmorProficiencyEffect',
-  HasShieldProficiencyEffect: 'EFFECT_HasShieldProficiencyEffect',
+  SpeedModifierEffect: Symbol.for('EFFECT.SpeedModifierEffect'),
+  ACOverrideEffect: Symbol.for('EFFECT.ACOverrideEffect'),
+  ACModifierEffect: Symbol.for('EFFECT.ACModifierEffect'),
+  PBModifierEffect: Symbol.for('EFFECT.PBModifierEffect'),
+  SavesModifierEffect: Symbol.for('EFFECT.SavesModifierEffect'),
+  SubClassChooseEffect: Symbol.for('EFFECT.SubClassChooseEffect'),
+  ImprovementChooseEffect: Symbol.for('EFFECT.ImprovementChooseEffect'),
+  ChooseAbilityImprovmentEffect: Symbol.for('EFFECT.ChooseAbilityImprovmentEffect'),
+  AbilityImprovmentEffect: Symbol.for('EFFECT.AbilityImprovmentEffect'),
+  AddAbilityEffect: Symbol.for('EFFECT.AddAbilityEffect'),
+  AddFeatEffect: Symbol.for('EFFECT.AddFeatEffect'),
+  ReduceFallDamageEffect: Symbol.for('EFFECT.ReduceFallDamageEffect'),
+  ByPassArmorStrengthRequirementEffect: Symbol.for('EFFECT.ByPassArmorStrengthRequirementEffect'),
+  HasArmorProficiencyEffect: Symbol.for('EFFECT.HasArmorProficiencyEffect'),
+  HasShieldProficiencyEffect: Symbol.for('EFFECT.HasShieldProficiencyEffect'),
 })
 
 export const SKILLS = Enum({
@@ -105,7 +103,7 @@ export function validateSkill(skill) {
  * Resolve and validate ability bound to a skill.
  *
  * @param {symbol} skill - Skill enum value.
- * @returns {string} Ability enum value.
+ * @returns {symbol} Ability enum value.
  * @throws {UnknownSkillError} When skill is unknown.
  */
 export function getAbilityBySkill(skill) {

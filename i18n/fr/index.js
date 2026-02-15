@@ -343,12 +343,14 @@ export default {
       survival: 'Survie',
     },
 
-    ABILITY_strength: 'Force',
-    ABILITY_dexterity: 'Dextérité',
-    ABILITY_constitution: 'Constitution',
-    ABILITY_intelligence: 'Intelligence',
-    ABILITY_wisdom: 'Sagesse',
-    ABILITY_charisma: 'Charisme',
+    ABILITY: {
+      strength: 'Force',
+      dexterity: 'Dextérité',
+      constitution: 'Constitution',
+      intelligence: 'Intelligence',
+      wisdom: 'Sagesse',
+      charisma: 'Charisme',
+    },
 
     WEAPON_CATEGORY_simpleMelee: 'Armes courantes de corps à corps',
     WEAPON_CATEGORY_simpleRanged: 'Armes courantes à distance',
