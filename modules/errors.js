@@ -4,7 +4,6 @@ function createCustomError({ name, message, args = [] }) {
   const error = new Error(message, ...args)
   Object.setPrototypeOf(error, createCustomError.prototype)
   error.name = name
-  error.stack = ''
   indexEventBus.emit(observables.ERROR_CUSTOM, error)
   return error
 }
@@ -68,7 +67,6 @@ export function StorageError(message, ...props) {
 }
 
 export function TechnicalError(error) {
-  error.stack = ''
   console.error(error)
   indexEventBus.emit(observables.ERROR_TECHNICAL, error)
   return error
