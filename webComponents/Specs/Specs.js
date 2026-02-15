@@ -37,18 +37,21 @@ export class Specs extends AbstractComponent {
   }
 
   #renderInitiative = () => {
+    console.info('Specs.#renderInitiative')
     if (this.#initiativeElement) {
       this.#initiativeElement.value = charSheetStore.getInitiative()
     }
   }
 
   #renderSpeed = () => {
+    console.info('Specs.#renderSpeed')
     if (this.#speedElement) {
       this.#speedElement.value = charSheetStore.getCharSpeed()
     }
   }
 
   #renderSize = () => {
+    console.info('Specs.#renderSize')
     if (this.#sizeCategoryElement) {
       this.#sizeCategoryElement.value = charSheetStore.getCharSizeCategory()
     }
@@ -58,6 +61,7 @@ export class Specs extends AbstractComponent {
   }
 
   #renderPassivePerception = () => {
+    console.info('Specs.#renderPassivePerception')
     if (this.#passivePerceptionElement) {
       this.#passivePerceptionElement.value = charSheetStore.getPassivePerception()
     }
