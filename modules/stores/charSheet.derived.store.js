@@ -1,7 +1,7 @@
 import getClass from '../data/classes.js'
 import getOrigin from '../data/origins.js'
 import getSpecies from '../data/species.js'
-import { ABILITY, DICE, EFFECT, getSkillByName, SKILLS } from '../common.js'
+import { ABILITY, DICE, EFFECT, getAbilityBySkill, getSkillByName, SKILLS } from '../common.js'
 import { EQUIPED_CATEGORY, EQUIPMENT_TYPE, getEquipment } from '../data/equipments.js'
 import { getLevelFromExperience } from '../data/leveling.js'
 import { s } from '../helpers.js'
@@ -15,7 +15,7 @@ const initialData = {
   ...authorityInitialData,
   [properties.charLevel]: 1,
   [properties.proficiencyBonus]: 0,
-  [properties.skills]: s({}),
+  [properties.skills]: {},
   [properties.initiative]: 0,
   [properties.speed]: 10,
   [properties.passivePerception]: 10,
@@ -115,7 +115,7 @@ function computeCharSpeed({
 }
 
 function computePassivePerception(skills = {}) {
-  return (skills?.[SKILLS.perception.name]?.score ?? 0) + 10
+  return (skills?.[SKILLS.perception]?.score ?? 0) + 10
 }
 
 function computeSkills(proficiencyBonus, modifiers, charOrigin, choiceSelections) {
@@ -130,8 +130,8 @@ function computeSkills(proficiencyBonus, modifiers, charOrigin, choiceSelections
     const isProficient = originSkills.includes(skill) || selectedSkills.includes(skill)
     const isExpert = false // TODO: derive from features/feats
     const proficiencyMultiplier = isProficient ? (isExpert ? 2 : 1) : 0
-    acc[skill.name] = s({
-      score: (modifiers?.[skill.ability] ?? 0) + (proficiencyBonus * proficiencyMultiplier),
+    acc[skill] = s({
+      score: (modifiers?.[getAbilityBySkill(skill)] ?? 0) + (proficiencyBonus * proficiencyMultiplier),
       checked: isProficient,
       expert: isExpert,
     })
@@ -419,7 +419,7 @@ function createCharSheetStore() {
   function getCharOrigin() { return get(properties.charOrigin) }
   function getCharSpecies() { return get(properties.charSpecies) }
   function getSkills() { return get(properties.skills) }
-  function getSkill(skill) { return getSkills()?.[skill.name] ?? null }
+  function getSkill(skill) { return getSkills()?.[getSkillByName(skill)] }
   function getChoiceSelections() { return get(properties.choiceSelections) }
   function getModifiers() { return get(properties.modifiers) }
   function getModifier(ability) { return getModifiers()[ability] }

@@ -117,27 +117,27 @@ export class ClassBase extends AbstractComponent {
     const skills = charSheetStore.getSkills()
 
     function isSkillDisabled(skill) {
-      const isSelected = choicePayload.includes(skill.name)
+      const isSelected = choicePayload.includes(skill)
       const isMaxReached = choicePayload.length >= (classSkills?.nb ?? 0)
-      return (!classSkills?.list?.includes(skill) && skills[skill.name].checked) || (!isSelected && isMaxReached)
+      return (!classSkills?.list?.includes(skill) && skills[skill].checked) || (!isSelected && isMaxReached)
     }
 
     replaceElement(this.#skillsListElement, classSkills.list.map(skill => {
-      const skillId = `${skill.name}.${this._id}`
+      const skillId = `${skill}.${this._id}`
       return createElement('div', [
         createElement('input', null, {
           type: 'checkbox', class: 'btn-check', id: skillId,
-          checked: choicePayload.includes(skill.name),
+          checked: choicePayload.includes(skill),
           disabled: isSkillDisabled(skill),
           eventListeners: {
             change: ({ target: { checked } }) => {
               const choiceSet = new Set(choicePayload)
-              choiceSet[checked ? 'add' : 'delete'](skill.name)
+              choiceSet[checked ? 'add' : 'delete'](skill)
               charSheetStore.setPayloadToSelection(choice, Array.from(choiceSet))
             }
           },
         }),
-        createElement('label', t._(`statics.${skill.name}`), { class: 'btn btn-outline-primary', for: skillId }),
+        createElement('label', t._(`statics.${skill}`), { class: 'btn btn-outline-primary', for: skillId }),
       ])
     }))
   }

@@ -1,7 +1,8 @@
+import { UnknownAbilityError } from '../../modules/errors.js'
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
-import { ABILITY, SKILLS } from '../../modules/common.js'
+import { ABILITY, SKILL_ABILITY } from '../../modules/common.js'
 import { createElement, domSubscribe, replaceElement } from '../../modules/domlib.js'
 import { signDisplay } from '../../modules/helpers.js'
 import { t } from '../../modules/i18n.js'
@@ -22,6 +23,7 @@ export class Ability extends AbstractComponent {
     console.info('-- Ability.connectedCallback')
 
     this.#ability = ABILITY[this.dataset.ability]
+    if (!this.#ability) throw new UnknownAbilityError(this.dataset.ability)
 
     this.#labelElement = this.querySelector('[data-wc-id]')
     this.#scoreElement = this.querySelector('.ability-score')
@@ -33,7 +35,10 @@ export class Ability extends AbstractComponent {
     }
     this.#skillsContainer = this.querySelector('.skills')
 
-    this.#skills = Object.values(SKILLS).filter(skill => skill.ability === this.#ability)
+    this.#skills = Object.entries(SKILL_ABILITY).reduce(
+      (acc, [skill, ability]) => ability === this.#ability ? acc.concat(skill) : acc,
+      []
+    )
 
     replaceElement(this.#labelElement, t.tn(`statics.${this.#ability}`))
     replaceElement(this.#save.label, t.tn('ability.save.label'))
@@ -84,14 +89,14 @@ export class Ability extends AbstractComponent {
       const userSkill = charSheetStore.getSkill(skill)
       return createElement('div', [
         createElement('input', null, {
-          name: `${skill.name}.${this._id}`,
+          name: `${skill}.${this._id}`,
           type: 'checkbox', class: `form-check-input checkbox-readonly skill-check${userSkill?.expert ? ' expert' : ''}`,
           tabindex: '-1',
           checked: userSkill?.checked ?? false,
         }),
         createElement('span', signDisplay(userSkill?.score ?? 0), { class: 'skill-score' }),
-        createElement('label', t._(`statics.${skill.name}`), {
-          id: `${skill.name}.${this._id}`,
+        createElement('label', t._(`statics.${skill}`), {
+          id: `${skill}.${this._id}`,
         }),
       ], { class: 'form-check' })
     }))

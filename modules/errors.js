@@ -35,6 +35,22 @@ export function BadDiceError(dice, ...props) {
   })
 }
 
+export function UnknownSkillError(skill, ...props) {
+  return createCustomError({
+    name: 'UnknownSkillError',
+    message: `Unknown skill '${skill}'`,
+    args: props,
+  })
+}
+
+export function UnknownAbilityError(ability, ...props) {
+  return createCustomError({
+    name: 'UnknownAbilityError',
+    message: `Unknown ability '${ability}'`,
+    args: props,
+  })
+}
+
 export function MissingPathError(message, ...props) {
   return createCustomError({
     name: 'MissingPathError',
