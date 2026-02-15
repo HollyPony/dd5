@@ -48,17 +48,27 @@ function fromJSONEntry(jsonEntry) {
       }
     }
 
-    if (key === 'choice') {
-      return {
-        selector: {
-          type: Symbol.for(value.selector.type),
-          key: Symbol.for(value.selector.key),
-        },
-        target: Symbol.for(value.target),
-      }
-    }
-    if (key === 'payload' && this?.choice?.target === derivedProperties.skills) {
-      return value.map(skillKey => Symbol.for(skillKey))
+    if (key === 'choiceSelections') {
+      return Object.fromEntries(Object.entries(value ?? {}).map(([selectorKey, selection]) => {
+        const target = Symbol.for(selection.choice.target)
+        return [selectorKey, {
+          choice: {
+            selector: {
+              type: Symbol.for(selection.choice.selector.type),
+              key: Symbol.for(selection.choice.selector.key),
+            },
+            target,
+          },
+          payload: (() => {
+            switch (target) {
+              case derivedProperties.skills:
+                return selection.payload.map(skillKey => Symbol.for(skillKey))
+              default:
+                return selection.payload
+            }
+          })()
+        }]
+      }))
     }
 
     return value
@@ -94,17 +104,24 @@ function toJSONEntry(entry, space = undefined) {
         equipments: value[properties.equipments]
       }
     }
-    if (key === 'choice') {
-      return {
-        selector: {
-          type: value.selector.type.description,
-          key: value.selector.key.description,
-        },
-        target: value.target.description,
-      }
-    }
-    if (key === 'payload' && this?.choice?.target === derivedProperties.skills) {
-      return value.map(skill => skill.description)
+    if (key === 'choiceSelections') {
+      return Object.fromEntries(Object.entries(value ?? {}).map(([selectorKey, selection]) => {
+        return [selectorKey, {
+          choice: {
+            selector: {
+              type: selection.choice.selector.type,
+              key: selection.choice.selector.key,
+            },
+            target: selection.choice.target.description
+          },
+          payload: (() => {
+            switch (selection.choice.target) {
+              case derivedProperties.skills: return selection.payload.map(skill => skill.description)
+              default: return selection.payload
+            }
+          })
+        }]
+      }))
     }
     return value
   }, space)
