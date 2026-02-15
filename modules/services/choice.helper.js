@@ -2,11 +2,11 @@ import { MissingPathError } from '../errors.js'
 import { Enum } from '../helpers.js'
 
 export const SELECTOR_TYPE = Enum({
-  CLASS: Symbol.for('SELECTOR_TYPE.class'),
-  ORIGIN: Symbol.for('SELECTOR_TYPE.origin'),
-  SPECIES: Symbol.for('SELECTOR_TYPE.species'),
-  FEAT: Symbol.for('SELECTOR_TYPE.feat'),
-  MANUAL: Symbol.for('SELECTOR_TYPE.manual'),
+  CLASS: Symbol.for('SELECTOR_TYPE.CLASS'),
+  ORIGIN: Symbol.for('SELECTOR_TYPE.ORIGIN'),
+  SPECIES: Symbol.for('SELECTOR_TYPE.SPECIES'),
+  FEAT: Symbol.for('SELECTOR_TYPE.FEAT'),
+  MANUAL: Symbol.for('SELECTOR_TYPE.MANUAL'),
 })
 
 export function getSelectorKey(selector) {

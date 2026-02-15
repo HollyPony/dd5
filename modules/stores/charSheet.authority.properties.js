@@ -1,16 +1,16 @@
 import { Enum } from '../helpers.js'
 
 export default Enum({
-  charName: Symbol.for('charName'),
-  charExperience: Symbol.for('charExperience'),
-  charClassName: Symbol.for('charClassName'),
-  charSubClassName: Symbol.for('charSubClassName'),
-  charOriginName: Symbol.for('charOriginName'),
-  charSpeciesName: Symbol.for('charSpeciesName'),
-  charAlignment: Symbol.for('charAlignment'),
-  charSizeCategory: Symbol.for('charSizeCategory'),
-  charSize: Symbol.for('charSize'),
-  attributes: Symbol.for('attributes'),
-  choiceSelections: Symbol.for('choiceSelections'),
-  equipments: Symbol.for('equipments'),
+  charName: Symbol.for('AUTHORITY_PROPERTIES.charName'),
+  charExperience: Symbol.for('AUTHORITY_PROPERTIES.charExperience'),
+  charClassName: Symbol.for('AUTHORITY_PROPERTIES.charClassName'),
+  charSubClassName: Symbol.for('AUTHORITY_PROPERTIES.charSubClassName'),
+  charOriginName: Symbol.for('AUTHORITY_PROPERTIES.charOriginName'),
+  charSpeciesName: Symbol.for('AUTHORITY_PROPERTIES.charSpeciesName'),
+  charAlignment: Symbol.for('AUTHORITY_PROPERTIES.charAlignment'),
+  charSizeCategory: Symbol.for('AUTHORITY_PROPERTIES.charSizeCategory'),
+  charSize: Symbol.for('AUTHORITY_PROPERTIES.charSize'),
+  attributes: Symbol.for('AUTHORITY_PROPERTIES.attributes'),
+  choiceSelections: Symbol.for('AUTHORITY_PROPERTIES.choiceSelections'),
+  equipments: Symbol.for('AUTHORITY_PROPERTIES.equipments'),
 })

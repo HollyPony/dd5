@@ -11,8 +11,8 @@ export const INSERTION_TYPE = Enum({
 })
 
 export const SOURCE_KEY = Enum({
-  TOOLS: Symbol.for('SOURCE_KEY.tools'),
-  SKILLS: Symbol.for('SOURCE_KEY.skills'),
+  TOOLS: Symbol.for('SOURCE_KEY.TOOLS'),
+  SKILLS: Symbol.for('SOURCE_KEY.SKILLS'),
 })
 
 function buildSelector(key) {

@@ -322,24 +322,26 @@ export default {
     feats,
     FEAT_CATEGORY,
 
-    SKILLS_acrobatics: 'Acrobaties', // Rester debout lorsque l'équilibre ou accomplir un exercice acrobatique
-    SKILLS_animalHandling: 'Dressage', // Apaiser ou dresser un animal, ou lui faire adopter un certain comportement
-    SKILLS_arcana: 'Arcanes', // Se souvenir de détails concernant des sorts, des objets magiques ou les plans d'existence
-    SKILLS_athletics: 'Athlétisme', // Sauter plus loin que la normale, garder la tête hors de l'eau des flots violents ou briser quelque chose
-    SKILLS_deception: 'Tromperie', // Mentir de manière convaincante ou se déguiser sans éveiller les soupçons
-    SKILLS_history: 'Histoire',
-    SKILLS_insight: 'Perspicacité',
-    SKILLS_intimidation: 'Intimidation',
-    SKILLS_investigation: 'Investigation',
-    SKILLS_medicine: 'Médecine',
-    SKILLS_nature: 'Nature',
-    SKILLS_perception: 'Perception',
-    SKILLS_performance: 'Représentation',
-    SKILLS_persuasion: 'Persuasion',
-    SKILLS_religion: 'Religion',
-    SKILLS_sleightOfHand: 'Escamotage',
-    SKILLS_stealth: 'Discrétion',
-    SKILLS_survival: 'Survie',
+    SKILLS: {
+      acrobatics: 'Acrobaties', // Rester debout lorsque l'équilibre ou accomplir un exercice acrobatique
+      animalHandling: 'Dressage', // Apaiser ou dresser un animal, ou lui faire adopter un certain comportement
+      arcana: 'Arcanes', // Se souvenir de détails concernant des sorts, des objets magiques ou les plans d'existence
+      athletics: 'Athlétisme', // Sauter plus loin que la normale, garder la tête hors de l'eau des flots violents ou briser quelque chose
+      deception: 'Tromperie', // Mentir de manière convaincante ou se déguiser sans éveiller les soupçons
+      history: 'Histoire',
+      insight: 'Perspicacité',
+      intimidation: 'Intimidation',
+      investigation: 'Investigation',
+      medicine: 'Médecine',
+      nature: 'Nature',
+      perception: 'Perception',
+      performance: 'Représentation',
+      persuasion: 'Persuasion',
+      religion: 'Religion',
+      sleightOfHand: 'Escamotage',
+      stealth: 'Discrétion',
+      survival: 'Survie',
+    },
 
     ABILITY_strength: 'Force',
     ABILITY_dexterity: 'Dextérité',
