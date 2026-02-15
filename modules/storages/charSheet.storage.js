@@ -109,8 +109,8 @@ function toJSONEntry(entry, space = undefined) {
         return [selectorKey, {
           choice: {
             selector: {
-              type: selection.choice.selector.type,
-              key: selection.choice.selector.key,
+              type: selection.choice.selector.type.description,
+              key: selection.choice.selector.key.description,
             },
             target: selection.choice.target.description
           },
@@ -119,7 +119,7 @@ function toJSONEntry(entry, space = undefined) {
               case derivedProperties.skills: return selection.payload.map(skill => skill.description)
               default: return selection.payload
             }
-          })
+          })()
         }]
       }))
     }
