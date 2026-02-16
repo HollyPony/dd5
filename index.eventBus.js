@@ -1,7 +1,7 @@
-import { f } from './modules/helpers.js'
 import createEventBus from './modules/createEventBus.js'
 
-export const observables = f({
+// TODO: Rework proper error trigger
+export const observables = Object.freeze({
   ERROR_TECHNICAL: Symbol(),
   ERROR_CUSTOM: Symbol(),
 })
