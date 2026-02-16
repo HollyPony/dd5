@@ -25,8 +25,7 @@ function getList(includeCurrent) {
 }
 
 function load(id) {
-  const charSheet = charSheetStorage.get(id)
-  charSheetStore.init(charSheet)
+  charSheetStore.init(charSheetStorage.get(id))
 }
 
 function save(notify) {

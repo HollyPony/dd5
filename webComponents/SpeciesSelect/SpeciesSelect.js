@@ -11,7 +11,7 @@ export class SpeciesSelect extends AbstractSelect {
   _registerEvents() {
     this._pushEvents(
       domSubscribe(this._selectElement, 'change', this.#selectChanged),
-      charSheetStore.on(charSheetProps.charSpeciesName, this._renderValue),
+      charSheetStore.on(charSheetProps.speciesName, this._renderValue),
     )
   }
 
@@ -38,12 +38,12 @@ export class SpeciesSelect extends AbstractSelect {
 
   _renderValue = () => {
     console.info('-- SpeciesSelect.#renderValue')
-    this._selectElement.value = charSheetStore.getCharSpeciesName() || ''
+    this._selectElement.value = charSheetStore.getSpeciesName() || ''
   }
 
   #selectChanged = ({ target: { value } }) => {
     console.info('-- SpeciesSelect.#selectChanged', value)
     // TODO: alert skills lost
-    charSheetStore.setCharSpeciesName(value)
+    charSheetStore.setSpeciesName(value)
   }
 }

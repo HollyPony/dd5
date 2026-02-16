@@ -67,9 +67,9 @@ export class ClassBase extends AbstractComponent {
   _registerEvents() {
     this._pushEvents(
       charSheetStore.onMap({
-        [charSheetProps.charClassName]: [this.#renderDescription, this.#renderActionsRequired, this.#renderSkills, this.#renderTools],
+        [charSheetProps.className]: [this.#renderDescription, this.#renderActionsRequired, this.#renderSkills, this.#renderTools],
         // TODO: listen skills here. Project to have skills with source and filter on it
-        [charSheetProps.charOriginName]: [this.#renderActionsRequired, this.#renderSkills],
+        [charSheetProps.originName]: [this.#renderActionsRequired, this.#renderSkills],
         [charSheetProps.choiceSelections]: [this.#renderActionsRequired, this.#renderSkills, this.#renderTools],
       }),
     )

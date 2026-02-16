@@ -1,4 +1,4 @@
-﻿import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
+import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
 import { createElement, replaceElement } from '../../modules/domlib.js'
@@ -35,7 +35,7 @@ export class Trainings extends AbstractComponent {
   _registerEvents() {
     this._pushEvents(
       charSheetStore.onMany(
-        [charSheetProps.charClass, charSheetProps.choiceSelections, charSheetProps.feats],
+        [charSheetProps.class, charSheetProps.choiceSelections, charSheetProps.feats],
         this.#renderTrainings
       ),
     )
@@ -79,7 +79,7 @@ export class Trainings extends AbstractComponent {
 
   #resolveToolsProficiencies() {
     // TODO: toolProficiencies can come from other than class or selections
-    const toolRule = charSheetStore.getCharClass()?.toolProficiencies
+    const toolRule = charSheetStore.getClass()?.toolProficiencies
     switch (toolRule?.type) {
       case INSERTION_TYPE.forced:
         return toolRule.tools ?? []

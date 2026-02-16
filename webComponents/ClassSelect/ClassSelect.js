@@ -11,7 +11,7 @@ export class ClassSelect extends AbstractSelect {
   _registerEvents() {
     this._pushEvents(
       domSubscribe(this._selectElement, 'change', this.#selectChanged),
-      charSheetStore.on(charSheetProps.charClassName, this._renderValue),
+      charSheetStore.on(charSheetProps.className, this._renderValue),
     )
   }
 
@@ -28,11 +28,11 @@ export class ClassSelect extends AbstractSelect {
 
   _renderValue = () => {
     console.info('-- ClassSelect.#renderValue')
-    this._selectElement.value = charSheetStore.getCharClassName() || ''
+    this._selectElement.value = charSheetStore.getClassName() || ''
   }
 
   #selectChanged = ({ target: { value } }) => {
     console.info('-- ClassSelect.#selectChanged', value)
-    charSheetStore.setCharClassName(value)
+    charSheetStore.setClassName(value)
   }
 }

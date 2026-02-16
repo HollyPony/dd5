@@ -32,8 +32,8 @@ export class ClassFeatures extends AbstractComponent {
     this._pushEvents(
       // TODO: had a class features changed ????
       charSheetStore.onMap({
-        [charSheetProps.charLevel]: [this.#levelChanged],
-        [charSheetProps.charClass]: [this.#classChanged],
+        [charSheetProps.level]: [this.#levelChanged],
+        [charSheetProps.class]: [this.#classChanged],
       }),
     )
   }
@@ -41,7 +41,7 @@ export class ClassFeatures extends AbstractComponent {
   #renderFeatures() {
     console.info('-- ClassFeatures.#renderFeatures',)
 
-    const featureElements = charSheetStore.getCharClass()?.features?.map(this.#createFeature) ?? []
+    const featureElements = charSheetStore.getClass()?.features?.map(this.#createFeature) ?? []
     replaceElement(this.#featuresElement, featureElements)
   }
 

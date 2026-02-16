@@ -23,7 +23,7 @@ export class SpeciesTraits extends AbstractComponent {
 
   _registerEvents() {
     this._pushEvents(
-      charSheetStore.on(charSheetProps.charSpecies, this.#renderTraits),
+      charSheetStore.on(charSheetProps.species, this.#renderTraits),
     )
   }
 
@@ -32,8 +32,8 @@ export class SpeciesTraits extends AbstractComponent {
   }
 
   #renderTraits = () => {
-    const species = charSheetStore.getCharSpecies()
-    const speciesName = charSheetStore.getCharSpeciesName()
+    const species = charSheetStore.getSpecies()
+    const speciesName = charSheetStore.getSpeciesName()
     if (!species) {
       replaceElement(this.#descriptionElement, [
         createElement('div', t._('components.SpeciesTraits.empty'), { class: 'text-muted px-2 py-2' }),

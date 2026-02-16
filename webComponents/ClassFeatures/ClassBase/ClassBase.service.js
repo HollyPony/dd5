@@ -13,8 +13,8 @@ import {
  *
  * @param {{
  *   charSheetStore: {
- *     getCharClass: Function,
- *     getCharClassName: Function,
+ *     getClass: Function,
+ *     getClassName: Function,
  *     getSkills: Function,
  *     getChoicePayload: Function,
  *     setPayloadToSelection: Function
@@ -43,13 +43,13 @@ export function createClassBaseService({ charSheetStore }) {
   if (!charSheetStore) throw MissingPathError('ClassBase service requires charSheetStore')
 
   function getDescriptionKey() {
-    return `statics.classes.${charSheetStore.getCharClassName()}.description`
+    return `statics.classes.${charSheetStore.getClassName()}.description`
   }
 
   function getActionsRequiredState() {
-    const charClass = charSheetStore.getCharClass()
-    const skillsRule = charClass?.skills
-    const toolRule = charClass?.toolProficiencies
+    const classData = charSheetStore.getClass()
+    const skillsRule = classData?.skills
+    const toolRule = classData?.toolProficiencies
 
     return {
       skills: skillsRule && (skillsRule?.nb - (charSheetStore?.getChoicePayload(skillsRule?.choice?.selector)?.length ?? 0) > 0),
@@ -58,7 +58,7 @@ export function createClassBaseService({ charSheetStore }) {
   }
 
   function getSkillsViewModel() {
-    const classSkills = charSheetStore.getCharClass()?.skills
+    const classSkills = charSheetStore.getClass()?.skills
     if (!classSkills) {
       return {
         isConcerned: false,
@@ -90,7 +90,7 @@ export function createClassBaseService({ charSheetStore }) {
   }
 
   function toggleSkill({ skill, checked }) {
-    const classSkills = charSheetStore.getCharClass()?.skills
+    const classSkills = charSheetStore.getClass()?.skills
     const choice = classSkills?.choice ?? null
     if (!choice) return
 
@@ -100,7 +100,7 @@ export function createClassBaseService({ charSheetStore }) {
   }
 
   function getToolsViewModel() {
-    const toolRule = charSheetStore.getCharClass()?.toolProficiencies
+    const toolRule = charSheetStore.getClass()?.toolProficiencies
     if (!toolRule?.type) {
       return { visible: false, type: null, groups: [], forcedTools: [] }
     }
@@ -153,7 +153,7 @@ export function createClassBaseService({ charSheetStore }) {
   }
 
   function toggleTool({ toolName, checked }) {
-    const choice = charSheetStore.getCharClass()?.toolProficiencies?.choice ?? null
+    const choice = charSheetStore.getClass()?.toolProficiencies?.choice ?? null
     if (!choice) return
 
     const choicePayload = charSheetStore.getChoicePayload(choice.selector) ?? []
@@ -170,4 +170,3 @@ export function createClassBaseService({ charSheetStore }) {
     toggleTool,
   }
 }
-

@@ -1,4 +1,4 @@
-﻿import { StorageError } from '../errors.js'
+import { StorageError } from '../errors.js'
 import createEventBus from '../createEventBus.js'
 import createLocalStorage from './createLocalStorage.js'
 import properties from '../stores/charSheet.authority.properties.js'
@@ -76,20 +76,20 @@ function toJSONEntry(entry, space = undefined) {
     let result = value
 
     if (key === 'data') {
-      const charClassName = value[properties.charClassName]
-      const charSubClassName = value[properties.charSubClassName]
+      const className = value[properties.className]
+      const subClassName = value[properties.subClassName]
 
       result = {
-        name: value[properties.charName],
-        origin: value[properties.charOriginName],
-        class: charClassName
-          ? (charSubClassName ? `${charClassName}.${charSubClassName}` : charClassName)
+        name: value[properties.name],
+        origin: value[properties.originName],
+        class: className
+          ? (subClassName ? `${className}.${subClassName}` : className)
           : undefined,
-        species: value[properties.charSpeciesName],
-        experience: value[properties.charExperience],
-        alignment: value[properties.charAlignment],
-        sizeCategory: value[properties.charSizeCategory],
-        size: value[properties.charSize],
+        species: value[properties.speciesName],
+        experience: value[properties.experience],
+        alignment: value[properties.alignment],
+        sizeCategory: value[properties.sizeCategory],
+        size: value[properties.size],
         abilities: {
           strength: value[properties.abilities][ABILITIES.strength],
           dexterity: value[properties.abilities][ABILITIES.dexterity],
@@ -112,18 +112,18 @@ function fromJSONEntry(jsonEntry) {
     const result = deserializeSymbols(value)
 
     if (key === 'data') {
-      const [charClassName = '', charSubClassName = ''] = (result?.class ?? '').split('.')
+      const [className = '', subClassName = ''] = (result?.class ?? '').split('.')
 
       return {
-        [properties.charName]: result?.name ?? initialData[properties.charName] ?? '',
-        [properties.charOriginName]: result?.origin ?? initialData[properties.charOriginName] ?? '',
-        [properties.charClassName]: charClassName ?? initialData[properties.charClassName],
-        [properties.charSubClassName]: charSubClassName ?? initialData[properties.charSubClassName] ?? null,
-        [properties.charSpeciesName]: result?.species ?? initialData[properties.charSpeciesName] ?? '',
-        [properties.charExperience]: result?.experience ?? initialData[properties.charExperience] ?? 0,
-        [properties.charAlignment]: result?.alignment ?? initialData[properties.charAlignment] ?? '',
-        [properties.charSizeCategory]: result?.sizeCategory ?? initialData[properties.charSizeCategory] ?? '',
-        [properties.charSize]: result?.size ?? initialData[properties.charSize] ?? 0,
+        [properties.name]: result?.name ?? initialData[properties.name] ?? '',
+        [properties.originName]: result?.origin ?? initialData[properties.originName] ?? '',
+        [properties.className]: className ?? initialData[properties.className],
+        [properties.subClassName]: subClassName ?? initialData[properties.subClassName] ?? null,
+        [properties.speciesName]: result?.species ?? initialData[properties.speciesName] ?? '',
+        [properties.experience]: result?.experience ?? initialData[properties.experience] ?? 0,
+        [properties.alignment]: result?.alignment ?? initialData[properties.alignment] ?? '',
+        [properties.sizeCategory]: result?.sizeCategory ?? initialData[properties.sizeCategory] ?? '',
+        [properties.size]: result?.size ?? initialData[properties.size] ?? 0,
         [properties.abilities]: s({
           [ABILITIES.strength]: result?.abilities.strength ?? initialData[properties.abilities][ABILITIES.strength] ?? 10,
           [ABILITIES.dexterity]: result?.abilities.dexterity ?? initialData[properties.abilities][ABILITIES.dexterity] ?? 10,
@@ -150,8 +150,8 @@ function getList(includeCurrent = true) {
   return storage.getJSONItem(CHARACTER_LIST_KEY)?.filter(item => includeCurrent || item.id !== getCurrentId()) ?? []
 }
 
-function setCharSheetsList(charList) {
-  storage.setJSONItem(CHARACTER_LIST_KEY, charList)
+function setSheetsList(sheetsList) {
+  storage.setJSONItem(CHARACTER_LIST_KEY, sheetsList)
 }
 
 function getLastSaveId() {
@@ -167,7 +167,7 @@ function get(id) {
   const entry = fromJSONEntry(storage.getItem(buildSaveKey(id)))
   if (!entry) throw StorageError('CharSheet id not found')
 
-  setCharSheetsList(getList().map(item =>
+  setSheetsList(getList().map(item =>
     item.id === id ? { ...item, updatedAt: Date.now() } : item
   ))
 
@@ -175,24 +175,24 @@ function get(id) {
   return entry.data
 }
 
-function save(charSheet, notify) {
+function save(sheet, notify) {
   const entry = {
     id: getCurrentId() ?? crypto.randomUUID(),
     updatedAt: Date.now(),
     version: STORAGE_VERSION,
-    data: charSheet,
+    data: sheet,
   }
 
   storage.setItem(buildSaveKey(entry.id), toJSONEntry(entry))
 
-  const charList = getList().filter(item => item.id !== entry.id)
-  charList.push({
+  const sheetsList = getList().filter(item => item.id !== entry.id)
+  sheetsList.push({
     id: entry.id,
-    name: charSheet?.[properties.charName]?.toString()?.trim() || entry.id,
+    name: sheet?.[properties.name]?.toString()?.trim() || entry.id,
     updatedAt: entry.updatedAt,
   })
 
-  setCharSheetsList(charList)
+  setSheetsList(sheetsList)
 
   setCurrentId(entry.id, notify)
   return entry
@@ -200,7 +200,7 @@ function save(charSheet, notify) {
 
 function remove(id) {
   storage.removeItem(buildSaveKey(id))
-  setCharSheetsList(getList().filter(item => item.id !== id))
+  setSheetsList(getList().filter(item => item.id !== id))
 
   setCurrentId(undefined)
 }

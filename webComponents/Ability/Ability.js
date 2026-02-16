@@ -1,4 +1,4 @@
-﻿import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
+import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
 import { ABILITIES, SKILL_ABILITY } from '../../modules/common.js'
@@ -75,7 +75,7 @@ export class Ability extends AbstractComponent {
   #renderSave = () => {
     console.info('-- Ability.#renderSave', this.#ability)
     this.#save.score.textContent = signDisplay(charSheetStore.getSave(this.#ability))
-    this.#save.check.checked = charSheetStore.getCharClass()?.saves?.includes(this.#ability)
+    this.#save.check.checked = charSheetStore.getClass()?.saves?.includes(this.#ability)
   }
 
   #renderSkills = () => {

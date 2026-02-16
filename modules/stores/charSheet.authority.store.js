@@ -1,19 +1,19 @@
-﻿import { ABILITIES } from '../common.js'
+import { ABILITIES } from '../common.js'
 import createStore from '../createStore.js'
 import createEventBus from '../createEventBus.js'
 import { SELECTOR_TYPE } from '../services/choice.helper.js'
 import properties from './charSheet.authority.properties.js'
 
 export const initialData = {
-  [properties.charName]: '',
-  [properties.charExperience]: 0,
-  [properties.charClassName]: '',
-  [properties.charSubClassName]: null,
-  [properties.charOriginName]: '',
-  [properties.charSpeciesName]: '',
-  [properties.charAlignment]: '',
-  [properties.charSizeCategory]: '',
-  [properties.charSize]: '',
+  [properties.name]: '',
+  [properties.experience]: 0,
+  [properties.className]: '',
+  [properties.subClassName]: null,
+  [properties.originName]: '',
+  [properties.speciesName]: '',
+  [properties.alignment]: '',
+  [properties.sizeCategory]: '',
+  [properties.size]: '',
   [properties.abilities]: {
     [ABILITIES.strength]: 10,
     [ABILITIES.dexterity]: 10,
@@ -38,47 +38,47 @@ function createCharSheetStorageStore() {
     init(initialData)
   }
 
-  function getCharName() { return get(properties.charName) }
-  function getCharExperience() { return get(properties.charExperience) }
-  function getCharOriginName() { return get(properties.charOriginName) }
-  function getCharClassName() { return get(properties.charClassName) }
-  function getCharSubClassName() { return get(properties.charSubClassName) }
-  function getCharSpeciesName() { return get(properties.charSpeciesName) }
-  function getCharAlignment() { return get(properties.charAlignment) }
-  function getCharSizeCategory() { return get(properties.charSizeCategory) }
-  function getCharSize() { return get(properties.charSize) }
+  function getName() { return get(properties.name) }
+  function getExperience() { return get(properties.experience) }
+  function getOriginName() { return get(properties.originName) }
+  function getClassName() { return get(properties.className) }
+  function getSubClassName() { return get(properties.subClassName) }
+  function getSpeciesName() { return get(properties.speciesName) }
+  function getAlignment() { return get(properties.alignment) }
+  function getSizeCategory() { return get(properties.sizeCategory) }
+  function getSize() { return get(properties.size) }
   function getChoiceSelections() { return get(properties.choiceSelections) }
   function getAbilities() { return get(properties.abilities) }
   function getAbility(ability) { return getAbilities()[ability] }
   function getEquipments() { return get(properties.equipments) }
 
   // Save this name. Test it
-  function setCharName(charName) { set({ [properties.charName]: charName }) }
-  function setCharExperience(charExperience) {
-    const experience = parseInt(charExperience)
+  function setName(name) { set({ [properties.name]: name }) }
+  function setExperience(experienceValue) {
+    const experience = parseInt(experienceValue)
     if (!experience) return
-    set({ [properties.charExperience]: experience })
+    set({ [properties.experience]: experience })
   }
-  function setCharOriginName(charOriginName) {
-    set({ [properties.charOriginName]: charOriginName })
+  function setOriginName(originName) {
+    set({ [properties.originName]: originName })
     // TODO: handle skill from origin ?
     // TODO: remove also classSkills choosed due to conflicts with origin ones
   }
-  function setCharClassName(charClassName) {
+  function setClassName(className) {
     set({
-      [properties.charClassName]: charClassName,
-      [properties.charSubClassName]: null,
+      [properties.className]: className,
+      [properties.subClassName]: null,
       [properties.choiceSelections]: Object.fromEntries(
         Object.entries(getChoiceSelections())
           .filter(([_, selection]) => selection.choice?.selector?.type !== SELECTOR_TYPE.CLASS),
       )
     })
   }
-  function setCharSubClassName(charSubClassName) {
-    set({ [properties.charSubClassName]: charSubClassName })
+  function setSubClassName(subClassName) {
+    set({ [properties.subClassName]: subClassName })
   }
-  function setCharSpeciesName(charSpeciesName) {
-    set({ [properties.charSpeciesName]: charSpeciesName })
+  function setSpeciesName(speciesName) {
+    set({ [properties.speciesName]: speciesName })
 
     // // TODO: Handle what changed on species changed
   }
@@ -95,25 +95,25 @@ function createCharSheetStorageStore() {
     init,
     reset,
     get,
-    getCharName,
-    getCharExperience,
-    getCharOriginName,
-    getCharClassName,
-    getCharSubClassName,
-    getCharSpeciesName,
-    getCharAlignment,
-    getCharSizeCategory,
-    getCharSize,
+    getName,
+    getExperience,
+    getOriginName,
+    getClassName,
+    getSubClassName,
+    getSpeciesName,
+    getAlignment,
+    getSizeCategory,
+    getSize,
     getChoiceSelections,
     getAbilities,
     getAbility,
     getEquipments,
-    setCharName,
-    setCharExperience,
-    setCharOriginName,
-    setCharClassName,
-    setCharSubClassName,
-    setCharSpeciesName,
+    setName,
+    setExperience,
+    setOriginName,
+    setClassName,
+    setSubClassName,
+    setSpeciesName,
     setAbilityScore,
     setChoiceSelections,
 

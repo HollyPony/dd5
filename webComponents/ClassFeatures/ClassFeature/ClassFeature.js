@@ -19,7 +19,7 @@ export class ClassFeature extends AbstractComponent {
     console.info('-- ClassFeature.connectedCallback')
 
     this.#accordionParent = this.dataset.accordion
-    this.#feature = charSheetStore.getCharClass()?.features.find(feature => feature.name === this.dataset.feature)
+    this.#feature = charSheetStore.getClass()?.features.find(feature => feature.name === this.dataset.feature)
 
     this.#titleElement = this.querySelector('.accordion-header > .feature-title')
     this.#titleElement.dataset.bsTarget = `#${this._id}`
@@ -40,14 +40,14 @@ export class ClassFeature extends AbstractComponent {
     while (this.#titleElement.firstChild) { this.#titleElement.removeChild(this.#titleElement.firstChild) }
     this.#titleElement.appendChild(t.md('components.ClassFeature.name', {
       level: this.#feature.atLevel,
-      featureName: t._(`statics.class-features.${charSheetStore.getCharClassName()}.${this.#feature.name}.name`)
+      featureName: t._(`statics.class-features.${charSheetStore.getClassName()}.${this.#feature.name}.name`)
     }))
   }
 
   #renderDescription() {
     while (this.#descriptionElement.firstChild) { this.#descriptionElement.removeChild(this.#descriptionElement.firstChild) }
     this.#descriptionElement.appendChild(
-      t.md(`statics.class-features.${charSheetStore.getCharClassName()}.${this.#feature.name}.description`)
+      t.md(`statics.class-features.${charSheetStore.getClassName()}.${this.#feature.name}.description`)
     )
   }
 

@@ -11,7 +11,7 @@ export class OriginSelect extends AbstractSelect {
   _registerEvents() {
     this._pushEvents(
       domSubscribe(this._selectElement, 'change', this.#selectChanged),
-      charSheetStore.on(charSheetProps.charOriginName, this._renderValue),
+      charSheetStore.on(charSheetProps.originName, this._renderValue),
     )
   }
 
@@ -28,12 +28,12 @@ export class OriginSelect extends AbstractSelect {
 
   _renderValue = () => {
     console.info('-- OriginSelect.#renderValue')
-    this._selectElement.value = charSheetStore.getCharOriginName() || ''
+    this._selectElement.value = charSheetStore.getOriginName() || ''
   }
 
   #selectChanged = ({ target: { value } }) => {
     console.info('-- OriginSelect.#selectChanged', value)
     // TODO: alert skills lost
-    charSheetStore.setCharOriginName(value)
+    charSheetStore.setOriginName(value)
   }
 }

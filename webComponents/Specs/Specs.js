@@ -30,8 +30,8 @@ export class Specs extends AbstractComponent {
       charSheetStore.onMap({
         [charSheetProps.initiative]: this.#renderInitiative,
         [charSheetProps.speed]: this.#renderSpeed,
-        [charSheetProps.charSizeCategory]: this.#renderSize,
-        [charSheetProps.charSize]: this.#renderSize,
+        [charSheetProps.sizeCategory]: this.#renderSize,
+        [charSheetProps.size]: this.#renderSize,
         [charSheetProps.passivePerception]: this.#renderPassivePerception,
       })
     )
@@ -47,17 +47,17 @@ export class Specs extends AbstractComponent {
   #renderSpeed = () => {
     console.info('Specs.#renderSpeed')
     if (this.#speedElement) {
-      this.#speedElement.value = charSheetStore.getCharSpeed()
+      this.#speedElement.value = charSheetStore.getSpeed()
     }
   }
 
   #renderSize = () => {
     console.info('Specs.#renderSize')
     if (this.#sizeCategoryElement) {
-      this.#sizeCategoryElement.value = charSheetStore.getCharSizeCategory()
+      this.#sizeCategoryElement.value = charSheetStore.getSizeCategory()
     }
     if (this.#sizeElement) {
-      this.#sizeElement.value = charSheetStore.getCharSize() || ''
+      this.#sizeElement.value = charSheetStore.getSize() || ''
     }
   }
 

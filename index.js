@@ -12,13 +12,13 @@ import registerWebComponents from './index.webmodules.js'
 // ELEMENTS TO UPDATE ///////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
-const charNameElement = document.getElementsByName('charName')[0]
-const charExperienceElement = document.getElementsByName('experiencepoints')[0]
-const charLevelElement = document.getElementsByName('charLevel')[0]
+const nameElement = document.getElementsByName('charName')[0]
+const experienceElement = document.getElementsByName('experiencepoints')[0]
+const levelElement = document.getElementsByName('charLevel')[0]
 const armorClassElement = document.getElementsByName('armorClass')[0]
 const hitPointMaxElement = document.getElementsByName('hitPointMax')[0]
 const hitDiceMaxElement = document.getElementsByName('hitDiceMax')[0]
-const charAlignmentElement = document.getElementsByName('alignment')[0]
+const alignmentElement = document.getElementsByName('alignment')[0]
 const exportCharLink = document.getElementById("exportCharLink")
 const importCharLink = document.getElementById("importCharLink")
 const importCharFileElement = document.getElementById("importCharFile")
@@ -59,16 +59,16 @@ function renderSavedCharSheets() {
 }
 
 function renderCharName() {
-  charNameElement.value = charSheetStore.getCharName()
-  replaceElement(currentCharacterName, charSheetStore.getCharName() || t._('navbar.unnamedCharacter'))
+  nameElement.value = charSheetStore.getName()
+  replaceElement(currentCharacterName, charSheetStore.getName() || t._('navbar.unnamedCharacter'))
 }
 
 function renderCharExperience() {
-  charExperienceElement.value = charSheetStore.getCharExperience()
+  experienceElement.value = charSheetStore.getExperience()
 }
 
 function renderCharLevel() {
-  charLevelElement.value = charSheetStore.getCharLevel()
+  levelElement.value = charSheetStore.getLevel()
 }
 
 function renderArmorClass() {
@@ -84,7 +84,7 @@ function renderHitDiceMax() {
 }
 
 function renderCharAlignment() {
-  charAlignmentElement.value = charSheetStore.getCharAlignment()
+  alignmentElement.value = charSheetStore.getAlignment()
 }
 
 function renderJSONOutput() {
@@ -169,7 +169,7 @@ function exportJSONClicked(event) {
     url = URL.createObjectURL(blob)
     const link = document.createElement('a')
 
-    link.download = charSheetStore.getCharName().replace(/[^a-zA-Z0-9 ]/g, '').trim() || 'TheCharacterWithNoName'
+    link.download = charSheetStore.getName().replace(/[^a-zA-Z0-9 ]/g, '').trim() || 'TheCharacterWithNoName'
     link.href = url
     link.click()
   } catch (error) {
@@ -183,12 +183,12 @@ function exportJSONClicked(event) {
   }
 }
 
-function charNameChanged({ target: { value } }) {
-  charSheetStore.setCharName(value)
+function nameChanged({ target: { value } }) {
+  charSheetStore.setName(value)
 }
 
-function charExperienceChanged({ target: { value } }) {
-  charSheetStore.setCharExperience(value)
+function experienceChanged({ target: { value } }) {
+  charSheetStore.setExperience(value)
 }
 
 function translationsChanged() {
@@ -212,12 +212,12 @@ const subscriptions = []
 function registerRenders() {
   subscriptions.push(
     ...charSheetStore.onMap({
-      [charSheetProps.charName]: [renderCharName],
-      [charSheetProps.charExperience]: [renderCharExperience],
-      [charSheetProps.charLevel]: [renderCharLevel, renderHitPointMax, renderHitDiceMax],
-      [charSheetProps.charClass]: [renderHitPointMax, renderHitDiceMax, renderArmorClass],
+      [charSheetProps.name]: [renderCharName],
+      [charSheetProps.experience]: [renderCharExperience],
+      [charSheetProps.level]: [renderCharLevel, renderHitPointMax, renderHitDiceMax],
+      [charSheetProps.class]: [renderHitPointMax, renderHitDiceMax, renderArmorClass],
       [charSheetProps.modifiers]: [renderHitPointMax, renderArmorClass],
-      [charSheetProps.charAlignment]: [renderCharAlignment],
+      [charSheetProps.alignment]: [renderCharAlignment],
       [charSheetProps.equiped]: [renderArmorClass],
       [charSheetProps.feats]: [renderArmorClass],
     }),
@@ -233,8 +233,8 @@ function registerDomEvents() {
     domSubscribe(importCharFileElement, 'change', importCharFileChanged),
     domSubscribe(savedCharactersList, 'click', savedCharacterClicked),
     domSubscribe(createCharacterLink, 'click', createCharacterClicked),
-    domSubscribe(charNameElement, 'input', charNameChanged),
-    domSubscribe(charExperienceElement, 'change', charExperienceChanged),
+    domSubscribe(nameElement, 'input', nameChanged),
+    domSubscribe(experienceElement, 'change', experienceChanged),
     domSubscribe(debugModal, 'show.bs.modal', renderJSONOutput),
 
     domSubscribe(window, 'pagehide', pageHided),

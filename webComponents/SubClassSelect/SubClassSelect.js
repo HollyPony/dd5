@@ -13,9 +13,9 @@ export class SubClassSelect extends AbstractSelect {
       domSubscribe(this._selectElement, 'change', this.#selectChanged),
       // TODO: avoid *change and use subscribeMany on selective refresh
       charSheetStore.onMap({
-        [charSheetProps.charLevel]: [this.#charLevelChanged],
-        [charSheetProps.charClassName]: [this.#charClassChanged],
-        [charSheetProps.charSubClassName]: [this._renderValue],
+        [charSheetProps.level]: [this.#levelChanged],
+        [charSheetProps.className]: [this.#classChanged],
+        [charSheetProps.subClassName]: [this._renderValue],
       }),
     )
   }
@@ -24,36 +24,36 @@ export class SubClassSelect extends AbstractSelect {
     console.info('-- SubClassSelect.#renderList')
     populateSelect(
       this._selectElement,
-      getSubClasses(charSheetStore.getCharClassName()).map(subClassName => ({
+      getSubClasses(charSheetStore.getClassName()).map(subClassName => ({
         value: subClassName,
-        text: t._(`statics.subClasses.${charSheetStore.getCharClassName()}.${subClassName}`),
+        text: t._(`statics.subClasses.${charSheetStore.getClassName()}.${subClassName}`),
       })),
       {
-        placeholder: t._((charSheetStore.getCharLevel() < 3 || !charSheetStore.getCharClassName()) ? `subClasses.select.unavailable` : `subClasses.select.chooseOne`)
+        placeholder: t._((charSheetStore.getLevel() < 3 || !charSheetStore.getClassName()) ? `subClasses.select.unavailable` : `subClasses.select.chooseOne`)
       }
     )
   }
 
   _renderValue = () => {
     console.info('-- SubClassSelect.#renderValue')
-    this._selectElement.value = charSheetStore.getCharLevel() > 2 && charSheetStore.getCharSubClassName() || ''
-    this._selectElement.disabled = charSheetStore.getCharLevel() < 3
+    this._selectElement.value = charSheetStore.getLevel() > 2 && charSheetStore.getSubClassName() || ''
+    this._selectElement.disabled = charSheetStore.getLevel() < 3
   }
 
   #selectChanged = ({ target: { value } }) => {
     console.info('-- SubClassSelect.#selectChanged', value)
     // TODO: alert skills lost
-    charSheetStore.setCharSubClassName(value)
+    charSheetStore.setSubClassName(value)
   }
 
-  #charLevelChanged = () => {
-    console.info('-- SubClassSelect.#charLevelChanged')
+  #levelChanged = () => {
+    console.info('-- SubClassSelect.#levelChanged')
     this._renderList()
     this._renderValue()
   }
 
-  #charClassChanged = () => {
-    console.info('-- SubClassSelect.#charClassChanged')
+  #classChanged = () => {
+    console.info('-- SubClassSelect.#classChanged')
     this._renderList()
     this._renderValue()
   }

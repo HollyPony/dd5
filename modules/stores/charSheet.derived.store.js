@@ -1,6 +1,6 @@
-﻿import getClass from '../data/classes.js'
-import getOrigin from '../data/origins.js'
-import getSpecies from '../data/species.js'
+import getClassData from '../data/classes.js'
+import getOriginData from '../data/origins.js'
+import getSpeciesData from '../data/species.js'
 import { ABILITIES, DICE, EFFECTS, SKILL_ABILITY, SKILLS } from '../common.js'
 import { EQUIPED_CATEGORY, EQUIPMENT_TYPE, getEquipment } from '../data/equipments.js'
 import { getLevelFromExperience } from '../data/leveling.js'
@@ -13,15 +13,15 @@ import properties from './charSheet.derived.properties.js'
 
 const initialData = {
   ...authorityInitialData,
-  [properties.charLevel]: 1,
+  [properties.level]: 1,
   [properties.proficiencyBonus]: 0,
   [properties.skills]: {},
   [properties.initiative]: 0,
   [properties.speed]: 10,
   [properties.passivePerception]: 10,
-  [properties.charClass]: null,
-  [properties.charOrigin]: null,
-  [properties.charSpecies]: null,
+  [properties.class]: null,
+  [properties.origin]: null,
+  [properties.species]: null,
   [properties.modifiers]: s({
     [ABILITIES.strength]: 0,
     [ABILITIES.dexterity]: 0,
@@ -78,31 +78,31 @@ function computeModifiers(abilities) {
   return modifiers
 }
 
-function computeSaves(abilities, modifiers, charClass, proficiencyBonus) {
+function computeSaves(abilities, modifiers, classData, proficiencyBonus) {
   const isEnumerable = Object.prototype.propertyIsEnumerable
   const saves = {}
 
   for (const ability of Reflect.ownKeys(abilities)) {
     if (!isEnumerable.call(abilities, ability)) continue
-    saves[ability] = modifiers[ability] + (charClass?.saves?.includes(ability) ? proficiencyBonus : 0)
+    saves[ability] = modifiers[ability] + (classData?.saves?.includes(ability) ? proficiencyBonus : 0)
   }
 
   return saves
 }
 
 // TODO: take armor strength + update on armor change
-function computeCharSpeed({
-  charSpecies,
-  charClass,
+function computeSpeed({
+  speciesData,
+  classData,
   equiped,
   feats = [],
   strength,
 }) {
-  let speed = charSpecies?.speed || 0
+  let speed = speciesData?.speed || 0
   const equipedArmor = equiped?.[EQUIPED_CATEGORY.ARMOR]
   const equipedShield = equiped?.[EQUIPED_CATEGORY.SHIELD]
 
-  applyEffect(charClass, EFFECTS.SpeedModifierEffect, { speed, equipedArmor, equipedShield }, result => speed = result)
+  applyEffect(classData, EFFECTS.SpeedModifierEffect, { speed, equipedArmor, equipedShield }, result => speed = result)
 
   // Heavy rule
   if (equipedArmor?.strength
@@ -118,8 +118,8 @@ function computePassivePerception(skills = {}) {
   return (skills?.[SKILLS.perception]?.score ?? 0) + 10
 }
 
-function computeSkills(proficiencyBonus, modifiers, charOrigin, choiceSelections) {
-  const originSkills = charOrigin?.skills ?? []
+function computeSkills(proficiencyBonus, modifiers, originData, choiceSelections) {
+  const originSkills = originData?.skills ?? []
 
   const selectedSkills = Object.values(choiceSelections)
     .filter(choiceSelection => choiceSelection?.choice?.target === properties.skills)
@@ -169,22 +169,22 @@ function createCharSheetStore() {
   const store = createStore(initialData, createEventBus())
   const { get, set, } = store
 
-  function computeCharName() {
-    set({ [properties.charName]: authorityStore.getCharName() })
+  function computeName() {
+    set({ [properties.name]: authorityStore.getName() })
   }
 
   function computeExperience() {
     const modifiers = getModifiers()
 
-    const charExperience = authorityStore.getCharExperience()
-    const charLevel = getLevelFromExperience(charExperience)
-    const proficiencyBonus = computeProficiencyBonus(charLevel)
-    const charClass = getClass(authorityStore.getCharClassName(), authorityStore.getCharSubClassName(), charLevel)
-    const charSpecies = getSpecies(authorityStore.getCharSpeciesName(), charLevel)
-    const saves = computeSaves(authorityStore.getAbilities(), modifiers, charClass, proficiencyBonus)
-    const speed = computeCharSpeed({
-      charSpecies,
-      charClass,
+    const experience = authorityStore.getExperience()
+    const level = getLevelFromExperience(experience)
+    const proficiencyBonus = computeProficiencyBonus(level)
+    const classData = getClassData(authorityStore.getClassName(), authorityStore.getSubClassName(), level)
+    const speciesData = getSpeciesData(authorityStore.getSpeciesName(), level)
+    const saves = computeSaves(authorityStore.getAbilities(), modifiers, classData, proficiencyBonus)
+    const speed = computeSpeed({
+      speciesData,
+      classData,
       equiped: getEquiped(),
       feats: getFeats(),
       strength: authorityStore.getAbility(ABILITIES.strength),
@@ -192,17 +192,17 @@ function createCharSheetStore() {
     const skills = computeSkills(
       proficiencyBonus,
       modifiers,
-      getCharOrigin(),
+      getOrigin(),
       getChoiceSelections(),
     )
     const passivePerception = computePassivePerception(skills)
 
     set({
-      [properties.charExperience]: charExperience,
-      [properties.charLevel]: charLevel,
+      [properties.experience]: experience,
+      [properties.level]: level,
       [properties.proficiencyBonus]: proficiencyBonus,
-      [properties.charClass]: charClass,
-      [properties.charSpecies]: charSpecies,
+      [properties.class]: classData,
+      [properties.species]: speciesData,
       [properties.saves]: saves,
       [properties.speed]: speed,
       [properties.passivePerception]: passivePerception,
@@ -211,61 +211,61 @@ function createCharSheetStore() {
   }
 
   function computeClass() {
-    const charClass = getClass(authorityStore.getCharClassName(), authorityStore.getCharSubClassName(), getCharLevel())
-    const speed = computeCharSpeed({
-      charSpecies: getCharSpecies(),
-      charClass,
+    const classData = getClassData(authorityStore.getClassName(), authorityStore.getSubClassName(), getLevel())
+    const speed = computeSpeed({
+      speciesData: getSpecies(),
+      classData,
       equiped: getEquiped(),
       feats: getFeats(),
       strength: authorityStore.getAbility(ABILITIES.strength),
     })
     set({
-      [properties.charClassName]: authorityStore.getCharClassName(),
-      [properties.charSubClassName]: authorityStore.getCharSubClassName(),
-      [properties.charClass]: charClass,
-      [properties.saves]: computeSaves(authorityStore.getAbilities(), getModifiers(), charClass, getProficiencyBonus()),
+      [properties.className]: authorityStore.getClassName(),
+      [properties.subClassName]: authorityStore.getSubClassName(),
+      [properties.class]: classData,
+      [properties.saves]: computeSaves(authorityStore.getAbilities(), getModifiers(), classData, getProficiencyBonus()),
       [properties.speed]: speed,
     })
   }
 
   function computeSpecies() {
-    const charSpecies = getSpecies(authorityStore.getCharSpeciesName(), getCharLevel())
-    const speed = computeCharSpeed({
-      charSpecies,
-      charClass: getCharClass(),
+    const speciesData = getSpeciesData(authorityStore.getSpeciesName(), getLevel())
+    const speed = computeSpeed({
+      speciesData,
+      classData: getClass(),
       equiped: getEquiped(),
       feats: getFeats(),
       strength: authorityStore.getAbility(ABILITIES.strength),
     })
     set({
-      [properties.charSpeciesName]: authorityStore.getCharSpeciesName(),
-      [properties.charSpecies]: charSpecies,
+      [properties.speciesName]: authorityStore.getSpeciesName(),
+      [properties.species]: speciesData,
       [properties.speed]: speed,
     })
   }
 
   function computeAlignment() {
-    set({ [properties.charAlignment]: authorityStore.getCharAlignment() })
+    set({ [properties.alignment]: authorityStore.getAlignment() })
   }
 
   function computeSizeCategory() {
-    set({ [properties.charSizeCategory]: authorityStore.getCharSizeCategory() })
+    set({ [properties.sizeCategory]: authorityStore.getSizeCategory() })
   }
 
   function computeSize() {
-    set({ [properties.charSize]: authorityStore.getCharSize() })
+    set({ [properties.size]: authorityStore.getSize() })
   }
 
   // TODO: remove and implement in each listeners
   function computeChoicesState() {
-    const charLevel = getLevelFromExperience(authorityStore.getCharExperience())
-    const proficiencyBonus = computeProficiencyBonus(charLevel)
-    const charOrigin = getOrigin(authorityStore.getCharOriginName())
+    const level = getLevelFromExperience(authorityStore.getExperience())
+    const proficiencyBonus = computeProficiencyBonus(level)
+    const originData = getOriginData(authorityStore.getOriginName())
     const choiceSelections = authorityStore.getChoiceSelections()
     const skills = computeSkills(
       proficiencyBonus,
       getModifiers(),
-      charOrigin,
+      originData,
       choiceSelections,
     )
     const passivePerception = computePassivePerception(skills)
@@ -278,17 +278,17 @@ function createCharSheetStore() {
   }
 
   function computeOrigin() {
-    const charOrigin = getOrigin(authorityStore.getCharOriginName())
+    const originData = getOriginData(authorityStore.getOriginName())
     const skills = computeSkills(
       getProficiencyBonus(),
       getModifiers(),
-      charOrigin,
+      originData,
       getChoiceSelections(),
     )
     const passivePerception = computePassivePerception(skills)
     set({
-      [properties.charOriginName]: authorityStore.getCharOriginName(),
-      [properties.charOrigin]: charOrigin,
+      [properties.originName]: authorityStore.getOriginName(),
+      [properties.origin]: originData,
       [properties.passivePerception]: passivePerception,
       [properties.skills]: skills,
     })
@@ -297,11 +297,11 @@ function createCharSheetStore() {
   function computeAbilities() {
     const abilities = authorityStore.getAbilities()
     const modifiers = computeModifiers(abilities)
-    const saves = computeSaves(abilities, modifiers, getCharClass(), getProficiencyBonus())
+    const saves = computeSaves(abilities, modifiers, getClass(), getProficiencyBonus())
     const initiative = modifiers[ABILITIES.dexterity]
-    const speed = computeCharSpeed({
-      charSpecies: getCharSpecies(),
-      charClass: getCharClass(),
+    const speed = computeSpeed({
+      speciesData: getSpecies(),
+      classData: getClass(),
       equiped: getEquiped(),
       feats: getFeats(),
       strength: abilities[ABILITIES.strength],
@@ -309,7 +309,7 @@ function createCharSheetStore() {
     const skills = computeSkills(
       getProficiencyBonus(),
       modifiers,
-      getCharOrigin(),
+      getOrigin(),
       getChoiceSelections(),
     )
     const passivePerception = computePassivePerception(skills)
@@ -326,9 +326,9 @@ function createCharSheetStore() {
 
   function computeEquipments() {
     const equiped = computeEquiped(authorityStore.getEquipments())
-    const speed = computeCharSpeed({
-      charSpecies: getCharSpecies(),
-      charClass: getCharClass(),
+    const speed = computeSpeed({
+      speciesData: getSpecies(),
+      classData: getClass(),
       equiped,
       feats: getFeats(),
       strength: authorityStore.getAbility(ABILITIES.strength),
@@ -341,35 +341,35 @@ function createCharSheetStore() {
   }
 
   authorityStore.onMap({
-    [properties.charName]: [computeCharName],
-    [properties.charExperience]: [computeExperience, computeChoicesState],
-    [properties.charOriginName]: [computeOrigin, computeChoicesState],
-    [properties.charClassName]: [computeClass, computeChoicesState],
-    [properties.charSubClassName]: [computeClass, computeChoicesState],
-    [properties.charSpeciesName]: [computeSpecies],
-    [properties.charAlignment]: [computeAlignment],
-    [properties.charSizeCategory]: [computeSizeCategory],
-    [properties.charSize]: [computeSize],
+    [properties.name]: [computeName],
+    [properties.experience]: [computeExperience, computeChoicesState],
+    [properties.originName]: [computeOrigin, computeChoicesState],
+    [properties.className]: [computeClass, computeChoicesState],
+    [properties.subClassName]: [computeClass, computeChoicesState],
+    [properties.speciesName]: [computeSpecies],
+    [properties.alignment]: [computeAlignment],
+    [properties.sizeCategory]: [computeSizeCategory],
+    [properties.size]: [computeSize],
     [properties.choiceSelections]: [computeChoicesState],
     [properties.abilities]: [computeAbilities],
     [properties.equipments]: [computeEquipments],
   });
 
   (function initState() {
-    const charExperience = authorityStore.getCharExperience()
-    const charLevel = getLevelFromExperience(charExperience)
-    const charClass = getClass(authorityStore.getCharClassName(), authorityStore.getCharSubClassName(), charLevel)
-    const charOrigin = getOrigin(authorityStore.getCharOriginName())
-    const charSpecies = getSpecies(authorityStore.getCharSpeciesName(), charLevel)
+    const experience = authorityStore.getExperience()
+    const level = getLevelFromExperience(experience)
+    const classData = getClassData(authorityStore.getClassName(), authorityStore.getSubClassName(), level)
+    const originData = getOriginData(authorityStore.getOriginName())
+    const speciesData = getSpeciesData(authorityStore.getSpeciesName(), level)
     const modifiers = computeModifiers(authorityStore.getAbilities())
-    const proficiencyBonus = computeProficiencyBonus(charLevel)
+    const proficiencyBonus = computeProficiencyBonus(level)
     const choiceSelections = authorityStore.getChoiceSelections()
-    const saves = computeSaves(authorityStore.getAbilities(), modifiers, charClass, proficiencyBonus)
+    const saves = computeSaves(authorityStore.getAbilities(), modifiers, classData, proficiencyBonus)
     const initiative = modifiers[ABILITIES.dexterity]
     const equiped = computeEquiped(authorityStore.getEquipments())
-    const speed = computeCharSpeed({
-      charSpecies,
-      charClass,
+    const speed = computeSpeed({
+      speciesData,
+      classData,
       equiped,
       feats: initialData[properties.feats],
       strength: authorityStore.getAbility(ABILITIES.strength),
@@ -377,31 +377,31 @@ function createCharSheetStore() {
     const skills = computeSkills(
       proficiencyBonus,
       modifiers,
-      charOrigin,
+      originData,
       choiceSelections,
     )
     const passivePerception = computePassivePerception(skills)
 
     set({
-      [properties.charName]: authorityStore.getCharName(),
-      [properties.charExperience]: charExperience,
-      [properties.charClassName]: authorityStore.getCharClassName(),
-      [properties.charSubClassName]: authorityStore.getCharSubClassName(),
-      [properties.charOriginName]: authorityStore.getCharOriginName(),
-      [properties.charSpeciesName]: authorityStore.getCharSpeciesName(),
-      [properties.charAlignment]: authorityStore.getCharAlignment(),
-      [properties.charSizeCategory]: authorityStore.getCharSizeCategory(),
-      [properties.charSize]: authorityStore.getCharSize(),
+      [properties.name]: authorityStore.getName(),
+      [properties.experience]: experience,
+      [properties.className]: authorityStore.getClassName(),
+      [properties.subClassName]: authorityStore.getSubClassName(),
+      [properties.originName]: authorityStore.getOriginName(),
+      [properties.speciesName]: authorityStore.getSpeciesName(),
+      [properties.alignment]: authorityStore.getAlignment(),
+      [properties.sizeCategory]: authorityStore.getSizeCategory(),
+      [properties.size]: authorityStore.getSize(),
       [properties.abilities]: authorityStore.getAbilities(),
       [properties.choiceSelections]: choiceSelections,
       [properties.equipments]: authorityStore.getEquipments(),
 
-      [properties.charLevel]: charLevel,
+      [properties.level]: level,
       [properties.proficiencyBonus]: proficiencyBonus,
       [properties.initiative]: initiative,
-      [properties.charClass]: charClass,
-      [properties.charOrigin]: charOrigin,
-      [properties.charSpecies]: charSpecies,
+      [properties.class]: classData,
+      [properties.origin]: originData,
+      [properties.species]: speciesData,
       [properties.modifiers]: modifiers,
       [properties.saves]: saves,
       [properties.speed]: speed,
@@ -412,11 +412,11 @@ function createCharSheetStore() {
     })
   })()
 
-  function getCharLevel() { return get(properties.charLevel) }
+  function getLevel() { return get(properties.level) }
   function getProficiencyBonus() { return get(properties.proficiencyBonus) }
-  function getCharClass() { return get(properties.charClass) }
-  function getCharOrigin() { return get(properties.charOrigin) }
-  function getCharSpecies() { return get(properties.charSpecies) }
+  function getClass() { return get(properties.class) }
+  function getOrigin() { return get(properties.origin) }
+  function getSpecies() { return get(properties.species) }
   function getSkills() { return get(properties.skills) }
   function getSkill(skill) { return getSkills()?.[skill] }
   function getChoiceSelections() { return get(properties.choiceSelections) }
@@ -430,10 +430,10 @@ function createCharSheetStore() {
   function getEquiped(category = null) { return category ? get(properties.equiped)[category] : get(properties.equiped) }
   function getFeats() { return get(properties.feats) }
 
-  function getCharSpeed() { return get(properties.speed) }
+  function getSpeed() { return get(properties.speed) }
 
   function getWeaponProficiencies() { // TODO: move to set state
-    const proficienciesByCategory = getCharClass()?.weaponProficiencies ?? {}
+    const proficienciesByCategory = getClass()?.weaponProficiencies ?? {}
     const isEnumerable = Object.prototype.propertyIsEnumerable
     const proficiencies = []
 
@@ -448,12 +448,12 @@ function createCharSheetStore() {
   function getArmorProficiencies() {
     // TODO: armor category check ?
     // TODO: armor has malus effect if equiped without proficiency - display it
-    const classArmorProficiencies = getCharClass()?.armorProficiencies
+    const classArmorProficiencies = getClass()?.armorProficiencies
     applyEffects(getFeats(), EFFECTS.HasArmorProficiencyEffect, {}, result => classArmorProficiencies.push(result))
     return classArmorProficiencies
   }
   function getShieldProficiency() {
-    return (getCharClass()?.shieldProficiency ?? false)
+    return (getClass()?.shieldProficiency ?? false)
       || (getFeats()?.some(feat => feat?.effects?.[EFFECTS.HasShieldProficiencyEffect]))
   }
 
@@ -479,7 +479,7 @@ function createCharSheetStore() {
     applyEffect(equipedArmor, EFFECTS.ACOverrideEffect, { modifiers }, result => ac = result)
 
     // Apply class features effects
-    applyEffects(getCharClass()?.features, EFFECTS.ACOverrideEffect, { ac, equipedArmor, equipedShield, modifiers }, result => ac = result)
+    applyEffects(getClass()?.features, EFFECTS.ACOverrideEffect, { ac, equipedArmor, equipedShield, modifiers }, result => ac = result)
 
     // Apply feats modifier
     // TODO: Never tested
@@ -498,13 +498,13 @@ function createCharSheetStore() {
 
   function getHitPointMax() {
     const constitution = getModifier(ABILITIES.constitution)
-    const hpBase = (getCharClass()?.hitPointMax.base ?? 0) + constitution // P.41
-    const hpPerLevel = (getCharClass()?.hitPointMax.addPerLevel ?? 0) + constitution
-    const additionalHp = hpPerLevel * (getCharLevel() - 1) // P.43
+    const hpBase = (getClass()?.hitPointMax.base ?? 0) + constitution // P.41
+    const hpPerLevel = (getClass()?.hitPointMax.addPerLevel ?? 0) + constitution
+    const additionalHp = hpPerLevel * (getLevel() - 1) // P.43
     return hpBase + additionalHp
   }
 
-  function getHitDiceMax() { return DICE(getCharLevel(), getCharClass()?.hitDice ?? 100) }
+  function getHitDiceMax() { return DICE(getLevel(), getClass()?.hitDice ?? 100) }
 
   function getChoicePayload(selector) {
     return getChoiceSelections()[getSelectorKey(selector)]?.payload ?? null
@@ -522,22 +522,22 @@ function createCharSheetStore() {
   }
 
   return {
-    getCharName: () => get(properties.charName),
-    getCharExperience: () => get(properties.charExperience),
-    getCharOriginName: () => get(properties.charOriginName),
-    getCharClassName: () => get(properties.charClassName),
-    getCharSubClassName: () => get(properties.charSubClassName),
-    getCharSpeciesName: () => get(properties.charSpeciesName),
-    getCharAlignment: () => get(properties.charAlignment),
-    getCharSizeCategory: () => get(properties.charSizeCategory),
-    getCharSize: () => get(properties.charSize),
+    getName: () => get(properties.name),
+    getExperience: () => get(properties.experience),
+    getOriginName: () => get(properties.originName),
+    getClassName: () => get(properties.className),
+    getSubClassName: () => get(properties.subClassName),
+    getSpeciesName: () => get(properties.speciesName),
+    getAlignment: () => get(properties.alignment),
+    getSizeCategory: () => get(properties.sizeCategory),
+    getSize: () => get(properties.size),
     getAbility: authorityStore.getAbility,
 
-    getCharLevel,
+    getLevel,
     getProficiencyBonus,
-    getCharClass,
-    getCharOrigin,
-    getCharSpecies,
+    getClass,
+    getOrigin,
+    getSpecies,
     getChoiceSelections, getChoicePayload,
     getModifier,
     getSave,
@@ -545,7 +545,7 @@ function createCharSheetStore() {
     getSkill,
     getEquiped,
     getInitiative,
-    getCharSpeed,
+    getSpeed,
     getPassivePerception,
     getWeaponProficiencies,
     getArmorProficiencies,
@@ -555,16 +555,16 @@ function createCharSheetStore() {
     getHitDiceMax,
 
     // TODO: Implement this later
-    // setCharAlignment: savedStore.setCharAlignment,
-    // setCharSizeCategory: savedStore.setCharSizeCategory,
-    // setCharSize: savedStore.setCharSize,
+    // setAlignment: savedStore.setAlignment,
+    // setSizeCategory: savedStore.setSizeCategory,
+    // setSize: savedStore.setSize,
 
-    setCharName: authorityStore.setCharName,
-    setCharExperience: authorityStore.setCharExperience,
-    setCharOriginName: authorityStore.setCharOriginName,
-    setCharClassName: authorityStore.setCharClassName,
-    setCharSubClassName: authorityStore.setCharSubClassName,
-    setCharSpeciesName: authorityStore.setCharSpeciesName,
+    setName: authorityStore.setName,
+    setExperience: authorityStore.setExperience,
+    setOriginName: authorityStore.setOriginName,
+    setClassName: authorityStore.setClassName,
+    setSubClassName: authorityStore.setSubClassName,
+    setSpeciesName: authorityStore.setSpeciesName,
     setAbilityScore: authorityStore.setAbilityScore,
 
     getChoicePayload, setPayloadToSelection,
