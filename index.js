@@ -150,7 +150,6 @@ async function importCharFileChanged({ target: { files } }) {
 
   try {
     const jsonText = await files[0].text()
-    // TODO: ask for new or erase current. Currently it default to new
     charSheetService.importJSON(jsonText)
   } catch (error) {
     new TechnicalError(error)
