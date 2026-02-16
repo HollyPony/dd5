@@ -1115,7 +1115,7 @@ const tools = f([ // P.221
       WEAPONS.whip, WEAPONS.sling,
       ARMORS.leather, ARMORS.studdedLeather, ARMORS.hideArmor,
       GEARS.quiver, GEARS.caseCrossbowBolt, GEARS.caseMapOrScroll,
-      GEARS.waterskin, GEARS.scroll, GEARS.pouch, GEARS.backpack,
+      GEARS.waterskin, GEARS.spellScroll, GEARS.pouch, GEARS.backpack,
     ],
   },
   {
