@@ -29,16 +29,17 @@ function load(id) {
   charSheetStore.init(charSheet)
 }
 
-function save() {
-  return charSheetStorage.save(charSheetStore.get())
+function save(notify) {
+  return charSheetStorage.save(charSheetStore.get(), notify)
 }
 
 function importJSON(json) {
   const entry = charSheetStorage.fromJSONEntry(json)
   const resume = autosaveEventTarget?.mute()
   try {
+    charSheetStorage.create(entry.id, { notify: 'mute' })
     charSheetStore.init(entry.data)
-    save()
+    save({ notify: 'force' })
   } finally {
     resume?.()
   }

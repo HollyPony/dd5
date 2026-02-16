@@ -18,7 +18,15 @@ const storage = createLocalStorage(PREFIX_KEY)
 const CHAR_LIST_CHANGED = 'charListChanged'
 const eventBus = createEventBus()
 
-let currentId = undefined
+let _currentId = undefined
+function setCurrentId(id, { notify = '' } = {}) {
+  const changed = id !== _currentId
+  _currentId = id
+  if (notify !== 'mute' && (changed || notify === 'force')) eventBus.emit(CHAR_LIST_CHANGED)
+}
+function getCurrentId() {
+  return _currentId
+}
 
 const serializeSymbols = (() => {
   function serializeSymbol(symbol) {
@@ -139,7 +147,7 @@ function buildSaveKey(id) {
 }
 
 function getList(includeCurrent = true) {
-  return storage.getJSONItem(CHARACTER_LIST_KEY)?.filter(item => includeCurrent || item.id !== currentId) ?? []
+  return storage.getJSONItem(CHARACTER_LIST_KEY)?.filter(item => includeCurrent || item.id !== getCurrentId()) ?? []
 }
 
 function setCharSheetsList(charList) {
@@ -151,9 +159,8 @@ function getLastSaveId() {
     .sort((a, b) => (b?.updatedAt ?? 0) - (a?.updatedAt ?? 0))[0]?.id
 }
 
-function create(id) {
-  currentId = id?.trim?.() || crypto.randomUUID()
-  eventBus.emit(CHAR_LIST_CHANGED)
+function create(id, notify) {
+  setCurrentId(id?.trim?.() || crypto.randomUUID(), notify)
 }
 
 function get(id) {
@@ -164,16 +171,13 @@ function get(id) {
     item.id === id ? { ...item, updatedAt: Date.now() } : item
   ))
 
-  const shouldNotify = currentId !== id
-  currentId = id
-
-  if (shouldNotify) eventBus.emit(CHAR_LIST_CHANGED)
+  setCurrentId(id)
   return entry.data
 }
 
-function save(charSheet) {
+function save(charSheet, notify) {
   const entry = {
-    id: currentId ?? crypto.randomUUID(),
+    id: getCurrentId() ?? crypto.randomUUID(),
     name: charSheet?.[properties.charName]?.toString()?.trim()
       || 'Unamed', // TODO: translate it or generateid,
     updatedAt: Date.now(),
@@ -192,7 +196,7 @@ function save(charSheet) {
 
   setCharSheetsList(charList)
 
-  currentId = entry.id
+  setCurrentId(entry.id, notify)
   return entry
 }
 
@@ -200,12 +204,11 @@ function remove(id) {
   storage.removeItem(buildSaveKey(id))
   setCharSheetsList(getList().filter(item => item.id !== id))
 
-  currentId = undefined
-  eventBus.emit(CHAR_LIST_CHANGED)
+  setCurrentId(undefined)
 }
 
 function getCurrentSaveRaw() {
-  return storage.getItem(buildSaveKey(currentId))
+  return storage.getItem(buildSaveKey(getCurrentId()))
 }
 
 export default {
