@@ -19,6 +19,7 @@
 ## Features
 
 - Project is a Character Sheet creator / editor for d&d 5e 2024.
+- Check ROADMAP.md if up-to-date
 
 ## Design
 
