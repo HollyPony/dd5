@@ -4,6 +4,7 @@
 
 ## Technical
 
+- Use errors from errors.js not built-ins
 - Project is browser-only only target
 - Project has no tests. Do not search or try them
 - Code is fail-fast oriented.
@@ -13,6 +14,7 @@
 - Do not run repository-wide formatting/normalization commands unless explicitly requested
 - If you modify or create a function, signature or behaviour, think to update the associated JSDoc
 - When you assert Errors, use defined in errors.js or create one accordingly
+- Do not soft fallback on bad entries
 
 ## Features
 
