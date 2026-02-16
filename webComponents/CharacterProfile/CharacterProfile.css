@@ -1,0 +1,8 @@
+.character-profile .placeholder-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.character-profile .placeholder-field {
+  opacity: 0.9;
+}

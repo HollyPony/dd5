@@ -17,6 +17,10 @@ import { AppNavbar } from './webComponents/AppNavbar/AppNavbar.js'
 import { Vitals } from './webComponents/Vitals/Vitals.js'
 import { CommonInformations } from './webComponents/CommonInformations/CommonInformations.js'
 import { LevelArmor } from './webComponents/LevelArmor/LevelArmor.js'
+import { CharacterProfile } from './webComponents/CharacterProfile/CharacterProfile.js'
+import { Spellbook } from './webComponents/Spellbook/Spellbook.js'
+import { Backpack } from './webComponents/Backpack/Backpack.js'
+import { Currency } from './webComponents/Currency/Currency.js'
 
 export default function registerWebComponents() {
   Ability.register()
@@ -38,4 +42,8 @@ export default function registerWebComponents() {
   Vitals.register()
   CommonInformations.register()
   LevelArmor.register()
+  CharacterProfile.register()
+  Spellbook.register()
+  Backpack.register()
+  Currency.register()
 }

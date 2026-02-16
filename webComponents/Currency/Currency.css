@@ -1,0 +1,13 @@
+.currency .currency-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(56px, 1fr));
+  gap: 0.5rem;
+}
+
+.currency .currency-item {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.75rem;
+  gap: 0.25rem;
+  text-align: center;
+}
