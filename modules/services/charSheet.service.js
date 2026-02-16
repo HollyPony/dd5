@@ -44,8 +44,8 @@ function importJSON(json) {
   }
 }
 
-function getJSONEntry() {
-  return charSheetStorage.toJSONEntry(charSheetStore.get())
+function getJSONEntry(space) {
+  return JSON.stringify(JSON.parse(charSheetStorage.getCurrentSaveRaw()), null, space)
 }
 
 export default {

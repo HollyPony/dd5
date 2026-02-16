@@ -88,7 +88,7 @@ function renderCharAlignment() {
 }
 
 function renderJSONOutput() {
-  const defaultOpenLevels = 1
+  const defaultOpenLevels = 2
   function renderJsonTree(value, keyLabel, level = 0) {
     const type = Array.isArray(value) ? 'array' : (value === null ? 'null' : typeof value)
 
@@ -120,7 +120,7 @@ function renderJSONOutput() {
   }
   // TODO: render by tab state / savedState format
   // jsonOutputElement.replaceChildren(renderJsonTree(charSheetStore.get()))
-  debugOutputElement.replaceChildren(renderJsonTree(charSheetService.getJSONEntry()))
+  debugOutputElement.replaceChildren(renderJsonTree(JSON.parse(charSheetService.getJSONEntry())))
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -164,7 +164,7 @@ function exportJSONClicked(event) {
 
   let url
   try {
-    const json = charSheetService.getJSONEntry()
+    const json = charSheetService.getJSONEntry(2)
 
     const blob = new Blob([json], { type: "application/json" })
     url = URL.createObjectURL(blob)
