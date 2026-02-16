@@ -1,4 +1,4 @@
-import { Enum } from '../helpers.js'
+import { Enum } from '../enum.js'
 
 export default Enum({
   charName: Symbol.for('AUTHORITY_PROPERTIES.charName'),

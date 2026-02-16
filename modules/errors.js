@@ -25,31 +25,6 @@ export function InvalidSubClassNameError(subClassName, className, ...props) {
   })
 }
 
-export function BadDiceError(dice, ...props) {
-  return createCustomError({
-    name: 'BadDiceError',
-    message: `Dice '${dice}' is not does not exist`,
-    data: { dice },
-    args: props,
-  })
-}
-
-export function UnknownSkillError(skill, ...props) {
-  return createCustomError({
-    name: 'UnknownSkillError',
-    message: `Unknown skill '${skill}'`,
-    args: props,
-  })
-}
-
-export function UnknownAbilityError(ability, ...props) {
-  return createCustomError({
-    name: 'UnknownAbilityError',
-    message: `Unknown ability '${ability}'`,
-    args: props,
-  })
-}
-
 export function MissingPathError(message, ...props) {
   return createCustomError({
     name: 'MissingPathError',
@@ -62,6 +37,22 @@ export function StorageError(message, ...props) {
   return createCustomError({
     name: 'StorageError',
     message: message || 'Storage error',
+    args: props,
+  })
+}
+
+export function InvalidObjectTargetError(targetType, ...props) {
+  return createCustomError({
+    name: 'InvalidObjectTargetError',
+    message: `Invalid object target type '${targetType}'`,
+    args: props,
+  })
+}
+
+export function UnknownObjectPropertyError(prop, objectName = 'Object', ...props) {
+  return createCustomError({
+    name: 'UnknownObjectPropertyError',
+    message: `Unknown property '${String(prop)}' on '${objectName}'`,
     args: props,
   })
 }

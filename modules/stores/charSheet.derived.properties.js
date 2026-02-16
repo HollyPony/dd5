@@ -1,4 +1,4 @@
-import { Enum } from '../helpers.js'
+import { Enum } from '../enum.js'
 import authorityProperties from './charSheet.authority.properties.js'
 
 export default Enum(Object.assign({

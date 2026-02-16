@@ -1,5 +1,4 @@
-﻿import { UnknownAbilityError } from '../../modules/errors.js'
-import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
+﻿import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
 import { ABILITIES, SKILL_ABILITY } from '../../modules/common.js'
@@ -23,7 +22,6 @@ export class Ability extends AbstractComponent {
     console.info('-- Ability.connectedCallback')
 
     this.#ability = ABILITIES[this.dataset.ability]
-    if (!this.#ability) throw new UnknownAbilityError(this.dataset.ability)
 
     this.#labelElement = this.querySelector('[data-wc-id]')
     this.#scoreElement = this.querySelector('.ability-score')

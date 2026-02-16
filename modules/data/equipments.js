@@ -1,4 +1,5 @@
-﻿import { Enum, f } from '../helpers.js'
+import { Enum } from '../enum.js'
+import { f } from '../helpers.js'
 import {
   ABILITIES, DICES, DICE, EFFECTS,
 }

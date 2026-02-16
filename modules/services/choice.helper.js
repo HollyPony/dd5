@@ -1,5 +1,5 @@
 import { MissingPathError } from '../errors.js'
-import { Enum } from '../helpers.js'
+import { Enum } from '../enum.js'
 
 export const SELECTOR_TYPE = Enum({
   CLASS: Symbol.for('SELECTOR_TYPE.CLASS'),

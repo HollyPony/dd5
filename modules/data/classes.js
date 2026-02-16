@@ -1,5 +1,6 @@
-﻿import { InvalidClassNameError, InvalidSubClassNameError } from '../errors.js'
-import { Enum, f } from '../helpers.js'
+import { InvalidClassNameError, InvalidSubClassNameError } from '../errors.js'
+import { Enum } from '../enum.js'
+import { f } from '../helpers.js'
 import { ABILITIES, DICES as D, EFFECTS, SKILLS } from '../common.js'
 import { ARMOR_CATEGORY, TOOL_CATEGORY, TOOLS, WEAPON_CATEGORY, WEAPON_PROPERTY } from './equipments.js'
 import { SELECTOR_TYPE } from '../services/choice.helper.js'

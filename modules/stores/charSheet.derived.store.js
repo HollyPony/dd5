@@ -1,7 +1,7 @@
 ﻿import getClass from '../data/classes.js'
 import getOrigin from '../data/origins.js'
 import getSpecies from '../data/species.js'
-import { ABILITIES, DICE, EFFECTS, getAbilityBySkill, validateSkill, SKILLS } from '../common.js'
+import { ABILITIES, DICE, EFFECTS, SKILL_ABILITY, SKILLS } from '../common.js'
 import { EQUIPED_CATEGORY, EQUIPMENT_TYPE, getEquipment } from '../data/equipments.js'
 import { getLevelFromExperience } from '../data/leveling.js'
 import { s } from '../helpers.js'
@@ -124,14 +124,13 @@ function computeSkills(proficiencyBonus, modifiers, charOrigin, choiceSelections
   const selectedSkills = Object.values(choiceSelections)
     .filter(choiceSelection => choiceSelection?.choice?.target === properties.skills)
     .map(choiceSelection => choiceSelection.payload).flat()
-    .map(validateSkill)
 
   return s(Object.values(SKILLS).reduce((acc, skill) => {
     const isProficient = originSkills.includes(skill) || selectedSkills.includes(skill)
     const isExpert = false // TODO: derive from features/feats
     const proficiencyMultiplier = isProficient ? (isExpert ? 2 : 1) : 0
     acc[skill] = s({
-      score: (modifiers?.[getAbilityBySkill(skill)] ?? 0) + (proficiencyBonus * proficiencyMultiplier),
+      score: (modifiers?.[SKILL_ABILITY[skill]] ?? 0) + (proficiencyBonus * proficiencyMultiplier),
       checked: isProficient,
       expert: isExpert,
     })
@@ -419,7 +418,7 @@ function createCharSheetStore() {
   function getCharOrigin() { return get(properties.charOrigin) }
   function getCharSpecies() { return get(properties.charSpecies) }
   function getSkills() { return get(properties.skills) }
-  function getSkill(skill) { return getSkills()?.[validateSkill(skill)] }
+  function getSkill(skill) { return getSkills()?.[skill] }
   function getChoiceSelections() { return get(properties.choiceSelections) }
   function getModifiers() { return get(properties.modifiers) }
   function getModifier(ability) { return getModifiers()[ability] }

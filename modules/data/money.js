@@ -1,4 +1,4 @@
-import { Enum } from '../helpers.js'
+import { Enum } from '../enum.js'
 
 // TODO: use NumberFormat https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#currency_2
 

@@ -1,8 +1,7 @@
-﻿import { BadDiceError, UnknownSkillError } from './errors.js'
-import { Enum } from './helpers.js'
+import { Enum } from './enum.js'
 
 export function DICE(number, dice,) {
-  if (!DICES[dice]) throw new BadDiceError(dice)
+  DICES[dice]
   return { number, dice, }
 }
 
@@ -84,28 +83,3 @@ export const SKILL_ABILITY = Enum({
   [SKILLS.stealth]: ABILITIES.dexterity,
   [SKILLS.survival]: ABILITIES.wisdom,
 })
-
-const cachedSkillsValues = Object.values(SKILLS)
-
-/**
- * Validate a skill enum value.
- *
- * @param {symbol} skill - Skill enum value.
- * @returns {symbol} Same skill enum value.
- * @throws {UnknownSkillError} When skill is unknown.
- */
-export function validateSkill(skill) {
-  if (!cachedSkillsValues.includes(skill)) throw UnknownSkillError(skill)
-  return skill
-}
-
-/**
- * Resolve and validate ability bound to a skill.
- *
- * @param {symbol} skill - Skill enum value.
- * @returns {symbol} Ability enum value.
- * @throws {UnknownSkillError} When skill is unknown.
- */
-export function getAbilityBySkill(skill) {
-  return SKILL_ABILITY[validateSkill(skill)]
-}
