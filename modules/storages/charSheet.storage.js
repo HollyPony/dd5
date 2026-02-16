@@ -133,7 +133,8 @@ function fromJSONEntry(jsonEntry) {
   })
 }
 
-function saveKey(id) {
+function buildSaveKey(id) {
+  if (!id) throw StorageError('A save id is required')
   return [CHARACTER_SAVE_KEY, id].join('.')
 }
 
@@ -156,8 +157,7 @@ function create() {
 }
 
 function get(id) {
-  if (!id) throw StorageError('A save id is required')
-  const entry = fromJSONEntry(storage.getItem(saveKey(id)))
+  const entry = fromJSONEntry(storage.getItem(buildSaveKey(id)))
   if (!entry) throw StorageError('CharSheet id not found')
 
   setCharSheetsList(getList().map(item =>
@@ -182,7 +182,7 @@ function save(jsData) {
     data: jsData,
   }
 
-  storage.setItem(saveKey(entry.id), toJSONEntry(entry))
+  storage.setItem(buildSaveKey(entry.id), toJSONEntry(entry))
 
   const charList = getList().filter(item => item.id !== entry.id)
   charList.push({
@@ -198,13 +198,15 @@ function save(jsData) {
 }
 
 function remove(id) {
-  if (!id) throw StorageError('A save id is required')
-
-  storage.removeItem(saveKey(id))
+  storage.removeItem(buildSaveKey(id))
   setCharSheetsList(getList().filter(item => item.id !== id))
 
   currentId = undefined
   eventBus.emit(CHAR_LIST_CHANGED)
+}
+
+function getCurrentSaveRaw() {
+  return storage.getItem(buildSaveKey(currentId))
 }
 
 export default {
@@ -214,6 +216,7 @@ export default {
   get,
   save,
   remove,
+  getCurrentSaveRaw,
   onCharListChanged(callback) {
     return eventBus.on(CHAR_LIST_CHANGED, callback)
   },
