@@ -1,0 +1,59 @@
+﻿<template>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="#" data-i18n="navbar.appTitle"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <span class="current-character-name"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="create-character-link dropdown-item" href="#" data-i18n="navbar.newCharacter"></a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li class="saved-characters-list-title dropdown-header"></li>
+              <li>
+                <div class="saved-characters-list px-3 small text-muted"></div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="export-char-link nav-link" role="button" data-i18n="navbar.exportChar"></a>
+          </li>
+          <li class="nav-item">
+            <input class="import-char-file d-none" type="file" accept=".json,.char,application/json" />
+            <a class="import-char-link nav-link" download="data.json" role="button" data-i18n="navbar.importChar"></a>
+          </li>
+          <li class="nav-item">
+            <a class="debug-link nav-link" role="button" data-bs-toggle="modal"
+              data-i18n="navbar.debug"></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="debug-modal modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="debug-modal-title modal-title" data-i18n="modals.jsonOutput.title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <pre class="debug-output mb-0 small"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

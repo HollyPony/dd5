@@ -13,6 +13,10 @@ import { WeaponsCantrip } from './webComponents/WeaponsCantrip/WeaponsCantrip.js
 import { SpeciesTraits } from './webComponents/SpeciesTraits/SpeciesTraits.js'
 import { Feats } from './webComponents/Feats/Feats.js'
 import { Specs } from './webComponents/Specs/Specs.js'
+import { AppNavbar } from './webComponents/AppNavbar/AppNavbar.js'
+import { Vitals } from './webComponents/Vitals/Vitals.js'
+import { CommonInformations } from './webComponents/CommonInformations/CommonInformations.js'
+import { LevelArmor } from './webComponents/LevelArmor/LevelArmor.js'
 
 export default function registerWebComponents() {
   Ability.register()
@@ -30,4 +34,8 @@ export default function registerWebComponents() {
   WeaponsCantrip.register()
   SpeciesTraits.register()
   Feats.register()
+  AppNavbar.register()
+  Vitals.register()
+  CommonInformations.register()
+  LevelArmor.register()
 }

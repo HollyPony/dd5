@@ -1,0 +1,30 @@
+<template>
+  <div class="border p-2">
+    <div class="row">
+      <div class="col d-flex flex-column charName">
+        <input name="charName" class="form-control-input" placeholder="Thoradin Fireforge" />
+        <label for="charName" class="form-control-label" data-i18n="charName.label"></label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6 d-flex flex-column charOrigin">
+        <origin-select></origin-select>
+        <label for="charOrigin" class="form-control-label" data-i18n="origins.label"></label>
+      </div>
+      <div class="col-6 d-flex flex-column charClass">
+        <class-select></class-select>
+        <label for="charClass" class="form-control-label" data-i18n="classes.label"></label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6 d-flex flex-column charSpecies">
+        <species-select></species-select>
+        <label for="charSpecies" class="form-control-label" data-i18n="species.label"></label>
+      </div>
+      <div class="col-6 d-flex flex-column charSubClass">
+        <sub-class-select></sub-class-select>
+        <label for="charSubClass" class="form-control-label" data-i18n="subClasses.label"></label>
+      </div>
+    </div>
+  </div>
+</template>

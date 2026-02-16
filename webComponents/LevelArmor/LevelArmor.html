@@ -1,0 +1,22 @@
+<template>
+  <div class="row">
+    <div class="col-6 d-flex flex-column justify-content-center align-items-center border rounded-circle level-block">
+      <input name="charLevel" readonly
+        class="form-control border-0 border-bottom rounded-0 text-center bg-transparent p-0 lh-1 fs-1 level"
+        placeholder="0" />
+      <label for="charLevel" class="form-text text-center mt-0 level" data-i18n="level.label"></label>
+      <input name="experiencepoints"
+        class="form-control border-0 border-bottom rounded-0 px-0 text-center bg-transparent pb-0 xp"
+        placeholder="0" />
+      <label for="experiencepoints" class="form-text text-center mt-0 xp" data-i18n="experiencepoints.label"></label>
+    </div>
+    <div class="col-6 d-flex flex-column justify-content-center align-items-center armorclass-block">
+      <label for="armorClass" class="form-text text-center title" data-i18n="armorclass.label"></label>
+      <input name="armorClass" readonly
+        class="form-control border-0 border-bottom rounded-0 text-center p-0 lh-1 fs-1 armorclass"
+        placeholder="0" />
+      <label for="shield" class="form-text text-center">Shield</label>
+      <input name="shield" type="checkbox" class="form-check-input shield-check" />
+    </div>
+  </div>
+</template>

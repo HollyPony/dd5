@@ -1,0 +1,65 @@
+﻿<template>
+  <div class="row g-0">
+    <div class="col-6 d-flex align-items-stretch">
+      <div class="d-flex border border-end-0">
+        <div class="d-flex flex-column p-2 hit-points">
+          <span class="text-center title">Hit Points</span>
+          <div class="d-flex flex-grow-1">
+            <div class="d-flex flex-column flex-grow-1 flex-shrink-1 flex-basis-0">
+              <input name="hitPointCurrent"
+                class="flex-fill form-control border-0 border-bottom rounded-0 p-0 text-center fs-1" />
+              <label for="hitPointCurrent" class="form-text mt-0">Current</label>
+            </div>
+
+            <div class="vr mx-2"></div>
+
+            <div class="d-flex flex-column justify-content-end flex-grow-1 flex-shrink-1 flex-basis-0">
+              <input name="hitPointTemp"
+                class="form-control border-0 border-bottom rounded-0 p-0 text-center mt-2" />
+              <label for="hitPointTemp" class="form-text mt-0">Temp</label>
+              <input name="hitPointMax"
+                class="form-control border-0 border-bottom rounded-0 p-0 text-center mt-2" />
+              <label for="hitPointMax" class="form-text mt-0">Max</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-3 d-flex align-items-stretch">
+      <div class="d-flex border border-end-0">
+        <div class="d-flex flex-column p-2 hit-dice">
+          <span class="text-center title">Hit Dice</span>
+          <div class="d-flex flex-grow-1 flex-column justify-content-end">
+            <input name="hitDiceSpent"
+              class="form-control border-0 border-bottom rounded-0 p-0 text-center mt-2" />
+            <label for="hitDiceSpent" class="form-text mt-0">Spent</label>
+            <input name="hitDiceMax"
+              class="form-control border-0 border-bottom rounded-0 p-0 text-center mt-2" />
+            <label for="hitDiceMax" class="form-text mt-0">Max</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-3 d-flex align-items-stretch">
+      <div class="border">
+        <div class="m-2 death-saves">
+          <span class="text-center title">Death Saves</span>
+          <div>
+            <input type="checkbox" class="form-check-input" />
+            <input type="checkbox" class="form-check-input" />
+            <input type="checkbox" class="form-check-input" />
+            <label>Successes</label>
+          </div>
+          <div>
+            <input type="checkbox" class="form-check-input" />
+            <input type="checkbox" class="form-check-input" />
+            <input type="checkbox" class="form-check-input" />
+            <label>Failures</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
