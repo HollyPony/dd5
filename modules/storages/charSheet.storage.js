@@ -151,8 +151,8 @@ function getLastSaveId() {
     .sort((a, b) => (b?.updatedAt ?? 0) - (a?.updatedAt ?? 0))[0]?.id
 }
 
-function create() {
-  currentId = crypto.randomUUID()
+function create(id) {
+  currentId = id?.trim?.() || crypto.randomUUID()
   eventBus.emit(CHAR_LIST_CHANGED)
 }
 
@@ -171,15 +171,14 @@ function get(id) {
   return entry.data
 }
 
-function save(jsData) {
-  const listItem = getList().find(item => item.id === currentId)
+function save(charSheet) {
   const entry = {
-    id: listItem?.id ?? crypto.randomUUID(),
-    name: jsData?.[properties.charName]?.toString()?.trim()
+    id: currentId ?? crypto.randomUUID(),
+    name: charSheet?.[properties.charName]?.toString()?.trim()
       || 'Unamed', // TODO: translate it or generateid,
     updatedAt: Date.now(),
     version: STORAGE_VERSION,
-    data: jsData,
+    data: charSheet,
   }
 
   storage.setItem(buildSaveKey(entry.id), toJSONEntry(entry))
