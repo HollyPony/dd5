@@ -10,7 +10,7 @@ export default Enum({
   charAlignment: Symbol.for('AUTHORITY_PROPERTIES.charAlignment'),
   charSizeCategory: Symbol.for('AUTHORITY_PROPERTIES.charSizeCategory'),
   charSize: Symbol.for('AUTHORITY_PROPERTIES.charSize'),
-  attributes: Symbol.for('AUTHORITY_PROPERTIES.attributes'),
+  abilities: Symbol.for('AUTHORITY_PROPERTIES.abilities'),
   choiceSelections: Symbol.for('AUTHORITY_PROPERTIES.choiceSelections'),
   equipments: Symbol.for('AUTHORITY_PROPERTIES.equipments'),
 })

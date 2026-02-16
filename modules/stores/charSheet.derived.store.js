@@ -66,24 +66,24 @@ function computeAbilityModifier(score) {
   return Math.floor(score / 2) - 5
 }
 
-function computeModifiers(attributes) {
+function computeModifiers(abilities) {
   const isEnumerable = Object.prototype.propertyIsEnumerable
   const modifiers = {}
 
-  for (const ability of Reflect.ownKeys(attributes)) {
-    if (!isEnumerable.call(attributes, ability)) continue
-    modifiers[ability] = computeAbilityModifier(attributes[ability])
+  for (const ability of Reflect.ownKeys(abilities)) {
+    if (!isEnumerable.call(abilities, ability)) continue
+    modifiers[ability] = computeAbilityModifier(abilities[ability])
   }
 
   return modifiers
 }
 
-function computeSaves(attributes, modifiers, charClass, proficiencyBonus) {
+function computeSaves(abilities, modifiers, charClass, proficiencyBonus) {
   const isEnumerable = Object.prototype.propertyIsEnumerable
   const saves = {}
 
-  for (const ability of Reflect.ownKeys(attributes)) {
-    if (!isEnumerable.call(attributes, ability)) continue
+  for (const ability of Reflect.ownKeys(abilities)) {
+    if (!isEnumerable.call(abilities, ability)) continue
     saves[ability] = modifiers[ability] + (charClass?.saves?.includes(ability) ? proficiencyBonus : 0)
   }
 
@@ -182,13 +182,13 @@ function createCharSheetStore() {
     const proficiencyBonus = computeProficiencyBonus(charLevel)
     const charClass = getClass(authorityStore.getCharClassName(), authorityStore.getCharSubClassName(), charLevel)
     const charSpecies = getSpecies(authorityStore.getCharSpeciesName(), charLevel)
-    const saves = computeSaves(authorityStore.getAttributes(), modifiers, charClass, proficiencyBonus)
+    const saves = computeSaves(authorityStore.getAbilities(), modifiers, charClass, proficiencyBonus)
     const speed = computeCharSpeed({
       charSpecies,
       charClass,
       equiped: getEquiped(),
       feats: getFeats(),
-      strength: authorityStore.getAttribute(ABILITIES.strength),
+      strength: authorityStore.getAbility(ABILITIES.strength),
     })
     const skills = computeSkills(
       proficiencyBonus,
@@ -218,13 +218,13 @@ function createCharSheetStore() {
       charClass,
       equiped: getEquiped(),
       feats: getFeats(),
-      strength: authorityStore.getAttribute(ABILITIES.strength),
+      strength: authorityStore.getAbility(ABILITIES.strength),
     })
     set({
       [properties.charClassName]: authorityStore.getCharClassName(),
       [properties.charSubClassName]: authorityStore.getCharSubClassName(),
       [properties.charClass]: charClass,
-      [properties.saves]: computeSaves(authorityStore.getAttributes(), getModifiers(), charClass, getProficiencyBonus()),
+      [properties.saves]: computeSaves(authorityStore.getAbilities(), getModifiers(), charClass, getProficiencyBonus()),
       [properties.speed]: speed,
     })
   }
@@ -236,7 +236,7 @@ function createCharSheetStore() {
       charClass: getCharClass(),
       equiped: getEquiped(),
       feats: getFeats(),
-      strength: authorityStore.getAttribute(ABILITIES.strength),
+      strength: authorityStore.getAbility(ABILITIES.strength),
     })
     set({
       [properties.charSpeciesName]: authorityStore.getCharSpeciesName(),
@@ -295,17 +295,17 @@ function createCharSheetStore() {
     })
   }
 
-  function computeAttributes() {
-    const attributes = authorityStore.getAttributes()
-    const modifiers = computeModifiers(attributes)
-    const saves = computeSaves(attributes, modifiers, getCharClass(), getProficiencyBonus())
+  function computeAbilities() {
+    const abilities = authorityStore.getAbilities()
+    const modifiers = computeModifiers(abilities)
+    const saves = computeSaves(abilities, modifiers, getCharClass(), getProficiencyBonus())
     const initiative = modifiers[ABILITIES.dexterity]
     const speed = computeCharSpeed({
       charSpecies: getCharSpecies(),
       charClass: getCharClass(),
       equiped: getEquiped(),
       feats: getFeats(),
-      strength: attributes[ABILITIES.strength],
+      strength: abilities[ABILITIES.strength],
     })
     const skills = computeSkills(
       getProficiencyBonus(),
@@ -315,7 +315,7 @@ function createCharSheetStore() {
     )
     const passivePerception = computePassivePerception(skills)
     set({
-      [properties.attributes]: attributes,
+      [properties.abilities]: abilities,
       [properties.modifiers]: modifiers,
       [properties.saves]: saves,
       [properties.initiative]: initiative,
@@ -332,7 +332,7 @@ function createCharSheetStore() {
       charClass: getCharClass(),
       equiped,
       feats: getFeats(),
-      strength: authorityStore.getAttribute(ABILITIES.strength),
+      strength: authorityStore.getAbility(ABILITIES.strength),
     })
     set({
       [properties.equipments]: authorityStore.getEquipments(),
@@ -352,7 +352,7 @@ function createCharSheetStore() {
     [properties.charSizeCategory]: [computeSizeCategory],
     [properties.charSize]: [computeSize],
     [properties.choiceSelections]: [computeChoicesState],
-    [properties.attributes]: [computeAttributes],
+    [properties.abilities]: [computeAbilities],
     [properties.equipments]: [computeEquipments],
   });
 
@@ -362,10 +362,10 @@ function createCharSheetStore() {
     const charClass = getClass(authorityStore.getCharClassName(), authorityStore.getCharSubClassName(), charLevel)
     const charOrigin = getOrigin(authorityStore.getCharOriginName())
     const charSpecies = getSpecies(authorityStore.getCharSpeciesName(), charLevel)
-    const modifiers = computeModifiers(authorityStore.getAttributes())
+    const modifiers = computeModifiers(authorityStore.getAbilities())
     const proficiencyBonus = computeProficiencyBonus(charLevel)
     const choiceSelections = authorityStore.getChoiceSelections()
-    const saves = computeSaves(authorityStore.getAttributes(), modifiers, charClass, proficiencyBonus)
+    const saves = computeSaves(authorityStore.getAbilities(), modifiers, charClass, proficiencyBonus)
     const initiative = modifiers[ABILITIES.dexterity]
     const equiped = computeEquiped(authorityStore.getEquipments())
     const speed = computeCharSpeed({
@@ -373,7 +373,7 @@ function createCharSheetStore() {
       charClass,
       equiped,
       feats: initialData[properties.feats],
-      strength: authorityStore.getAttribute(ABILITIES.strength),
+      strength: authorityStore.getAbility(ABILITIES.strength),
     })
     const skills = computeSkills(
       proficiencyBonus,
@@ -393,7 +393,7 @@ function createCharSheetStore() {
       [properties.charAlignment]: authorityStore.getCharAlignment(),
       [properties.charSizeCategory]: authorityStore.getCharSizeCategory(),
       [properties.charSize]: authorityStore.getCharSize(),
-      [properties.attributes]: authorityStore.getAttributes(),
+      [properties.abilities]: authorityStore.getAbilities(),
       [properties.choiceSelections]: choiceSelections,
       [properties.equipments]: authorityStore.getEquipments(),
 
@@ -532,7 +532,7 @@ function createCharSheetStore() {
     getCharAlignment: () => get(properties.charAlignment),
     getCharSizeCategory: () => get(properties.charSizeCategory),
     getCharSize: () => get(properties.charSize),
-    getAttribute: authorityStore.getAttribute,
+    getAbility: authorityStore.getAbility,
 
     getCharLevel,
     getProficiencyBonus,

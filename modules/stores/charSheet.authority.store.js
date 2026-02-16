@@ -14,7 +14,7 @@ export const initialData = {
   [properties.charAlignment]: '',
   [properties.charSizeCategory]: '',
   [properties.charSize]: '',
-  [properties.attributes]: {
+  [properties.abilities]: {
     [ABILITIES.strength]: 10,
     [ABILITIES.dexterity]: 10,
     [ABILITIES.constitution]: 10,
@@ -48,8 +48,8 @@ function createCharSheetStorageStore() {
   function getCharSizeCategory() { return get(properties.charSizeCategory) }
   function getCharSize() { return get(properties.charSize) }
   function getChoiceSelections() { return get(properties.choiceSelections) }
-  function getAttributes() { return get(properties.attributes) }
-  function getAttribute(ability) { return getAttributes()[ability] }
+  function getAbilities() { return get(properties.abilities) }
+  function getAbility(ability) { return getAbilities()[ability] }
   function getEquipments() { return get(properties.equipments) }
 
   // Save this name. Test it
@@ -84,7 +84,7 @@ function createCharSheetStorageStore() {
   }
 
   function setAbilityScore(ability, score) {
-    set(new Map([[[properties.attributes, ability], score]]))
+    set(new Map([[[properties.abilities, ability], score]]))
   }
 
   function setChoiceSelections(choiceSelections) {
@@ -105,8 +105,8 @@ function createCharSheetStorageStore() {
     getCharSizeCategory,
     getCharSize,
     getChoiceSelections,
-    getAttributes,
-    getAttribute,
+    getAbilities,
+    getAbility,
     getEquipments,
     setCharName,
     setCharExperience,

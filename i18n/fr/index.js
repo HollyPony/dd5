@@ -55,7 +55,7 @@ export default {
   experiencepoints: {
     label: "XP",
   },
-  ability: {
+  abilities: {
     save: {
       label: 'Sauvegarde',
     }

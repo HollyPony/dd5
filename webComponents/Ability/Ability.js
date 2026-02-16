@@ -41,7 +41,7 @@ export class Ability extends AbstractComponent {
     )
 
     replaceElement(this.#labelElement, t.tn(`statics.${this.#ability.description}`))
-    replaceElement(this.#save.label, t.tn('ability.save.label'))
+    replaceElement(this.#save.label, t.tn('abilities.save.label'))
 
     this.#renderScore()
     this.#renderModifier()
@@ -54,7 +54,7 @@ export class Ability extends AbstractComponent {
       // TODO: trigger per input ?
       domSubscribe(this.#scoreElement, 'change', this.#scoreChanged),
       charSheetStore.onMap({
-        [charSheetProps.attributes]: [this.#renderScore],
+        [charSheetProps.abilities]: [this.#renderScore],
         [charSheetProps.modifiers]: [this.#renderModifier, this.#renderSkills],
         [charSheetProps.saves]: [this.#renderSave],
         [charSheetProps.skills]: [this.#renderSkills],
@@ -65,7 +65,7 @@ export class Ability extends AbstractComponent {
   #renderScore = () => {
     console.info('-- Ability.#renderScore', this.#ability)
 
-    const score = charSheetStore.getAttribute(this.#ability)
+    const score = charSheetStore.getAbility(this.#ability)
     this.#scoreElement.value = score
   }
 
@@ -112,7 +112,7 @@ export class Ability extends AbstractComponent {
   _i18nChanged = () => {
     console.info('-- Ability.#i18nChanged', this.#ability)
     replaceElement(this.#labelElement, t.tn(`statics.${this.#ability.description}`))
-    replaceElement(this.#save.label, t.tn('ability.save.label'))
+    replaceElement(this.#save.label, t.tn('abilities.save.label'))
     this.#renderSkills()
   }
 }
