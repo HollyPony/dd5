@@ -178,8 +178,6 @@ function get(id) {
 function save(charSheet, notify) {
   const entry = {
     id: getCurrentId() ?? crypto.randomUUID(),
-    name: charSheet?.[properties.charName]?.toString()?.trim()
-      || 'Unamed', // TODO: translate it or generateid,
     updatedAt: Date.now(),
     version: STORAGE_VERSION,
     data: charSheet,
@@ -190,7 +188,7 @@ function save(charSheet, notify) {
   const charList = getList().filter(item => item.id !== entry.id)
   charList.push({
     id: entry.id,
-    name: entry.name,
+    name: charSheet?.[properties.charName]?.toString()?.trim() || entry.id,
     updatedAt: entry.updatedAt,
   })
 
