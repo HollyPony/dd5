@@ -6,10 +6,16 @@ export class AbstractComponent extends HTMLElement {
 
   #events = []
 
+
   static #instances = new Set()
   static get tagName() { return null }
   static _modulePath = undefined
-  static register({ tagName, ...options } = {}) { customElements.define(tagName ?? this.tagName, this, options) }
+  static register({ tagName, ...options } = {}) {
+    const finalTagName = tagName ?? this.tagName
+    if (!customElements.get(finalTagName)) {
+      customElements.define(finalTagName, this, options)
+    }
+  }
 
   static _templatePromise
   static _getTemplate(url, fileName) {
