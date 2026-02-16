@@ -27,12 +27,13 @@ export class Specs extends AbstractComponent {
 
   _registerEvents() {
     this._pushEvents(
-      charSheetStore.onMap(new Map([
-        [charSheetProps.initiative, this.#renderInitiative],
-        [charSheetProps.speed, this.#renderSpeed],
-        [[charSheetProps.charSizeCategory, charSheetProps.charSize], this.#renderSize],
-        [charSheetProps.passivePerception, this.#renderPassivePerception],
-      ]))
+      charSheetStore.onMap({
+        [charSheetProps.initiative]: this.#renderInitiative,
+        [charSheetProps.speed]: this.#renderSpeed,
+        [charSheetProps.charSizeCategory]: this.#renderSize,
+        [charSheetProps.charSize]: this.#renderSize,
+        [charSheetProps.passivePerception]: this.#renderPassivePerception,
+      })
     )
   }
 
