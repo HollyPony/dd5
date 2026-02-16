@@ -132,7 +132,7 @@ function applyTranslation(element) {
     try {
       const attributesObj = JSON.parse(attributesRaw)
       try {
-        for (const [attributeName, { key, interpolations }] of Object.entries(attributesObj)) { // TODO: elment attr set
+        for (const [attributeName, { key, interpolations }] of Object.entries(attributesObj)) {
           try {
             element.setAttribute(attributeName, _(key, interpolations))
           } catch (e) {

@@ -433,7 +433,7 @@ function createCharSheetStore() {
 
   function getCharSpeed() { return get(properties.speed) }
 
-  function getWeaponProficiencies() { // TODO: maitrise d'armes
+  function getWeaponProficiencies() { // TODO: move to set state
     const proficienciesByCategory = getCharClass()?.weaponProficiencies ?? {}
     const isEnumerable = Object.prototype.propertyIsEnumerable
     const proficiencies = []
