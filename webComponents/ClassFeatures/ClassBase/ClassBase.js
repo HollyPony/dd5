@@ -162,10 +162,10 @@ export class ClassBase extends AbstractComponent {
 
           return createElement('div', [
             createElement('div', t.tn('components.ClassBase.tools.remainingGroup', {
-              remaining: groupRemaining, from: t._(`statics.${group}`)
+              remaining: groupRemaining, from: t._(`statics.${group.description}`)
             }), { class: 'card-title' }),
             createElement('div', tools.map(tool => {
-              const toolId = `${tool.name}.${this._id}.tools.${groupIndex}`
+              const toolId = `${tool.name.description}.${this._id}.tools.${groupIndex}`
               const isChecked = choicePayload?.includes(tool.name) ?? false
               const isCheckedElseWhere = false // TODO: + disable if checked from elsewhere eg. feats / origin ??
               return createElement('div', [
@@ -185,7 +185,7 @@ export class ClassBase extends AbstractComponent {
                 }),
                 createElement(
                   'label',
-                  t._(`statics.TOOLS.${tool.name.replace('TOOLS_', '')}.name`),
+                  t._(`statics.${tool.name.description}.name`),
                   { class: 'btn btn-outline-primary', for: toolId }
                 ),
               ])
@@ -203,7 +203,7 @@ export class ClassBase extends AbstractComponent {
             { class: 'card-title' }
           ),
           createElement('div', toolRule.tools.map(tool => {
-            const toolId = `${tool}.${this._id}.tools`
+            const toolId = `${tool.description}.${this._id}.tools`
             return createElement('div', [
               createElement('input', null, {
                 type: 'checkbox',
@@ -214,7 +214,7 @@ export class ClassBase extends AbstractComponent {
               }),
               createElement(
                 'label',
-                t._(`statics.TOOLS.${tool.replace('TOOLS_', '')}.name`),
+                t._(`statics.${tool.description}.name`),
                 { class: 'btn btn-outline-primary', for: toolId }
               ),
             ])

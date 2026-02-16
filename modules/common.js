@@ -1,4 +1,4 @@
-import { BadDiceError, UnknownSkillError } from './errors.js'
+﻿import { BadDiceError, UnknownSkillError } from './errors.js'
 import { Enum } from './helpers.js' // TODO: Of break completion
 
 export function DICE(number, dice,) {
@@ -16,31 +16,31 @@ export const DICES = Enum({
   100: 100,
 })
 
-export const ABILITY = Enum({
-  strength: Symbol.for('ABILITY.strength'),
-  dexterity: Symbol.for('ABILITY.dexterity'),
-  constitution: Symbol.for('ABILITY.constitution'),
-  wisdom: Symbol.for('ABILITY.wisdom'),
-  intelligence: Symbol.for('ABILITY.intelligence'),
-  charisma: Symbol.for('ABILITY.charisma'),
+export const ABILITIES = Enum({
+  strength: Symbol.for('ABILITIES.strength'),
+  dexterity: Symbol.for('ABILITIES.dexterity'),
+  constitution: Symbol.for('ABILITIES.constitution'),
+  wisdom: Symbol.for('ABILITIES.wisdom'),
+  intelligence: Symbol.for('ABILITIES.intelligence'),
+  charisma: Symbol.for('ABILITIES.charisma'),
 })
 
-export const EFFECT = Enum({
-  SpeedModifierEffect: Symbol.for('EFFECT.SpeedModifierEffect'),
-  ACOverrideEffect: Symbol.for('EFFECT.ACOverrideEffect'),
-  ACModifierEffect: Symbol.for('EFFECT.ACModifierEffect'),
-  PBModifierEffect: Symbol.for('EFFECT.PBModifierEffect'),
-  SavesModifierEffect: Symbol.for('EFFECT.SavesModifierEffect'),
-  SubClassChooseEffect: Symbol.for('EFFECT.SubClassChooseEffect'),
-  ImprovementChooseEffect: Symbol.for('EFFECT.ImprovementChooseEffect'),
-  ChooseAbilityImprovmentEffect: Symbol.for('EFFECT.ChooseAbilityImprovmentEffect'),
-  AbilityImprovmentEffect: Symbol.for('EFFECT.AbilityImprovmentEffect'),
-  AddAbilityEffect: Symbol.for('EFFECT.AddAbilityEffect'),
-  AddFeatEffect: Symbol.for('EFFECT.AddFeatEffect'),
-  ReduceFallDamageEffect: Symbol.for('EFFECT.ReduceFallDamageEffect'),
-  ByPassArmorStrengthRequirementEffect: Symbol.for('EFFECT.ByPassArmorStrengthRequirementEffect'),
-  HasArmorProficiencyEffect: Symbol.for('EFFECT.HasArmorProficiencyEffect'),
-  HasShieldProficiencyEffect: Symbol.for('EFFECT.HasShieldProficiencyEffect'),
+export const EFFECTS = Enum({
+  SpeedModifierEffect: Symbol.for('EFFECTS.SpeedModifierEffect'),
+  ACOverrideEffect: Symbol.for('EFFECTS.ACOverrideEffect'),
+  ACModifierEffect: Symbol.for('EFFECTS.ACModifierEffect'),
+  PBModifierEffect: Symbol.for('EFFECTS.PBModifierEffect'),
+  SavesModifierEffect: Symbol.for('EFFECTS.SavesModifierEffect'),
+  SubClassChooseEffect: Symbol.for('EFFECTS.SubClassChooseEffect'),
+  ImprovementChooseEffect: Symbol.for('EFFECTS.ImprovementChooseEffect'),
+  ChooseAbilityImprovmentEffect: Symbol.for('EFFECTS.ChooseAbilityImprovmentEffect'),
+  AbilityImprovmentEffect: Symbol.for('EFFECTS.AbilityImprovmentEffect'),
+  AddAbilityEffect: Symbol.for('EFFECTS.AddAbilityEffect'),
+  AddFeatEffect: Symbol.for('EFFECTS.AddFeatEffect'),
+  ReduceFallDamageEffect: Symbol.for('EFFECTS.ReduceFallDamageEffect'),
+  ByPassArmorStrengthRequirementEffect: Symbol.for('EFFECTS.ByPassArmorStrengthRequirementEffect'),
+  HasArmorProficiencyEffect: Symbol.for('EFFECTS.HasArmorProficiencyEffect'),
+  HasShieldProficiencyEffect: Symbol.for('EFFECTS.HasShieldProficiencyEffect'),
 })
 
 export const SKILLS = Enum({
@@ -65,24 +65,24 @@ export const SKILLS = Enum({
 })
 
 export const SKILL_ABILITY = Enum({
-  [SKILLS.acrobatics]: ABILITY.dexterity,
-  [SKILLS.animalHandling]: ABILITY.wisdom,
-  [SKILLS.arcana]: ABILITY.intelligence,
-  [SKILLS.athletics]: ABILITY.strength,
-  [SKILLS.deception]: ABILITY.charisma,
-  [SKILLS.history]: ABILITY.intelligence,
-  [SKILLS.insight]: ABILITY.wisdom,
-  [SKILLS.intimidation]: ABILITY.charisma,
-  [SKILLS.investigation]: ABILITY.intelligence,
-  [SKILLS.medicine]: ABILITY.wisdom,
-  [SKILLS.nature]: ABILITY.intelligence,
-  [SKILLS.perception]: ABILITY.wisdom,
-  [SKILLS.performance]: ABILITY.charisma,
-  [SKILLS.persuasion]: ABILITY.charisma,
-  [SKILLS.religion]: ABILITY.intelligence,
-  [SKILLS.sleightOfHand]: ABILITY.dexterity,
-  [SKILLS.stealth]: ABILITY.dexterity,
-  [SKILLS.survival]: ABILITY.wisdom,
+  [SKILLS.acrobatics]: ABILITIES.dexterity,
+  [SKILLS.animalHandling]: ABILITIES.wisdom,
+  [SKILLS.arcana]: ABILITIES.intelligence,
+  [SKILLS.athletics]: ABILITIES.strength,
+  [SKILLS.deception]: ABILITIES.charisma,
+  [SKILLS.history]: ABILITIES.intelligence,
+  [SKILLS.insight]: ABILITIES.wisdom,
+  [SKILLS.intimidation]: ABILITIES.charisma,
+  [SKILLS.investigation]: ABILITIES.intelligence,
+  [SKILLS.medicine]: ABILITIES.wisdom,
+  [SKILLS.nature]: ABILITIES.intelligence,
+  [SKILLS.perception]: ABILITIES.wisdom,
+  [SKILLS.performance]: ABILITIES.charisma,
+  [SKILLS.persuasion]: ABILITIES.charisma,
+  [SKILLS.religion]: ABILITIES.intelligence,
+  [SKILLS.sleightOfHand]: ABILITIES.dexterity,
+  [SKILLS.stealth]: ABILITIES.dexterity,
+  [SKILLS.survival]: ABILITIES.wisdom,
 })
 
 const cachedSkillsValues = Object.values(SKILLS)

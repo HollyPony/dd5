@@ -1,6 +1,6 @@
-// P.200
+﻿// P.200
 import { f } from '../helpers.js'
-import { ABILITY, EFFECT } from '../common.js'
+import { ABILITIES, EFFECTS } from '../common.js'
 
 const FEAT_CATEGORY = f({
   ORIGINS: Symbol('feat_category_origins'),
@@ -20,9 +20,9 @@ export const feats = f({
     }),
     repeatable: true,
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.intelligence, ABILITY.wisdom, ABILITY.charisma],
+          allowedAbilities: [ABILITIES.intelligence, ABILITIES.wisdom, ABILITIES.charisma],
           max: 20,
         },
         apply: () => { },
@@ -36,9 +36,9 @@ export const feats = f({
       minLevel: 4,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.intelligence, ABILITY.wisdom, ABILITY.charisma],
+          allowedAbilities: [ABILITIES.intelligence, ABILITIES.wisdom, ABILITIES.charisma],
           max: 20,
         },
         apply: () => { },
@@ -52,9 +52,9 @@ export const feats = f({
       minLevel: 4,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.intelligence, ABILITY.wisdom, ABILITY.charisma],
+          allowedAbilities: [ABILITIES.intelligence, ABILITIES.wisdom, ABILITIES.charisma],
           max: 20,
         },
         apply: () => { },
@@ -69,7 +69,7 @@ export const feats = f({
     }),
     repeatable: true,
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
           options: [{ maxAbilities: 1, points: 2 }, { maxAbilities: 2, points: 1 }],
           max: 20,
@@ -118,13 +118,13 @@ export const feats = f({
       minLevel: 4,
       ability: f({
         mode: 'any',
-        list: f([{ ability: ABILITY.strength, min: 13 }, { ability: ABILITY.dexterity, min: 13 }]),
+        list: f([{ ability: ABILITIES.strength, min: 13 }, { ability: ABILITIES.dexterity, min: 13 }]),
       }),
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.strength, ABILITY.dexterity],
+          allowedAbilities: [ABILITIES.strength, ABILITIES.dexterity],
           max: 20,
         },
         apply: () => { },
@@ -144,9 +144,9 @@ export const feats = f({
       minLevel: 4,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.strength, ABILITY.constitution],
+          allowedAbilities: [ABILITIES.strength, ABILITIES.constitution],
           max: 20,
         },
         apply: () => { },
@@ -166,9 +166,9 @@ export const feats = f({
       minLevel: 4,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.constitution, ABILITY.wisdom],
+          allowedAbilities: [ABILITIES.constitution, ABILITIES.wisdom],
           max: 20,
         },
         apply: () => { },
@@ -215,13 +215,13 @@ export const feats = f({
       minLevel: 4,
       ability: f({
         mode: 'any',
-        list: f([{ ability: ABILITY.strength, min: 13 }, { ability: ABILITY.dexterity, min: 13 }]),
+        list: f([{ ability: ABILITIES.strength, min: 13 }, { ability: ABILITIES.dexterity, min: 13 }]),
       }),
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.strength, ABILITY.dexterity],
+          allowedAbilities: [ABILITIES.strength, ABILITIES.dexterity],
           max: 20,
         },
         apply: () => { },
@@ -235,9 +235,9 @@ export const feats = f({
       minLevel: 4,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.strength, ABILITY.dexterity, ABILITY.wisdom],
+          allowedAbilities: [ABILITIES.strength, ABILITIES.dexterity, ABILITIES.wisdom],
           max: 20,
         },
         apply: () => { },
@@ -251,13 +251,13 @@ export const feats = f({
       minLevel: 4,
       ability: f({
         mode: 'all',
-        list: f([{ ability: ABILITY.charisma, min: 13 }]),
+        list: f([{ ability: ABILITIES.charisma, min: 13 }]),
       }),
     }),
     effects: {
-      [EFFECT.AbilityImprovmentEffect]: {
+      [EFFECTS.AbilityImprovmentEffect]: {
         config: {
-          ability: ABILITY.charisma,
+          ability: ABILITIES.charisma,
           max: 20,
         },
         apply: () => { },
@@ -282,13 +282,13 @@ export const feats = f({
       minLevel: 4,
       ability: f({
         mode: 'all',
-        list: f([{ ability: ABILITY.dexterity, min: 13 }]),
+        list: f([{ ability: ABILITIES.dexterity, min: 13 }]),
       }),
     }),
     effects: {
-      [EFFECT.AbilityImprovmentEffect]: {
+      [EFFECTS.AbilityImprovmentEffect]: {
         config: {
-          ability: ABILITY.dexterity,
+          ability: ABILITIES.dexterity,
           max: 20,
         },
         apply: () => { },
@@ -320,13 +320,13 @@ export const feats = f({
       minLevel: 4,
       ability: f({
         mode: 'all',
-        list: f([{ ability: ABILITY.dexterity, min: 13 }]),
+        list: f([{ ability: ABILITIES.dexterity, min: 13 }]),
       }),
     }),
     effects: {
-      [EFFECT.AbilityImprovmentEffect]: {
+      [EFFECTS.AbilityImprovmentEffect]: {
         config: {
-          ability: ABILITY.dexterity,
+          ability: ABILITIES.dexterity,
           max: 20,
         },
         apply: () => { },
@@ -340,9 +340,9 @@ export const feats = f({
       minLevel: 4,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.strength, ABILITY.dexterity],
+          allowedAbilities: [ABILITIES.strength, ABILITIES.dexterity],
           max: 20,
         },
         apply: () => { },
@@ -356,13 +356,13 @@ export const feats = f({
       minLevel: 4,
       ability: f({
         mode: 'any',
-        list: f([{ ability: ABILITY.strength, min: 13 }, { ability: ABILITY.dexterity, min: 13 }]),
+        list: f([{ ability: ABILITIES.strength, min: 13 }, { ability: ABILITIES.dexterity, min: 13 }]),
       }),
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.strength, ABILITY.dexterity],
+          allowedAbilities: [ABILITIES.strength, ABILITIES.dexterity],
           max: 20,
         },
         apply: () => { },
@@ -376,9 +376,9 @@ export const feats = f({
       minLevel: 4,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.dexterity, ABILITY.intelligence],
+          allowedAbilities: [ABILITIES.dexterity, ABILITIES.intelligence],
           max: 20,
         },
         apply: () => { },
@@ -392,13 +392,13 @@ export const feats = f({
       minLevel: 4,
       ability: f({
         mode: 'all',
-        list: f([{ ability: ABILITY.intelligence, min: 13 }]),
+        list: f([{ ability: ABILITIES.intelligence, min: 13 }]),
       }),
     }),
     effects: {
-      [EFFECT.AbilityImprovmentEffect]: {
+      [EFFECTS.AbilityImprovmentEffect]: {
         config: {
-          ability: ABILITY.intelligence,
+          ability: ABILITIES.intelligence,
           max: 20,
         },
         apply: () => { },
@@ -412,7 +412,7 @@ export const feats = f({
       minLevel: 4,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
           max: 20,
         },
@@ -427,13 +427,13 @@ export const feats = f({
       minLevel: 4,
       ability: f({
         mode: 'any',
-        list: f([{ ability: ABILITY.strength, min: 13 }, { ability: ABILITY.dexterity, min: 13 }]),
+        list: f([{ ability: ABILITIES.strength, min: 13 }, { ability: ABILITIES.dexterity, min: 13 }]),
       }),
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.strength, ABILITY.dexterity],
+          allowedAbilities: [ABILITIES.strength, ABILITIES.dexterity],
           max: 20,
         },
         apply: () => { },
@@ -453,9 +453,9 @@ export const feats = f({
       minLevel: 19,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.strength, ABILITY.dexterity],
+          allowedAbilities: [ABILITIES.strength, ABILITIES.dexterity],
           max: 30,
         },
         apply: () => { },
@@ -469,7 +469,7 @@ export const feats = f({
       minLevel: 19,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
           max: 30,
         },
@@ -484,7 +484,7 @@ export const feats = f({
       minLevel: 19,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
           max: 30,
         },
@@ -499,7 +499,7 @@ export const feats = f({
       minLevel: 19,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
           max: 30,
         },
@@ -517,9 +517,9 @@ export const feats = f({
       }),
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.intelligence, ABILITY.wisdom, ABILITY.charisma],
+          allowedAbilities: [ABILITIES.intelligence, ABILITIES.wisdom, ABILITIES.charisma],
           max: 30,
         },
         apply: () => { },
@@ -533,7 +533,7 @@ export const feats = f({
       minLevel: 19,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
           max: 30,
         },
@@ -548,7 +548,7 @@ export const feats = f({
       minLevel: 19,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
           max: 30,
         },
@@ -563,7 +563,7 @@ export const feats = f({
       minLevel: 19,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
           max: 30,
         },
@@ -578,7 +578,7 @@ export const feats = f({
       minLevel: 19,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
           max: 30,
         },
@@ -590,7 +590,7 @@ export const feats = f({
   epicBoonOfTruesight: f({
     category: FEAT_CATEGORY.EPIC_BOON,
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
           max: 30,
         },
@@ -605,7 +605,7 @@ export const feats = f({
       minLevel: 19,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
           max: 30,
         },
@@ -620,7 +620,7 @@ export const feats = f({
       minLevel: 19,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
           max: 30,
         },
@@ -635,13 +635,13 @@ export const feats = f({
       minLevel: 4,
       ability: f({
         mode: 'any',
-        list: f([{ ability: ABILITY.wisdom, min: 13 }, { ability: ABILITY.charisma, min: 13 }]),
+        list: f([{ ability: ABILITIES.wisdom, min: 13 }, { ability: ABILITIES.charisma, min: 13 }]),
       }),
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.wisdom, ABILITY.charisma],
+          allowedAbilities: [ABILITIES.wisdom, ABILITIES.charisma],
           max: 20,
         },
         apply: () => { },
@@ -655,9 +655,9 @@ export const feats = f({
       minLevel: 4,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.strength, ABILITY.dexterity],
+          allowedAbilities: [ABILITIES.strength, ABILITIES.dexterity],
           max: 20,
         },
         apply: () => { },
@@ -671,9 +671,9 @@ export const feats = f({
       minLevel: 4,
     }),
     effects: {
-      [EFFECT.AbilityImprovmentEffect]: {
+      [EFFECTS.AbilityImprovmentEffect]: {
         config: {
-          ability: ABILITY.constitution,
+          ability: ABILITIES.constitution,
           max: 20,
         },
         apply: () => { },
@@ -696,9 +696,9 @@ export const feats = f({
       }),
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.intelligence, ABILITY.wisdom, ABILITY.charisma],
+          allowedAbilities: [ABILITIES.intelligence, ABILITIES.wisdom, ABILITIES.charisma],
           max: 20,
         },
         apply: () => { },
@@ -733,9 +733,9 @@ export const feats = f({
       }),
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.intelligence, ABILITY.wisdom, ABILITY.charisma],
+          allowedAbilities: [ABILITIES.intelligence, ABILITIES.wisdom, ABILITIES.charisma],
           max: 20,
         },
         apply: () => { },
@@ -749,13 +749,13 @@ export const feats = f({
       minLevel: 4,
       ability: f({
         mode: 'any',
-        list: f([{ ability: ABILITY.intelligence, min: 13 }, { ability: ABILITY.wisdom, min: 13 }, { ability: ABILITY.charisma, min: 13 }]),
+        list: f([{ ability: ABILITIES.intelligence, min: 13 }, { ability: ABILITIES.wisdom, min: 13 }, { ability: ABILITIES.charisma, min: 13 }]),
       }),
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.intelligence, ABILITY.wisdom, ABILITY.charisma],
+          allowedAbilities: [ABILITIES.intelligence, ABILITIES.wisdom, ABILITIES.charisma],
           max: 20,
         },
         apply: () => { },
@@ -769,13 +769,13 @@ export const feats = f({
       minLevel: 4,
       ability: f({
         mode: 'all',
-        list: f([{ ability: ABILITY.dexterity, min: 13 }]),
+        list: f([{ ability: ABILITIES.dexterity, min: 13 }]),
       }),
     }),
     effects: {
-      [EFFECT.AbilityImprovmentEffect]: {
+      [EFFECTS.AbilityImprovmentEffect]: {
         config: {
-          ability: ABILITY.dexterity,
+          ability: ABILITIES.dexterity,
           max: 20,
         },
         apply: () => { },
@@ -789,9 +789,9 @@ export const feats = f({
       minLevel: 4,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.strength, ABILITY.dexterity],
+          allowedAbilities: [ABILITIES.strength, ABILITIES.dexterity],
           max: 20,
         },
         apply: () => { },
@@ -805,13 +805,13 @@ export const feats = f({
       minLevel: 4,
       ability: f({
         mode: 'any',
-        list: f([{ ability: ABILITY.strength, min: 13 }, { ability: ABILITY.dexterity, min: 13 }]),
+        list: f([{ ability: ABILITIES.strength, min: 13 }, { ability: ABILITIES.dexterity, min: 13 }]),
       }),
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.strength, ABILITY.dexterity],
+          allowedAbilities: [ABILITIES.strength, ABILITIES.dexterity],
           max: 20,
         },
         apply: () => { },
@@ -825,13 +825,13 @@ export const feats = f({
       minLevel: 4,
       ability: f({
         mode: 'all',
-        list: f([{ ability: ABILITY.strength, min: 13 }]),
+        list: f([{ ability: ABILITIES.strength, min: 13 }]),
       }),
     }),
     effects: {
-      [EFFECT.AbilityImprovmentEffect]: {
+      [EFFECTS.AbilityImprovmentEffect]: {
         config: {
-          ability: ABILITY.strength,
+          ability: ABILITIES.strength,
           max: 20,
         },
         apply: () => { },
@@ -846,9 +846,9 @@ export const feats = f({
       armorTraining: f(['medium']),
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.strength, ABILITY.dexterity],
+          allowedAbilities: [ABILITIES.strength, ABILITIES.dexterity],
           max: 20,
         },
         apply: () => { },
@@ -863,9 +863,9 @@ export const feats = f({
       armorTraining: f(['heavy']),
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.strength, ABILITY.constitution],
+          allowedAbilities: [ABILITIES.strength, ABILITIES.constitution],
           max: 20,
         },
         apply: () => { },
@@ -880,9 +880,9 @@ export const feats = f({
       shieldTraining: true,
     }),
     effects: {
-      [EFFECT.AbilityImprovmentEffect]: {
+      [EFFECTS.AbilityImprovmentEffect]: {
         config: {
-          ability: ABILITY.strength,
+          ability: ABILITIES.strength,
           max: 20,
         },
         apply: () => { },
@@ -896,13 +896,13 @@ export const feats = f({
       minLevel: 4,
       ability: f({
         mode: 'any',
-        list: f([{ ability: ABILITY.dexterity, min: 13 }, { ability: ABILITY.constitution, min: 13 }]),
+        list: f([{ ability: ABILITIES.dexterity, min: 13 }, { ability: ABILITIES.constitution, min: 13 }]),
       }),
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.dexterity, ABILITY.constitution],
+          allowedAbilities: [ABILITIES.dexterity, ABILITIES.constitution],
           max: 20,
         },
         apply: () => { },
@@ -922,13 +922,13 @@ export const feats = f({
       minLevel: 4,
       ability: f({
         mode: 'any',
-        list: f([{ ability: ABILITY.intelligence, min: 13 }, { ability: ABILITY.wisdom, min: 13 }]),
+        list: f([{ ability: ABILITIES.intelligence, min: 13 }, { ability: ABILITIES.wisdom, min: 13 }]),
       }),
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.intelligence, ABILITY.wisdom],
+          allowedAbilities: [ABILITIES.intelligence, ABILITIES.wisdom],
           max: 20,
         },
         apply: () => { },
@@ -954,9 +954,9 @@ export const feats = f({
       armorTraining: f(['light']),
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.strength, ABILITY.dexterity],
+          allowedAbilities: [ABILITIES.strength, ABILITIES.dexterity],
           max: 20,
         },
         apply: () => { },
@@ -970,9 +970,9 @@ export const feats = f({
       minLevel: 4,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.strength, ABILITY.dexterity],
+          allowedAbilities: [ABILITIES.strength, ABILITIES.dexterity],
           max: 20,
         },
         apply: () => { },
@@ -987,9 +987,9 @@ export const feats = f({
       armorTraining: f(['medium']),
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.strength, ABILITY.constitution],
+          allowedAbilities: [ABILITIES.strength, ABILITIES.constitution],
           max: 20,
         },
         apply: () => { },
@@ -1003,7 +1003,7 @@ export const feats = f({
       minLevel: 4,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
           max: 20,
           // TODOEffect: Tie this choice to the saving throw proficiency selection.
@@ -1031,13 +1031,13 @@ export const feats = f({
       minLevel: 4,
       ability: f({
         mode: 'any',
-        list: f([{ ability: ABILITY.strength, min: 13 }, { ability: ABILITY.dexterity, min: 13 }]),
+        list: f([{ ability: ABILITIES.strength, min: 13 }, { ability: ABILITIES.dexterity, min: 13 }]),
       }),
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.strength, ABILITY.dexterity],
+          allowedAbilities: [ABILITIES.strength, ABILITIES.dexterity],
           max: 20,
         },
         apply: () => { },
@@ -1051,9 +1051,9 @@ export const feats = f({
       minLevel: 4,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.intelligence, ABILITY.wisdom, ABILITY.charisma],
+          allowedAbilities: [ABILITIES.intelligence, ABILITIES.wisdom, ABILITIES.charisma],
           max: 20,
         },
         apply: () => { },
@@ -1067,9 +1067,9 @@ export const feats = f({
       minLevel: 4,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.intelligence, ABILITY.wisdom, ABILITY.charisma],
+          allowedAbilities: [ABILITIES.intelligence, ABILITIES.wisdom, ABILITIES.charisma],
           max: 20,
         },
         apply: () => { },
@@ -1083,13 +1083,13 @@ export const feats = f({
       minLevel: 4,
       ability: f({
         mode: 'all',
-        list: f([{ ability: ABILITY.dexterity, min: 13 }]),
+        list: f([{ ability: ABILITIES.dexterity, min: 13 }]),
       }),
     }),
     effects: {
-      [EFFECT.AbilityImprovmentEffect]: {
+      [EFFECTS.AbilityImprovmentEffect]: {
         config: {
-          ability: ABILITY.dexterity,
+          ability: ABILITIES.dexterity,
           max: 20,
         },
         apply: () => { },
@@ -1103,9 +1103,9 @@ export const feats = f({
       minLevel: 4,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.strength, ABILITY.dexterity],
+          allowedAbilities: [ABILITIES.strength, ABILITIES.dexterity],
           max: 20,
         },
         apply: () => { },
@@ -1119,9 +1119,9 @@ export const feats = f({
       minLevel: 4,
     }),
     effects: {
-      [EFFECT.ChooseAbilityImprovmentEffect]: {
+      [EFFECTS.ChooseAbilityImprovmentEffect]: {
         config: {
-          allowedAbilities: [ABILITY.strength, ABILITY.dexterity],
+          allowedAbilities: [ABILITIES.strength, ABILITIES.dexterity],
           max: 20,
         },
         apply: () => { },

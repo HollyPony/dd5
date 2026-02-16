@@ -104,19 +104,25 @@ export default {
       weapons: {
         title: 'Armes',
         none: 'Aucune arme maîtrisée',
-        WEAPON_CATEGORY_simpleMelee: {
-          all: 'Armes courantes de corps à corps',
-        },
-        WEAPON_CATEGORY_simpleRanged: {
-          all: 'Armes courantes à distance',
-        },
-        WEAPON_CATEGORY_martialMelee: {
-          all: 'Armes de guerre de corps à corps',
-          WEAPON_PROPERTY_Light: 'Armes de guerre de corps à corps (Légères)',
-        },
-        WEAPON_CATEGORY_martialRanged: {
-          all: 'Armes de guerre à distance',
-          WEAPON_PROPERTY_Light: 'Armes de guerre à distance (Légères)',
+        WEAPON_CATEGORY: {
+          simpleMelee: {
+            all: 'Armes courantes de corps à corps',
+          },
+          simpleRanged: {
+            all: 'Armes courantes à distance',
+          },
+          martialMelee: {
+            all: 'Armes de guerre de corps à corps',
+            WEAPON_PROPERTY: {
+              Light: 'Armes de guerre de corps à corps (Légères)',
+            },
+          },
+          martialRanged: {
+            all: 'Armes de guerre à distance',
+            WEAPON_PROPERTY: {
+              Light: 'Armes de guerre à distance (Légères)',
+            },
+          },
         },
       },
       tools: {
@@ -181,8 +187,11 @@ export default {
       heavy: 'Armures lourdes',
       shield: 'Boucliers',
     },
-    TOOL_CATEGORY_Artisan: `outils d'artisanat`,
-    TOOL_CATEGORY_MusicalInstrument: `instruments de musique`,
+    TOOL_CATEGORY: {
+      Artisan: `outils d'artisanat`,
+      MusicalInstrument: `instruments de musique`,
+      Other: `autres outils`,
+    },
     armors: {
       padded: `Armure matelassée`,
       leather: `Armure de cuir`,
@@ -343,7 +352,7 @@ export default {
       survival: 'Survie',
     },
 
-    ABILITY: {
+    ABILITIES: {
       strength: 'Force',
       dexterity: 'Dextérité',
       constitution: 'Constitution',
@@ -352,99 +361,108 @@ export default {
       charisma: 'Charisme',
     },
 
-    WEAPON_CATEGORY_simpleMelee: 'Armes courantes de corps à corps',
-    WEAPON_CATEGORY_simpleRanged: 'Armes courantes à distance',
-    WEAPON_CATEGORY_martialMelee: 'Armes de guerre de corps à corps',
-    WEAPON_CATEGORY_martialRanged: 'Armes de guerre à distance',
-
-    WEAPON_PROPERTY_Ammunition: { name: 'Munitions', description: `` }, // TODO:
-    WEAPON_PROPERTY_Finesse: { name: 'Finesse', description: `` }, // TODO:
-    WEAPON_PROPERTY_Heavy: { name: 'Lourde', description: `` }, // TODO:
-    WEAPON_PROPERTY_Light: { name: 'Légère', description: `` }, // TODO:
-    WEAPON_PROPERTY_Loading: { name: 'Chargement', description: `` },
-
-    WEAPON_PROPERTY_Range: { name: '', description: `` }, // TODO:
-
-    WEAPON_PROPERTY_Reach: { name: 'Allonge', description: `` }, // TODO:
-    WEAPON_PROPERTY_Thrown: { name: 'Lancer', description: `` }, // TODO:
-    WEAPON_PROPERTY_TwoHanded: { name: 'Deux mains', description: `` }, // TODO:
-    WEAPON_PROPERTY_Versatile: { name: 'Polyvalente', description: `` }, // TODO:
-
-    WEAPON_AMMUNITION_Arrows: 'flèche',
-    WEAPON_AMMUNITION_Bolts: 'carreau',
-    WEAPON_AMMUNITION_Bullets: 'Billes de fronde',
-    WEAPON_AMMUNITION_Needles: 'dard',
-
-    WEAPON_MASTERY_Cleave: {
-      name: 'Enchaînement',
-      description: ``, // TODO: 
-    },
-    WEAPON_MASTERY_Graze: {
-      name: 'Écorchure',
-      description: ``,
-    },
-    WEAPON_MASTERY_Nick: {
-      name: 'Coup double',
-      description: ``,
-    },
-    WEAPON_MASTERY_Push: {
-      name: 'Poussée',
-      description: ``,
-    },
-    WEAPON_MASTERY_Sap: {
-      name: 'Sape',
-      description: ``,
-    },
-    WEAPON_MASTERY_Slow: {
-      name: 'Ralentissement',
-      description: ``,
-    },
-    WEAPON_MASTERY_Topple: {
-      name: 'Renversement',
-      description: ``,
-    },
-    WEAPON_MASTERY_Vex: {
-      name: 'Ouverture',
-      description: ``,
+    WEAPON_CATEGORY: {
+      simpleMelee: 'Armes courantes de corps à corps',
+      simpleRanged: 'Armes courantes à distance',
+      martialMelee: 'Armes de guerre de corps à corps',
+      martialRanged: 'Armes de guerre à distance',
     },
 
-    WEAPONS_quarterstaff: 'Bâton de combat',
-    WEAPONS_dagger: 'Dague',
-    WEAPONS_club: 'Gourdin',
-    WEAPONS_handaxe: 'Hachette',
-    WEAPONS_javelin: 'Javeline',
-    WEAPONS_spear: 'Lance',
-    WEAPONS_lightHammer: 'Marteau léger',
-    WEAPONS_mace: 'Masse d’armes',
-    WEAPONS_greatclub: 'Massue',
-    WEAPONS_sickle: 'Serpe',
-    WEAPONS_lightCrossbow: 'Arbalète légère',
-    WEAPONS_shortbow: 'Arc court',
-    WEAPONS_dart: 'Fléchette',
-    WEAPONS_sling: 'Fronde',
-    WEAPONS_scimitar: 'Cimeterre',
-    WEAPONS_glaive: 'Coutille',
-    WEAPONS_greatSword: 'Épée à deux mains',
-    WEAPONS_shortSword: 'Épée courte',
-    WEAPONS_longSword: 'Épée longue',
-    WEAPONS_flail: 'Fléau d’armes',
-    WEAPONS_whip: 'Fouet',
-    WEAPONS_gretAxe: 'Hache à deux mains',
-    WEAPONS_battleAxe: `Hache d'armes`,
-    WEAPONS_halberd: 'Hallebarde',
-    WEAPONS_lance: 'Lance d’arçon',
-    WEAPONS_maul: 'Maillet d’armes',
-    WEAPONS_warhammer: 'Marteau de guerre',
-    WEAPONS_morningstar: 'Morgenstern',
-    WEAPONS_warPick: 'Pic de guerre',
-    WEAPONS_pike: 'Pique',
-    WEAPONS_rapier: 'Rapière',
-    WEAPONS_trident: 'Trident',
-    WEAPONS_handCrossbow: 'Arbalète de poing',
-    WEAPONS_heavyCrossbow: 'Arbalète lourde',
-    WEAPONS_longbow: 'Arc long',
-    WEAPONS_musket: 'Mousquet',
-    WEAPONS_pistol: 'Pistolet',
-    WEAPONS_blowgun: 'Sarbacane',
+    WEAPON_PROPERTY: {
+      Ammunition: { name: 'Munitions', description: `` }, // TODO:
+      Finesse: { name: 'Finesse', description: `` }, // TODO:
+      Heavy: { name: 'Lourde', description: `` }, // TODO:
+      Light: { name: 'Légère', description: `` }, // TODO:
+      Loading: { name: 'Chargement', description: `` },
+      Range: { name: '', description: `` }, // TODO:
+      Reach: { name: 'Allonge', description: `` }, // TODO:
+      Thrown: { name: 'Lancer', description: `` }, // TODO:
+      TwoHanded: { name: 'Deux mains', description: `` }, // TODO:
+      Versatile: { name: 'Polyvalente', description: `` }, // TODO:
+    },
+
+    WEAPON_AMMUNITION: {
+      Arrows: 'flèche',
+      Bolts: 'carreau',
+      SlingBullets: 'Billes de fronde',
+      FirearmBullets: 'Balles',
+      Needles: 'dard',
+    },
+
+    WEAPON_MASTERY: {
+      Cleave: {
+        name: 'Enchaînement',
+        description: ``, // TODO: 
+      },
+      Graze: {
+        name: 'Écorchure',
+        description: ``,
+      },
+      Nick: {
+        name: 'Coup double',
+        description: ``,
+      },
+      Push: {
+        name: 'Poussée',
+        description: ``,
+      },
+      Sap: {
+        name: 'Sape',
+        description: ``,
+      },
+      Slow: {
+        name: 'Ralentissement',
+        description: ``,
+      },
+      Topple: {
+        name: 'Renversement',
+        description: ``,
+      },
+      Vex: {
+        name: 'Ouverture',
+        description: ``,
+      },
+    },
+
+    WEAPONS: {
+      quarterstaff: 'Bâton de combat',
+      dagger: 'Dague',
+      club: 'Gourdin',
+      handaxe: 'Hachette',
+      javelin: 'Javeline',
+      spear: 'Lance',
+      lightHammer: 'Marteau léger',
+      mace: 'Masse d’armes',
+      greatclub: 'Massue',
+      sickle: 'Serpe',
+      lightCrossbow: 'Arbalète légère',
+      shortbow: 'Arc court',
+      dart: 'Fléchette',
+      sling: 'Fronde',
+      scimitar: 'Cimeterre',
+      glaive: 'Coutille',
+      greatSword: 'Épée à deux mains',
+      shortSword: 'Épée courte',
+      longSword: 'Épée longue',
+      flail: 'Fléau d’armes',
+      whip: 'Fouet',
+      gretAxe: 'Hache à deux mains',
+      battleAxe: `Hache d'armes`,
+      halberd: 'Hallebarde',
+      lance: 'Lance d’arçon',
+      maul: 'Maillet d’armes',
+      warhammer: 'Marteau de guerre',
+      morningstar: 'Morgenstern',
+      warPick: 'Pic de guerre',
+      pike: 'Pique',
+      rapier: 'Rapière',
+      trident: 'Trident',
+      handCrossbow: 'Arbalète de poing',
+      heavyCrossbow: 'Arbalète lourde',
+      longbow: 'Arc long',
+      musket: 'Mousquet',
+      pistol: 'Pistolet',
+      blowgun: 'Sarbacane',
+    },
   },
 }

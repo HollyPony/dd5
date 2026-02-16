@@ -17,18 +17,18 @@ export class WeaponSelect extends AbstractSelect {
 
     populateSelect(
       this._selectElement,
-      Object.entries(
+      Array.from(
         getWeapons()
           .reduce((acc, weapon) => {
-            if (!acc[weapon.category]) acc[weapon.category] = []
-            acc[weapon.category].push(weapon)
+            if (!acc.has(weapon.category)) acc.set(weapon.category, [])
+            acc.get(weapon.category).push(weapon)
             return acc
-          }, {})
+          }, new Map())
       ).map(([category, weapons]) => ({
         isGroup: true,
-        label: t._(`statics.${category}`),
+        label: t._(`statics.${category.description}`),
         options: weapons.map(weapon => ({
-          value: weapon, text: t._(`statics.${weapon.name}`)
+          value: weapon, text: t._(`statics.${weapon.name.description}`)
         })),
       })),
       {

@@ -1,14 +1,14 @@
-import { StorageError } from '../errors.js'
+﻿import { StorageError } from '../errors.js'
 import createEventBus from '../createEventBus.js'
 import createLocalStorage from './createLocalStorage.js'
 import properties from '../stores/charSheet.authority.properties.js'
-import derivedProperties from '../stores/charSheet.derived.properties.js'
 import { initialData } from '../stores/charSheet.authority.store.js'
 import { s } from '../helpers.js'
-import { ABILITY } from '../common.js'
+import { ABILITIES } from '../common.js'
 
 const PREFIX_KEY = 'charsheet'
 const STORAGE_VERSION = 1
+const SYMBOL_PREFIX = '_sym_#'
 
 const CHARACTER_LIST_KEY = 'charSheetsListSaved'
 const CHARACTER_SAVE_KEY = 'saves'
@@ -20,68 +20,58 @@ const eventBus = createEventBus()
 
 let currentId = undefined
 
-function fromJSONEntry(jsonEntry) {
-  return JSON.parse(jsonEntry, function reviver(key, value) {
-    if (key === 'data') {
-      const [charClassName = '', charSubClassName = ''] = (value?.class ?? '').split('.')
+const serializeSymbols = (() => {
+  function serializeSymbol(symbol) {
+    if (!symbol.description) throw StorageError(`Symbol without description cannot be serialized: ${symbol.toString()}`)
+    return `${SYMBOL_PREFIX}${symbol.description}`
+  }
 
-      return {
-        [properties.charName]: value?.name ?? initialData[properties.charName] ?? '',
-        [properties.charOriginName]: value?.origin ?? initialData[properties.charOriginName] ?? '',
-        [properties.charClassName]: charClassName ?? initialData[properties.charClassName],
-        [properties.charSubClassName]: charSubClassName ?? initialData[properties.charSubClassName] ?? null,
-        [properties.charSpeciesName]: value?.species ?? initialData[properties.charSpeciesName] ?? '',
-        [properties.charExperience]: value?.experience ?? initialData[properties.charExperience] ?? 0,
-        [properties.charAlignment]: value?.alignment ?? initialData[properties.charAlignment] ?? '',
-        [properties.charSizeCategory]: value?.sizeCategory ?? initialData[properties.charSizeCategory] ?? '',
-        [properties.charSize]: value?.size ?? initialData[properties.charSize] ?? 0,
-        [properties.attributes]: s({
-          [ABILITY.strength]: value?.attributes.strength ?? initialData[properties.attributes][ABILITY.strength] ?? 10,
-          [ABILITY.dexterity]: value?.attributes.dexterity ?? initialData[properties.attributes][ABILITY.dexterity] ?? 10,
-          [ABILITY.constitution]: value?.attributes.constitution ?? initialData[properties.attributes][ABILITY.constitution] ?? 10,
-          [ABILITY.wisdom]: value?.attributes.wisdom ?? initialData[properties.attributes][ABILITY.wisdom] ?? 10,
-          [ABILITY.intelligence]: value?.attributes.intelligence ?? initialData[properties.attributes][ABILITY.intelligence] ?? 10,
-          [ABILITY.charisma]: value?.attributes.charisma ?? initialData[properties.attributes][ABILITY.charisma] ?? 10,
-        }),
-        [properties.choiceSelections]: value?.choiceSelections ?? {},
-        [properties.equipments]: (value?.equipments ?? initialData[properties.equipments] ?? []).map(equipment => ({ ...equipment })),
-      }
-    }
-
-    if (key === 'choiceSelections') {
-      return Object.fromEntries(Object.entries(value ?? {}).map(([selectorKey, selection]) => {
-        const target = Symbol.for(selection.choice.target)
-        return [selectorKey, {
-          choice: {
-            selector: {
-              type: Symbol.for(selection.choice.selector.type),
-              key: Symbol.for(selection.choice.selector.key),
-            },
-            target,
-          },
-          payload: (() => {
-            switch (target) {
-              case derivedProperties.skills:
-                return selection.payload.map(skillKey => Symbol.for(skillKey))
-              default:
-                return selection.payload
-            }
-          })()
-        }]
-      }))
+  return function serializeSymbols(value) {
+    const valueType = Object.prototype.toString.call(value)
+    if (valueType === '[object Symbol]') return serializeSymbol(value)
+    if (valueType === '[object Object]') {
+      return Reflect.ownKeys(value).reduce((acc, key) => {
+        const serializedKey = typeof key === 'symbol' ? serializeSymbol(key) : key
+        if (typeof serializedKey !== 'string') throw StorageError(`Only string/symbol object keys are supported: ${key} -> ${serializedKey}`)
+        acc[serializedKey] = value[key]
+        return acc
+      }, {})
     }
 
     return value
-  })
-}
+  }
+})()
+
+const deserializeSymbols = (() => {
+  function deserializeSymbol(value) {
+    const symbolDescription = value.slice(SYMBOL_PREFIX.length)
+    if (!symbolDescription) throw StorageError(`Serialized symbol description is required for: ${value}`)
+    return Symbol.for(symbolDescription)
+  }
+
+  return function deserializeSymbols(value) {
+    const valueType = Object.prototype.toString.call(value)
+    if (valueType === '[object String]' && value.startsWith(SYMBOL_PREFIX)) return deserializeSymbol(value)
+    if (valueType === '[object Object]') {
+      return Object.entries(value).reduce((acc, [key, entryValue]) => {
+        acc[key.startsWith(SYMBOL_PREFIX) ? deserializeSymbol(key) : key] = entryValue
+        return acc
+      }, {})
+    }
+
+    return value
+  }
+})()
 
 function toJSONEntry(entry, space = undefined) {
   return JSON.stringify(entry, function replacer(key, value) {
+    let result = value
+
     if (key === 'data') {
       const charClassName = value[properties.charClassName]
       const charSubClassName = value[properties.charSubClassName]
 
-      return {
+      result = {
         name: value[properties.charName],
         origin: value[properties.charOriginName],
         class: charClassName
@@ -93,38 +83,54 @@ function toJSONEntry(entry, space = undefined) {
         sizeCategory: value[properties.charSizeCategory],
         size: value[properties.charSize],
         attributes: {
-          strength: value[properties.attributes][ABILITY.strength],
-          dexterity: value[properties.attributes][ABILITY.dexterity],
-          constitution: value[properties.attributes][ABILITY.constitution],
-          wisdom: value[properties.attributes][ABILITY.wisdom],
-          intelligence: value[properties.attributes][ABILITY.intelligence],
-          charisma: value[properties.attributes][ABILITY.charisma],
+          strength: value[properties.attributes][ABILITIES.strength],
+          dexterity: value[properties.attributes][ABILITIES.dexterity],
+          constitution: value[properties.attributes][ABILITIES.constitution],
+          wisdom: value[properties.attributes][ABILITIES.wisdom],
+          intelligence: value[properties.attributes][ABILITIES.intelligence],
+          charisma: value[properties.attributes][ABILITIES.charisma],
         },
         choiceSelections: value[properties.choiceSelections],
         equipments: value[properties.equipments]
       }
     }
-    if (key === 'choiceSelections') {
-      return Object.fromEntries(Object.entries(value ?? {}).map(([selectorKey, selection]) => {
-        return [selectorKey, {
-          choice: {
-            selector: {
-              type: selection.choice.selector.type.description,
-              key: selection.choice.selector.key.description,
-            },
-            target: selection.choice.target.description
-          },
-          payload: (() => {
-            switch (selection.choice.target) {
-              case derivedProperties.skills: return selection.payload.map(skill => skill.description)
-              default: return selection.payload
-            }
-          })()
-        }]
-      }))
-    }
-    return value
+
+    return serializeSymbols(result)
   }, space)
+}
+
+function fromJSONEntry(jsonEntry) {
+  return JSON.parse(jsonEntry, function reviver(key, value) {
+    const result = deserializeSymbols(value)
+
+    if (key === 'data') {
+      const [charClassName = '', charSubClassName = ''] = (result?.class ?? '').split('.')
+
+      return {
+        [properties.charName]: result?.name ?? initialData[properties.charName] ?? '',
+        [properties.charOriginName]: result?.origin ?? initialData[properties.charOriginName] ?? '',
+        [properties.charClassName]: charClassName ?? initialData[properties.charClassName],
+        [properties.charSubClassName]: charSubClassName ?? initialData[properties.charSubClassName] ?? null,
+        [properties.charSpeciesName]: result?.species ?? initialData[properties.charSpeciesName] ?? '',
+        [properties.charExperience]: result?.experience ?? initialData[properties.charExperience] ?? 0,
+        [properties.charAlignment]: result?.alignment ?? initialData[properties.charAlignment] ?? '',
+        [properties.charSizeCategory]: result?.sizeCategory ?? initialData[properties.charSizeCategory] ?? '',
+        [properties.charSize]: result?.size ?? initialData[properties.charSize] ?? 0,
+        [properties.attributes]: s({
+          [ABILITIES.strength]: result?.attributes.strength ?? initialData[properties.attributes][ABILITIES.strength] ?? 10,
+          [ABILITIES.dexterity]: result?.attributes.dexterity ?? initialData[properties.attributes][ABILITIES.dexterity] ?? 10,
+          [ABILITIES.constitution]: result?.attributes.constitution ?? initialData[properties.attributes][ABILITIES.constitution] ?? 10,
+          [ABILITIES.wisdom]: result?.attributes.wisdom ?? initialData[properties.attributes][ABILITIES.wisdom] ?? 10,
+          [ABILITIES.intelligence]: result?.attributes.intelligence ?? initialData[properties.attributes][ABILITIES.intelligence] ?? 10,
+          [ABILITIES.charisma]: result?.attributes.charisma ?? initialData[properties.attributes][ABILITIES.charisma] ?? 10,
+        }),
+        [properties.choiceSelections]: result?.choiceSelections ?? {},
+        [properties.equipments]: result?.equipments ?? initialData[properties.equipments] ?? [],
+      }
+    }
+
+    return result
+  })
 }
 
 function saveKey(id) {

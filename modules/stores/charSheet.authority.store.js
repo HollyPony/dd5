@@ -1,4 +1,4 @@
-import { ABILITY } from '../common.js'
+﻿import { ABILITIES } from '../common.js'
 import createStore from '../createStore.js'
 import createEventBus from '../createEventBus.js'
 import { SELECTOR_TYPE } from '../services/choice.helper.js'
@@ -15,12 +15,12 @@ export const initialData = {
   [properties.charSizeCategory]: '',
   [properties.charSize]: '',
   [properties.attributes]: {
-    [ABILITY.strength]: 10,
-    [ABILITY.dexterity]: 10,
-    [ABILITY.constitution]: 10,
-    [ABILITY.wisdom]: 10,
-    [ABILITY.intelligence]: 10,
-    [ABILITY.charisma]: 10,
+    [ABILITIES.strength]: 10,
+    [ABILITIES.dexterity]: 10,
+    [ABILITIES.constitution]: 10,
+    [ABILITIES.wisdom]: 10,
+    [ABILITIES.intelligence]: 10,
+    [ABILITIES.charisma]: 10,
   },
   [properties.choiceSelections]: {},
   [properties.equipments]: [],

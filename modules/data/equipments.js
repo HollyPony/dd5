@@ -1,289 +1,289 @@
-import { Enum, f } from '../helpers.js'
+﻿import { Enum, f } from '../helpers.js'
 import {
-  ABILITY, DICES, DICE, EFFECT,
+  ABILITIES, DICES, DICE, EFFECTS,
 }
   from '../common.js'
 import { Money, GOLD as G, SILVER as S, COPPER as C } from './money.js'
 import { Weight } from './weight.js'
 
 export const EQUIPMENT_TYPE = Enum({
-  WEAPON: 'EQUIPMENT_TYPE_WEAPON',
-  ARMOR: 'EQUIPMENT_TYPE_ARMOR',
-  SHIELD: 'EQUIPMENT_TYPE_SHIELD',
-  TOOL: 'EQUIPMENT_TYPE_TOOL',
-  GEAR: 'EQUIPMENT_TYPE_GEAR',
-  MAGIC_ITEM: 'EQUIPMENT_TYPE_MAGIC_ITEM',
+  WEAPON: Symbol.for('EQUIPMENT_TYPE.WEAPON'),
+  ARMOR: Symbol.for('EQUIPMENT_TYPE.ARMOR'),
+  SHIELD: Symbol.for('EQUIPMENT_TYPE.SHIELD'),
+  TOOL: Symbol.for('EQUIPMENT_TYPE.TOOL'),
+  GEAR: Symbol.for('EQUIPMENT_TYPE.GEAR'),
+  MAGIC_ITEM: Symbol.for('EQUIPMENT_TYPE.MAGIC_ITEM'),
 })
 
 export const EQUIPED_CATEGORY = Enum({
-  WEAPON: 'EQUIPED_CATEGORY_WEAPON',
-  ARMOR: 'EQUIPED_CATEGORY_ARMOR',
-  SHIELD: 'EQUIPED_CATEGORY_SHIELD',
-  OTHER: 'EQUIPED_CATEGORY_OTHER',
+  WEAPON: Symbol.for('EQUIPED_CATEGORY.WEAPON'),
+  ARMOR: Symbol.for('EQUIPED_CATEGORY.ARMOR'),
+  SHIELD: Symbol.for('EQUIPED_CATEGORY.SHIELD'),
+  OTHER: Symbol.for('EQUIPED_CATEGORY.OTHER'),
 })
 
 export const WEAPON_CATEGORY = Enum({
-  simpleMelee: 'WEAPON_CATEGORY_simpleMelee', // Armes courantes de corps à corps
-  simpleRanged: 'WEAPON_CATEGORY_simpleRanged', // Armes courantes à distance
-  martialMelee: 'WEAPON_CATEGORY_martialMelee', // Armes de guerre de corps à corps
-  martialRanged: 'WEAPON_CATEGORY_martialRanged', // Armes de guerre à distance
+  simpleMelee: Symbol.for('WEAPON_CATEGORY.simpleMelee'), // Armes courantes de corps à corps
+  simpleRanged: Symbol.for('WEAPON_CATEGORY.simpleRanged'), // Armes courantes à distance
+  martialMelee: Symbol.for('WEAPON_CATEGORY.martialMelee'), // Armes de guerre de corps à corps
+  martialRanged: Symbol.for('WEAPON_CATEGORY.martialRanged'), // Armes de guerre à distance
 })
 
 export const WEAPON_DAMAGE_TYPE = Enum({
-  piercing: 'WEAPON_DAMAGE_TYPE_piercing', // Perforant
-  slashing: 'WEAPON_DAMAGE_TYPE_slashing', // Tranchant
-  bludgeoning: 'WEAPON_DAMAGE_TYPE_bludgeoning', // Contondant
+  piercing: Symbol.for('WEAPON_DAMAGE_TYPE.piercing'), // Perforant
+  slashing: Symbol.for('WEAPON_DAMAGE_TYPE.slashing'), // Tranchant
+  bludgeoning: Symbol.for('WEAPON_DAMAGE_TYPE.bludgeoning'), // Contondant
 })
 
 export const WEAPON_PROPERTY = Enum({ // P.214 - Propriété
-  Ammunition: 'WEAPON_PROPERTY_Ammunition',
-  Finesse: 'WEAPON_PROPERTY_Finesse',
-  Heavy: 'WEAPON_PROPERTY_Heavy',
-  Light: 'WEAPON_PROPERTY_Light',
-  Loading: 'WEAPON_PROPERTY_Loading',
-  Range: 'WEAPON_PROPERTY_Range',
-  Reach: 'WEAPON_PROPERTY_Reach',
-  Thrown: 'WEAPON_PROPERTY_Thrown',
-  TwoHanded: 'WEAPON_PROPERTY_TwoHanded',
-  Versatile: 'WEAPON_PROPERTY_Versatile',
+  Ammunition: Symbol.for('WEAPON_PROPERTY.Ammunition'),
+  Finesse: Symbol.for('WEAPON_PROPERTY.Finesse'),
+  Heavy: Symbol.for('WEAPON_PROPERTY.Heavy'),
+  Light: Symbol.for('WEAPON_PROPERTY.Light'),
+  Loading: Symbol.for('WEAPON_PROPERTY.Loading'),
+  Range: Symbol.for('WEAPON_PROPERTY.Range'),
+  Reach: Symbol.for('WEAPON_PROPERTY.Reach'),
+  Thrown: Symbol.for('WEAPON_PROPERTY.Thrown'),
+  TwoHanded: Symbol.for('WEAPON_PROPERTY.TwoHanded'),
+  Versatile: Symbol.for('WEAPON_PROPERTY.Versatile'),
 })
 
 export const WEAPON_AMMUNITION = Enum({
-  Arrows: 'WEAPON_AMMUNITION_Arrows',
-  Bolts: 'WEAPON_AMMUNITION_Bolts',
-  SlingBullet: 'WEAPON_AMMUNITION_SlingBullets',
-  FirearmBullets: 'WEAPON_AMMUNITION_FirearmBullets',
-  Needles: 'WEAPON_AMMUNITION_Needles',
+  Arrows: Symbol.for('WEAPON_AMMUNITION.Arrows'),
+  Bolts: Symbol.for('WEAPON_AMMUNITION.Bolts'),
+  SlingBullet: Symbol.for('WEAPON_AMMUNITION.SlingBullets'),
+  FirearmBullets: Symbol.for('WEAPON_AMMUNITION.FirearmBullets'),
+  Needles: Symbol.for('WEAPON_AMMUNITION.Needles'),
 })
 
 export const WEAPON_MASTERY = Enum({ // Bottes P.215
-  Cleave: 'WEAPON_MASTERY_Cleave',
-  Graze: 'WEAPON_MASTERY_Graze',
-  Nick: 'WEAPON_MASTERY_Nick',
-  Push: 'WEAPON_MASTERY_Push',
-  Sap: 'WEAPON_MASTERY_Sap',
-  Slow: 'WEAPON_MASTERY_Slow',
-  Topple: 'WEAPON_MASTERY_Topple',
-  Vex: 'WEAPON_MASTERY_Vex',
+  Cleave: Symbol.for('WEAPON_MASTERY.Cleave'),
+  Graze: Symbol.for('WEAPON_MASTERY.Graze'),
+  Nick: Symbol.for('WEAPON_MASTERY.Nick'),
+  Push: Symbol.for('WEAPON_MASTERY.Push'),
+  Sap: Symbol.for('WEAPON_MASTERY.Sap'),
+  Slow: Symbol.for('WEAPON_MASTERY.Slow'),
+  Topple: Symbol.for('WEAPON_MASTERY.Topple'),
+  Vex: Symbol.for('WEAPON_MASTERY.Vex'),
 })
 
 export const ARMOR_CATEGORY = Enum({ // P.220
-  Light: 'ARMOR_CATEGORY_Light',
-  Medium: 'ARMOR_CATEGORY_Medium',
-  Heavy: 'ARMOR_CATEGORY_Heavy',
+  Light: Symbol.for('ARMOR_CATEGORY.Light'),
+  Medium: Symbol.for('ARMOR_CATEGORY.Medium'),
+  Heavy: Symbol.for('ARMOR_CATEGORY.Heavy'),
 })
 
 export const TOOL_CATEGORY = Enum({ // P.221
-  Artisan: 'TOOL_CATEGORY_Artisan',
-  MusicalInstrument: 'TOOL_CATEGORY_MusicalInstrument',
-  Other: 'TOOL_CATEGORY_Other', // P.222
+  Artisan: Symbol.for('TOOL_CATEGORY.Artisan'),
+  MusicalInstrument: Symbol.for('TOOL_CATEGORY.MusicalInstrument'),
+  Other: Symbol.for('TOOL_CATEGORY.Other'), // P.222
 })
 
 export const INSTRUMENTS = Enum({
-  bagpipes: 'INSTRUMENTS_bagpipes',
-  drum: 'INSTRUMENTS_drum',
-  dulcimer: 'INSTRUMENTS_dulcimer',
-  flute: 'INSTRUMENTS_flute',
-  horn: 'INSTRUMENTS_horn',
-  lute: 'INSTRUMENTS_lute',
-  lyre: 'INSTRUMENTS_lyre',
-  panFlute: 'INSTRUMENTS_panFlute',
-  shawm: 'INSTRUMENTS_shawm',
-  viol: 'INSTRUMENTS_viol',
+  bagpipes: Symbol.for('INSTRUMENTS.bagpipes'),
+  drum: Symbol.for('INSTRUMENTS.drum'),
+  dulcimer: Symbol.for('INSTRUMENTS.dulcimer'),
+  flute: Symbol.for('INSTRUMENTS.flute'),
+  horn: Symbol.for('INSTRUMENTS.horn'),
+  lute: Symbol.for('INSTRUMENTS.lute'),
+  lyre: Symbol.for('INSTRUMENTS.lyre'),
+  panFlute: Symbol.for('INSTRUMENTS.panFlute'),
+  shawm: Symbol.for('INSTRUMENTS.shawm'),
+  viol: Symbol.for('INSTRUMENTS.viol'),
 })
 
 export const MAGIC_ITEM_TYPE = Enum({
-  armor: 'MAGIC_ITEM_TYPE_armor', // Armure
-  potion: 'MAGIC_ITEM_TYPE_potion', // Potion
-  ring: 'MAGIC_ITEM_TYPE_ring', // Anneau
-  scroll: 'MAGIC_ITEM_TYPE_scroll', // Parchemin
-  staff: 'MAGIC_ITEM_TYPE_staff', // Bâton
-  wand: 'MAGIC_ITEM_TYPE_wand', // Baguette
-  weapon: 'MAGIC_ITEM_TYPE_weapon', // Arme
-  wondrousItem: 'MAGIC_ITEM_TYPE_wondrousItem', // Objet merveilleux
-  rod: 'MAGIC_ITEM_TYPE_rod', // Sceptre
+  armor: Symbol.for('MAGIC_ITEM_TYPE.armor'), // Armure
+  potion: Symbol.for('MAGIC_ITEM_TYPE.potion'), // Potion
+  ring: Symbol.for('MAGIC_ITEM_TYPE.ring'), // Anneau
+  scroll: Symbol.for('MAGIC_ITEM_TYPE.scroll'), // Parchemin
+  staff: Symbol.for('MAGIC_ITEM_TYPE.staff'), // Bâton
+  wand: Symbol.for('MAGIC_ITEM_TYPE.wand'), // Baguette
+  weapon: Symbol.for('MAGIC_ITEM_TYPE.weapon'), // Arme
+  wondrousItem: Symbol.for('MAGIC_ITEM_TYPE.wondrousItem'), // Objet merveilleux
+  rod: Symbol.for('MAGIC_ITEM_TYPE.rod'), // Sceptre
 })
 
 const WEAPONS = Enum({
-  quarterstaff: 'WEAPONS_quarterstaff',
-  dagger: 'WEAPONS_dagger',
-  club: 'WEAPONS_club',
-  handaxe: 'WEAPONS_handaxe',
-  javelin: 'WEAPONS_javelin',
-  spear: 'WEAPONS_spear',
-  lightHammer: 'WEAPONS_lightHammer',
-  mace: 'WEAPONS_mace',
-  greatclub: 'WEAPONS_greatclub',
-  sickle: 'WEAPONS_sickle',
-  lightCrossbow: 'WEAPONS_lightCrossbow',
-  shortbow: 'WEAPONS_shortbow',
-  dart: 'WEAPONS_dart',
-  sling: 'WEAPONS_sling',
-  scimitar: 'WEAPONS_scimitar',
-  glaive: 'WEAPONS_glaive',
-  greatSword: 'WEAPONS_greatSword',
-  shortSword: 'WEAPONS_shortSword',
-  longSword: 'WEAPONS_longSword',
-  flail: 'WEAPONS_flail',
-  whip: 'WEAPONS_whip',
-  gretAxe: 'WEAPONS_gretAxe',
-  battleAxe: 'WEAPONS_battleAxe',
-  halberd: 'WEAPONS_halberd',
-  lance: 'WEAPONS_lance',
-  maul: 'WEAPONS_maul',
-  warhammer: 'WEAPONS_warhammer',
-  morningstar: 'WEAPONS_morningstar',
-  warPick: 'WEAPONS_warPick',
-  pike: 'WEAPONS_pike',
-  rapier: 'WEAPONS_rapier',
-  trident: 'WEAPONS_trident',
-  handCrossbow: 'WEAPONS_handCrossbow',
-  heavyCrossbow: 'WEAPONS_heavyCrossbow',
-  longbow: 'WEAPONS_longbow',
-  musket: 'WEAPONS_musket',
-  pistol: 'WEAPONS_pistol',
-  blowgun: 'WEAPONS_blowgun',
+  quarterstaff: Symbol.for('WEAPONS.quarterstaff'),
+  dagger: Symbol.for('WEAPONS.dagger'),
+  club: Symbol.for('WEAPONS.club'),
+  handaxe: Symbol.for('WEAPONS.handaxe'),
+  javelin: Symbol.for('WEAPONS.javelin'),
+  spear: Symbol.for('WEAPONS.spear'),
+  lightHammer: Symbol.for('WEAPONS.lightHammer'),
+  mace: Symbol.for('WEAPONS.mace'),
+  greatclub: Symbol.for('WEAPONS.greatclub'),
+  sickle: Symbol.for('WEAPONS.sickle'),
+  lightCrossbow: Symbol.for('WEAPONS.lightCrossbow'),
+  shortbow: Symbol.for('WEAPONS.shortbow'),
+  dart: Symbol.for('WEAPONS.dart'),
+  sling: Symbol.for('WEAPONS.sling'),
+  scimitar: Symbol.for('WEAPONS.scimitar'),
+  glaive: Symbol.for('WEAPONS.glaive'),
+  greatSword: Symbol.for('WEAPONS.greatSword'),
+  shortSword: Symbol.for('WEAPONS.shortSword'),
+  longSword: Symbol.for('WEAPONS.longSword'),
+  flail: Symbol.for('WEAPONS.flail'),
+  whip: Symbol.for('WEAPONS.whip'),
+  gretAxe: Symbol.for('WEAPONS.gretAxe'),
+  battleAxe: Symbol.for('WEAPONS.battleAxe'),
+  halberd: Symbol.for('WEAPONS.halberd'),
+  lance: Symbol.for('WEAPONS.lance'),
+  maul: Symbol.for('WEAPONS.maul'),
+  warhammer: Symbol.for('WEAPONS.warhammer'),
+  morningstar: Symbol.for('WEAPONS.morningstar'),
+  warPick: Symbol.for('WEAPONS.warPick'),
+  pike: Symbol.for('WEAPONS.pike'),
+  rapier: Symbol.for('WEAPONS.rapier'),
+  trident: Symbol.for('WEAPONS.trident'),
+  handCrossbow: Symbol.for('WEAPONS.handCrossbow'),
+  heavyCrossbow: Symbol.for('WEAPONS.heavyCrossbow'),
+  longbow: Symbol.for('WEAPONS.longbow'),
+  musket: Symbol.for('WEAPONS.musket'),
+  pistol: Symbol.for('WEAPONS.pistol'),
+  blowgun: Symbol.for('WEAPONS.blowgun'),
 })
 
 const ARMORS = Enum({
-  padded: 'ARMORS_padded',
-  leather: 'ARMORS_leather',
-  studdedLeather: 'ARMORS_studdedLeather',
-  hideArmor: 'ARMORS_hideArmor',
-  chainShirt: 'ARMORS_chainShirt',
-  scaleMail: 'ARMORS_scaleMail',
-  breastplate: 'ARMORS_breastplate',
-  halfPlate: 'ARMORS_halfPlate',
-  ringMail: 'ARMORS_ringMail',
-  chainMail: 'ARMORS_chainMail',
-  splint: 'ARMORS_splint',
-  plate: 'ARMORS_plate',
+  padded: Symbol.for('ARMORS.padded'),
+  leather: Symbol.for('ARMORS.leather'),
+  studdedLeather: Symbol.for('ARMORS.studdedLeather'),
+  hideArmor: Symbol.for('ARMORS.hideArmor'),
+  chainShirt: Symbol.for('ARMORS.chainShirt'),
+  scaleMail: Symbol.for('ARMORS.scaleMail'),
+  breastplate: Symbol.for('ARMORS.breastplate'),
+  halfPlate: Symbol.for('ARMORS.halfPlate'),
+  ringMail: Symbol.for('ARMORS.ringMail'),
+  chainMail: Symbol.for('ARMORS.chainMail'),
+  splint: Symbol.for('ARMORS.splint'),
+  plate: Symbol.for('ARMORS.plate'),
 })
 
 const SHIELDS = Enum({
-  shield: 'SHIELDS_shield',
+  shield: Symbol.for('SHIELDS.shield'),
 })
 
 export const TOOLS = Enum({
-  alchemistsSupplies: 'TOOLS_alchemistsSupplies',
-  brewersSupplies: 'TOOLS_brewersSupplies',
-  calligraphersSupplies: 'TOOLS_calligraphersSupplies',
-  carpentersTools: 'TOOLS_carpentersTools',
-  cartographersToolTools: 'TOOLS_cartographersToolTools',
-  cobblersTools: 'TOOLS_cobblersTools',
-  cooksTools: 'TOOLS_cooksTools',
-  glassblowersTools: 'TOOLS_glassblowersTools',
-  jewelersTools: 'TOOLS_jewelersTools',
-  leatherworkersTools: 'TOOLS_leatherworkersTools',
-  masonsTools: 'TOOLS_masonsTools',
-  paintersTools: 'TOOLS_paintersTools',
-  pottersTools: 'TOOLS_pottersTools',
-  smithsTools: 'TOOLS_smithsTools',
-  tinkersTools: 'TOOLS_tinkersTools',
-  weaversTools: 'TOOLS_weaversTools',
-  woodcarversTools: 'TOOLS_woodcarversTools',
+  alchemistsSupplies: Symbol.for('TOOLS.alchemistsSupplies'),
+  brewersSupplies: Symbol.for('TOOLS.brewersSupplies'),
+  calligraphersSupplies: Symbol.for('TOOLS.calligraphersSupplies'),
+  carpentersTools: Symbol.for('TOOLS.carpentersTools'),
+  cartographersToolTools: Symbol.for('TOOLS.cartographersToolTools'),
+  cobblersTools: Symbol.for('TOOLS.cobblersTools'),
+  cooksTools: Symbol.for('TOOLS.cooksTools'),
+  glassblowersTools: Symbol.for('TOOLS.glassblowersTools'),
+  jewelersTools: Symbol.for('TOOLS.jewelersTools'),
+  leatherworkersTools: Symbol.for('TOOLS.leatherworkersTools'),
+  masonsTools: Symbol.for('TOOLS.masonsTools'),
+  paintersTools: Symbol.for('TOOLS.paintersTools'),
+  pottersTools: Symbol.for('TOOLS.pottersTools'),
+  smithsTools: Symbol.for('TOOLS.smithsTools'),
+  tinkersTools: Symbol.for('TOOLS.tinkersTools'),
+  weaversTools: Symbol.for('TOOLS.weaversTools'),
+  woodcarversTools: Symbol.for('TOOLS.woodcarversTools'),
 
-  disguiseKit: 'TOOLS_disguiseKit',
-  forgeryKit: 'TOOLS_forgeryKit',
-  gamingSet: 'TOOLS_gamingSet',
-  herbalismKit: 'TOOLS_herbalismKit',
-  bagpipes: 'TOOLS_bagpipes',
-  drum: 'TOOLS_drum',
-  dulcimer: 'TOOLS_dulcimer',
-  flute: 'TOOLS_flute',
-  horn: 'TOOLS_horn',
-  lute: 'TOOLS_lute',
-  lyre: 'TOOLS_lyre',
-  panFlute: 'TOOLS_panFlute',
-  shawm: 'TOOLS_shawm',
-  viol: 'TOOLS_viol',
-  navigatorsTools: 'TOOLS_navigatorsTools',
-  poisonersKit: 'TOOLS_poisonersKit',
-  thievesTools: 'TOOLS_thievesTools',
+  disguiseKit: Symbol.for('TOOLS.disguiseKit'),
+  forgeryKit: Symbol.for('TOOLS.forgeryKit'),
+  gamingSet: Symbol.for('TOOLS.gamingSet'),
+  herbalismKit: Symbol.for('TOOLS.herbalismKit'),
+  bagpipes: Symbol.for('TOOLS.bagpipes'),
+  drum: Symbol.for('TOOLS.drum'),
+  dulcimer: Symbol.for('TOOLS.dulcimer'),
+  flute: Symbol.for('TOOLS.flute'),
+  horn: Symbol.for('TOOLS.horn'),
+  lute: Symbol.for('TOOLS.lute'),
+  lyre: Symbol.for('TOOLS.lyre'),
+  panFlute: Symbol.for('TOOLS.panFlute'),
+  shawm: Symbol.for('TOOLS.shawm'),
+  viol: Symbol.for('TOOLS.viol'),
+  navigatorsTools: Symbol.for('TOOLS.navigatorsTools'),
+  poisonersKit: Symbol.for('TOOLS.poisonersKit'),
+  thievesTools: Symbol.for('TOOLS.thievesTools'),
 })
 
 const GEARS = Enum({
-  acid: 'GEARS_acid',
-  antitoxin: 'GEARS_antitoxin',
-  clothesFine: 'GEARS_clothesFine',
-  ramPortable: 'GEARS_ramPortable',
-  ballBearings: 'GEARS_ballBearings',
-  tinderbox: 'GEARS_tinderbox',
-  candle: 'GEARS_candle',
-  bottleGlass: 'GEARS_bottleGlass',
-  lock: 'GEARS_lock',
-  quiver: 'GEARS_quiver',
-  map: 'GEARS_map',
-  chain: 'GEARS_chain',
-  caltrops: 'GEARS_caltrops',
-  bell: 'GEARS_bell',
-  chest: 'GEARS_chest',
-  rope: 'GEARS_rope',
-  costume: 'GEARS_costume',
-  blanket: 'GEARS_blanket',
-  jug: 'GEARS_jug',
-  holyWater: 'GEARS_holyWater',
-  ladder: 'GEARS_ladder',
-  ink: 'GEARS_ink',
-  caseMapOrScroll: 'GEARS_caseMapOrScroll',
-  caseCrossbowBolt: 'GEARS_caseCrossbowBolt',
-  alchemistsFire: 'GEARS_alchemistsFire',
-  string: 'GEARS_string',
-  net: 'GEARS_net',
-  vial: 'GEARS_vial',
-  flask: 'GEARS_flask',
-  arcaneFocus: 'GEARS_arcaneFocus',
-  druidicFocus: 'GEARS_druidicFocus',
-  grapplingHook: 'GEARS_grapplingHook',
-  oil: 'GEARS_oil',
-  lamp: 'GEARS_lamp',
-  lanternHooded: 'GEARS_lanternHooded',
-  lanternBullseye: 'GEARS_lanternBullseye',
-  book: 'GEARS_book',
-  spyglass: 'GEARS_spyglass',
-  magnifyingGlass: 'GEARS_magnifyingGlass',
-  climbersKit: 'GEARS_climbersKit',
-  manacles: 'GEARS_manacles',
-  mirror: 'GEARS_mirror',
-  ammunition: 'GEARS_ammunition',
-  waterskin: 'GEARS_waterskin',
-  blockAndTackle: 'GEARS_blockAndTackle',
-  basket: 'GEARS_basket',
-  paper: 'GEARS_paper',
-  burglarsPack: 'GEARS_burglarsPack',
-  diplomatsPack: 'GEARS_diplomatsPack',
-  entertainersPack: 'GEARS_entertainersPack',
-  priestsPack: 'GEARS_priestsPack',
-  scholarsPack: 'GEARS_scholarsPack',
-  explorersPack: 'GEARS_explorersPack',
-  dungeoneersPack: 'GEARS_dungeoneersPack',
-  parchment: 'GEARS_parchment',
-  spellScroll: 'GEARS_spellScroll',
-  perfume: 'GEARS_perfume',
-  shovel: 'GEARS_shovel',
-  pole: 'GEARS_pole',
-  crowbar: 'GEARS_crowbar',
-  huntingTrap: 'GEARS_huntingTrap',
-  spikesIron: 'GEARS_spikesIron',
-  poisonBasic: 'GEARS_poisonBasic',
-  inkPen: 'GEARS_inkPen',
-  potIron: 'GEARS_potIron',
-  potionOfHealing: 'GEARS_potionOfHealing',
-  rations: 'GEARS_rations',
-  robe: 'GEARS_robe',
-  sack: 'GEARS_sack',
-  backpack: 'GEARS_backpack',
-  bedroll: 'GEARS_bedroll',
-  pouch: 'GEARS_pouch',
-  componentPouch: 'GEARS_componentPouch',
-  bucket: 'GEARS_bucket',
-  signalWhistle: 'GEARS_signalWhistle',
-  holySymbol: 'GEARS_holySymbol',
-  tent: 'GEARS_tent',
-  clothesTravelers: 'GEARS_clothesTravelers',
-  barrel: 'GEARS_barrel',
-  torch: 'GEARS_torch',
-  healersKit: 'GEARS_healersKit',
+  acid: Symbol.for('GEARS.acid'),
+  antitoxin: Symbol.for('GEARS.antitoxin'),
+  clothesFine: Symbol.for('GEARS.clothesFine'),
+  ramPortable: Symbol.for('GEARS.ramPortable'),
+  ballBearings: Symbol.for('GEARS.ballBearings'),
+  tinderbox: Symbol.for('GEARS.tinderbox'),
+  candle: Symbol.for('GEARS.candle'),
+  bottleGlass: Symbol.for('GEARS.bottleGlass'),
+  lock: Symbol.for('GEARS.lock'),
+  quiver: Symbol.for('GEARS.quiver'),
+  map: Symbol.for('GEARS.map'),
+  chain: Symbol.for('GEARS.chain'),
+  caltrops: Symbol.for('GEARS.caltrops'),
+  bell: Symbol.for('GEARS.bell'),
+  chest: Symbol.for('GEARS.chest'),
+  rope: Symbol.for('GEARS.rope'),
+  costume: Symbol.for('GEARS.costume'),
+  blanket: Symbol.for('GEARS.blanket'),
+  jug: Symbol.for('GEARS.jug'),
+  holyWater: Symbol.for('GEARS.holyWater'),
+  ladder: Symbol.for('GEARS.ladder'),
+  ink: Symbol.for('GEARS.ink'),
+  caseMapOrScroll: Symbol.for('GEARS.caseMapOrScroll'),
+  caseCrossbowBolt: Symbol.for('GEARS.caseCrossbowBolt'),
+  alchemistsFire: Symbol.for('GEARS.alchemistsFire'),
+  string: Symbol.for('GEARS.string'),
+  net: Symbol.for('GEARS.net'),
+  vial: Symbol.for('GEARS.vial'),
+  flask: Symbol.for('GEARS.flask'),
+  arcaneFocus: Symbol.for('GEARS.arcaneFocus'),
+  druidicFocus: Symbol.for('GEARS.druidicFocus'),
+  grapplingHook: Symbol.for('GEARS.grapplingHook'),
+  oil: Symbol.for('GEARS.oil'),
+  lamp: Symbol.for('GEARS.lamp'),
+  lanternHooded: Symbol.for('GEARS.lanternHooded'),
+  lanternBullseye: Symbol.for('GEARS.lanternBullseye'),
+  book: Symbol.for('GEARS.book'),
+  spyglass: Symbol.for('GEARS.spyglass'),
+  magnifyingGlass: Symbol.for('GEARS.magnifyingGlass'),
+  climbersKit: Symbol.for('GEARS.climbersKit'),
+  manacles: Symbol.for('GEARS.manacles'),
+  mirror: Symbol.for('GEARS.mirror'),
+  ammunition: Symbol.for('GEARS.ammunition'),
+  waterskin: Symbol.for('GEARS.waterskin'),
+  blockAndTackle: Symbol.for('GEARS.blockAndTackle'),
+  basket: Symbol.for('GEARS.basket'),
+  paper: Symbol.for('GEARS.paper'),
+  burglarsPack: Symbol.for('GEARS.burglarsPack'),
+  diplomatsPack: Symbol.for('GEARS.diplomatsPack'),
+  entertainersPack: Symbol.for('GEARS.entertainersPack'),
+  priestsPack: Symbol.for('GEARS.priestsPack'),
+  scholarsPack: Symbol.for('GEARS.scholarsPack'),
+  explorersPack: Symbol.for('GEARS.explorersPack'),
+  dungeoneersPack: Symbol.for('GEARS.dungeoneersPack'),
+  parchment: Symbol.for('GEARS.parchment'),
+  spellScroll: Symbol.for('GEARS.spellScroll'),
+  perfume: Symbol.for('GEARS.perfume'),
+  shovel: Symbol.for('GEARS.shovel'),
+  pole: Symbol.for('GEARS.pole'),
+  crowbar: Symbol.for('GEARS.crowbar'),
+  huntingTrap: Symbol.for('GEARS.huntingTrap'),
+  spikesIron: Symbol.for('GEARS.spikesIron'),
+  poisonBasic: Symbol.for('GEARS.poisonBasic'),
+  inkPen: Symbol.for('GEARS.inkPen'),
+  potIron: Symbol.for('GEARS.potIron'),
+  potionOfHealing: Symbol.for('GEARS.potionOfHealing'),
+  rations: Symbol.for('GEARS.rations'),
+  robe: Symbol.for('GEARS.robe'),
+  sack: Symbol.for('GEARS.sack'),
+  backpack: Symbol.for('GEARS.backpack'),
+  bedroll: Symbol.for('GEARS.bedroll'),
+  pouch: Symbol.for('GEARS.pouch'),
+  componentPouch: Symbol.for('GEARS.componentPouch'),
+  bucket: Symbol.for('GEARS.bucket'),
+  signalWhistle: Symbol.for('GEARS.signalWhistle'),
+  holySymbol: Symbol.for('GEARS.holySymbol'),
+  tent: Symbol.for('GEARS.tent'),
+  clothesTravelers: Symbol.for('GEARS.clothesTravelers'),
+  barrel: Symbol.for('GEARS.barrel'),
+  torch: Symbol.for('GEARS.torch'),
+  healersKit: Symbol.for('GEARS.healersKit'),
 })
 
 // TODO: Place MAGIC_ITEMS here
@@ -454,7 +454,7 @@ const weapons = f([ // P.214
     properties: f([WEAPON_PROPERTY.Loading, WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Ammunition]),
     propertiesValues: {
       [WEAPON_PROPERTY.Ammunition]: {
-        type: WEAPON_AMMUNITION.Bolt,
+        type: WEAPON_AMMUNITION.Bolts,
         range: {
           normal: 24,
           max: 96,
@@ -473,7 +473,7 @@ const weapons = f([ // P.214
     properties: f([WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Ammunition]),
     propertiesValues: {
       [WEAPON_PROPERTY.Ammunition]: {
-        type: WEAPON_AMMUNITION.Arrow,
+        type: WEAPON_AMMUNITION.Arrows,
         range: {
           normal: 24,
           max: 96,
@@ -757,7 +757,7 @@ const weapons = f([ // P.214
     properties: f([WEAPON_PROPERTY.Loading, WEAPON_PROPERTY.Light, WEAPON_PROPERTY.Ammunition]),
     propertiesValues: {
       [WEAPON_PROPERTY.Ammunition]: {
-        type: WEAPON_AMMUNITION.Bolt,
+        type: WEAPON_AMMUNITION.Bolts,
         range: {
           normal: 9,
           max: 36,
@@ -776,7 +776,7 @@ const weapons = f([ // P.214
     properties: f([WEAPON_PROPERTY.Loading, WEAPON_PROPERTY.TwoHanded, WEAPON_PROPERTY.Heavy, WEAPON_PROPERTY.Ammunition]),
     propertiesValues: {
       [WEAPON_PROPERTY.Ammunition]: {
-        type: WEAPON_AMMUNITION.Bolt,
+        type: WEAPON_AMMUNITION.Bolts,
         range: {
           normal: 30,
           max: 120,
@@ -869,8 +869,8 @@ const armors = f([ // P.220
   f({
     name: ARMORS.padded,
     effects: f({
-      [EFFECT.ACOverrideEffect]: {
-        apply: ({ modifiers, }) => 11 + modifiers[ABILITY.dexterity],
+      [EFFECTS.ACOverrideEffect]: {
+        apply: ({ modifiers, }) => 11 + modifiers[ABILITIES.dexterity],
       },
     }), strength: null,
     stealthMalus: true,
@@ -881,8 +881,8 @@ const armors = f([ // P.220
   f({
     name: ARMORS.leather,
     effects: f({
-      [EFFECT.ACOverrideEffect]: {
-        apply: ({ modifiers, }) => 11 + modifiers[ABILITY.dexterity],
+      [EFFECTS.ACOverrideEffect]: {
+        apply: ({ modifiers, }) => 11 + modifiers[ABILITIES.dexterity],
       },
     }), strength: null,
     stealthMalus: false,
@@ -893,8 +893,8 @@ const armors = f([ // P.220
   f({
     name: ARMORS.studdedLeather,
     effects: f({
-      [EFFECT.ACOverrideEffect]: {
-        apply: ({ modifiers, }) => 12 + modifiers[ABILITY.dexterity],
+      [EFFECTS.ACOverrideEffect]: {
+        apply: ({ modifiers, }) => 12 + modifiers[ABILITIES.dexterity],
       },
     }), strength: null,
     stealthMalus: false,
@@ -905,8 +905,8 @@ const armors = f([ // P.220
   f({
     name: ARMORS.hideArmor,
     effects: f({
-      [EFFECT.ACOverrideEffect]: {
-        apply: ({ modifiers, }) => 12 + Math.min(modifiers[ABILITY.dexterity], 2),
+      [EFFECTS.ACOverrideEffect]: {
+        apply: ({ modifiers, }) => 12 + Math.min(modifiers[ABILITIES.dexterity], 2),
       },
     }), strength: null,
     stealthMalus: false,
@@ -917,8 +917,8 @@ const armors = f([ // P.220
   f({
     name: ARMORS.chainShirt,
     effects: f({
-      [EFFECT.ACOverrideEffect]: {
-        apply: ({ modifiers, }) => 13 + Math.min(modifiers[ABILITY.dexterity], 2),
+      [EFFECTS.ACOverrideEffect]: {
+        apply: ({ modifiers, }) => 13 + Math.min(modifiers[ABILITIES.dexterity], 2),
       },
     }), strength: null,
     stealthMalus: false,
@@ -929,8 +929,8 @@ const armors = f([ // P.220
   f({
     name: ARMORS.scaleMail,
     effects: f({
-      [EFFECT.ACOverrideEffect]: {
-        apply: ({ modifiers, }) => 14 + Math.min(modifiers[ABILITY.dexterity], 2),
+      [EFFECTS.ACOverrideEffect]: {
+        apply: ({ modifiers, }) => 14 + Math.min(modifiers[ABILITIES.dexterity], 2),
       },
     }), strength: null,
     stealthMalus: true,
@@ -941,8 +941,8 @@ const armors = f([ // P.220
   f({
     name: ARMORS.breastplate,
     effects: f({
-      [EFFECT.ACOverrideEffect]: {
-        apply: ({ modifiers, }) => 14 + Math.min(modifiers[ABILITY.dexterity], 2),
+      [EFFECTS.ACOverrideEffect]: {
+        apply: ({ modifiers, }) => 14 + Math.min(modifiers[ABILITIES.dexterity], 2),
       },
     }), strength: null,
     stealthMalus: false,
@@ -953,8 +953,8 @@ const armors = f([ // P.220
   f({
     name: ARMORS.halfPlate,
     effects: f({
-      [EFFECT.ACOverrideEffect]: {
-        apply: ({ modifiers, }) => 15 + Math.min(modifiers[ABILITY.dexterity], 2),
+      [EFFECTS.ACOverrideEffect]: {
+        apply: ({ modifiers, }) => 15 + Math.min(modifiers[ABILITIES.dexterity], 2),
       },
     }), strength: null,
     stealthMalus: true,
@@ -965,7 +965,7 @@ const armors = f([ // P.220
   f({
     name: ARMORS.ringMail,
     effects: f({
-      [EFFECT.ACOverrideEffect]: {
+      [EFFECTS.ACOverrideEffect]: {
         apply: () => 14,
       },
     }), strength: null,
@@ -977,7 +977,7 @@ const armors = f([ // P.220
   f({
     name: ARMORS.chainMail,
     effects: f({
-      [EFFECT.ACOverrideEffect]: {
+      [EFFECTS.ACOverrideEffect]: {
         apply: () => 16,
       },
     }), strength: 13,
@@ -989,7 +989,7 @@ const armors = f([ // P.220
   f({
     name: ARMORS.splint,
     effects: f({
-      [EFFECT.ACOverrideEffect]: {
+      [EFFECTS.ACOverrideEffect]: {
         apply: () => 17,
       },
     }), strength: 15,
@@ -1001,7 +1001,7 @@ const armors = f([ // P.220
   f({
     name: ARMORS.plate,
     effects: f({
-      [EFFECT.ACOverrideEffect]: {
+      [EFFECTS.ACOverrideEffect]: {
         apply: () => 18,
       },
     }), strength: 15,
@@ -1016,7 +1016,7 @@ const shields = f([ // P.220
   f({
     name: SHIELDS.shield,
     effects: f({
-      [EFFECT.ACModifierEffect]: {
+      [EFFECTS.ACModifierEffect]: {
         condition: ({ hasShieldProficiency }) => hasShieldProficiency,
         apply: ({ ac }) => ac + 2,
       },
@@ -1032,7 +1032,7 @@ const tools = f([ // P.221
   {
     name: TOOLS.alchemistsSupplies,
     category: TOOL_CATEGORY.Artisan,
-    ability: ABILITY.intelligence,
+    ability: ABILITIES.intelligence,
     weight: Weight(4000),
     cost: Money(G(5)),
     crafts: [GEARS.acid, GEARS.alchemistsFire, GEARS.componentPouch, GEARS.oil, GEARS.paper, GEARS.perfume,],
@@ -1040,7 +1040,7 @@ const tools = f([ // P.221
   {
     name: TOOLS.brewersSupplies,
     category: TOOL_CATEGORY.Artisan,
-    ability: ABILITY.intelligence,
+    ability: ABILITIES.intelligence,
     weight: Weight(4500),
     cost: Money(G(20)),
     crafts: [GEARS.antitoxin,],
@@ -1048,7 +1048,7 @@ const tools = f([ // P.221
   {
     name: TOOLS.calligraphersSupplies,
     category: TOOL_CATEGORY.Artisan,
-    ability: ABILITY.dexterity,
+    ability: ABILITIES.dexterity,
     weight: Weight(2500),
     cost: Money(G(10)),
     crafts: [GEARS.ink, GEARS.spellScroll,],
@@ -1056,7 +1056,7 @@ const tools = f([ // P.221
   {
     name: TOOLS.carpentersTools,
     category: TOOL_CATEGORY.Artisan,
-    ability: ABILITY.strength,
+    ability: ABILITIES.strength,
     weight: Weight(3000),
     cost: Money(G(8)),
     crafts: [
@@ -1068,7 +1068,7 @@ const tools = f([ // P.221
   {
     name: TOOLS.cartographersToolTools,
     category: TOOL_CATEGORY.Artisan,
-    ability: ABILITY.wisdom,
+    ability: ABILITIES.wisdom,
     weight: Weight(3000),
     cost: Money(G(15)),
     crafts: [GEARS.map,],
@@ -1076,7 +1076,7 @@ const tools = f([ // P.221
   {
     name: TOOLS.cobblersTools,
     category: TOOL_CATEGORY.Artisan,
-    ability: ABILITY.dexterity,
+    ability: ABILITIES.dexterity,
     weight: Weight(2500),
     cost: Money(G(5)),
     crafts: [GEARS.climbersKit,],
@@ -1084,7 +1084,7 @@ const tools = f([ // P.221
   {
     name: TOOLS.cooksTools,
     category: TOOL_CATEGORY.Artisan,
-    ability: ABILITY.wisdom,
+    ability: ABILITIES.wisdom,
     weight: Weight(4000),
     cost: Money(G(1)),
     crafts: [GEARS.rations,],
@@ -1092,7 +1092,7 @@ const tools = f([ // P.221
   {
     name: TOOLS.glassblowersTools,
     category: TOOL_CATEGORY.Artisan,
-    ability: ABILITY.intelligence,
+    ability: ABILITIES.intelligence,
     weight: Weight(2500),
     cost: Money(G(30)),
     crafts: [GEARS.bottleGlass, GEARS.magnifyingGlass, GEARS.spyglass, GEARS.vial],
@@ -1100,7 +1100,7 @@ const tools = f([ // P.221
   {
     name: TOOLS.jewelersTools,
     category: TOOL_CATEGORY.Artisan,
-    ability: ABILITY.intelligence,
+    ability: ABILITIES.intelligence,
     weight: Weight(1000),
     cost: Money(G(25)),
     crafts: [GEARS.arcaneFocus, GEARS.holySymbol,],
@@ -1108,7 +1108,7 @@ const tools = f([ // P.221
   {
     name: TOOLS.leatherworkersTools,
     category: TOOL_CATEGORY.Artisan,
-    ability: ABILITY.dexterity,
+    ability: ABILITIES.dexterity,
     weight: Weight(2500),
     cost: Money(G(5)),
     crafts: [
@@ -1121,7 +1121,7 @@ const tools = f([ // P.221
   {
     name: TOOLS.masonsTools,
     category: TOOL_CATEGORY.Artisan,
-    ability: ABILITY.strength,
+    ability: ABILITIES.strength,
     weight: Weight(4000),
     cost: Money(G(10)),
     crafts: [GEARS.blockAndTackle,],
@@ -1129,7 +1129,7 @@ const tools = f([ // P.221
   {
     name: TOOLS.paintersTools,
     category: TOOL_CATEGORY.Artisan,
-    ability: ABILITY.wisdom,
+    ability: ABILITIES.wisdom,
     weight: Weight(2500),
     cost: Money(G(10)),
     crafts: [GEARS.druidicFocus, GEARS.holySymbol,]
@@ -1137,7 +1137,7 @@ const tools = f([ // P.221
   {
     name: TOOLS.pottersTools,
     category: TOOL_CATEGORY.Artisan,
-    ability: ABILITY.intelligence,
+    ability: ABILITIES.intelligence,
     weight: Weight(1500),
     cost: Money(G(10)),
     crafts: [GEARS.jug, GEARS.lamp,],
@@ -1145,7 +1145,7 @@ const tools = f([ // P.221
   {
     name: TOOLS.smithsTools,
     category: TOOL_CATEGORY.Artisan,
-    ability: ABILITY.strength,
+    ability: ABILITIES.strength,
     weight: Weight(4000),
     cost: Money(G(20)),
     crafts: [
@@ -1165,7 +1165,7 @@ const tools = f([ // P.221
   {
     name: TOOLS.tinkersTools,
     category: TOOL_CATEGORY.Artisan,
-    ability: ABILITY.dexterity,
+    ability: ABILITIES.dexterity,
     weight: Weight(5000),
     cost: Money(G(50)),
     cratfs: [
@@ -1177,7 +1177,7 @@ const tools = f([ // P.221
   {
     name: TOOLS.weaversTools,
     category: TOOL_CATEGORY.Artisan,
-    ability: ABILITY.dexterity,
+    ability: ABILITIES.dexterity,
     weight: Weight(2500),
     cost: Money(G(1)),
     crafts: [
@@ -1189,7 +1189,7 @@ const tools = f([ // P.221
   {
     name: TOOLS.woodcarversTools,
     category: TOOL_CATEGORY.Artisan,
-    ability: ABILITY.dexterity,
+    ability: ABILITIES.dexterity,
     weight: Weight(2500),
     cost: Money(G(1)),
     crafts: [
@@ -1206,21 +1206,21 @@ const tools = f([ // P.221
   {
     name: TOOLS.disguiseKit,
     category: TOOL_CATEGORY.Other,
-    ability: ABILITY.charisma,
+    ability: ABILITIES.charisma,
     weight: Weight(1500),
     cost: Money(G(25)),
   },
   {
     name: TOOLS.forgeryKit,
     category: TOOL_CATEGORY.Other,
-    ability: ABILITY.dexterity,
+    ability: ABILITIES.dexterity,
     weight: Weight(2500),
     cost: Money(G(15)),
   },
   {
     name: TOOLS.gamingSet,
     category: TOOL_CATEGORY.Other,
-    ability: ABILITY.wisdom,
+    ability: ABILITIES.wisdom,
     weight: Weight(0),
     variants: [
       { name: 'dice', cost: Money(S(1)), },
@@ -1232,7 +1232,7 @@ const tools = f([ // P.221
   {
     name: TOOLS.herbalismKit,
     category: TOOL_CATEGORY.Other,
-    ability: ABILITY.intelligence,
+    ability: ABILITIES.intelligence,
     weight: Weight(1500),
     cost: Money(G(5)),
     crafts: [GEARS.antitoxin, GEARS.candle, GEARS.healersKit, GEARS.potionOfHealing,],
@@ -1240,84 +1240,84 @@ const tools = f([ // P.221
   {
     name: TOOLS.bagpipes,
     category: TOOL_CATEGORY.MusicalInstrument,
-    ability: ABILITY.charisma,
+    ability: ABILITIES.charisma,
     weight: Weight(3000),
     cost: Money(G(30)),
   },
   {
     name: TOOLS.drum,
     category: TOOL_CATEGORY.MusicalInstrument,
-    ability: ABILITY.charisma,
+    ability: ABILITIES.charisma,
     weight: Weight(1500),
     cost: Money(G(6)),
   },
   {
     name: TOOLS.dulcimer,
     category: TOOL_CATEGORY.MusicalInstrument,
-    ability: ABILITY.charisma,
+    ability: ABILITIES.charisma,
     weight: Weight(5000),
     cost: Money(G(25)),
   },
   {
     name: TOOLS.flute,
     category: TOOL_CATEGORY.MusicalInstrument,
-    ability: ABILITY.charisma,
+    ability: ABILITIES.charisma,
     weight: Weight(500),
     cost: Money(G(2)),
   },
   {
     name: TOOLS.horn,
     category: TOOL_CATEGORY.MusicalInstrument,
-    ability: ABILITY.charisma,
+    ability: ABILITIES.charisma,
     weight: Weight(1000),
     cost: Money(G(3)),
   },
   {
     name: TOOLS.lute,
     category: TOOL_CATEGORY.MusicalInstrument,
-    ability: ABILITY.charisma,
+    ability: ABILITIES.charisma,
     weight: Weight(1000),
     cost: Money(G(35)),
   },
   {
     name: TOOLS.lyre,
     category: TOOL_CATEGORY.MusicalInstrument,
-    ability: ABILITY.charisma,
+    ability: ABILITIES.charisma,
     weight: Weight(1000),
     cost: Money(G(30)),
   },
   {
     name: TOOLS.panFlute,
     category: TOOL_CATEGORY.MusicalInstrument,
-    ability: ABILITY.charisma,
+    ability: ABILITIES.charisma,
     weight: Weight(1000),
     cost: Money(G(12)),
   },
   {
     name: TOOLS.shawm,
     category: TOOL_CATEGORY.MusicalInstrument,
-    ability: ABILITY.charisma,
+    ability: ABILITIES.charisma,
     weight: Weight(500),
     cost: Money(G(2)),
   },
   {
     name: TOOLS.viol,
     category: TOOL_CATEGORY.MusicalInstrument,
-    ability: ABILITY.charisma,
+    ability: ABILITIES.charisma,
     weight: Weight(500),
     cost: Money(G(30)),
   },
   {
     name: TOOLS.navigatorsTools,
     category: TOOL_CATEGORY.Other,
-    ability: ABILITY.wisdom,
+    ability: ABILITIES.wisdom,
     weight: Weight(1000),
     cost: Money(G(25)),
   },
   {
     name: TOOLS.poisonersKit,
     category: TOOL_CATEGORY.Other,
-    ability: ABILITY.intelligence,
+    ability: ABILITIES.intelligence,
     weight: Weight(1000),
     cost: Money(G(50)),
     crafts: [GEARS.poisonBasic]
@@ -1325,7 +1325,7 @@ const tools = f([ // P.221
   {
     name: TOOLS.thievesTools,
     category: TOOL_CATEGORY.Other,
-    ability: ABILITY.dexterity,
+    ability: ABILITIES.dexterity,
     weight: Weight(500),
     cost: Money(G(25)),
   },
@@ -1393,7 +1393,7 @@ const gears = f([ // P.223
     name: GEARS.ammunition, variants: [
       { name: [WEAPON_AMMUNITION.Arrows], weight: Weight(500), cost: Money(G(1)), quantity: 20, storage: GEARS.quiver, },
       { name: [WEAPON_AMMUNITION.Bolts], weight: Weight(750), cost: Money(G(1)), quantity: 20, storage: GEARS.caseCrossbowBolt, },
-      { name: [WEAPON_AMMUNITION.SlingBullets], weight: Weight(750), cost: Money(C(4)), quantity: 20, storage: GEARS.pouch, },
+      { name: [WEAPON_AMMUNITION.SlingBullet], weight: Weight(750), cost: Money(C(4)), quantity: 20, storage: GEARS.pouch, },
       { name: [WEAPON_AMMUNITION.FirearmBullets], weight: Weight(1000), cost: Money(G(3)), quantity: 10, storage: GEARS.pouch, },
       { name: [WEAPON_AMMUNITION.Needles], weight: Weight(500), cost: Money(G(1)), quantity: 50, storage: GEARS.pouch, },
     ],
@@ -1458,7 +1458,7 @@ const magicItems = f([
    *    category: MAGIC_ITEM_TYPE, // type - to display effect
    *    equipOn: EQUIPED_CATEGORY // category determine if it override an equiped item like an armor
    *    modifiers: {
-   *      [EFFECT.ACModifierEffect]: { // TODO: add to common
+   *      [EFFECTS.ACModifierEffect]: { // TODO: add to common
    *        condition: function (props) { }, // To apply effect
    *        apply: function (props) { },
    *      },
@@ -1473,11 +1473,16 @@ const magicItems = f([
     category: MAGIC_ITEM_TYPE.wondrousItem,
     equipOn: EQUIPED_CATEGORY.OTHER,
     effects: {
-      [EFFECT.ACModifierEffect]: {
+      [EFFECTS.ACModifierEffect]: {
         condition: function () { return !this.requireAttunement || this.hasAttunement }, // To apply effect
         apply: ({ ac }) => ac + 1,
       },
-      [EFFECT.SavesModifierEffect]: { apply: ({ modifiers }) => Object.entries(modifiers).reduce((acc, [name, modifier]) => ({ ...acc, [name]: modifier + 1 }), {}) },
+      [EFFECTS.SavesModifierEffect]: {
+        apply: ({ modifiers }) => Reflect.ownKeys(modifiers).reduce((acc, ability) => {
+          acc[ability] = modifiers[ability] + 1
+          return acc
+        }, {})
+      },
     },
   }),
 ])

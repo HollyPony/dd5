@@ -1,8 +1,8 @@
-import { UnknownAbilityError } from '../../modules/errors.js'
+﻿import { UnknownAbilityError } from '../../modules/errors.js'
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
-import { ABILITY, SKILL_ABILITY } from '../../modules/common.js'
+import { ABILITIES, SKILL_ABILITY } from '../../modules/common.js'
 import { createElement, domSubscribe, replaceElement } from '../../modules/domlib.js'
 import { signDisplay } from '../../modules/helpers.js'
 import { t } from '../../modules/i18n.js'
@@ -22,7 +22,7 @@ export class Ability extends AbstractComponent {
   _connectedCallback() {
     console.info('-- Ability.connectedCallback')
 
-    this.#ability = ABILITY[this.dataset.ability]
+    this.#ability = ABILITIES[this.dataset.ability]
     if (!this.#ability) throw new UnknownAbilityError(this.dataset.ability)
 
     this.#labelElement = this.querySelector('[data-wc-id]')
@@ -40,7 +40,7 @@ export class Ability extends AbstractComponent {
       []
     )
 
-    replaceElement(this.#labelElement, t.tn(`statics.${this.#ability}`))
+    replaceElement(this.#labelElement, t.tn(`statics.${this.#ability.description}`))
     replaceElement(this.#save.label, t.tn('ability.save.label'))
 
     this.#renderScore()
@@ -111,7 +111,7 @@ export class Ability extends AbstractComponent {
 
   _i18nChanged = () => {
     console.info('-- Ability.#i18nChanged', this.#ability)
-    replaceElement(this.#labelElement, t.tn(`statics.${this.#ability}`))
+    replaceElement(this.#labelElement, t.tn(`statics.${this.#ability.description}`))
     replaceElement(this.#save.label, t.tn('ability.save.label'))
     this.#renderSkills()
   }

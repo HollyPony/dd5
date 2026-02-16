@@ -1,7 +1,7 @@
-import getClass from '../data/classes.js'
+﻿import getClass from '../data/classes.js'
 import getOrigin from '../data/origins.js'
 import getSpecies from '../data/species.js'
-import { ABILITY, DICE, EFFECT, getAbilityBySkill, validateSkill, SKILLS } from '../common.js'
+import { ABILITIES, DICE, EFFECTS, getAbilityBySkill, validateSkill, SKILLS } from '../common.js'
 import { EQUIPED_CATEGORY, EQUIPMENT_TYPE, getEquipment } from '../data/equipments.js'
 import { getLevelFromExperience } from '../data/leveling.js'
 import { s } from '../helpers.js'
@@ -23,20 +23,20 @@ const initialData = {
   [properties.charOrigin]: null,
   [properties.charSpecies]: null,
   [properties.modifiers]: s({
-    [ABILITY.strength]: 0,
-    [ABILITY.dexterity]: 0,
-    [ABILITY.constitution]: 0,
-    [ABILITY.wisdom]: 0,
-    [ABILITY.intelligence]: 0,
-    [ABILITY.charisma]: 0,
+    [ABILITIES.strength]: 0,
+    [ABILITIES.dexterity]: 0,
+    [ABILITIES.constitution]: 0,
+    [ABILITIES.wisdom]: 0,
+    [ABILITIES.intelligence]: 0,
+    [ABILITIES.charisma]: 0,
   }),
   [properties.saves]: s({
-    [ABILITY.strength]: 0,
-    [ABILITY.dexterity]: 0,
-    [ABILITY.constitution]: 0,
-    [ABILITY.wisdom]: 0,
-    [ABILITY.intelligence]: 0,
-    [ABILITY.charisma]: 0,
+    [ABILITIES.strength]: 0,
+    [ABILITIES.dexterity]: 0,
+    [ABILITIES.constitution]: 0,
+    [ABILITIES.wisdom]: 0,
+    [ABILITIES.intelligence]: 0,
+    [ABILITIES.charisma]: 0,
   }),
   [properties.feats]: [],
   [properties.equiped]: s({
@@ -102,11 +102,11 @@ function computeCharSpeed({
   const equipedArmor = equiped?.[EQUIPED_CATEGORY.ARMOR]
   const equipedShield = equiped?.[EQUIPED_CATEGORY.SHIELD]
 
-  applyEffect(charClass, EFFECT.SpeedModifierEffect, { speed, equipedArmor, equipedShield }, result => speed = result)
+  applyEffect(charClass, EFFECTS.SpeedModifierEffect, { speed, equipedArmor, equipedShield }, result => speed = result)
 
   // Heavy rule
   if (equipedArmor?.strength
-    && !feats.find(feat => feat?.effect?.[EFFECT.ByPassArmorStrengthRequirement])
+    && !feats.find(feat => feat?.effects?.[EFFECTS.ByPassArmorStrengthRequirementEffect])
     && equipedArmor.strength > strength) {
     speed += -3
   }
@@ -188,7 +188,7 @@ function createCharSheetStore() {
       charClass,
       equiped: getEquiped(),
       feats: getFeats(),
-      strength: authorityStore.getAttribute(ABILITY.strength),
+      strength: authorityStore.getAttribute(ABILITIES.strength),
     })
     const skills = computeSkills(
       proficiencyBonus,
@@ -218,7 +218,7 @@ function createCharSheetStore() {
       charClass,
       equiped: getEquiped(),
       feats: getFeats(),
-      strength: authorityStore.getAttribute(ABILITY.strength),
+      strength: authorityStore.getAttribute(ABILITIES.strength),
     })
     set({
       [properties.charClassName]: authorityStore.getCharClassName(),
@@ -236,7 +236,7 @@ function createCharSheetStore() {
       charClass: getCharClass(),
       equiped: getEquiped(),
       feats: getFeats(),
-      strength: authorityStore.getAttribute(ABILITY.strength),
+      strength: authorityStore.getAttribute(ABILITIES.strength),
     })
     set({
       [properties.charSpeciesName]: authorityStore.getCharSpeciesName(),
@@ -299,13 +299,13 @@ function createCharSheetStore() {
     const attributes = authorityStore.getAttributes()
     const modifiers = computeModifiers(attributes)
     const saves = computeSaves(attributes, modifiers, getCharClass(), getProficiencyBonus())
-    const initiative = modifiers[ABILITY.dexterity]
+    const initiative = modifiers[ABILITIES.dexterity]
     const speed = computeCharSpeed({
       charSpecies: getCharSpecies(),
       charClass: getCharClass(),
       equiped: getEquiped(),
       feats: getFeats(),
-      strength: attributes[ABILITY.strength],
+      strength: attributes[ABILITIES.strength],
     })
     const skills = computeSkills(
       getProficiencyBonus(),
@@ -332,7 +332,7 @@ function createCharSheetStore() {
       charClass: getCharClass(),
       equiped,
       feats: getFeats(),
-      strength: authorityStore.getAttribute(ABILITY.strength),
+      strength: authorityStore.getAttribute(ABILITIES.strength),
     })
     set({
       [properties.equipments]: authorityStore.getEquipments(),
@@ -366,14 +366,14 @@ function createCharSheetStore() {
     const proficiencyBonus = computeProficiencyBonus(charLevel)
     const choiceSelections = authorityStore.getChoiceSelections()
     const saves = computeSaves(authorityStore.getAttributes(), modifiers, charClass, proficiencyBonus)
-    const initiative = modifiers[ABILITY.dexterity]
+    const initiative = modifiers[ABILITIES.dexterity]
     const equiped = computeEquiped(authorityStore.getEquipments())
     const speed = computeCharSpeed({
       charSpecies,
       charClass,
       equiped,
       feats: initialData[properties.feats],
-      strength: authorityStore.getAttribute(ABILITY.strength),
+      strength: authorityStore.getAttribute(ABILITIES.strength),
     })
     const skills = computeSkills(
       proficiencyBonus,
@@ -450,12 +450,12 @@ function createCharSheetStore() {
     // TODO: armor category check ?
     // TODO: armor has malus effect if equiped without proficiency - display it
     const classArmorProficiencies = getCharClass()?.armorProficiencies
-    applyEffects(getFeats(), EFFECT.HasArmorProficiencyEffect, {}, result => classArmorProficiencies.push(result))
+    applyEffects(getFeats(), EFFECTS.HasArmorProficiencyEffect, {}, result => classArmorProficiencies.push(result))
     return classArmorProficiencies
   }
   function getShieldProficiency() {
     return (getCharClass()?.shieldProficiency ?? false)
-      || (getFeats()?.some(feat => feat?.[EFFECT.HasShieldProficiencyEffect]))
+      || (getFeats()?.some(feat => feat?.effects?.[EFFECTS.HasShieldProficiencyEffect]))
   }
 
   /* TODO: update if
@@ -473,32 +473,32 @@ function createCharSheetStore() {
     const hasShieldProficiency = getShieldProficiency()
 
     // Set default AC P.42
-    let ac = 10 + modifiers[ABILITY.dexterity]
+    let ac = 10 + modifiers[ABILITIES.dexterity]
 
     // Apply Armors P.220
     // TODO: Test armor without override feature
-    applyEffect(equipedArmor, EFFECT.ACOverride, { modifiers }, result => ac = result)
+    applyEffect(equipedArmor, EFFECTS.ACOverrideEffect, { modifiers }, result => ac = result)
 
     // Apply class features effects
-    applyEffects(getCharClass()?.features, EFFECT.ACOverrideEffect, { ac, equipedArmor, equipedShield, modifiers }, result => ac = result)
+    applyEffects(getCharClass()?.features, EFFECTS.ACOverrideEffect, { ac, equipedArmor, equipedShield, modifiers }, result => ac = result)
 
     // Apply feats modifier
     // TODO: Never tested
     // si armure - char has feat (don P.210) Defense = +1
-    applyEffects(getFeats(), EFFECT.ACModifierEffect, { ac, equipedArmor, equipedShield, }, result => ac = result)
+    applyEffects(getFeats(), EFFECTS.ACModifierEffect, { ac, equipedArmor, equipedShield, }, result => ac = result)
 
     // Apply Shield modifier
     // TODO: Test it
-    applyEffect(equipedShield, EFFECT.ACModifierEffect, { ac, hasShieldProficiency, }, result => ac = result)
+    applyEffect(equipedShield, EFFECTS.ACModifierEffect, { ac, hasShieldProficiency, }, result => ac = result)
 
     // Apply other equiped effect
-    applyEffects(getEquiped(EQUIPED_CATEGORY.OTHER), EFFECT.ACModifierEffect, { ac, equipedArmor, equipedShield, }, result => ac = result)
+    applyEffects(getEquiped(EQUIPED_CATEGORY.OTHER), EFFECTS.ACModifierEffect, { ac, equipedArmor, equipedShield, }, result => ac = result)
 
     return ac
   }
 
   function getHitPointMax() {
-    const constitution = getModifier(ABILITY.constitution)
+    const constitution = getModifier(ABILITIES.constitution)
     const hpBase = (getCharClass()?.hitPointMax.base ?? 0) + constitution // P.41
     const hpPerLevel = (getCharClass()?.hitPointMax.addPerLevel ?? 0) + constitution
     const additionalHp = hpPerLevel * (getCharLevel() - 1) // P.43

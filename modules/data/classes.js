@@ -1,6 +1,6 @@
-import { InvalidClassNameError, InvalidSubClassNameError } from '../errors.js'
+﻿import { InvalidClassNameError, InvalidSubClassNameError } from '../errors.js'
 import { Enum, f } from '../helpers.js'
-import { ABILITY, DICES as D, EFFECT, SKILLS } from '../common.js'
+import { ABILITIES, DICES as D, EFFECTS, SKILLS } from '../common.js'
 import { ARMOR_CATEGORY, TOOL_CATEGORY, TOOLS, WEAPON_CATEGORY, WEAPON_PROPERTY } from './equipments.js'
 import { SELECTOR_TYPE } from '../services/choice.helper.js'
 import derivedProperties from '../stores/charSheet.derived.properties.js'
@@ -25,12 +25,12 @@ function buildSelector(key) {
 const abilityScoreImprovement = (level) => ({ // TODO: Check apply `this` work on this arrowed fct
   name: 'abilityScoreImprovement', atLevel: level,
   effects: {
-    [EFFECT.ImprovementChooseEffect]: {},
-    [EFFECT.AddAbilityEffect]: {
+    [EFFECTS.ImprovementChooseEffect]: {},
+    [EFFECTS.AddAbilityEffect]: {
       condition: () => { }, // TODO: If abilityChoose
       apply: () => { }, // TODO: Update Ability - 2 ability +1 OR 1 ability +2 no more 20
     },
-    [EFFECT.AddFeatEffect]: {
+    [EFFECTS.AddFeatEffect]: {
       condition: () => { }, // TODO: If featChoose
       apply: () => { }, // TODO: Update Ability - Choose feat according to conditions
     },
@@ -39,10 +39,10 @@ const abilityScoreImprovement = (level) => ({ // TODO: Check apply `this` work o
 
 const classes = f({
   barbarian: f({ // P.51
-    mainAbility: f([ABILITY.strength]),
+    mainAbility: f([ABILITIES.strength]),
     hitDice: D[12],
     hitPointMax: { base: 12, addPerLevel: 7, },
-    saves: f([ABILITY.strength, ABILITY.constitution]),
+    saves: f([ABILITIES.strength, ABILITIES.constitution]),
     skills: f({
       choice: {
         selector: buildSelector(SOURCE_KEY.SKILLS),
@@ -68,10 +68,10 @@ const classes = f({
     }),
   }),
   bard: f({ // P.57
-    mainAbility: f([ABILITY.charisma]),
+    mainAbility: f([ABILITIES.charisma]),
     hitDice: D[8],
     hitPointMax: { base: 8, addPerLevel: 5, },
-    saves: f([ABILITY.dexterity, ABILITY.charisma]),
+    saves: f([ABILITIES.dexterity, ABILITIES.charisma]),
     skills: f({
       choice: {
         selector: buildSelector(SOURCE_KEY.SKILLS),
@@ -103,10 +103,10 @@ const classes = f({
     }),
   }),
   cleric: f({
-    mainAbility: f([ABILITY.wisdom]),
+    mainAbility: f([ABILITIES.wisdom]),
     hitDice: D[8],
     hitPointMax: { base: 8, addPerLevel: 5, },
-    saves: f([ABILITY.wisdom, ABILITY.charisma]),
+    saves: f([ABILITIES.wisdom, ABILITIES.charisma]),
     skills: f({
       choice: {
         selector: buildSelector(SOURCE_KEY.SKILLS),
@@ -129,10 +129,10 @@ const classes = f({
     }),
   }),
   druid: f({ // P.79
-    mainAbility: f([ABILITY.wisdom]),
+    mainAbility: f([ABILITIES.wisdom]),
     hitDice: D[8],
     hitPointMax: { base: 8, addPerLevel: 5, },
-    saves: f([ABILITY.intelligence, ABILITY.wisdom]),
+    saves: f([ABILITIES.intelligence, ABILITIES.wisdom]),
     skills: f({
       choice: {
         selector: buildSelector(SOURCE_KEY.SKILLS),
@@ -159,10 +159,10 @@ const classes = f({
     }),
   }),
   fighter: f({ // P.105
-    mainAbility: f([ABILITY.strength, ABILITY.dexterity]), // TODO: choose
+    mainAbility: f([ABILITIES.strength, ABILITIES.dexterity]), // TODO: choose
     hitDice: D[10],
     hitPointMax: { base: 10, addPerLevel: 6, },
-    saves: f([ABILITY.strength, ABILITY.constitution]),
+    saves: f([ABILITIES.strength, ABILITIES.constitution]),
     skills: f({
       choice: {
         selector: buildSelector(SOURCE_KEY.SKILLS),
@@ -188,10 +188,10 @@ const classes = f({
     }),
   }),
   monk: f({ // P.127
-    mainAbility: f([ABILITY.dexterity, ABILITY.wisdom]), // TODO: twice
+    mainAbility: f([ABILITIES.dexterity, ABILITIES.wisdom]), // TODO: twice
     hitDice: D[8],
     hitPointMax: { base: 8, addPerLevel: 5, },
-    saves: f([ABILITY.strength, ABILITY.dexterity]),
+    saves: f([ABILITIES.strength, ABILITIES.dexterity]),
     skills: f({
       choice: {
         selector: buildSelector(SOURCE_KEY.SKILLS),
@@ -218,7 +218,7 @@ const classes = f({
     armorProficiencies: f([]),
     shieldProficiency: false,
     effects: {
-      [EFFECT.SpeedModifierEffect]: {
+      [EFFECTS.SpeedModifierEffect]: {
         condition: function ({ equipedArmor, equipedShield }) { return !equipedArmor && !equipedShield },
         apply: function ({ speed }) { return speed + this.specificProps.speedModifier(this.level) },
       },
@@ -228,9 +228,9 @@ const classes = f({
       f({
         name: 'unarmoredDefense', atLevel: 1,
         effects: {
-          [EFFECT.ACOverrideEffect]: {
+          [EFFECTS.ACOverrideEffect]: {
             condition: function ({ equipedArmor, equipedShield, }) { return !equipedArmor && !equipedShield },
-            apply: function ({ modifiers }) { return 10 + modifiers[ABILITY.dexterity] + modifiers[ABILITY.wisdom] },
+            apply: function ({ modifiers }) { return 10 + modifiers[ABILITIES.dexterity] + modifiers[ABILITIES.wisdom] },
           }
         },
       }),
@@ -240,7 +240,7 @@ const classes = f({
       f({ name: 'deflectAttacks', atLevel: 3, }),
       f({
         name: 'monkSubClass', atLevel: 3, effects: {
-          [EFFECT.SubClassChooseEffect]: {
+          [EFFECTS.SubClassChooseEffect]: {
             apply: () => { }
           },
         }
@@ -251,7 +251,7 @@ const classes = f({
       f(abilityScoreImprovement(16)),
       f({
         name: 'slowFall', atLevel: 4, effects: {
-          [EFFECT.ReduceFallDamageEffect]: {
+          [EFFECTS.ReduceFallDamageEffect]: {
             apply: () => { } // TODO: level * 5
           }
         }
@@ -292,7 +292,7 @@ const classes = f({
       f({
         name: 'epicBoon', atLevel: 19,
         effects: {
-          [EFFECT.AddFeatEffect]: { // TODO: Epic
+          [EFFECTS.AddFeatEffect]: { // TODO: Epic
             condition: () => { },
             apply: () => { },
           },
@@ -327,10 +327,10 @@ const classes = f({
     }
   }),
   paladin: f({ // P.147
-    mainAbility: f([ABILITY.strength, ABILITY.charisma]), // TODO: twice
+    mainAbility: f([ABILITIES.strength, ABILITIES.charisma]), // TODO: twice
     hitDice: D[10],
     hitPointMax: { base: 10, addPerLevel: 6, },
-    saves: f([ABILITY.wisdom, ABILITY.charisma]), // TODO: choose
+    saves: f([ABILITIES.wisdom, ABILITIES.charisma]), // TODO: choose
     skills: f({
       choice: {
         selector: buildSelector(SOURCE_KEY.SKILLS),
@@ -356,10 +356,10 @@ const classes = f({
     }),
   }),
   ranger: f({ // P.157
-    mainAbility: f([ABILITY.dexterity, ABILITY.wisdom]), // TODO: twice
+    mainAbility: f([ABILITIES.dexterity, ABILITIES.wisdom]), // TODO: twice
     hitDice: D[10],
     hitPointMax: { base: 10, addPerLevel: 6, },
-    saves: f([ABILITY.strength, ABILITY.dexterity]),
+    saves: f([ABILITIES.strength, ABILITIES.dexterity]),
     skills: f({
       choice: {
         selector: buildSelector(SOURCE_KEY.SKILLS),
@@ -385,10 +385,10 @@ const classes = f({
     }),
   }),
   rogue: f({ // P.167
-    mainAbility: f([ABILITY.dexterity]),
+    mainAbility: f([ABILITIES.dexterity]),
     hitDice: D[8],
     hitPointMax: { base: 8, addPerLevel: 5, },
-    saves: f([ABILITY.dexterity, ABILITY.intelligence]),
+    saves: f([ABILITIES.dexterity, ABILITIES.intelligence]),
     skills: f({
       choice: {
         selector: buildSelector(SOURCE_KEY.SKILLS),
@@ -417,10 +417,10 @@ const classes = f({
     }),
   }),
   sorcerer: f({ // P. 91
-    mainAbility: f([ABILITY.charisma]),
+    mainAbility: f([ABILITIES.charisma]),
     hitDice: D[6],
     hitPointMax: { base: 6, addPerLevel: 4, },
-    saves: f([ABILITY.constitution, ABILITY.charisma]),
+    saves: f([ABILITIES.constitution, ABILITIES.charisma]),
     skills: f({
       choice: {
         selector: buildSelector(SOURCE_KEY.SKILLS),
@@ -444,10 +444,10 @@ const classes = f({
     }),
   }),
   warlock: f({ // P.135
-    mainAbility: f([ABILITY.charisma]),
+    mainAbility: f([ABILITIES.charisma]),
     hitDice: D[8],
     hitPointMax: { base: 8, addPerLevel: 5, },
-    saves: f([ABILITY.wisdom, ABILITY.charisma]),
+    saves: f([ABILITIES.wisdom, ABILITIES.charisma]),
     skills: f({
       choice: {
         selector: buildSelector(SOURCE_KEY.SKILLS),
@@ -471,10 +471,10 @@ const classes = f({
     }),
   }),
   wizard: f({ // P.115
-    mainAbility: f([ABILITY.intelligence]),
+    mainAbility: f([ABILITIES.intelligence]),
     hitDice: D[6],
     hitPointMax: { base: 6, addPerLevel: 4, },
-    saves: f([ABILITY.intelligence, ABILITY.wisdom]),
+    saves: f([ABILITIES.intelligence, ABILITIES.wisdom]),
     skills: f({
       choice: {
         selector: buildSelector(SOURCE_KEY.SKILLS),

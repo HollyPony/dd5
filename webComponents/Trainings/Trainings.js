@@ -59,10 +59,13 @@ export class Trainings extends AbstractComponent {
     const weaponProficiencies = charSheetStore.getWeaponProficiencies() || []
     const weaponItems = weaponProficiencies.length === 0
       ? [createElement('p', t._('components.Trainings.weapons.none'), { class: 'text-muted' })]
-      : weaponProficiencies.map(proficiency => createElement('p', t._(['components.Trainings.weapons']
-        .concat(proficiency.length === 1 ? [proficiency, 'all'] : proficiency)
-        .join('.')
-      )))
+      : weaponProficiencies.map(proficiency => {
+        const [category, property] = proficiency
+        const path = property
+          ? `components.Trainings.weapons.${category.description}.${property.description}`
+          : `components.Trainings.weapons.${category.description}.all`
+        return createElement('p', t._(path))
+      })
     replaceElement(this.#weaponsListElement, weaponItems)
   }
 
@@ -70,7 +73,7 @@ export class Trainings extends AbstractComponent {
     const toolProficiencies = this.#resolveToolsProficiencies()
     const toolItems = toolProficiencies.length === 0
       ? createElement('p', t._('components.Trainings.tools.none'), { class: 'text-muted' })
-      : toolProficiencies.map(tool => createElement('p', t._(`statics.TOOLS.${tool.replace('TOOLS_', '')}.name`)))
+      : toolProficiencies.map(tool => createElement('p', t._(`statics.${tool.description}.name`)))
     replaceElement(this.#toolsListElement, toolItems)
   }
 
