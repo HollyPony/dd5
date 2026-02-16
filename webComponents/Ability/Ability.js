@@ -51,8 +51,7 @@ export class Ability extends AbstractComponent {
 
   _registerEvents() {
     this._pushEvents(
-      // TODO: trigger per input ?
-      domSubscribe(this.#scoreElement, 'change', this.#scoreChanged),
+      domSubscribe(this.#scoreElement, 'input', this.#scoreChanged),
       charSheetStore.onMap({
         [charSheetProps.abilities]: [this.#renderScore],
         [charSheetProps.modifiers]: [this.#renderModifier, this.#renderSkills],
@@ -106,7 +105,7 @@ export class Ability extends AbstractComponent {
   #scoreChanged = ({ target: { value } }) => {
     console.info('-- Ability.#scoreChanged', this.#ability, value)
 
-    charSheetStore.setAbilityScore(this.#ability, Number(value))
+    charSheetStore.setAbilityScore(this.#ability, Number(value) || 0)
   }
 
   _i18nChanged = () => {
