@@ -4,8 +4,8 @@ import charSheetProps from '../../../modules/stores/charSheet.derived.properties
 import { createElement, replaceElement } from '../../../modules/domlib.js'
 import { INSERTION_TYPE } from '../../../modules/data/classes.js'
 import createEventBus from '../../../modules/createEventBus.js'
-import { EQUIPMENT_TYPE, getEquipments } from '../../../modules/data/equipments.js'
 import { t } from '../../../modules/i18n.js'
+import { createClassBaseService } from './ClassBase.service.js'
 
 export class ClassBase extends AbstractComponent {
   static get tagName() { return 'class-base' }
@@ -22,6 +22,8 @@ export class ClassBase extends AbstractComponent {
   #toolsContainerElement
   #toolsActionRequiredElement
   #toolsGroupsElement
+
+  #service
 
   _actionRequired = false
   _eventBus = createEventBus()
@@ -54,6 +56,8 @@ export class ClassBase extends AbstractComponent {
     this.#toolsActionRequiredElement = this.#toolsContainerElement.querySelector('.card-header > .action-required')
     this.#toolsGroupsElement = this.#toolsContainerElement.querySelector('.card-body > .tools-groups')
 
+    this.#service = createClassBaseService({ charSheetStore })
+
     this.#renderActionsRequired()
     this.#renderDescription()
     this.#renderSkills()
@@ -74,15 +78,11 @@ export class ClassBase extends AbstractComponent {
   #renderActionsRequired = () => {
     console.info('-- ClassBase.#renderActionsRequired')
 
-    const skillsRule = charSheetStore.getCharClass()?.skills
-    const toolRule = charSheetStore.getCharClass()?.toolProficiencies
+    const actionsRequired = this.#service.getActionsRequiredState()
 
-    const actionsRequired = {
-      skills: skillsRule && (skillsRule?.nb - (charSheetStore?.getChoicePayload(skillsRule?.choice?.selector)?.length ?? 0) > 0),
-      tools: toolRule && (toolRule?.max - (charSheetStore?.getChoicePayload(toolRule?.choice?.selector)?.length ?? 0) > 0),
-    }
 
-    this._actionRequired = Object.values(actionsRequired).some(i => i) ?? false
+
+    this._actionRequired = Object.values(actionsRequired).some(Boolean)
 
     this.#skillsActionRequiredElement.classList[actionsRequired.skills ? 'add' : 'remove']('show')
     this.#toolsActionRequiredElement.classList[actionsRequired.tools ? 'add' : 'remove']('show')
@@ -93,47 +93,31 @@ export class ClassBase extends AbstractComponent {
 
   #renderDescription = () => {
     console.info('-- ClassBase.#renderDescription')
-    replaceElement(this.#descriptionBodyElement, t.md(`statics.classes.${charSheetStore.getCharClassName()}.description`))
+    replaceElement(this.#descriptionBodyElement, t.md(this.#service.getDescriptionKey()))
   }
 
   #renderSkills = () => {
     console.info('-- ClassBase.#renderSkills')
-    const classSkills = charSheetStore.getCharClass()?.skills
-
-    if (!classSkills) {
+    const viewModel = this.#service.getSkillsViewModel()
+    if (!viewModel.isConcerned) {
       replaceElement(this.#skillsChooseLabelElement, t.tn('components.ClassBase.skills.notConcerned',))
       this.#skillsContainerElement.classList.add('d-none')
       return
     }
 
-    const choice = classSkills?.choice ?? null
-    const choiceSelector = choice?.selector ?? null
-    const choicePayload = charSheetStore?.getChoicePayload(choiceSelector) ?? []
-    const remaining = classSkills.nb - choicePayload.length
-
-    replaceElement(this.#skillsChooseLabelElement, t.tn('components.ClassBase.skills.remaining', { remaining }))
+    replaceElement(this.#skillsChooseLabelElement, t.tn('components.ClassBase.skills.remaining', { remaining: viewModel.remaining }))
     this.#skillsContainerElement.classList.remove('d-none')
 
-    const skills = charSheetStore.getSkills()
-
-    function isSkillDisabled(skill) {
-      const isSelected = choicePayload.includes(skill)
-      const isMaxReached = choicePayload.length >= (classSkills?.nb ?? 0)
-      return (!classSkills?.list?.includes(skill) && skills[skill].checked) || (!isSelected && isMaxReached)
-    }
-
-    replaceElement(this.#skillsListElement, classSkills.list.map(skill => {
+    replaceElement(this.#skillsListElement, viewModel.options.map(({ skill, checked, disabled }) => {
       const skillId = `${skill.description}.${this._id}`
       return createElement('div', [
         createElement('input', null, {
           type: 'checkbox', class: 'btn-check', id: skillId,
-          checked: choicePayload.includes(skill),
-          disabled: isSkillDisabled(skill),
+          checked,
+          disabled,
           eventListeners: {
             change: ({ target: { checked } }) => {
-              const choiceSet = new Set(choicePayload)
-              choiceSet[checked ? 'add' : 'delete'](skill)
-              charSheetStore.setPayloadToSelection(choice, Array.from(choiceSet))
+              this.#service.toggleSkill({ skill, checked })
             }
           },
         }),
@@ -145,47 +129,39 @@ export class ClassBase extends AbstractComponent {
   #renderTools = () => {
     console.info('-- ClassBase.#renderTools')
 
-    const toolRule = charSheetStore.getCharClass()?.toolProficiencies
-    if (!toolRule?.type)
-      return this.#toolsContainerElement.classList.add('d-none')
+    const vm = this.#service.getToolsViewModel()
+    if (!vm.visible) {
+      this.#toolsContainerElement.classList.add('d-none')
+      return
+    }
     this.#toolsContainerElement.classList.remove('d-none')
 
-    switch (toolRule.type) {
+    switch (vm.type) {
       case INSERTION_TYPE.select: {
-        const choice = charSheetStore.getCharClass()?.toolProficiencies?.choice ?? null
-        const choicePayload = charSheetStore.getChoicePayload(choice.selector) ?? []
-        replaceElement(this.#toolsGroupsElement, [toolRule.from].flat().map((group, groupIndex) => {
-          const tools = getEquipments({ type: EQUIPMENT_TYPE.TOOL })
-            .filter(tool => group === tool.category)
-
-          const groupRemaining = Math.max(0, toolRule.max - choicePayload?.length)
-
+        replaceElement(this.#toolsGroupsElement, vm.groups.map(({ category, remaining, options }) => {
           return createElement('div', [
             createElement('div', t.tn('components.ClassBase.tools.remainingGroup', {
-              remaining: groupRemaining, from: t._(`statics.${group.description}`)
+              remaining,
+              from: t._(`statics.${category.description}`)
             }), { class: 'card-title' }),
-            createElement('div', tools.map(tool => {
-              const toolId = `${tool.name.description}.${this._id}.tools.${groupIndex}`
-              const isChecked = choicePayload?.includes(tool.name) ?? false
-              const isCheckedElseWhere = false // TODO: + disable if checked from elsewhere eg. feats / origin ??
+            createElement('div', options.map(({ toolName, checked, disabled, groupIndex }) => {
+              const toolId = `${toolName.description}.${this._id}.tools.${groupIndex}`
               return createElement('div', [
                 createElement('input', null, {
                   type: 'checkbox',
                   class: 'btn-check',
                   id: toolId,
-                  checked: isChecked,
-                  disabled: isCheckedElseWhere || (!isChecked && groupRemaining === 0),
+                  checked,
+                  disabled,
                   eventListeners: {
                     change: ({ target: { checked } }) => {
-                      const choiceSet = new Set(choicePayload)
-                      choiceSet[checked ? 'add' : 'delete'](tool.name)
-                      charSheetStore.setPayloadToSelection(choice, Array.from(choiceSet))
+                      this.#service.toggleTool({ toolName, checked })
                     }
                   }
                 }),
                 createElement(
                   'label',
-                  t._(`statics.${tool.name.description}.name`),
+                  t._(`statics.${toolName.description}.name`),
                   { class: 'btn btn-outline-primary', for: toolId }
                 ),
               ])
@@ -202,7 +178,7 @@ export class ClassBase extends AbstractComponent {
             t.tn('components.ClassBase.tools.forced'),
             { class: 'card-title' }
           ),
-          createElement('div', toolRule.tools.map(tool => {
+          createElement('div', vm.forcedTools.map(tool => {
             const toolId = `${tool.description}.${this._id}.tools`
             return createElement('div', [
               createElement('input', null, {
