@@ -1,3 +1,4 @@
+import './modules/toast.js'
 import { DICES as D, } from './modules/common.js'
 import initTranslations, { t, i18n } from './modules/i18n.js'
 import charSheetStore from './modules/stores/charSheet.derived.store.js'
@@ -6,7 +7,6 @@ import { TechnicalError, } from './modules/errors.js'
 import charSheetService from './modules/services/charSheet.service.js'
 import { createElement, domSubscribe, replaceElement, } from './modules/domlib.js'
 import registerWebComponents from './index.webmodules.js'
-import './modules/toast.js'
 
 /////////////////////////////////////////////////////////////////////////
 // ELEMENTS TO UPDATE ///////////////////////////////////////////////////
