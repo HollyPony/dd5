@@ -18,7 +18,7 @@ import feats, { CATEGORY as FEAT_CATEGORY } from './feats.js'
 
 export default {
   navbar: {
-    appTitle: 'Création de personnage',
+    appTitle: 'D&D Personnage',
     exportChar: 'Télécharger',
     importChar: 'Importer',
     debug: 'Debug',
