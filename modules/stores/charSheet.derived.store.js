@@ -565,6 +565,7 @@ function createCharSheetStore() {
     setClassName: authorityStore.setClassName,
     setSubClassName: authorityStore.setSubClassName,
     setSpeciesName: authorityStore.setSpeciesName,
+    setAlignment: authorityStore.setAlignment,
     setAbilityScore: authorityStore.setAbilityScore,
 
     getChoicePayload, setPayloadToSelection,

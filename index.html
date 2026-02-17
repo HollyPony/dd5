@@ -27,38 +27,45 @@
     <form method="post">
       <div class="row g-3">
         <common-informations-block class="d-block col-12 col-md common-informations"></common-informations-block>
-
         <level-armor-block class="d-block col-12 col-md-auto d-flex justify-content-center"></level-armor-block>
-
         <vitals-block class="d-block col-12 col-md d-flex col-md misc"></vitals-block>
       </div>
 
       <hr />
 
       <div class="row g-3">
-        <stats-block class="d-block col-md-4"></stats-block>
+        <div class="d-block col-md-4">
+          <stats-block class="row"></stats-block>
+          <character-profile-block class="d-block row"></character-profile-block>
+          <backpack-block class="d-block row"></backpack-block>
+          <currency-block class="d-block row"></currency-block>
+        </div>
         <div class="col">
           <div class="row row-cols-1 g-3">
             <specs-block class="d-block col"></specs-block>
-            <character-profile-block class="d-block col"></character-profile-block>
             <weapons-cantrip class="d-block col"></weapons-cantrip>
-            <spellbook-block class="d-block col"></spellbook-block>
-            <backpack-block class="d-block col"></backpack-block>
-            <currency-block class="d-block col"></currency-block>
             <class-features class="d-block col"></class-features>
             <div class="col d-flex gap-2">
               <species-traits class="flex-grow-1 flex-basis-0"></species-traits>
               <feats-block class="flex-grow-1 flex-basis-0"></feats-block>
             </div>
-
+            <spellbook-block class="d-block col"></spellbook-block>
           </div>
         </div>
       </div>
-
-      <label for="alignment" class="form-text" data-i18n="alignment.title"></label>
-      <input name="alignment" class="form-control" placeholder="Lawful Good" />
     </form>
   </main>
+
+  <!-- TODO: Implement it -> translate-->
+  <footer class="py-3 my-4">
+    <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+      <li class="nav-item"><a href="https://github.com/HollyPony/dd5" class="nav-link px-2 text-body-secondary">Github</a></li>
+      <li class="nav-item"><a href="https://hollypony.github.io" class="nav-link px-2 text-body-secondary">D&D Other apps</a></li>
+      <!-- TODO: modal -->
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">About</a></li>
+    </ul>
+    <p class="text-center text-body-secondary">© 20** CopyrightToTheLeft</p>
+  </footer>
 
   <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3"></div>
 

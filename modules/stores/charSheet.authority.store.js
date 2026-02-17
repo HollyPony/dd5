@@ -82,6 +82,9 @@ function createCharSheetStorageStore() {
 
     // // TODO: Handle what changed on species changed
   }
+  function setAlignment(alignment) {
+    set({ [properties.alignment]: alignment })
+  }
 
   function setAbilityScore(ability, score) {
     set(new Map([[[properties.abilities, ability], score]]))
@@ -114,6 +117,7 @@ function createCharSheetStorageStore() {
     setClassName,
     setSubClassName,
     setSpeciesName,
+    setAlignment,
     setAbilityScore,
     setChoiceSelections,
 
