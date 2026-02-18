@@ -11,7 +11,6 @@ async function initApp() {
 
   charSheetService.init()
 
-
   subscriptions.push(
     domSubscribe(window, 'pagehide', function unregisterSubscriptions() {
       while (subscriptions.length) subscriptions.pop()?.()
