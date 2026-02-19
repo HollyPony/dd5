@@ -21,7 +21,6 @@ import {
  *   }
  * }} params
  * @returns {{
- *   getDescriptionKey: () => string,
  *   getActionsRequiredState: () => { skills: boolean, tools: boolean, any: boolean },
  *   getSkillsViewModel: () => {
  *     isConcerned: boolean,
@@ -41,10 +40,6 @@ import {
  */
 export function createClassBaseService({ charSheetStore }) {
   if (!charSheetStore) throw MissingPathError('ClassBase service requires charSheetStore')
-
-  function getDescriptionKey() {
-    return `statics.classes.${charSheetStore.getClassName()}.description`
-  }
 
   function getActionsRequiredState() {
     const classData = charSheetStore.getClass()
@@ -162,7 +157,6 @@ export function createClassBaseService({ charSheetStore }) {
   }
 
   return {
-    getDescriptionKey,
     getActionsRequiredState,
     getSkillsViewModel,
     toggleSkill,

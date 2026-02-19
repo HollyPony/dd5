@@ -93,7 +93,8 @@ export class ClassBase extends AbstractComponent {
 
   #renderDescription = () => {
     console.info('-- ClassBase.#renderDescription')
-    replaceElement(this.#descriptionBodyElement, t.md(this.#service.getDescriptionKey()))
+    const className = charSheetStore.getClassName()
+    replaceElement(this.#descriptionBodyElement, className ? t.md(`statics.classes.${className}.description`) : 'TODO')
   }
 
   #renderSkills = () => {
