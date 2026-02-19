@@ -80,8 +80,10 @@ export function resolvePath(obj, path, { strict = false } = {}) {
       if (strict) throw new ReferenceError(`Path '${path.toString()}' is invalid at '${part.toString()}'`)
       return undefined
     }
-    if (strict && !Reflect.has(current, part)) {
-      throw new ReferenceError(`Path '${path.toString()}' is invalid at '${part.toString()}'`)
+    if (typeof current !== 'object' || !Reflect.has(current, part)) {
+      if (strict)
+        throw new ReferenceError(`Path '${path.toString()}' is invalid at '${part.toString()}'`)
+      return undefined
     }
     current = Reflect.get(current, part)
   }
