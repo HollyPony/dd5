@@ -10,7 +10,11 @@ import createEventBus from '../createEventBus.js'
 import { getSelectorKey } from '../services/choice.helper.js'
 import properties from './charSheet.derived.properties.js'
 import initialData from './charSheet.derived.initial.js'
-import { applyEffect, applyEffects, computeEquiped, computeModifiers, computePassivePerception, computeProficiencyBonus, computeSaves, computeSkills, computeSpeed } from './charSheet.derived.helpers.js'
+import {
+  applyEffect, applyEffects, computeEquiped, computeModifiers,
+  computePassivePerception, computeProficiencyBonus,
+  computeSaves, computeSkills, computeSpeed
+} from './charSheet.derived.helpers.js'
 
 function createCharSheetStore() {
   const store = createStore(initialData, createEventBus())
