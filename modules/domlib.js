@@ -81,7 +81,7 @@ export function populateSelect(selectElement, items, params = {
     .concat(params.placeholder && ({ value: '', text: params.placeholder, disabled: true }))
     .concat(items)
     .filter(item => item)
-    .map(item => item.isGroup
+    .map(item => (item.options && item.label)
       ? createElement(
         'optgroup',
         item.options.map(optItem => createElement('option', [optItem.text], { value: optItem.value, disabled: item.disabled })),

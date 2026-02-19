@@ -21,7 +21,6 @@ export class SpeciesSelect extends AbstractSelect {
       this._selectElement,
       getSpeciesList().map(species => (
         species.lineages ? {
-          isGroup: true,
           label: t._(`statics.species.${species.name}.name`),
           options: species.lineages.map(lineage => ({
             value: `${species.name}.${lineage}`,

@@ -32,7 +32,6 @@ export class WeaponSelect extends AbstractSelect {
             return acc
           }, new Map())
       ).map(([category, weapons]) => ({
-        isGroup: true,
         label: t._(`statics.${category.description}`),
         options: weapons.map(weapon => ({
           value: weapon.id, text: t._(`statics.${weapon.name.description}.name`)

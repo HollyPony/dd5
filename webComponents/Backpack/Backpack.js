@@ -82,7 +82,6 @@ export class Backpack extends AbstractComponent {
     populateSelect(
       this.#selectElement,
       grouped.map(({ type, equipments }) => ({
-        isGroup: true,
         label: t._(`components.Backpack.types.${this.#getEquipmentTypeLabelKey(type)}`),
         options: equipments.map(equipment => ({
           value: equipment.name.description,
