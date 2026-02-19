@@ -8,7 +8,7 @@ export class ClassFeature extends AbstractComponent {
   static _modulePath = new URL('.', import.meta.url).pathname
 
   _actionRequired = false
-  _eventBus = createEventBus()
+  eventBus = createEventBus()
 
   #accordionParent
   #feature
@@ -33,7 +33,7 @@ export class ClassFeature extends AbstractComponent {
     this.#renderDescription()
 
     this._actionRequired = false
-    this._eventBus.emit('actionRequired')
+    this.eventBus.emit('actionRequired')
   }
 
   #renderTexts() {

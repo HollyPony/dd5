@@ -26,7 +26,7 @@ export class ClassBase extends AbstractComponent {
   #service
 
   _actionRequired = false
-  _eventBus = createEventBus()
+  eventBus = createEventBus()
 
   _connectedCallback() {
     console.info('-- ClassBase.connectedCallback')
@@ -88,7 +88,7 @@ export class ClassBase extends AbstractComponent {
     this.#toolsActionRequiredElement.classList[actionsRequired.tools ? 'add' : 'remove']('show')
     this.#baseFeatureButtonElement.classList[this._actionRequired ? 'add' : 'remove']('show')
 
-    this._eventBus.emit('actionRequired')
+    this.eventBus.emit('actionRequired')
   }
 
   #renderDescription = () => {

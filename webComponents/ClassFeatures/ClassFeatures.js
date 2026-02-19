@@ -9,6 +9,7 @@ export class ClassFeatures extends AbstractComponent {
 
   #mainRequiredBadgeElement
 
+  #baseFeatureElement
   #featuresElement
 
   _connectedCallback() {
@@ -17,19 +18,18 @@ export class ClassFeatures extends AbstractComponent {
     // TODO: toggle it
     this.#mainRequiredBadgeElement = this.querySelector('.class-features-block > span.action-required')
 
+    this.#baseFeatureElement = this.querySelector('class-base')
     this.#featuresElement = this.querySelector('.class-features')
     this.#featuresElement.id = `accordion-features-${this._id}`
 
     this.#renderFeatures()
     this.#renderActionRequired()
 
-    const baseFeatureElement = this.querySelector('class-base')
-    const subscription = baseFeatureElement._eventBus.on('actionRequired', this.#actionRequiredChanged)
-    baseFeatureElement._pushEvents(subscription)
   }
 
   _registerEvents() {
     this._pushEvents(
+      this.#baseFeatureElement.eventBus.on('actionRequired', this.#actionRequiredChanged),
       // TODO: had a class features changed ????
       charSheetStore.onMap({
         [charSheetProps.level]: [this.#levelChanged],
@@ -67,7 +67,7 @@ export class ClassFeatures extends AbstractComponent {
       'data-feature': feature.name,
     })
 
-    const subscription = classFeature._eventBus.on('actionRequired', this.#actionRequiredChanged)
+    const subscription = classFeature.eventBus.on('actionRequired', this.#actionRequiredChanged)
     classFeature._pushEvents(subscription)
     return classFeature
   }
