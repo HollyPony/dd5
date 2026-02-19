@@ -408,6 +408,7 @@ function createCharSheetStore() {
     getHitPointCurrent: () => get(properties.hitPointCurrent),
     getHitPointTemp: () => get(properties.hitPointTemp),
     getDeathSaves: () => get(properties.deathSaves),
+    getEquipments: () => get(properties.equipments),
     getAbility: authorityStore.getAbility,
 
     getLevel,
@@ -444,6 +445,9 @@ function createCharSheetStore() {
     setHitPointTemp: authorityStore.setHitPointTemp,
     setDeathSaves: authorityStore.setDeathSaves,
     setAbilityScore: authorityStore.setAbilityScore,
+    addEquipment: authorityStore.addEquipment,
+    removeEquipment: authorityStore.removeEquipment,
+    setEquipmentEquiped: authorityStore.setEquipmentEquiped,
 
     getChoicePayload, setPayloadToSelection,
 

@@ -287,7 +287,9 @@ const GEARS = Enum({
   healersKit: Symbol.for('GEARS.healersKit'),
 })
 
-// TODO: Place MAGIC_ITEMS here
+const MAGIC_ITEMS = Enum({
+  cloakOfProtection: Symbol.for('MAGIC_ITEMS.cloakOfProtection'),
+})
 
 const weapons = f([ // P.214
   f({
@@ -1467,7 +1469,7 @@ const magicItems = f([
    *  }),
    */
   f({
-    name: 'cloakOfProtection',
+    name: MAGIC_ITEMS.cloakOfProtection,
     requireAttunement: true,
     hasAttunement: false,
     condition: function () { true }, // TODO: can equip

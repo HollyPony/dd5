@@ -1,5 +1,7 @@
 import { AbstractSelect } from '../AbstractSelect/AbstractSelect.js'
-import { getWeapons } from '../../modules/data/equipments.js'
+import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
+import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
+import { EQUIPMENT_TYPE, getEquipment } from '../../modules/data/equipments.js'
 import { domSubscribe, populateSelect } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'
 
@@ -9,30 +11,35 @@ export class WeaponSelect extends AbstractSelect {
   _registerEvents() {
     this._pushEvents(
       domSubscribe(this._selectElement, 'change', this.#selectChanged),
+      charSheetStore.on(charSheetProps.equipments, this._renderList),
     )
   }
 
   _renderList = () => {
     console.info('-- WeaponSelect._renderList')
 
+    const ownedUnequipedWeapons = (charSheetStore.getEquipments() ?? [])
+      .filter(entry => !entry.equiped && getEquipment(entry.name)?.type === EQUIPMENT_TYPE.WEAPON)
+      .map(entry => ({ ...entry, details: getEquipment(entry.name) }))
+
     populateSelect(
       this._selectElement,
       Array.from(
-        getWeapons()
-          .reduce((acc, weapon) => {
-            if (!acc.has(weapon.category)) acc.set(weapon.category, [])
-            acc.get(weapon.category).push(weapon)
+        ownedUnequipedWeapons
+          .reduce((acc, entry) => {
+            if (!acc.has(entry.details.category)) acc.set(entry.details.category, [])
+            acc.get(entry.details.category).push(entry)
             return acc
           }, new Map())
       ).map(([category, weapons]) => ({
         isGroup: true,
         label: t._(`statics.${category.description}`),
         options: weapons.map(weapon => ({
-          value: weapon, text: t._(`statics.${weapon.name.description}`)
+          value: weapon.id, text: t._(`statics.${weapon.name.description}.name`)
         })),
       })),
       {
-        placeholder: t._('weaponscantrip.weapons._select')
+        placeholder: t._('weaponscantrip.weapons._equipSelect')
       })
   }
 
@@ -43,8 +50,9 @@ export class WeaponSelect extends AbstractSelect {
 
   #selectChanged = ({ target: { value } }) => {
     console.info('-- WeaponSelect.#selectChanged', value)
+    if (!value) return
 
-    // // TODO: implement it
-    // userData.addWeapon()
+    charSheetStore.setEquipmentEquiped(value, true)
+    this._renderValue()
   }
 }

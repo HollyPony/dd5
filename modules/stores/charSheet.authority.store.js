@@ -5,6 +5,7 @@ import { SELECTOR_TYPE } from '../services/choice.helper.js'
 import properties from './charSheet.authority.properties.js'
 import initialData from './charSheet.authority.initial.js'
 import { parseDeathSaves, parseExperience, parseIntegerField, parseSizeCategory } from './charSheet.authority.helpers.js'
+import { getEquipment } from '../data/equipments.js'
 
 function createCharSheetStorageStore() {
   const store = createStore(initialData, createEventBus())
@@ -12,10 +13,14 @@ function createCharSheetStorageStore() {
 
   function init(charData = {}) {
     const abilities = charData[properties.abilities] || initialData[properties.abilities]
+    const equipments = charData[properties.equipments] || initialData[properties.equipments]
     if (typeof abilities !== "object"
       || Object.getPrototypeOf(abilities) !== Object.prototype) {
       throw InvalidCharacterFieldError('abilities', 'Expected an object')
     }
+
+    if (equipments.some(equipment => typeof equipment.name !== 'symbol' || !equipment.id))
+      throw new Error(`Some \`equipments\` doesn't contains malformed datas`)
 
     set({
       [properties.name]: charData[properties.name],
@@ -37,7 +42,7 @@ function createCharSheetStorageStore() {
         ])
       ),
       [properties.choiceSelections]: charData[properties.choiceSelections],
-      [properties.equipments]: charData[properties.equipments],
+      [properties.equipments]: equipments,
     })
   }
 
@@ -108,6 +113,42 @@ function createCharSheetStorageStore() {
     set({ [properties.choiceSelections]: choiceSelections })
   }
 
+  function setEquipments(equipments) {
+    set({ [properties.equipments]: equipments })
+  }
+
+  function addEquipment(name) {
+    if (!getEquipment(name)) throw InvalidCharacterFieldError('equipment.name', `Unknown equipment '${String(name)}'`)
+
+    setEquipments(getEquipments().concat({
+      id: crypto.randomUUID(),
+      name,
+      equiped: false,
+    }))
+  }
+
+  function removeEquipment(id) {
+    if (!id)
+      throw InvalidCharacterFieldError('equipments.id', 'Missing id')
+
+    if (!getEquipments().some(equipment => equipment.id === id))
+      throw InvalidCharacterFieldError('equipments.id', `Unknown id '${id}'`)
+
+    setEquipments(getEquipments().filter(equipment => equipment.id !== id))
+  }
+
+  function setEquipmentEquiped(id, equiped) {
+    if (!id) throw InvalidCharacterFieldError('equipments.id', 'Missing id')
+    if (typeof equiped !== 'boolean')
+      throw InvalidCharacterFieldError('equipments.equiped', 'Expected a boolean')
+
+    const equipments = getEquipments()
+    if (!equipments.find(item => item.id === id))
+      throw InvalidCharacterFieldError('equipments.id', `Unknown id '${id}'`)
+
+    setEquipments(equipments.map(item => item.id === id ? { ...item, equiped } : item))
+  }
+
   return {
     init,
     reset,
@@ -142,6 +183,9 @@ function createCharSheetStorageStore() {
     setDeathSaves,
     setAbilityScore,
     setChoiceSelections,
+    addEquipment,
+    removeEquipment,
+    setEquipmentEquiped,
 
     onAny: store.onAny,
     onMap: store.onMap,

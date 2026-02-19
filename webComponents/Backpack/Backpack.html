@@ -1,11 +1,26 @@
 <template>
   <div class="block backpack">
-    <div class="text-center title">Backpack</div>
-    <div class="text-muted small px-2 py-2">Placeholder for owned equipment inventory.</div>
-    <ul class="list-group list-group-flush">
-      <li class="list-group-item py-1">Item name</li>
-      <li class="list-group-item py-1">Quantity</li>
-      <li class="list-group-item py-1">Weight / notes</li>
-    </ul>
+    <div class="text-center title" data-i18n="components.Backpack.title"></div>
+    <button type="button" class="btn btn-sm btn-outline-primary w-100 mt-2 backpack-open-add-modal" data-i18n="components.Backpack.addButton"></button>
+    <ul class="list-group list-group-flush mt-2 backpack-list"></ul>
+  </div>
+
+  <div class="modal fade backpack-add-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title fs-6" data-i18n="components.Backpack.addModal.title"></h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <label class="form-label" for="backpack-equipment-select" data-i18n="components.Backpack.addModal.selectLabel"></label>
+          <select id="backpack-equipment-select" class="form-select backpack-equipment-select"></select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="components.Backpack.addModal.cancel"></button>
+          <button type="button" class="btn btn-primary backpack-add-confirm" data-i18n="components.Backpack.addModal.confirm"></button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
