@@ -17,7 +17,7 @@ function onWindowError(event) {
 
 const subscriptions = []
 subscriptions.push(
-  domSubscribe(window, 'error', onWindowError, true), // capture obligatoire pour resource errors
+  domSubscribe(window, 'error', onWindowError, true),
   domSubscribe(window, 'unhandledrejection', onWindowError),
   domSubscribe(window, 'pagehide', function unregisterSubscriptions() {
     while (subscriptions.length) subscriptions.pop()?.()
