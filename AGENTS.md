@@ -4,7 +4,6 @@
 
 ## Technical
 
-- Use errors from errors.js not built-ins
 - Project is browser-only only target
 - Project has no tests. Do not search or try them
 - Code is fail-fast oriented.

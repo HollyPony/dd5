@@ -11,12 +11,7 @@ export function parseIntegerField(fieldName, value, { min = 0, max = Number.MAX_
 }
 
 export function parseSizeCategory(sizeCategory) {
-  if (sizeCategory)
-    try {
-      SIZE_CATEGORY[sizeCategory]
-    } catch (e) {
-      throw InvalidCharacterFieldError('sizeCategory', `Bad size category ${sizeCategory}`)
-    }
+  if (sizeCategory) SIZE_CATEGORY[sizeCategory]
   return sizeCategory || initialData[properties.sizeCategory]
 }
 

@@ -1,10 +1,7 @@
-import indexEventBus, { observables } from '../index.eventBus.js'
-
 function createCustomError({ name, message, args = [] }) {
   const error = new Error(message, ...args)
   Object.setPrototypeOf(error, createCustomError.prototype)
   error.name = name
-  indexEventBus.emit(observables.ERROR_CUSTOM, error)
   return error
 }
 createCustomError.prototype = Object.create(Error.prototype, { constructor: { value: createCustomError, } })
@@ -41,32 +38,10 @@ export function StorageError(message, ...props) {
   })
 }
 
-export function InvalidObjectTargetError(targetType, ...props) {
-  return createCustomError({
-    name: 'InvalidObjectTargetError',
-    message: `Invalid object target type '${targetType}'`,
-    args: props,
-  })
-}
-
-export function UnknownObjectPropertyError(prop, objectName = 'Object', ...props) {
-  return createCustomError({
-    name: 'UnknownObjectPropertyError',
-    message: `Unknown property '${String(prop)}' on '${objectName}'`,
-    args: props,
-  })
-}
-
 export function InvalidCharacterFieldError(fieldName, reason = 'Invalid value', ...props) {
   return createCustomError({
     name: 'InvalidCharacterFieldError',
     message: `Invalid character field '${fieldName}': ${reason}`,
     args: props,
   })
-}
-
-export function TechnicalError(error) {
-  console.error(error)
-  indexEventBus.emit(observables.ERROR_TECHNICAL, error)
-  return error
 }

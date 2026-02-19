@@ -1,5 +1,4 @@
-﻿import { TechnicalError } from '../../modules/errors.js'
-import { t } from '../../modules/i18n.js'
+﻿import { t } from '../../modules/i18n.js'
 import charSheetService from '../../modules/services/charSheet.service.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
@@ -145,8 +144,6 @@ export class AppNavbar extends AbstractComponent {
     try {
       const jsonText = await files[0].text()
       charSheetService.importJSON(jsonText)
-    } catch (error) {
-      new TechnicalError(error)
     } finally {
       this.#importCharFileElement.value = ''
     }
@@ -165,8 +162,6 @@ export class AppNavbar extends AbstractComponent {
       link.download = charSheetStore.getName().replace(/[^a-zA-Z0-9 ]/g, '').trim() || 'TheCharacterWithNoName'
       link.href = url
       link.click()
-    } catch (error) {
-      throw new TechnicalError(error)
     } finally {
       if (url) {
         setTimeout(() => {

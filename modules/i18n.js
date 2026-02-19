@@ -1,4 +1,3 @@
-import { TechnicalError } from './errors.js'
 import { resolvePath } from './helpers.js'
 import parseMarkdown from './markdown.js'
 
@@ -47,13 +46,9 @@ export default async function init() {
  * @returns {Promise<string>} The applied language.
  */
 async function changeLang(lang) {
-  try {
-    translations = (await import(`../i18n/${lang}/index.js`)).default
-    currentLang = lang
-    notify()
-  } catch (error) {
-    throw new TechnicalError(error)
-  }
+  translations = (await import(`../i18n/${lang}/index.js`)).default
+  currentLang = lang
+  notify()
   return lang
 }
 
