@@ -30,40 +30,40 @@
 ### P0 - Close a playable sheet MVP
 
 - [x] Wire all core sheet inputs (alignment, size, current/temp HP, death saves).
-- Finish inventory/equipment flows: add, remove, equip, shield/armor handling, basic attunement.
-- Make `WeaponsCantrip` fully functional.
-- Definition of done: a full level 1-20 character can be managed without manual JSON editing.
+- [] Finish inventory/equipment flows: add, remove, equip, shield/armor handling, basic attunement.
+- [] Make `WeaponsCantrip` fully functional.
+- [] Definition of done: a full level 1-20 character can be managed without manual JSON editing.
 
 ### P1 - Character profile and economy foundations (new RAF)
 
-- Make `CharacterProfile` functional: description, history, appearance (UI write flow + autosave + import/export).
-- Make `Currency` functional: cp/sp/ep/gp/pp values with validation and persistence.
-- Make `Backpack` functional: owned inventory list with quantity and notes, clearly separated from equipped items.
-- Definition of done: profile and economy data can be created/edited/saved/loaded/exported/imported without JSON edits.
+- [] Make `CharacterProfile` functional: description, history, appearance (UI write flow + autosave + import/export).
+- [] Make `Currency` functional: cp/sp/ep/gp/pp values with validation and persistence.
+- [] Make `Backpack` functional: owned inventory list with quantity and notes, clearly separated from equipped items.
+- [] Definition of done: profile and economy data can be created/edited/saved/loaded/exported/imported without JSON edits.
 
 ### P2 - Complete the 2024 character creation engine
 
-- Make `Feats` functional (origin feat, level feats, selection and validation).
-- Implement core effects impacting sheet math (AC, saves, speed, proficiencies, expertise).
-- Handle choice conflicts and replacements cleanly (origin vs class, class/species/subclass changes).
-- Definition of done: choice changes consistently trigger correct recalculations everywhere.
+- [] Make `Feats` functional (origin feat, level feats, selection and validation).
+- [] Implement core effects impacting sheet math (AC, saves, speed, proficiencies, expertise).
+- [] Handle choice conflicts and replacements cleanly (origin vs class, class/species/subclass changes).
+- [] Definition of done: choice changes consistently trigger correct recalculations everywhere.
 
 ### P3 - Casters and resources
 
-- Make `Spellbook` functional for player workflow (known/prepared lists, spell details view, per-level grouping).
-- Add spellcasting engine: known/prepared cantrips/spells, spell slots, spell save DC/attack bonus.
-- Track limited-use resources and reset cycles (short/long rest) for traits/feats/spells.
-- Definition of done: full caster workflow is usable (e.g. Cleric/Wizard/Warlock).
+- [] Make `Spellbook` functional for player workflow (known/prepared lists, spell details view, per-level grouping).
+- [] Add spellcasting engine: known/prepared cantrips/spells, spell slots, spell save DC/attack bonus.
+- [] Track limited-use resources and reset cycles (short/long rest) for traits/feats/spells.
+- [] Definition of done: full caster workflow is usable (e.g. Cleric/Wizard/Warlock).
 
 ### P4 - 2024 rules fidelity and data quality
 
-- Address rules TODOs for species/classes/feats effects.
-- Fill missing or inconsistent translations/descriptions.
-- Definition of done: high coverage of common 2024 gameplay scenarios across all 12 classes.
+- [] Address rules TODOs for species/classes/feats effects.
+- [] Fill missing or inconsistent translations/descriptions.
+- [] Definition of done: high coverage of common 2024 gameplay scenarios across all 12 classes.
 
 ### P5 - Mobile-first UX and product robustness
 
-- Improve mobile ergonomics on dense blocks (class features, inventory, spells).
-- Strengthen import/export versioning and migration handling.
-- Improve debug/error UX for end users.
-- Definition of done: smooth mobile editing and robust cross-version character portability.
+- [] Improve mobile ergonomics on dense blocks (class features, inventory, spells).
+- [] Strengthen import/export versioning and migration handling.
+- [] Improve debug/error UX for end users.
+- [] Definition of done: smooth mobile editing and robust cross-version character portability.
