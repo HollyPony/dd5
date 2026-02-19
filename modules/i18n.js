@@ -61,14 +61,14 @@ async function changeLang(lang) {
  */
 function _(path, interpolations) {
   if (!currentLang) return path
-  const value = resolvePath(translations, path) ?? path
-  if (value === undefined || value === null || typeof value !== 'string') {
+  const value = resolvePath(translations, path)
+  if (value == null) {
     console.warn(
       `Missing translation key: '${path}' (lang: '${currentLang}')`,
       new Error('i18n.missing').stack
     )
   }
-  return strObjInterpolation(typeof value === 'string' ? value : path, interpolations)
+  return value ? strObjInterpolation(value, interpolations) : path
 }
 
 /**
