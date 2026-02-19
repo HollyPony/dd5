@@ -1,6 +1,9 @@
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
+import { SIZE_CATEGORY } from '../../modules/common.js'
+import { domSubscribe, populateSelect } from '../../modules/domlib.js'
+import { t } from '../../modules/i18n.js'
 
 export class Specs extends AbstractComponent {
   static get tagName() { return 'specs-block' }
@@ -19,6 +22,7 @@ export class Specs extends AbstractComponent {
     this.#sizeElement = this.querySelector('[name="specs.size"]')
     this.#passivePerceptionElement = this.querySelector('[name="specs.passivePerception"]')
 
+    this.#renderSizeCategoryList()
     this.#renderInitiative()
     this.#renderSpeed()
     this.#renderSize()
@@ -27,6 +31,8 @@ export class Specs extends AbstractComponent {
 
   _registerEvents() {
     this._pushEvents(
+      domSubscribe(this.#sizeCategoryElement, 'change', this.#sizeCategoryChanged),
+      domSubscribe(this.#sizeElement, 'change', this.#sizeChanged),
       charSheetStore.onMap({
         [charSheetProps.initiative]: this.#renderInitiative,
         [charSheetProps.speed]: this.#renderSpeed,
@@ -42,6 +48,11 @@ export class Specs extends AbstractComponent {
     if (this.#initiativeElement) {
       this.#initiativeElement.value = charSheetStore.getInitiative()
     }
+  }
+
+  _i18nChanged = () => {
+    this.#renderSizeCategoryList()
+    this.#renderSize()
   }
 
   #renderSpeed = () => {
@@ -61,10 +72,27 @@ export class Specs extends AbstractComponent {
     }
   }
 
+  #renderSizeCategoryList = () => {
+    populateSelect(this.#sizeCategoryElement, Object.keys(SIZE_CATEGORY).map(sizeCategory => ({
+      value: sizeCategory,
+      text: t._(`statics.sizeCategory.${sizeCategory}`),
+    })), {
+      placeholder: '',
+    })
+  }
+
   #renderPassivePerception = () => {
     console.info('Specs.#renderPassivePerception')
     if (this.#passivePerceptionElement) {
       this.#passivePerceptionElement.value = charSheetStore.getPassivePerception()
     }
+  }
+
+  #sizeCategoryChanged = ({ target: { value } }) => {
+    charSheetStore.setSizeCategory(value)
+  }
+
+  #sizeChanged = ({ target: { value } }) => {
+    charSheetStore.setSize(value)
   }
 }

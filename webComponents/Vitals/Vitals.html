@@ -3,12 +3,12 @@
     <div class="col-6 d-flex align-items-stretch">
       <div class="d-flex border border-end-0">
         <div class="d-flex flex-column p-2 hit-points">
-          <span class="text-center title">Hit Points</span>
+          <span class="text-center title" data-i18n="components.Vitals.hitPoints.title"></span>
           <div class="d-flex flex-grow-1">
             <div class="d-flex flex-column flex-grow-1 flex-shrink-1 flex-basis-0">
               <input name="hitPointCurrent"
                 class="flex-fill form-control border-0 border-bottom rounded-0 p-0 text-center fs-1" />
-              <label for="hitPointCurrent" class="form-text mt-0">Current</label>
+              <label for="hitPointCurrent" class="form-text mt-0" data-i18n="components.Vitals.hitPoints.current"></label>
             </div>
 
             <div class="vr mx-2"></div>
@@ -16,10 +16,10 @@
             <div class="d-flex flex-column justify-content-end flex-grow-1 flex-shrink-1 flex-basis-0">
               <input name="hitPointTemp"
                 class="form-control border-0 border-bottom rounded-0 p-0 text-center mt-2" />
-              <label for="hitPointTemp" class="form-text mt-0">Temp</label>
+              <label for="hitPointTemp" class="form-text mt-0" data-i18n="components.Vitals.hitPoints.temp"></label>
               <input name="hitPointMax"
-                class="form-control border-0 border-bottom rounded-0 p-0 text-center mt-2" />
-              <label for="hitPointMax" class="form-text mt-0">Max</label>
+                class="form-control border-0 border-bottom rounded-0 p-0 text-center mt-2" readonly />
+              <label for="hitPointMax" class="form-text mt-0" data-i18n="components.Vitals.hitPoints.max"></label>
             </div>
           </div>
         </div>
@@ -29,14 +29,14 @@
     <div class="col-3 d-flex align-items-stretch">
       <div class="d-flex border border-end-0">
         <div class="d-flex flex-column p-2 hit-dice">
-          <span class="text-center title">Hit Dice</span>
+          <span class="text-center title" data-i18n="components.Vitals.hitDice.title"></span>
           <div class="d-flex flex-grow-1 flex-column justify-content-end">
             <input name="hitDiceSpent"
               class="form-control border-0 border-bottom rounded-0 p-0 text-center mt-2" />
-            <label for="hitDiceSpent" class="form-text mt-0">Spent</label>
+            <label for="hitDiceSpent" class="form-text mt-0" data-i18n="components.Vitals.hitDice.spent"></label>
             <input name="hitDiceMax"
-              class="form-control border-0 border-bottom rounded-0 p-0 text-center mt-2" />
-            <label for="hitDiceMax" class="form-text mt-0">Max</label>
+              class="form-control border-0 border-bottom rounded-0 p-0 text-center mt-2" readonly />
+            <label for="hitDiceMax" class="form-text mt-0" data-i18n="components.Vitals.hitDice.max"></label>
           </div>
         </div>
       </div>
@@ -45,18 +45,18 @@
     <div class="col-3 d-flex align-items-stretch">
       <div class="border">
         <div class="m-2 death-saves">
-          <span class="text-center title">Death Saves</span>
+          <span class="text-center title" data-i18n="components.Vitals.deathSaves.title"></span>
           <div>
-            <input type="checkbox" class="form-check-input" />
-            <input type="checkbox" class="form-check-input" />
-            <input type="checkbox" class="form-check-input" />
-            <label>Successes</label>
+            <input type="checkbox" name="deathSaveSuccess1" class="form-check-input death-save-success" />
+            <input type="checkbox" name="deathSaveSuccess2" class="form-check-input death-save-success" />
+            <input type="checkbox" name="deathSaveSuccess3" class="form-check-input death-save-success" />
+            <label data-i18n="components.Vitals.deathSaves.successes"></label>
           </div>
           <div>
-            <input type="checkbox" class="form-check-input" />
-            <input type="checkbox" class="form-check-input" />
-            <input type="checkbox" class="form-check-input" />
-            <label>Failures</label>
+            <input type="checkbox" name="deathSaveFailure1" class="form-check-input death-save-failure" />
+            <input type="checkbox" name="deathSaveFailure2" class="form-check-input death-save-failure" />
+            <input type="checkbox" name="deathSaveFailure3" class="form-check-input death-save-failure" />
+            <label data-i18n="components.Vitals.deathSaves.failures"></label>
           </div>
         </div>
       </div>

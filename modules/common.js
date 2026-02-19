@@ -24,6 +24,11 @@ export const ABILITIES = Enum({
   charisma: Symbol.for('ABILITIES.charisma'),
 })
 
+export const SIZE_CATEGORY = Enum({
+  small: Symbol.for('SIZE_CATEGORY.small'),
+  medium: Symbol.for('SIZE_CATEGORY.medium'),
+})
+
 export const EFFECTS = Enum({
   SpeedModifierEffect: Symbol.for('EFFECTS.SpeedModifierEffect'),
   ACOverrideEffect: Symbol.for('EFFECTS.ACOverrideEffect'),

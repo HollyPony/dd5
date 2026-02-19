@@ -63,9 +63,9 @@ export default {
   armorclass: {
     label: "Classe d'armure",
   },
-  sizeCategory: {
-    small: 'P',
-    medium: 'M',
+  alignment: {
+    title: 'Alignement',
+    placeholder: 'Loyal Bon',
   },
   feats: {
     title: 'Dons',
@@ -174,8 +174,37 @@ export default {
         type: `Type: {type}`,
       },
     },
+    CharacterProfile: {
+      title: 'Profil du personnage',
+      description: 'Description',
+      history: 'Histoire',
+      appearance: 'Apparence',
+      placeholder: 'À compléter',
+    },
+    Vitals: {
+      hitPoints: {
+        title: 'Points de vie',
+        current: 'Actuels',
+        temp: 'Temporaires',
+        max: 'Max',
+      },
+      hitDice: {
+        title: 'Dés de vie',
+        spent: 'Dépensés',
+        max: 'Max',
+      },
+      deathSaves: {
+        title: 'Jets de mort',
+        successes: 'Succès',
+        failures: 'Échecs',
+      },
+    },
   },
   statics: {
+    sizeCategory: {
+      small: 'P',
+      medium: 'M',
+    },
     origins,
     classes,
     'class-features': classFeatures,

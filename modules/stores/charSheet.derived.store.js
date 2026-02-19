@@ -242,6 +242,8 @@ function createCharSheetStore() {
       [properties.species]: speciesData,
       [properties.speed]: speed,
     })
+
+    // TODO: Handle what changed on species changed
   }
 
   function computeAlignment() {
@@ -254,6 +256,18 @@ function createCharSheetStore() {
 
   function computeSize() {
     set({ [properties.size]: authorityStore.getSize() })
+  }
+
+  function computeHitPointCurrent() {
+    set({ [properties.hitPointCurrent]: authorityStore.getHitPointCurrent() })
+  }
+
+  function computeHitPointTemp() {
+    set({ [properties.hitPointTemp]: authorityStore.getHitPointTemp() })
+  }
+
+  function computeDeathSaves() {
+    set({ [properties.deathSaves]: authorityStore.getDeathSaves() })
   }
 
   // TODO: remove and implement in each listeners
@@ -292,6 +306,9 @@ function createCharSheetStore() {
       [properties.passivePerception]: passivePerception,
       [properties.skills]: skills,
     })
+
+    // TODO: handle skill from origin ?
+    // TODO: remove also classSkills choosed due to conflicts with origin ones
   }
 
   function computeAbilities() {
@@ -350,6 +367,9 @@ function createCharSheetStore() {
     [properties.alignment]: [computeAlignment],
     [properties.sizeCategory]: [computeSizeCategory],
     [properties.size]: [computeSize],
+    [properties.hitPointCurrent]: [computeHitPointCurrent],
+    [properties.hitPointTemp]: [computeHitPointTemp],
+    [properties.deathSaves]: [computeDeathSaves],
     [properties.choiceSelections]: [computeChoicesState],
     [properties.abilities]: [computeAbilities],
     [properties.equipments]: [computeEquipments],
@@ -392,6 +412,9 @@ function createCharSheetStore() {
       [properties.alignment]: authorityStore.getAlignment(),
       [properties.sizeCategory]: authorityStore.getSizeCategory(),
       [properties.size]: authorityStore.getSize(),
+      [properties.hitPointCurrent]: authorityStore.getHitPointCurrent(),
+      [properties.hitPointTemp]: authorityStore.getHitPointTemp(),
+      [properties.deathSaves]: authorityStore.getDeathSaves(),
       [properties.abilities]: authorityStore.getAbilities(),
       [properties.choiceSelections]: choiceSelections,
       [properties.equipments]: authorityStore.getEquipments(),
@@ -531,6 +554,9 @@ function createCharSheetStore() {
     getAlignment: () => get(properties.alignment),
     getSizeCategory: () => get(properties.sizeCategory),
     getSize: () => get(properties.size),
+    getHitPointCurrent: () => get(properties.hitPointCurrent),
+    getHitPointTemp: () => get(properties.hitPointTemp),
+    getDeathSaves: () => get(properties.deathSaves),
     getAbility: authorityStore.getAbility,
 
     getLevel,
@@ -554,11 +580,6 @@ function createCharSheetStore() {
     getHitPointMax,
     getHitDiceMax,
 
-    // TODO: Implement this later
-    // setAlignment: savedStore.setAlignment,
-    // setSizeCategory: savedStore.setSizeCategory,
-    // setSize: savedStore.setSize,
-
     setName: authorityStore.setName,
     setExperience: authorityStore.setExperience,
     setOriginName: authorityStore.setOriginName,
@@ -566,6 +587,11 @@ function createCharSheetStore() {
     setSubClassName: authorityStore.setSubClassName,
     setSpeciesName: authorityStore.setSpeciesName,
     setAlignment: authorityStore.setAlignment,
+    setSizeCategory: authorityStore.setSizeCategory,
+    setSize: authorityStore.setSize,
+    setHitPointCurrent: authorityStore.setHitPointCurrent,
+    setHitPointTemp: authorityStore.setHitPointTemp,
+    setDeathSaves: authorityStore.setDeathSaves,
     setAbilityScore: authorityStore.setAbilityScore,
 
     getChoicePayload, setPayloadToSelection,

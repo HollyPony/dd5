@@ -90,6 +90,9 @@ function toJSONEntry(entry, space = undefined) {
         alignment: value[properties.alignment],
         sizeCategory: value[properties.sizeCategory],
         size: value[properties.size],
+        hitPointCurrent: value[properties.hitPointCurrent],
+        hitPointTemp: value[properties.hitPointTemp],
+        deathSaves: value[properties.deathSaves],
         abilities: {
           strength: value[properties.abilities][ABILITIES.strength],
           dexterity: value[properties.abilities][ABILITIES.dexterity],
@@ -123,7 +126,10 @@ function fromJSONEntry(jsonEntry) {
         [properties.experience]: result?.experience ?? initialData[properties.experience] ?? 0,
         [properties.alignment]: result?.alignment ?? initialData[properties.alignment] ?? '',
         [properties.sizeCategory]: result?.sizeCategory ?? initialData[properties.sizeCategory] ?? '',
-        [properties.size]: result?.size ?? initialData[properties.size] ?? 0,
+        [properties.size]: result?.size ?? initialData[properties.size] ?? '',
+        [properties.hitPointCurrent]: result?.hitPointCurrent ?? initialData[properties.hitPointCurrent] ?? 0,
+        [properties.hitPointTemp]: result?.hitPointTemp ?? initialData[properties.hitPointTemp] ?? 0,
+        [properties.deathSaves]: result?.deathSaves ?? initialData[properties.deathSaves] ?? { success: 0, failure: 0 },
         [properties.abilities]: s({
           [ABILITIES.strength]: result?.abilities.strength ?? initialData[properties.abilities][ABILITIES.strength] ?? 10,
           [ABILITIES.dexterity]: result?.abilities.dexterity ?? initialData[properties.abilities][ABILITIES.dexterity] ?? 10,

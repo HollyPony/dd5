@@ -1,22 +1,26 @@
 <template>
   <div class="block character-profile">
-    <div class="text-center title">Character Profile</div>
+    <div class="text-center title" data-i18n="components.CharacterProfile.title"></div>
     <div class="placeholder-grid">
       <div class="placeholder-field">
-        <label class="form-label mb-1">Description</label>
-        <textarea class="form-control form-control-sm" rows="2" placeholder="Placeholder"></textarea>
+        <label class="form-label mb-1" data-i18n="components.CharacterProfile.description"></label>
+        <textarea class="form-control form-control-sm" rows="2"
+          data-i18n-attributes='{"placeholder":{"key":"components.CharacterProfile.placeholder"}}'></textarea>
       </div>
       <div class="placeholder-field">
-        <label class="form-label mb-1">History</label>
-        <textarea class="form-control form-control-sm" rows="3" placeholder="Placeholder"></textarea>
+        <label class="form-label mb-1" data-i18n="components.CharacterProfile.history"></label>
+        <textarea class="form-control form-control-sm" rows="3"
+          data-i18n-attributes='{"placeholder":{"key":"components.CharacterProfile.placeholder"}}'></textarea>
       </div>
       <div class="placeholder-field">
-        <label class="form-label mb-1">Appearance</label>
-        <textarea class="form-control form-control-sm" rows="3" placeholder="Placeholder"></textarea>
+        <label class="form-label mb-1" data-i18n="components.CharacterProfile.appearance"></label>
+        <textarea class="form-control form-control-sm" rows="3"
+          data-i18n-attributes='{"placeholder":{"key":"components.CharacterProfile.placeholder"}}'></textarea>
       </div>
       <div class="placeholder-field">
         <label for="alignment" class="form-label mb-1" data-i18n="alignment.title"></label>
-        <input name="alignment" class="form-control form-control-sm" placeholder="Lawful Good" />
+        <input name="alignment" class="form-control form-control-sm"
+          data-i18n-attributes='{"placeholder":{"key":"alignment.placeholder"}}' />
       </div>
     </div>
   </div>

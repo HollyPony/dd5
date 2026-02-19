@@ -57,6 +57,14 @@ export function UnknownObjectPropertyError(prop, objectName = 'Object', ...props
   })
 }
 
+export function InvalidCharacterFieldError(fieldName, reason = 'Invalid value', ...props) {
+  return createCustomError({
+    name: 'InvalidCharacterFieldError',
+    message: `Invalid character field '${fieldName}': ${reason}`,
+    args: props,
+  })
+}
+
 export function TechnicalError(error) {
   console.error(error)
   indexEventBus.emit(observables.ERROR_TECHNICAL, error)
