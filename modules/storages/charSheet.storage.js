@@ -2,7 +2,7 @@ import { StorageError } from '../errors.js'
 import createEventBus from '../createEventBus.js'
 import createLocalStorage from './createLocalStorage.js'
 import properties from '../stores/charSheet.authority.properties.js'
-import { initialData } from '../stores/charSheet.authority.store.js'
+import initialData from '../stores/charSheet.authority.initial.js'
 import { s } from '../helpers.js'
 import { ABILITIES } from '../common.js'
 
