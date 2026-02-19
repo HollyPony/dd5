@@ -12,16 +12,18 @@
 - Class Features block rendered with class base description and class skills/tools choices (partially interactive) (`webComponents/ClassFeatures/*`).
 - Species Traits block rendered with traits/spells/resistances (`webComponents/SpeciesTraits/SpeciesTraits.js`).
 - Core sheet vitals/specs write flows wired: alignment, size category/size, current HP, temp HP, death saves (+ autosave + import/export persistence) (`webComponents/CharacterProfile/CharacterProfile.html`, `webComponents/Specs/Specs.js`, `webComponents/Vitals/Vitals.js`, `modules/stores/charSheet.authority.store.js`, `modules/storages/charSheet.storage.js`).
-- Placeholder blocks inserted for upcoming features: character profile, spellbook, backpack inventory, currency (`webComponents/CharacterProfile/*`, `webComponents/Spellbook/*`, `webComponents/Backpack/*`, `webComponents/Currency/*`).
+- Backpack inventory wired to state flow: add/remove owned equipment via modal + persisted autosave/import/export (`webComponents/Backpack/*`, `modules/stores/charSheet.authority.store.js`, `modules/stores/charSheet.derived.store.js`).
+- Weapons section in `WeaponsCantrip` wired to owned/equipped flow: equip from backpack-owned weapons and unequip actions (`webComponents/WeaponsCantrip/*`, `webComponents/WeaponSelect/WeaponSelect.js`).
+- Placeholder blocks still present for upcoming features: character profile, spellbook, currency (`webComponents/CharacterProfile/*`, `webComponents/Spellbook/*`, `webComponents/Currency/*`).
 
 ## Partially implemented / missing
 
-- `WeaponsCantrip` and `Feats` are still placeholders (`webComponents/WeaponsCantrip/WeaponsCantrip.js`, `webComponents/Feats/Feats.js`).
-- `CharacterProfile`, `Spellbook`, `Backpack`, and `Currency` are UI placeholders only (not wired to store/storage yet).
-- `WeaponSelect` lists weapons but does not add them to the character (`webComponents/WeaponSelect/WeaponSelect.js`).
+- `WeaponsCantrip` is partially implemented: weapons flow is wired, cantrips are still TODO (P3) (`webComponents/WeaponsCantrip/WeaponsCantrip.js`).
+- `Feats` is still a placeholder (`webComponents/Feats/Feats.js`).
+- `CharacterProfile`, `Spellbook`, and `Currency` are UI placeholders only (not wired to store/storage yet).
 - Many class/feat/species effects exist in data but are not applied in the rules engine yet (multiple TODOs in `modules/data/feats.js`, `modules/data/classes.js`, `modules/data/species.js`).
-- Equipment edition flow is incomplete (add/remove/equip/attune from UI not fully operational).
-- Character economy and ownership are missing from state flow (currency values and backpack items are not persisted).
+- Equipment edition flow is still incomplete (shield/armor handling, attunement, and broader equipment UX still missing).
+- Character economy is still missing from state flow (currency values not persisted).
 - Player narrative profile is missing from state flow (description, history, appearance are not persisted).
 - Player spell workflow is missing from state flow (known/prepared/list/details/slots usage are not persisted in sheet UX).
 
@@ -38,7 +40,7 @@
 
 - [ ] Make `CharacterProfile` functional: description, history, appearance (UI write flow + autosave + import/export).
 - [ ] Make `Currency` functional: cp/sp/ep/gp/pp values with validation and persistence.
-- [ ] Make `Backpack` functional: owned inventory list with quantity and notes, clearly separated from equipped items.
+- [ ] Make `Backpack` functional: owned inventory list with quantity and notes, clearly separated from equipped items. (partially done: add/remove + ownership persistence)
 - [ ] Definition of done: profile and economy data can be created/edited/saved/loaded/exported/imported without JSON edits.
 
 ### P2 - Complete the 2024 character creation engine
