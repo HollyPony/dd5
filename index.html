@@ -87,13 +87,14 @@
     window.onload = function () {
       google.accounts.id.initialize({
         client_id: "980506772314-hnihuuoalj06sv318vicbgnnqgh6hupo.apps.googleusercontent.com",
-        callback: handleCredentialResponse
+        callback: handleCredentialResponse,
+        color_scheme: 'dark',
       })
       google.accounts.id.renderButton(
         document.getElementById("googleSignIn"),
         { theme: "outline", size: "large" }  // customization attributes
       )
-      google.accounts.id.prompt() // also display the One Tap dialog
+      // google.accounts.id.prompt() // also display the One Tap dialog
     }
   </script>
 
