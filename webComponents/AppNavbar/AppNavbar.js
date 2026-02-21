@@ -4,6 +4,7 @@ import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
 import { createElement, domSubscribe, replaceElement } from '../../modules/domlib.js'
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
+import settingsService from '../../modules/services/settings.service.js'
 
 export class AppNavbar extends AbstractComponent {
   static get tagName() { return 'app-navbar' }
@@ -16,6 +17,7 @@ export class AppNavbar extends AbstractComponent {
   #savedCharactersListTitleElement
   #savedCharactersListElement
   #currentCharacterNameElement
+  #debugItemElement
   #debugLinkElement
   #debugModalElement
   #debugModalTitleElement
@@ -29,6 +31,7 @@ export class AppNavbar extends AbstractComponent {
     this.#savedCharactersListTitleElement = this.querySelector('.saved-characters-list-title')
     this.#savedCharactersListElement = this.querySelector('.saved-characters-list')
     this.#currentCharacterNameElement = this.querySelector('.current-character-name')
+    this.#debugItemElement = this.querySelector('.debug-item')
     this.#debugLinkElement = this.querySelector('.debug-link')
     this.#debugModalElement = this.querySelector('.debug-modal')
     this.#debugModalTitleElement = this.querySelector('.debug-modal-title')
@@ -38,6 +41,7 @@ export class AppNavbar extends AbstractComponent {
 
     this.#renderSavedCharSheets()
     this.#renderCurrentCharacterName()
+    this.#renderDebugItem()
   }
 
   _registerEvents() {
@@ -51,6 +55,7 @@ export class AppNavbar extends AbstractComponent {
 
       charSheetStore.on(charSheetProps.name, this.#renderCurrentCharacterName),
       charSheetService.subscribeCharSheetsList(this.#renderSavedCharSheets),
+      settingsService.onChange(this.#renderDebugItem),
     )
   }
 
@@ -75,6 +80,12 @@ export class AppNavbar extends AbstractComponent {
 
   #renderCurrentCharacterName = () => {
     replaceElement(this.#currentCharacterNameElement, charSheetStore.getName() || t._('navbar.unnamedCharacter'))
+  }
+
+  #renderDebugItem = () => {
+    this.#debugItemElement.classList[
+      settingsService.isDebug ? 'remove' : 'add'
+    ]('d-none')
   }
 
   #initDebugModalAttributes() {
