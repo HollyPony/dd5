@@ -27,6 +27,15 @@ export default {
     savedCharacters: 'Personnages enregistrés',
     noCharacters: 'Aucun personnage',
     unnamedCharacter: 'Personnage sans nom',
+    auth: {
+      login: 'Connexion',
+      account: 'Compte',
+      logout: 'Se déconnecter',
+      providers: {
+        google: 'Continuer avec Google',
+        facebook: 'Continuer avec Facebook',
+      },
+    },
   },
   modals: {
     jsonOutput: {

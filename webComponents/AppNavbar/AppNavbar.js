@@ -5,6 +5,7 @@ import charSheetProps from '../../modules/stores/charSheet.derived.properties.js
 import { createElement, domSubscribe, replaceElement } from '../../modules/domlib.js'
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
 import settingsService from '../../modules/services/settings.service.js'
+import authService from '../../modules/auth/auth.service.js'
 
 export class AppNavbar extends AbstractComponent {
   static get tagName() { return 'app-navbar' }
@@ -23,6 +24,9 @@ export class AppNavbar extends AbstractComponent {
   #debugModalTitleElement
   #debugOutputElement
 
+  #authLoginButtonElement
+  #authProvidersListElement
+
   _connectedCallback() {
     this.#exportCharLinkElement = this.querySelector('.export-char-link')
     this.#importCharLinkElement = this.querySelector('.import-char-link')
@@ -37,11 +41,15 @@ export class AppNavbar extends AbstractComponent {
     this.#debugModalTitleElement = this.querySelector('.debug-modal-title')
     this.#debugOutputElement = this.querySelector('.debug-output')
 
+    this.#authLoginButtonElement = this.querySelector('.auth-login-button')
+    this.#authProvidersListElement = this.querySelector('.auth-providers-list')
+
     this.#initDebugModalAttributes()
 
     this.#renderSavedCharSheets()
     this.#renderCurrentCharacterName()
     this.#renderDebugItem()
+    this.#renderAuth()
   }
 
   _registerEvents() {
@@ -51,17 +59,20 @@ export class AppNavbar extends AbstractComponent {
       domSubscribe(this.#importCharFileElement, 'change', this.#importCharFileChanged),
       domSubscribe(this.#savedCharactersListElement, 'click', this.#savedCharacterClicked),
       domSubscribe(this.#createCharacterLinkElement, 'click', this.#createCharacterClicked),
+      domSubscribe(this.#authProvidersListElement, 'click', this.#authProviderClicked),
       domSubscribe(this.#debugModalElement, 'show.bs.modal', this.#renderJSONOutput),
 
       charSheetStore.on(charSheetProps.name, this.#renderCurrentCharacterName),
       charSheetService.subscribeCharSheetsList(this.#renderSavedCharSheets),
       settingsService.onChange(this.#renderDebugItem),
+      authService.on(this.#renderAuth),
     )
   }
 
   _i18nChanged() {
     this.#renderSavedCharSheets()
     this.#renderCurrentCharacterName()
+    this.#renderAuth()
   }
 
   #renderSavedCharSheets = () => {
@@ -132,6 +143,61 @@ export class AppNavbar extends AbstractComponent {
   #createCharacterClicked = (event) => {
     event.preventDefault()
     charSheetService.create()
+  }
+
+  #renderAuth = () => {
+    const isAuthenticated = authService.isAuthenticated
+    const loginLabel = isAuthenticated
+      ? (authService.user?.displayName || authService.user?.email || t._('navbar.auth.account'))
+      : t._('navbar.auth.login')
+
+    replaceElement(this.#authLoginButtonElement, loginLabel)
+
+    const providers = authService.getProviders()
+    const authActions = isAuthenticated
+      ? [
+        createElement('li', createElement('button', t._('navbar.auth.logout'), {
+          class: 'dropdown-item',
+          type: 'button',
+          'data-auth-action': 'logout',
+        })),
+        createElement('li', createElement('hr', null, { class: 'dropdown-divider' })),
+      ]
+      : []
+
+    const providerActions = providers.map(provider => {
+      return createElement('li', createElement(
+        'button',
+        t._(`navbar.auth.providers.${provider.providerId}`),
+        {
+          class: 'dropdown-item',
+          type: 'button',
+          disabled: !provider.isConfigured(),
+          'data-provider-id': provider.providerId,
+        }
+      ))
+    })
+
+    replaceElement(this.#authProvidersListElement, [...authActions, ...providerActions])
+  }
+
+  #throwAsync = (error) => {
+    setTimeout(() => { throw error }, 0)
+  }
+
+  #authProviderClicked = (event) => {
+    event.preventDefault()
+
+    const actionElement = event.target?.closest?.('[data-auth-action], [data-provider-id]')
+    if (!actionElement) return
+
+    if (actionElement.dataset.authAction === 'logout') {
+      authService.signOut().catch(this.#throwAsync)
+      return
+    }
+
+    const providerId = actionElement.dataset.providerId
+    authService.signIn(providerId).catch(this.#throwAsync)
   }
 
   #savedCharacterClicked = (event) => {
