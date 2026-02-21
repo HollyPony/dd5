@@ -2,7 +2,7 @@ import { AbstractSelect } from '../AbstractSelect/AbstractSelect.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
 import { getList as getSpeciesList } from '../../modules/data/species.js'
-import { domSubscribe, populateSelect } from '../../modules/domlib.js'
+import { domOn, populateSelect } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'
 
 export class SpeciesSelect extends AbstractSelect {
@@ -10,7 +10,7 @@ export class SpeciesSelect extends AbstractSelect {
 
   _registerEvents() {
     this._pushEvents(
-      domSubscribe(this._selectElement, 'change', this.#selectChanged),
+      domOn(this._selectElement, 'change', this.#selectChanged),
       charSheetStore.on(charSheetProps.speciesName, this._renderValue),
     )
   }

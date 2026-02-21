@@ -1,5 +1,5 @@
 ﻿import { DICES as D } from '../../modules/common.js'
-import { domSubscribe } from '../../modules/domlib.js'
+import { domOn } from '../../modules/domlib.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
@@ -37,9 +37,9 @@ export class Vitals extends AbstractComponent {
   _registerEvents() {
     const deathSaveElements = [...this.#deathSaveSuccessElements, ...this.#deathSaveFailureElements]
     this._pushEvents(
-      domSubscribe(this.#hitPointCurrentElement, 'change', this.#hitPointCurrentChanged),
-      domSubscribe(this.#hitPointTempElement, 'change', this.#hitPointTempChanged),
-      deathSaveElements.map(element => domSubscribe(element, 'change', this.#deathSavesChanged)),
+      domOn(this.#hitPointCurrentElement, 'change', this.#hitPointCurrentChanged),
+      domOn(this.#hitPointTempElement, 'change', this.#hitPointTempChanged),
+      deathSaveElements.map(element => domOn(element, 'change', this.#deathSavesChanged)),
       charSheetStore.onMap({
         [charSheetProps.level]: [this.#renderHitPointMax, this.#renderHitDiceMax],
         [charSheetProps.class]: [this.#renderHitPointMax, this.#renderHitDiceMax],

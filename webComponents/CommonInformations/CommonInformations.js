@@ -1,4 +1,4 @@
-import { domSubscribe } from '../../modules/domlib.js'
+import { domOn } from '../../modules/domlib.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
@@ -17,7 +17,7 @@ export class CommonInformations extends AbstractComponent {
 
   _registerEvents() {
     this._pushEvents(
-      domSubscribe(this.#nameElement, 'input', this.#nameChanged),
+      domOn(this.#nameElement, 'input', this.#nameChanged),
       charSheetStore.on(charSheetProps.name, this.#renderName),
     )
   }

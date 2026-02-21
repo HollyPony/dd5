@@ -2,7 +2,7 @@ import { AbstractSelect } from '../AbstractSelect/AbstractSelect.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
 import { EQUIPMENT_ATTRIBUTE, EQUIPMENT_TYPE, getEquipment } from '../../modules/data/equipments.js'
-import { domSubscribe, populateSelect } from '../../modules/domlib.js'
+import { domOn, populateSelect } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'
 
 export class WeaponSelect extends AbstractSelect {
@@ -10,7 +10,7 @@ export class WeaponSelect extends AbstractSelect {
 
   _registerEvents() {
     this._pushEvents(
-      domSubscribe(this._selectElement, 'change', this.#selectChanged),
+      domOn(this._selectElement, 'change', this.#selectChanged),
       charSheetStore.on(charSheetProps.equipments, this._renderList),
     )
   }

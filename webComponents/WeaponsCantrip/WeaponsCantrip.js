@@ -2,7 +2,7 @@ import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
 import { EQUIPMENT_ATTRIBUTE, EQUIPMENT_TYPE, getEquipment } from '../../modules/data/equipments.js'
-import { createElement, domSubscribe, replaceElement } from '../../modules/domlib.js'
+import { createElement, domOn, replaceElement } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'
 
 export class WeaponsCantrip extends AbstractComponent {
@@ -19,7 +19,7 @@ export class WeaponsCantrip extends AbstractComponent {
   _registerEvents() {
     this._pushEvents(
       charSheetStore.on(charSheetProps.equipments, this.#renderWeapons),
-      domSubscribe(this.#weaponListElement, 'click', this.#weaponListClicked),
+      domOn(this.#weaponListElement, 'click', this.#weaponListClicked),
     )
   }
 

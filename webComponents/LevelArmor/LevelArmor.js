@@ -1,4 +1,4 @@
-import { domSubscribe } from '../../modules/domlib.js'
+import { domOn } from '../../modules/domlib.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
@@ -28,7 +28,7 @@ export class LevelArmor extends AbstractComponent {
 
   _registerEvents() {
     this._pushEvents(
-      domSubscribe(this.#experienceElement, 'change', this.#experienceChanged),
+      domOn(this.#experienceElement, 'change', this.#experienceChanged),
       charSheetStore.onMap({
         [charSheetProps.experience]: [this.#renderExperience],
         [charSheetProps.level]: [this.#renderLevel, this.#renderArmorClass],

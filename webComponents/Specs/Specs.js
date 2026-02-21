@@ -2,7 +2,7 @@ import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
 import { SIZE_CATEGORY } from '../../modules/common.js'
-import { domSubscribe, populateSelect } from '../../modules/domlib.js'
+import { domOn, populateSelect } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'
 
 export class Specs extends AbstractComponent {
@@ -31,8 +31,8 @@ export class Specs extends AbstractComponent {
 
   _registerEvents() {
     this._pushEvents(
-      domSubscribe(this.#sizeCategoryElement, 'change', this.#sizeCategoryChanged),
-      domSubscribe(this.#sizeElement, 'change', this.#sizeChanged),
+      domOn(this.#sizeCategoryElement, 'change', this.#sizeCategoryChanged),
+      domOn(this.#sizeElement, 'change', this.#sizeChanged),
       charSheetStore.onMap({
         [charSheetProps.initiative]: this.#renderInitiative,
         [charSheetProps.speed]: this.#renderSpeed,

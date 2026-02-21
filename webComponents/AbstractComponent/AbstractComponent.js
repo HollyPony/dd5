@@ -42,10 +42,10 @@ export class AbstractComponent extends HTMLElement {
   }
 
   _langApplied = undefined
-  static #i18nUnsubscribe = undefined
-  static #i18nSubscribe() {
-    if (!AbstractComponent.#i18nUnsubscribe) {
-      AbstractComponent.#i18nUnsubscribe = i18n.subscribe(() => {
+  static #i18nOff = undefined
+  static #i18nOnLangChange() {
+    if (!AbstractComponent.#i18nOff) {
+      AbstractComponent.#i18nOff = i18n.onLangChange(() => {
         if (currentLang) {
           for (const instance of AbstractComponent.#instances) {
             if (instance._langApplied !== currentLang) {
@@ -89,7 +89,7 @@ export class AbstractComponent extends HTMLElement {
     this._langApplied = currentLang
     this.#applyTranslations()
     AbstractComponent.#instances.add(this)
-    AbstractComponent.#i18nSubscribe()
+    AbstractComponent.#i18nOnLangChange()
   }
 
   async disconnectedCallback() {
@@ -97,8 +97,8 @@ export class AbstractComponent extends HTMLElement {
     this._langApplied = undefined
     AbstractComponent.#instances.delete(this)
     if (AbstractComponent.#instances.size === 0) {
-      AbstractComponent.#i18nUnsubscribe?.()
-      AbstractComponent.#i18nUnsubscribe = undefined
+      AbstractComponent.#i18nOff?.()
+      AbstractComponent.#i18nOff = undefined
     }
     await this._disconnectedCallback?.()
     this.#unregisterEvents()

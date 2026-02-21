@@ -1,5 +1,5 @@
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
-import { domSubscribe } from '../../modules/domlib.js'
+import { domOn } from '../../modules/domlib.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
 
@@ -17,7 +17,7 @@ export class CharacterProfile extends AbstractComponent {
 
   _registerEvents() {
     this._pushEvents(
-      domSubscribe(this.#alignmentElement, 'input', this.#alignmentChanged),
+      domOn(this.#alignmentElement, 'input', this.#alignmentChanged),
       charSheetStore.on(charSheetProps.alignment, this.#renderAlignment),
     )
   }

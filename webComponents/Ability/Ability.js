@@ -2,7 +2,7 @@ import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
 import { ABILITIES, SKILL_ABILITY } from '../../modules/common.js'
-import { createElement, domSubscribe, replaceElement } from '../../modules/domlib.js'
+import { createElement, domOn, replaceElement } from '../../modules/domlib.js'
 import { signDisplay } from '../../modules/helpers.js'
 import { t } from '../../modules/i18n.js'
 
@@ -49,7 +49,7 @@ export class Ability extends AbstractComponent {
 
   _registerEvents() {
     this._pushEvents(
-      domSubscribe(this.#scoreElement, 'input', this.#scoreChanged),
+      domOn(this.#scoreElement, 'input', this.#scoreChanged),
       charSheetStore.onMap({
         [charSheetProps.abilities]: [this.#renderScore],
         [charSheetProps.modifiers]: [this.#renderModifier, this.#renderSkills],

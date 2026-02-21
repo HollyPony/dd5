@@ -2,7 +2,7 @@ import { AbstractSelect } from '../AbstractSelect/AbstractSelect.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
 import { getSubClasses } from '../../modules/data/classes.js'
-import { domSubscribe, populateSelect } from '../../modules/domlib.js'
+import { domOn, populateSelect } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'
 
 export class SubClassSelect extends AbstractSelect {
@@ -10,8 +10,8 @@ export class SubClassSelect extends AbstractSelect {
 
   _registerEvents() {
     this._pushEvents(
-      domSubscribe(this._selectElement, 'change', this.#selectChanged),
-      // TODO: avoid *change and use subscribeMany on selective refresh
+      domOn(this._selectElement, 'change', this.#selectChanged),
+      // TODO: avoid *change and use onMany on selective refresh
       charSheetStore.onMap({
         [charSheetProps.level]: [this.#levelChanged],
         [charSheetProps.className]: [this.#classChanged],

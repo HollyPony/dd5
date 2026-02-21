@@ -91,17 +91,17 @@ export function populateSelect(selectElement, items, params = {
     ))
 }
 /**
- * Subscribe to a DOM event and return the unsubscribe function.
+ * Connect to a DOM event and return the off function.
  * @param {EventTarget} domElement
  * @param {string} eventName
  * @param {Function} handler
  * @param {object|boolean} [options]
- * @returns {Function} Unsubscribe callback.
+ * @returns {Function} Off callback.
  */
-export function domSubscribe(domElement, eventName, handler, options) {
+export function domOn(domElement, eventName, handler, options) {
   domElement.addEventListener(eventName, handler, options)
 
-  return () => domElement.removeEventListener(eventName, handler, options)
+  return function off() { domElement.removeEventListener(eventName, handler, options) }
 }
 
 /**

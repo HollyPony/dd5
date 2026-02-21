@@ -58,7 +58,7 @@ export default {
   importJSON,
   getJSONEntry,
   remove: charSheetStorage.remove,
-  subscribeCharSheetsList: charSheetStorage.onCharListChanged,
+  onCharListChanged: charSheetStorage.onCharListChanged,
   unregister() {
     autosaveEventTarget?.off()
     autosaveEventTarget = null

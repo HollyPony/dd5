@@ -2,7 +2,7 @@
 import charSheetService from '../../modules/services/charSheet.service.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
-import { createElement, domSubscribe, replaceElement } from '../../modules/domlib.js'
+import { createElement, domOn, replaceElement } from '../../modules/domlib.js'
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
 import settingsService from '../../modules/services/settings.service.js'
 import authService from '../../modules/auth/auth.service.js'
@@ -54,16 +54,16 @@ export class AppNavbar extends AbstractComponent {
 
   _registerEvents() {
     this._pushEvents(
-      domSubscribe(this.#exportCharLinkElement, 'click', this.#exportJSONClicked),
-      domSubscribe(this.#importCharLinkElement, 'click', this.#importCharClicked),
-      domSubscribe(this.#importCharFileElement, 'change', this.#importCharFileChanged),
-      domSubscribe(this.#savedCharactersListElement, 'click', this.#savedCharacterClicked),
-      domSubscribe(this.#createCharacterLinkElement, 'click', this.#createCharacterClicked),
-      domSubscribe(this.#authProvidersListElement, 'click', this.#authProviderClicked),
-      domSubscribe(this.#debugModalElement, 'show.bs.modal', this.#renderJSONOutput),
+      domOn(this.#exportCharLinkElement, 'click', this.#exportJSONClicked),
+      domOn(this.#importCharLinkElement, 'click', this.#importCharClicked),
+      domOn(this.#importCharFileElement, 'change', this.#importCharFileChanged),
+      domOn(this.#savedCharactersListElement, 'click', this.#savedCharacterClicked),
+      domOn(this.#createCharacterLinkElement, 'click', this.#createCharacterClicked),
+      domOn(this.#authProvidersListElement, 'click', this.#authProviderClicked),
+      domOn(this.#debugModalElement, 'show.bs.modal', this.#renderJSONOutput),
 
       charSheetStore.on(charSheetProps.name, this.#renderCurrentCharacterName),
-      charSheetService.subscribeCharSheetsList(this.#renderSavedCharSheets),
+      charSheetService.onCharListChanged(this.#renderSavedCharSheets),
       settingsService.onChange(this.#renderDebugItem),
       authService.on(this.#renderAuth),
     )

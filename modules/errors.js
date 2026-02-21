@@ -1,16 +1,16 @@
-import { domSubscribe } from './domlib.js'
+import { domOn } from './domlib.js'
 
-const errorSubscriptions = []
-errorSubscriptions.push(
-  domSubscribe(window, 'pagehide', function unregisterSubscriptions() {
-    while (errorSubscriptions.length) errorSubscriptions.pop()?.()
+const errorListeners = []
+errorListeners.push(
+  domOn(window, 'pagehide', function off() {
+    while (errorListeners.length) errorListeners.pop()?.()
   })
 )
 
 export function onError(callback) {
-  errorSubscriptions.push(
-    domSubscribe(window, 'error', callback, true),
-    domSubscribe(window, 'unhandledrejection', callback),
+  errorListeners.push(
+    domOn(window, 'error', callback, true),
+    domOn(window, 'unhandledrejection', callback),
   )
 }
 

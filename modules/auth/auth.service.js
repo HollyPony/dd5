@@ -49,12 +49,12 @@ async function signOut() {
 }
 
 function on(callback) {
-  const anySubscription = authStore.onAny(() => callback())
+  const any = authStore.onAny(() => callback())
   const off = eventBus.on('', () => callback())
 
   return () => {
     off()
-    return anySubscription.off()
+    return any.off()
   }
 }
 

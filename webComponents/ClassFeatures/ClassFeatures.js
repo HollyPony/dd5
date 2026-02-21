@@ -67,8 +67,7 @@ export class ClassFeatures extends AbstractComponent {
       'data-feature': feature.name,
     })
 
-    const subscription = classFeature.eventBus.on('actionRequired', this.#actionRequiredChanged)
-    classFeature._pushEvents(subscription)
+    classFeature._pushEvents(classFeature.eventBus.on('actionRequired', this.#actionRequiredChanged))
     return classFeature
   }
 

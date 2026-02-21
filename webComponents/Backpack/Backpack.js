@@ -2,7 +2,7 @@ import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
 import { EQUIPMENT_ATTRIBUTE, EQUIPMENT_TYPE, getEquipment, getEquipments } from '../../modules/data/equipments.js'
-import { createElement, domSubscribe, replaceElement } from '../../modules/domlib.js'
+import { createElement, domOn, replaceElement } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'
 
 export class Backpack extends AbstractComponent {
@@ -43,11 +43,11 @@ export class Backpack extends AbstractComponent {
 
   _registerEvents() {
     this._pushEvents(
-      domSubscribe(this.#openModalButtonElement, 'click', this.#openModal),
-      domSubscribe(this.#listElement, 'click', this.#listClicked),
-      domSubscribe(this.#tabsElement, 'click', this.#tabsClicked),
-      domSubscribe(this.#searchElement, 'input', this.#renderAddResults),
-      domSubscribe(this.#resultsElement, 'click', this.#resultsClicked),
+      domOn(this.#openModalButtonElement, 'click', this.#openModal),
+      domOn(this.#listElement, 'click', this.#listClicked),
+      domOn(this.#tabsElement, 'click', this.#tabsClicked),
+      domOn(this.#searchElement, 'input', this.#renderAddResults),
+      domOn(this.#resultsElement, 'click', this.#resultsClicked),
       charSheetStore.on(charSheetProps.equipments, this.#renderBackpack),
     )
   }

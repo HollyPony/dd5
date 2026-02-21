@@ -3,7 +3,7 @@ import parseMarkdown from './markdown.js'
 
 const DEFAULT_LANGUAGE = 'fr'
 const availableLanguages = ['fr']
-const langChangeSubscribers = new Set()
+const langChangeListeners = new Set()
 
 let translations = {}
 export let currentLang = null
@@ -173,13 +173,13 @@ function applyTranslations(rootElement = document) {
 }
 
 /**
- * Subscribe to i18n updates (language changes).
+ * On language change trigger.
  * @param {Function} callback Callback invoked on notify.
- * @returns {Function} Unsubscribe function.
+ * @returns {Function} Off function.
  */
-function subscribe(callback) {
-  langChangeSubscribers.add(callback)
-  return () => langChangeSubscribers.delete(callback)
+function onLangChange(callback) {
+  langChangeListeners.add(callback)
+  return () => langChangeListeners.delete(callback)
 }
 
 export const t = {
@@ -191,7 +191,7 @@ export const i18n = {
   changeLang,
   applyTranslation,
   applyTranslations,
-  subscribe,
+  onLangChange,
 }
 
 /**
@@ -217,10 +217,9 @@ function strObjInterpolation(str = '', obj = []) {
 }
 
 /**
- * Notify all subscribers of a language change.
+ * Notify all listeners of a language change.
  */
 function notify() {
-  for (const callback of langChangeSubscribers) {
-    callback()
-  }
+  for (const listener of langChangeListeners) listener()
+
 }
