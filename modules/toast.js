@@ -1,8 +1,8 @@
-import { domSubscribe } from './domlib.js'
+import { onError } from './errors.js'
 
 const toastContainer = document.getElementById('toastContainer')
 
-function onWindowError(event) {
+onError(function onWindowError(event) {
   // JS runtime error (throw, syntax, etc.)
   const error = event.error || (event.reason && (event.reason instanceof Error ? event.reason : new Error(String(event.reason))))
   if (error) return showErrorToast(error)
@@ -13,16 +13,7 @@ function onWindowError(event) {
   if (resourceUrl) return showErrorToast(new Error(`Failed to load resource: ${resourceUrl}`))
 
   return showErrorToast(new Error(event.message || 'Unhandled window error'))
-}
-
-const subscriptions = []
-subscriptions.push(
-  domSubscribe(window, 'error', onWindowError, true),
-  domSubscribe(window, 'unhandledrejection', onWindowError),
-  domSubscribe(window, 'pagehide', function unregisterSubscriptions() {
-    while (subscriptions.length) subscriptions.pop()?.()
-  })
-)
+})
 
 export function showToast({ title, message, variant = 'danger', delay = 5000, autohide = true } = {}) {
   if (!toastContainer) return

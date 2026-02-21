@@ -1,3 +1,19 @@
+import { domSubscribe } from './domlib.js'
+
+const errorSubscriptions = []
+errorSubscriptions.push(
+  domSubscribe(window, 'pagehide', function unregisterSubscriptions() {
+    while (errorSubscriptions.length) errorSubscriptions.pop()?.()
+  })
+)
+
+export function onError(callback) {
+  errorSubscriptions.push(
+    domSubscribe(window, 'error', callback, true),
+    domSubscribe(window, 'unhandledrejection', callback),
+  )
+}
+
 function createCustomError({ name, message, args = [] }) {
   const error = new Error(message, ...args)
   Object.setPrototypeOf(error, createCustomError.prototype)
