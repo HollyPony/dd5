@@ -5,6 +5,7 @@ import properties from '../stores/charSheet.authority.properties.js'
 import initialData from '../stores/charSheet.authority.initial.js'
 import { s } from '../helpers.js'
 import { ABILITIES } from '../common.js'
+import { t } from '../i18n.js'
 
 const PREFIX_KEY = 'charsheet'
 const STORAGE_VERSION = 1
@@ -194,7 +195,7 @@ function save(sheet, notify) {
   const sheetsList = getList().filter(item => item.id !== entry.id)
   sheetsList.push({
     id: entry.id,
-    name: sheet?.[properties.name]?.toString()?.trim() || entry.id,
+    name: sheet?.[properties.name]?.toString()?.trim() || t._('navbar.unnamedCharacter'),
     updatedAt: entry.updatedAt,
   })
 
