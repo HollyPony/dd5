@@ -1,4 +1,3 @@
-import './modules/toast.js'
 import initTranslations, { i18n } from './modules/i18n.js'
 import charSheetService from './modules/services/charSheet.service.js'
 import { domSubscribe } from './modules/domlib.js'
