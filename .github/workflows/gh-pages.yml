@@ -33,10 +33,11 @@ jobs:
         run: |
           OWNER="${{ github.repository_owner }}"
           REPO="${{ github.event.repository.name }}"
-          cat <<EOF > modules/env.js
+          cat <<EOF > modules/env.local.js
           export default {
             APP_URL: 'https://${OWNER}.github.io/${REPO}/',
             GITHUB_RAW_URL: '${{ vars.DD5_GITHUB_RAW_URL }}',
+            GOOGLE_CLIENT_ID: '${{ vars.DD5_GOOGLE_CLIENT_ID }}',
             ENV: '${{ vars.ENV }}'
           }
           EOF

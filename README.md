@@ -29,6 +29,14 @@ Details and priorities: [`ROADMAP.md`](ROADMAP.md)
 
 No build step is required.
 
+Runtime config is loaded from `modules/env.local.js` (ignored by git).
+
+Create `modules/env.local.js` before starting the app:
+
+```js
+export default {}
+```
+
 1. Serve the folder over HTTP (do not open `index.html` directly with `file://`).
 2. Open the app in your browser.
 
@@ -42,7 +50,7 @@ GitHub Pages deployment is configured via:
 
 - [`.github/workflows/gh-pages.yml`](.github/workflows/gh-pages.yml)
 
-The workflow generates `modules/env.js` at publish time.
+The workflow generates `modules/env.local.js` at publish time.
 
 ## Quick structure
 

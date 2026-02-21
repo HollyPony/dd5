@@ -1,3 +1,10 @@
+import localEnv from './env.local.js'
+
+const env = {
+  GOOGLE_CLIENT_ID: ''
+}
+
 export default {
-  APP_URL: ''
+  ...env,
+  ...localEnv
 }
