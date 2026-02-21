@@ -21,6 +21,7 @@
 </head>
 
 <body translate="no" data-bs-theme="dark">
+  <div id="googleSignIn"></div>
   <app-navbar></app-navbar>
 
   <main class="container mt-3">
@@ -76,6 +77,26 @@
     crossorigin="anonymous"></script>
   <!-- Inner lib -->
   <script type="module" src="index.js"></script>
+
+
+  <script src="https://accounts.google.com/gsi/client" async></script>
+  <script>
+    function handleCredentialResponse(response) {
+      console.log("Encoded JWT ID token: " + response.credential)
+    }
+    window.onload = function () {
+      google.accounts.id.initialize({
+        client_id: "980506772314-hnihuuoalj06sv318vicbgnnqgh6hupo.apps.googleusercontent.com",
+        callback: handleCredentialResponse
+      })
+      google.accounts.id.renderButton(
+        document.getElementById("googleSignIn"),
+        { theme: "outline", size: "large" }  // customization attributes
+      )
+      google.accounts.id.prompt() // also display the One Tap dialog
+    }
+  </script>
+
 </body>
 
 </html>
