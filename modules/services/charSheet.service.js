@@ -1,6 +1,7 @@
 import charSheetStorage from '../storages/charSheet.storage.js'
 import charSheetStore from '../stores/charSheet.authority.store.js'
 import { debounce } from '../helpers.js'
+import { fromJSONEntry } from '../storages/charSheet.storage.helpers.js'
 
 const AUTOSAVE_DELAY = 600
 
@@ -33,7 +34,7 @@ function save(notify) {
 }
 
 function importJSON(json) {
-  const entry = charSheetStorage.fromJSONEntry(json)
+  const entry = fromJSONEntry(json)
   const resume = autosaveEventTarget?.mute()
   try {
     charSheetStorage.create(entry.id, { notify: 'mute' })
