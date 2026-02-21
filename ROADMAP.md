@@ -22,7 +22,7 @@
 - `Feats` is still a placeholder (`webComponents/Feats/Feats.js`).
 - `CharacterProfile`, `Spellbook`, and `Currency` are UI placeholders only (not wired to store/storage yet).
 - Many class/feat/species effects exist in data but are not applied in the rules engine yet (multiple TODOs in `modules/data/feats.js`, `modules/data/classes.js`, `modules/data/species.js`).
-- Equipment edition flow is still incomplete (shield/armor handling, attunement, and broader equipment UX still missing).
+- Equipment edition flow is partially implemented (add/remove/equip for backpack-owned items, including armor/shield and basic magic-item attunement). Remaining gaps: broader equipment UX and final validation of all gameplay cases.
 - Character economy is still missing from state flow (currency values not persisted).
 - Player narrative profile is missing from state flow (description, history, appearance are not persisted).
 - Player spell workflow is missing from state flow (known/prepared/list/details/slots usage are not persisted in sheet UX).
@@ -32,7 +32,7 @@
 ### P0 - Close a playable sheet MVP
 
 - [x] Wire all core sheet inputs (alignment, size, current/temp HP, death saves).
-- [ ] Finish inventory/equipment flows: add, remove, equip, shield/armor handling, basic attunement.
+- [ ] Finish inventory/equipment flows: add, remove, equip, shield/armor handling, basic attunement. (partially done via Backpack + authority/derived equipment flows)
 - [ ] Make `WeaponsCantrip` fully functional.
 - [ ] Definition of done: a full level 1-20 character can be managed without manual JSON editing.
 

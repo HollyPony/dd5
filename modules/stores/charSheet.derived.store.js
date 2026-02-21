@@ -447,7 +447,7 @@ function createCharSheetStore() {
     setAbilityScore: authorityStore.setAbilityScore,
     addEquipment: authorityStore.addEquipment,
     removeEquipment: authorityStore.removeEquipment,
-    setEquipmentEquiped: authorityStore.setEquipmentEquiped,
+    setEquipmentAttribute: authorityStore.setEquipmentAttribute,
 
     getChoicePayload, setPayloadToSelection,
 

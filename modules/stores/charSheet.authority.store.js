@@ -4,7 +4,7 @@ import { InvalidCharacterFieldError } from '../errors.js'
 import { SELECTOR_TYPE } from '../services/choice.helper.js'
 import properties from './charSheet.authority.properties.js'
 import initialData from './charSheet.authority.initial.js'
-import { parseDeathSaves, parseExperience, parseIntegerField, parseSizeCategory } from './charSheet.authority.helpers.js'
+import { computeEquipmentAttribute, parseDeathSaves, parseExperience, parseIntegerField, parseSizeCategory } from './charSheet.authority.helpers.js'
 import { getEquipment } from '../data/equipments.js'
 
 function createCharSheetStorageStore() {
@@ -123,7 +123,6 @@ function createCharSheetStorageStore() {
     setEquipments(getEquipments().concat({
       id: crypto.randomUUID(),
       name,
-      equiped: false,
     }))
   }
 
@@ -137,16 +136,10 @@ function createCharSheetStorageStore() {
     setEquipments(getEquipments().filter(equipment => equipment.id !== id))
   }
 
-  function setEquipmentEquiped(id, equiped) {
-    if (!id) throw InvalidCharacterFieldError('equipments.id', 'Missing id')
-    if (typeof equiped !== 'boolean')
-      throw InvalidCharacterFieldError('equipments.equiped', 'Expected a boolean')
-
+  function setEquipmentAttribute(id, attribute, value) {
     const equipments = getEquipments()
-    if (!equipments.find(item => item.id === id))
-      throw InvalidCharacterFieldError('equipments.id', `Unknown id '${id}'`)
-
-    setEquipments(equipments.map(item => item.id === id ? { ...item, equiped } : item))
+    const equipment = computeEquipmentAttribute(id, equipments, attribute, value)
+    setEquipments(equipments.map(item => item.id === equipment.id ? equipment : item))
   }
 
   return {
@@ -185,7 +178,7 @@ function createCharSheetStorageStore() {
     setChoiceSelections,
     addEquipment,
     removeEquipment,
-    setEquipmentEquiped,
+    setEquipmentAttribute,
 
     onAny: store.onAny,
     onMap: store.onMap,

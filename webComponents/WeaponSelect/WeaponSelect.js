@@ -1,7 +1,7 @@
 import { AbstractSelect } from '../AbstractSelect/AbstractSelect.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
-import { EQUIPMENT_TYPE, getEquipment } from '../../modules/data/equipments.js'
+import { EQUIPMENT_ATTRIBUTE, EQUIPMENT_TYPE, getEquipment } from '../../modules/data/equipments.js'
 import { domSubscribe, populateSelect } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'
 
@@ -51,7 +51,7 @@ export class WeaponSelect extends AbstractSelect {
     console.info('-- WeaponSelect.#selectChanged', value)
     if (!value) return
 
-    charSheetStore.setEquipmentEquiped(value, true)
+    charSheetStore.setEquipmentAttribute(value, EQUIPMENT_ATTRIBUTE.EQUIPED, true)
     this._renderValue()
   }
 }

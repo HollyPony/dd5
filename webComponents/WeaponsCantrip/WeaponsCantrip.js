@@ -1,7 +1,7 @@
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
 import charSheetStore from '../../modules/stores/charSheet.derived.store.js'
 import charSheetProps from '../../modules/stores/charSheet.derived.properties.js'
-import { EQUIPMENT_TYPE, getEquipment } from '../../modules/data/equipments.js'
+import { EQUIPMENT_ATTRIBUTE, EQUIPMENT_TYPE, getEquipment } from '../../modules/data/equipments.js'
 import { createElement, domSubscribe, replaceElement } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'
 
@@ -64,6 +64,6 @@ export class WeaponsCantrip extends AbstractComponent {
     if (!actionElement) return
     if (actionElement.dataset.action !== 'unequip') return
 
-    charSheetStore.setEquipmentEquiped(actionElement.dataset.id, false)
+    charSheetStore.setEquipmentAttribute(actionElement.dataset.id, EQUIPMENT_ATTRIBUTE.EQUIPED, false)
   }
 }

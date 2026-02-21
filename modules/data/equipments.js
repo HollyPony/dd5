@@ -23,6 +23,11 @@ export const EQUIPED_CATEGORY = Enum({
   OTHER: Symbol.for('EQUIPED_CATEGORY.OTHER'),
 })
 
+export const EQUIPMENT_ATTRIBUTE = Enum({
+  EQUIPED: 'equiped',
+  HAS_ATTUNEMENT: 'hasAttunement',
+})
+
 export const WEAPON_CATEGORY = Enum({
   simpleMelee: Symbol.for('WEAPON_CATEGORY.simpleMelee'), // Armes courantes de corps à corps
   simpleRanged: Symbol.for('WEAPON_CATEGORY.simpleRanged'), // Armes courantes à distance
@@ -1491,12 +1496,12 @@ const magicItems = f([
 ])
 
 const equipments = []
-  .concat(weapons.map(item => Object.assign({}, item, { type: EQUIPMENT_TYPE.WEAPON })))
-  .concat(armors.map(item => Object.assign({}, item, { type: EQUIPMENT_TYPE.ARMOR })))
-  .concat(shields.map(item => Object.assign({}, item, { type: EQUIPMENT_TYPE.SHIELD })))
-  .concat(tools.map(item => Object.assign({}, item, { type: EQUIPMENT_TYPE.TOOL })))
-  .concat(gears.map(item => Object.assign({}, item, { type: EQUIPMENT_TYPE.GEAR })))
-  .concat(magicItems.map(item => Object.assign({}, item, { type: EQUIPMENT_TYPE.MAGIC_ITEM })))
+  .concat(weapons.map(item => Object.assign({ type: EQUIPMENT_TYPE.WEAPON, equipOn: EQUIPED_CATEGORY.WEAPON }, item)))
+  .concat(armors.map(item => Object.assign({ type: EQUIPMENT_TYPE.ARMOR, equipOn: EQUIPED_CATEGORY.ARMOR }, item)))
+  .concat(shields.map(item => Object.assign({ type: EQUIPMENT_TYPE.SHIELD, equipOn: EQUIPED_CATEGORY.SHIELD }, item)))
+  .concat(tools.map(item => Object.assign({ type: EQUIPMENT_TYPE.TOOL }, item)))
+  .concat(gears.map(item => Object.assign({ type: EQUIPMENT_TYPE.GEAR }, item)))
+  .concat(magicItems.map(item => Object.assign({ type: EQUIPMENT_TYPE.MAGIC_ITEM }, item)))
 
 export function getEquipments({ type }) { return equipments.filter(equipment => equipment.type === type) }
 export function getWeapons() { return getEquipments({ type: EQUIPMENT_TYPE.WEAPON }) }
