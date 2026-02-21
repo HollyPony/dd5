@@ -33,11 +33,11 @@ export function appendChild(parent, children) {
  * @param {string} type Element tag name. Falsy creates a DocumentFragment.
  * @param {null|undefined|string|number|Node|(string|number|Node)[]} children if provided, append all children as textContext or direct as Element
  * @param {object} props 
- * @param {Record<string, Function>} [props.eventListeners] Map of eventName -> handler.
+ * @param {Array<{ event: string, callback: EventListenerOrEventListenerObject, options?: AddEventListenerOptions|boolean }>} [props.eventListeners=[]] Event listener descriptors.
  * @param {attributes} ...props Rest of props used as element attributes
  * @returns {HTMLElement|DocumentFragment}
  */
-export function createElement(type, children = [], { eventListeners = {}, ...attributes } = {}) {
+export function createElement(type, children = [], { eventListeners = [], ...attributes } = {}) {
   const element = type ? document.createElement(type) : document.createDocumentFragment()
   for (const [name, value] of Object.entries(attributes))
     value !== undefined && (BOOLEAN_ATTRIBUTES.has(name)
@@ -46,8 +46,8 @@ export function createElement(type, children = [], { eventListeners = {}, ...att
 
   appendChild(element, children)
 
-  for (const [eventName, callback] of Object.entries(eventListeners))
-    element.addEventListener(eventName, callback)
+  for (const { event, callback, options } of eventListeners)
+    element.addEventListener(event, callback, options)
   return element
 }
 
@@ -102,4 +102,53 @@ export function domSubscribe(domElement, eventName, handler, options) {
   domElement.addEventListener(eventName, handler, options)
 
   return () => domElement.removeEventListener(eventName, handler, options)
+}
+
+/**
+ * Load an external script once and reuse the same DOM node flow across calls.
+ *
+ * Behavior:
+ * - If a matching script element already exists and is loaded, resolves immediately.
+ * - If the script is currently loading, waits for its load/error event.
+ * - If the script is missing, injects it into <head> and waits for completion.
+ *
+ * @param {string} url - Script URL (absolute or relative to document base URI).
+ * @returns {Promise<void>} Resolves when the script is loaded.
+ * @throws {Error} If the script fails to load.
+ */
+export function addScript(url) {
+  const absoluteUrl = new URL(url, document.baseURI).href
+  return new Promise((resolve, reject) => {
+    const existingScript = Array.from(document.scripts).find(script => script.src === absoluteUrl)
+    if (existingScript) {
+      const alreadyLoaded = ['loaded', 'complete'].includes(existingScript.readyState)
+
+      if (alreadyLoaded) {
+        resolve()
+        return
+      }
+      existingScript.addEventListener('load', () => resolve(), { once: true })
+      existingScript.addEventListener('error', () => reject(new Error(`Failed to load ${absoluteUrl}`)), { once: true })
+      return
+    }
+
+    const script = createElement('script', undefined, {
+      src: absoluteUrl,
+      async: true,
+      eventListeners: [
+        {
+          event: 'load',
+          callback: () => resolve(),
+          options: { once: true },
+        },
+        {
+          event: 'error',
+          callback: () => reject(new Error(`Failed to load ${absoluteUrl}`)),
+          options: { once: true },
+        },
+      ],
+    })
+
+    appendChild(document.head, script)
+  })
 }

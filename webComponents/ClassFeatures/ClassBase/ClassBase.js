@@ -116,11 +116,11 @@ export class ClassBase extends AbstractComponent {
           type: 'checkbox', class: 'btn-check', id: skillId,
           checked,
           disabled,
-          eventListeners: {
-            change: ({ target: { checked } }) => {
+          eventListeners: [{
+            event: 'change', callback: ({ target: { checked } }) => {
               this.#service.toggleSkill({ skill, checked })
             }
-          },
+          }],
         }),
         createElement('label', t._(`statics.${skill.description}`), { class: 'btn btn-outline-primary', for: skillId }),
       ])
@@ -154,11 +154,11 @@ export class ClassBase extends AbstractComponent {
                   id: toolId,
                   checked,
                   disabled,
-                  eventListeners: {
-                    change: ({ target: { checked } }) => {
+                  eventListeners: [{
+                    event: 'change', callback: ({ target: { checked } }) => {
                       this.#service.toggleTool({ toolName, checked })
                     }
-                  }
+                  }]
                 }),
                 createElement(
                   'label',
