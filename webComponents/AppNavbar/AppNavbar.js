@@ -63,15 +63,14 @@ export class AppNavbar extends AbstractComponent {
     const saves = charSheetService.getList(false)
 
     replaceElement(this.#savedCharactersListTitleElement, t._(saves.length ? 'navbar.savedCharacters' : 'navbar.noCharacters'))
-    replaceElement(this.#savedCharactersListElement, createElement(
-      'div',
-      saves.map(save => createElement('a', save.name || t._('navbar.unnamedCharacter'), {
+    replaceElement(this.#savedCharactersListElement, saves.map(save => createElement(
+      'li',
+      createElement('a', save.name, {
         href: '',
-        class: 'list-group-item list-group-item-action',
+        class: 'dropdown-item',
         'data-save-id': save.id,
-      })),
-      { class: 'list-group list-group-flush' }
-    ))
+      }),
+    )))
   }
 
   #renderCurrentCharacterName = () => {

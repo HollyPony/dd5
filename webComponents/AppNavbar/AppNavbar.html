@@ -15,25 +15,29 @@
             </a>
             <ul class="dropdown-menu">
               <li><a class="create-character-link dropdown-item" href="#" data-i18n="navbar.newCharacter"></a></li>
+
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <li class="saved-characters-list-title dropdown-header"></li>
+
+              <li><a class="export-char-link dropdown-item small" role="button" data-i18n="navbar.exportChar"></a></li>
               <li>
-                <div class="saved-characters-list px-3 small text-muted"></div>
+                <input class="import-char-file d-none" type="file" accept=".json,.char,application/json" />
+                <a class="import-char-link dropdown-item small" download="data.json" role="button" data-i18n="navbar.importChar"></a>
+              </li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+
+              <li class="saved-characters-list-title dropdown-header small"></li>
+              <li>
+                <ul class="saved-characters-list px-0 small"></ul>
               </li>
             </ul>
           </li>
         </ul>
 
         <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="export-char-link nav-link" role="button" data-i18n="navbar.exportChar"></a>
-          </li>
-          <li class="nav-item">
-            <input class="import-char-file d-none" type="file" accept=".json,.char,application/json" />
-            <a class="import-char-link nav-link" download="data.json" role="button" data-i18n="navbar.importChar"></a>
-          </li>
           <li class="nav-item">
             <a class="debug-link nav-link" role="button" data-bs-toggle="modal"
               data-i18n="navbar.debug"></a>
