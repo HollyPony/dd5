@@ -34,15 +34,12 @@ function save(notify) {
 }
 
 function importJSON(json) {
-  const entry = fromJSONEntry(json)
-  const resume = autosaveEventTarget?.mute()
-  try {
+  autosaveEventTarget?.muteWhile(() => {
+    const entry = fromJSONEntry(json)
     charSheetStorage.create(entry.id, { notify: 'mute' })
     charSheetStore.init(entry.data)
     save({ notify: 'force' })
-  } finally {
-    resume?.()
-  }
+  })
 }
 
 function getJSONEntry(space) {

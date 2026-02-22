@@ -189,7 +189,7 @@ export default function createEventBus() {
     // Rebind onAny functions to avoid expose ANY Symbol
     onAny: (callback) => ({
       mute: () => mute(nodeTree, ANY, callback),
-      muteWhile: () => muteWhile(nodeTree, ANY, callback),
+      muteWhile: (fn) => muteWhile(nodeTree, ANY, callback)(fn),
       off: on(nodeTree, ANY, callback),
     }),
     onMany: (keys, callback) => onMany(nodeTree, keys, callback),
