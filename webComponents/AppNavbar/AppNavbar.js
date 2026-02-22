@@ -6,6 +6,7 @@ import { createElement, domOn, replaceElement } from '../../modules/domlib.js'
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
 import settingsService from '../../modules/services/settings.service.js'
 import authService from '../../modules/auth/auth.service.js'
+import { throwAsync } from '../../modules/errors.js'
 
 export class AppNavbar extends AbstractComponent {
   static get tagName() { return 'app-navbar' }
@@ -181,10 +182,6 @@ export class AppNavbar extends AbstractComponent {
     replaceElement(this.#authProvidersListElement, [...authActions, ...providerActions])
   }
 
-  #throwAsync = (error) => {
-    setTimeout(() => { throw error }, 0)
-  }
-
   #authProviderClicked = (event) => {
     event.preventDefault()
 
@@ -192,12 +189,12 @@ export class AppNavbar extends AbstractComponent {
     if (!actionElement) return
 
     if (actionElement.dataset.authAction === 'logout') {
-      authService.signOut().catch(this.#throwAsync)
+      authService.signOut().catch(throwAsync)
       return
     }
 
     const providerId = actionElement.dataset.providerId
-    authService.signIn(providerId).catch(this.#throwAsync)
+    authService.signIn(providerId).catch(throwAsync)
   }
 
   #savedCharacterClicked = (event) => {
