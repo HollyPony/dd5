@@ -27,16 +27,18 @@ function decodeJwtPayload(idToken) {
 }
 
 /**
- * @param {string} credential
- * @returns {{ providerId: 'google', idToken: string, claims: Record<string, any>, user: { id: string, displayName: string, email: string, picture: string } }}
+ * @param {{ credential: string }} response
  */
-function mapCredentialToAuthenticatedPayload(credential) {
-  const claims = decodeJwtPayload(credential)
+function handleCredentialResponse(response) {
+  if (!response?.credential) throw new Error('Google credential response is missing `credential`.')
+
+
+  const claims = decodeJwtPayload(response.credential)
   if (!claims?.sub) throw new Error('Google ID token payload is missing `sub`.')
 
-  return {
+  const payload = {
     providerId,
-    idToken: credential,
+    idToken: response.credential,
     claims,
     user: {
       id: claims.sub,
@@ -45,14 +47,7 @@ function mapCredentialToAuthenticatedPayload(credential) {
       picture: claims.picture ?? '',
     },
   }
-}
 
-/**
- * @param {{ credential: string }} response
- */
-function handleCredentialResponse(response) {
-  if (!response?.credential) throw new Error('Google credential response is missing `credential`.')
-  const payload = mapCredentialToAuthenticatedPayload(response.credential)
   for (const callback of listeners) callback(payload)
 }
 
