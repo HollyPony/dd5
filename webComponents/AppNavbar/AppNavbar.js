@@ -64,6 +64,7 @@ export class AppNavbar extends AbstractComponent {
       domOn(this.#debugModalElement, 'show.bs.modal', this.#renderJSONOutput),
 
       charSheetStore.on(charSheetProps.name, this.#renderCurrentCharacterName),
+      charSheetService.onCurrentCharSheetChange(this.#renderSavedCharSheets),
       charSheetService.onCharListChanged(this.#renderSavedCharSheets),
       settingsService.onChange(this.#renderDebugItem),
       authService.on(this.#renderAuth),
@@ -138,7 +139,7 @@ export class AppNavbar extends AbstractComponent {
       return leaf
     }
 
-    this.#debugOutputElement.replaceChildren(renderJsonTree(JSON.parse(charSheetService.getJSONEntry())))
+    this.#debugOutputElement.replaceChildren(renderJsonTree(JSON.parse(charSheetService.getCurrentRawEntry())))
   }
 
   #createCharacterClicked = (event) => {
@@ -227,7 +228,7 @@ export class AppNavbar extends AbstractComponent {
 
     let url
     try {
-      const json = charSheetService.getJSONEntry(2)
+      const json = JSON.stringify(JSON.parse(charSheetService.getCurrentRawEntry()), null, 2)
       const blob = new Blob([json], { type: 'application/json' })
       url = URL.createObjectURL(blob)
 

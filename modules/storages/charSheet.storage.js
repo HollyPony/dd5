@@ -16,92 +16,90 @@ const storage = createLocalStorage(PREFIX_KEY)
 const CHAR_LIST_CHANGED = 'charListChanged'
 const eventBus = createEventBus()
 
-let _currentId = undefined
-function setCurrentId(id, { notify = '' } = {}) {
-  const changed = id !== _currentId
-  _currentId = id
-  if (notify !== 'mute' && (changed || notify === 'force')) eventBus.emit(CHAR_LIST_CHANGED)
-}
-function getCurrentId() {
-  return _currentId
+function createId() {
+  return crypto.randomUUID()
 }
 
-function buildSaveKey(id) {
+function buildStorageKey(id) {
   if (!id) throw StorageError('A save id is required')
   return [CHARACTER_SAVE_KEY, id].join('.')
 }
 
-function getList(includeCurrent = true) {
-  return storage.getJSONItem(CHARACTER_LIST_KEY)?.filter(item => includeCurrent || item.id !== getCurrentId()) ?? []
+function getSheetList() {
+  return storage.getJSONItem(CHARACTER_LIST_KEY) ?? []
 }
 
-function setSheetsList(sheetsList) {
+function setSheetList(sheetsList) {
   storage.setJSONItem(CHARACTER_LIST_KEY, sheetsList)
 }
 
-function getLastSaveId() {
-  return getList()
-    .sort((a, b) => (b?.updatedAt ?? 0) - (a?.updatedAt ?? 0))[0]?.id
+function getLastUpdatedEntryId() {
+  return getSheetList()
+    .sort((a, b) => (b?.updatedAt ?? 0) - (a?.updatedAt ?? 0))
+  [0]?.id
 }
 
-function create(id, notify) {
-  setCurrentId(id?.trim?.() || crypto.randomUUID(), notify)
+// TODO: Challenge this usage
+function getRawEntry(entryId) {
+  return storage.getItem(buildStorageKey(entryId))
 }
 
-function get(id) {
-  const entry = fromJSONEntry(storage.getItem(buildSaveKey(id)))
+function getEntry(entryId) {
+  return fromJSONEntry(getRawEntry(entryId))
+}
+
+function getSheet(entryId) {
+  const entry = getEntry(entryId)
   if (!entry) throw StorageError('CharSheet id not found')
 
-  setSheetsList(getList().map(item =>
-    item.id === id ? { ...item, updatedAt: Date.now() } : item
+  setSheetList(getSheetList().map(item =>
+    item.id === entryId ? { ...item, updatedAt: Date.now() } : item
   ))
 
-  setCurrentId(id)
   return entry.data
 }
 
-function save(sheet, notify) {
+function saveSheet(entryId, data) {
   const entry = {
-    id: getCurrentId() ?? crypto.randomUUID(),
+    id: entryId ?? crypto.randomUUID(),
     updatedAt: Date.now(),
     version: STORAGE_VERSION,
-    data: sheet,
+    data,
   }
 
-  storage.setItem(buildSaveKey(entry.id), toJSONEntry(entry))
+  storage.setItem(buildStorageKey(entry.id), toJSONEntry(entry))
 
-  const sheetsList = getList().filter(item => item.id !== entry.id)
+  const sheetsList = getSheetList().filter(item => item.id !== entry.id)
   sheetsList.push({
     id: entry.id,
-    name: sheet?.[properties.name]?.toString()?.trim() || t._('navbar.unnamedCharacter'),
+    name: data?.[properties.name]?.toString()?.trim() || t._('navbar.unnamedCharacter'),
     updatedAt: entry.updatedAt,
   })
 
-  setSheetsList(sheetsList)
+  setSheetList(sheetsList)
+  eventBus.emit(CHAR_LIST_CHANGED)
 
-  setCurrentId(entry.id, notify)
   return entry
 }
 
-function remove(id) {
-  storage.removeItem(buildSaveKey(id))
-  setSheetsList(getList().filter(item => item.id !== id))
-
-  setCurrentId(undefined)
+function copy(entryId) {
+  const { data } = getEntry(entryId)
+  return saveSheet(undefined, data)
 }
 
-function getCurrentSaveRaw() {
-  return storage.getItem(buildSaveKey(getCurrentId()))
+function remove(entryId) {
+  storage.removeItem(buildStorageKey(entryId))
+  setSheetList(getSheetList().filter(item => item.id !== entryId))
+  eventBus.emit(CHAR_LIST_CHANGED)
 }
 
 export default {
-  create: create,
-  getList,
-  getLastSaveId,
-  get,
-  save,
-  remove,
-  getCurrentSaveRaw,
+  createId,
+  getSheetList,
+  getLastUpdatedEntryId,
+  getRawEntry, getEntry,
+  getSheet, saveSheet,
+  copy, remove,
   onCharListChanged(callback) {
     return eventBus.on(CHAR_LIST_CHANGED, callback)
   },
