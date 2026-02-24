@@ -59,20 +59,13 @@ function getSheet(entryId) {
   return entry.data
 }
 
-function saveSheet(entryId, data) {
-  const entry = {
-    id: entryId ?? crypto.randomUUID(),
-    updatedAt: Date.now(),
-    version: STORAGE_VERSION,
-    data,
-  }
-
+function saveEntry(entry) {
   storage.setItem(buildStorageKey(entry.id), toJSONEntry(entry))
 
   const sheetsList = getSheetList().filter(item => item.id !== entry.id)
   sheetsList.push({
     id: entry.id,
-    name: data?.[properties.name]?.toString()?.trim() || t._('navbar.unnamedCharacter'),
+    name: entry.data?.[properties.name]?.toString()?.trim() || t._('navbar.unnamedCharacter'),
     updatedAt: entry.updatedAt,
   })
 
@@ -82,9 +75,26 @@ function saveSheet(entryId, data) {
   return entry
 }
 
+function saveSheet(entryId, data) {
+  const entry = {
+    id: entryId ?? createId(),
+    updatedAt: Date.now(),
+    version: STORAGE_VERSION,
+    data,
+  }
+
+  return saveEntry(entry)
+}
+
 function copy(entryId) {
-  const { data } = getEntry(entryId)
-  return saveSheet(undefined, data)
+  const { version, data } = getEntry(entryId)
+  data.name += ' (copy)'
+  return saveEntry({
+    id: createId(),
+    updatedAt: Date.now(),
+    version,
+    data,
+  })
 }
 
 function remove(entryId) {
@@ -97,8 +107,9 @@ export default {
   createId,
   getSheetList,
   getLastUpdatedEntryId,
-  getRawEntry, getEntry,
-  getSheet, saveSheet,
+  getRawEntry,
+  getEntry, getSheet,
+  saveEntry, saveSheet,
   copy, remove,
   onCharListChanged(callback) {
     return eventBus.on(CHAR_LIST_CHANGED, callback)
