@@ -1,13 +1,27 @@
 import googleProvider from './google.provider.js'
+import authCloudService from './auth.cloud.service.js'
 import authStore from './auth.store.js'
 import createEventBus from '../createEventBus.js'
+import { throwAsync } from '../errors.js'
 
+const AUTH_INITIALIZED = 'initialized'
+const USER_CONNECTED = 'userConnected'
+const USER_DISCONNECTED = 'userDisconnected'
 const eventBus = createEventBus()
 const providers = {
   [googleProvider.providerId]: googleProvider,
 }
 const enabledProviderIds = new Set()
 const events = []
+
+function handleProviderCredential(providerCredential) {
+  authCloudService.signInWithProviderPayload(providerCredential)
+    .then(() => {
+      authStore.setAuthenticated(providerCredential)
+      eventBus.emit(USER_CONNECTED)
+    })
+    .catch(throwAsync)
+}
 
 function eventsClear() {
   for (const event of events) event()
@@ -17,19 +31,20 @@ function eventsClear() {
 async function init() {
   enabledProviderIds.clear()
   eventsClear()
+  events.push(authCloudService.init())
 
   const inits = []
   for (const [providerId, provider] of Object.entries(providers)) {
     if (!provider.isConfigured()) continue
 
     enabledProviderIds.add(providerId)
-    events.push(provider.onCredential(authStore.setAuthenticated))
+    events.push(provider.onCredential(handleProviderCredential))
     inits.push(provider.init())
   }
 
   await Promise.all(inits)
 
-  eventBus.emit('')
+  eventBus.emit(AUTH_INITIALIZED)
 
   return eventsClear
 }
@@ -45,17 +60,9 @@ async function signIn(providerId) {
 async function signOut() {
   const provider = providers[authStore.getState().providerId]
   if (provider) await provider.signOut()
+  await authCloudService.signOut()
   authStore.reset()
-}
-
-function on(callback) {
-  const any = authStore.onAny(() => callback())
-  const off = eventBus.on('', () => callback())
-
-  return () => {
-    off()
-    return any.off()
-  }
+  eventBus.emit(USER_DISCONNECTED)
 }
 
 export default {
@@ -69,5 +76,7 @@ export default {
     return authStore.getState().user
   },
   signIn, signOut,
-  on,
+  onInitialized: callback => eventBus.on(AUTH_INITIALIZED, callback),
+  onUserConnected: callback => eventBus.on(USER_CONNECTED, callback),
+  onUserDisconnected: callback => eventBus.on(USER_DISCONNECTED, callback),
 }

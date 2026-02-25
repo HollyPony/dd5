@@ -34,7 +34,11 @@ Runtime config is loaded from `modules/env.local.js` (ignored by git).
 Create `modules/env.local.js` before starting the app:
 
 ```js
-export default {}
+export default {
+  GOOGLE_CLIENT_ID: '',
+  SUPABASE_PROJECT_URL: '',
+  SUPABASE_PUBLIC_KEY: '',
+}
 ```
 
 1. Serve the folder over HTTP (do not open `index.html` directly with `file://`).

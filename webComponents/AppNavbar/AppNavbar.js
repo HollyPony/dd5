@@ -66,8 +66,10 @@ export class AppNavbar extends AbstractComponent {
       charSheetStore.on(charSheetProps.name, this.#renderCurrentCharacterName),
       charSheetService.onCurrentCharSheetChange(this.#renderSavedCharSheets),
       charSheetService.onCharListChanged(this.#renderSavedCharSheets),
+      authService.onInitialized(this.#renderAuth),
+      authService.onUserConnected(this.#renderAuth),
+      authService.onUserDisconnected(this.#renderAuth),
       settingsService.onChange(this.#renderDebugItem),
-      authService.on(this.#renderAuth),
     )
   }
 

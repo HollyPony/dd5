@@ -1,5 +1,6 @@
 import { getPathParts, resolvePath, s } from './helpers.js'
 
+// TODO: refactor initialState as a callback returning the initialState. Then, implement an exposed reset function using this callback. finally, remove all reset functions corresponding to this behaviour
 export default function createStore(initialState, eventBus) {
   const state = s({ ...initialState })
   const isEnumerable = Object.prototype.propertyIsEnumerable

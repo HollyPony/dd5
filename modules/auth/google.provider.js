@@ -32,7 +32,6 @@ function decodeJwtPayload(idToken) {
 function handleCredentialResponse(response) {
   if (!response?.credential) throw new Error('Google credential response is missing `credential`.')
 
-
   const claims = decodeJwtPayload(response.credential)
   if (!claims?.sub) throw new Error('Google ID token payload is missing `sub`.')
 

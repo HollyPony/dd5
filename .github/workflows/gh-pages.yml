@@ -38,6 +38,8 @@ jobs:
             APP_URL: 'https://${OWNER}.github.io/${REPO}/',
             GITHUB_RAW_URL: '${{ vars.DD5_GITHUB_RAW_URL }}',
             GOOGLE_CLIENT_ID: '${{ vars.DD5_GOOGLE_CLIENT_ID }}',
+            SUPABASE_PROJECT_URL: '${{ vars.DD5_SUPABASE_PROJECT_URL }}',
+            SUPABASE_PUBLIC_KEY: '${{ vars.DD5_SUPABASE_PUBLIC_KEY }}',
             ENV: '${{ vars.ENV }}'
           }
           EOF
