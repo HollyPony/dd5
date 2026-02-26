@@ -1,5 +1,5 @@
 import supabaseClient from '../supabase.client.js'
-import authCloudService from '../auth/auth.cloud.service.js'
+import authSupabaseService from '../auth/auth.supabase.service.js'
 import { fromJSONEntry, toJSONEntry } from './charSheet.storage.helpers.js'
 
 const TABLE_NAME = 'character_sheets'
@@ -31,7 +31,7 @@ function mapEntryToCloudRow(entry, userId) {
 }
 
 async function withUserTable(callback) {
-  const userId = authCloudService.userId
+  const userId = authSupabaseService.userId
   if (!userId) throw new Error('Cloud auth is missing user id.')
 
   const table = supabaseClient.from(TABLE_NAME)

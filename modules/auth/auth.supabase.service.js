@@ -50,7 +50,7 @@ function init() {
 
   if (!supabaseClient) {
     reset()
-    return () => {}
+    return () => { }
   }
 
   const { data: { subscription } } = supabaseClient.auth.onAuthStateChange((event, session) => {
@@ -106,8 +106,4 @@ export default {
   },
   signInWithProviderPayload,
   signOut,
-  on(callback) {
-    const any = store.onAny(() => callback())
-    return () => any.off()
-  },
 }

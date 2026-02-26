@@ -1,13 +1,13 @@
-import charSheetCloud from '../storages/charSheet.cloud.js'
+import charSheetSupabase from '../storages/charSheet.supabase.js'
 import charSheetStorage from '../storages/charSheet.storage.js'
 
 export default function charSheetSyncFactory(resolveConflict) {
   async function synchronizeEntry(entryId) {
     const localEntry = charSheetStorage.getEntry(entryId)
-    const cloudEntry = await charSheetCloud.load(entryId)
+    const cloudEntry = await charSheetSupabase.load(entryId)
 
     if (!cloudEntry) {
-      await charSheetCloud.save(localEntry)
+      await charSheetSupabase.save(localEntry)
       return
     }
 
@@ -16,7 +16,7 @@ export default function charSheetSyncFactory(resolveConflict) {
     const choice = resolveConflict(localEntry, cloudEntry)
     switch (choice) {
       case 'local':
-        await charSheetCloud.save(localEntry)
+        await charSheetSupabase.save(localEntry)
         return
       case 'cloud': {
         charSheetStorage.saveEntry(cloudEntry)
@@ -25,7 +25,7 @@ export default function charSheetSyncFactory(resolveConflict) {
       case 'both': {
         const duplicatedEntry = charSheetStorage.copy(entryId)
         charSheetStorage.saveEntry(cloudEntry)
-        await charSheetCloud.save(duplicatedEntry)
+        await charSheetSupabase.save(duplicatedEntry)
         return
       }
       default:

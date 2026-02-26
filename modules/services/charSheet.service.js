@@ -1,13 +1,13 @@
 import charSheetStorage from '../storages/charSheet.storage.js'
-import charSheetCloud from '../storages/charSheet.cloud.js'
+import charSheetSupabase from '../storages/charSheet.supabase.js'
 import charSheetStore from '../stores/charSheet.authority.store.js'
 import authService from '../auth/auth.service.js'
+import authSupabaseService from '../auth/auth.supabase.service.js'
 import { debounce } from '../helpers.js'
 import { fromJSONEntry } from '../storages/charSheet.storage.helpers.js'
 import charSheetSyncFactory from './charSheetSync.factory.js'
 import { throwAsync } from '../errors.js'
 import createEventBus from '../createEventBus.js'
-import authCloudService from '../auth/auth.cloud.service.js'
 
 const CURRENT_CHARSHEET_CHANGED = 'currentCharSheetChanged'
 const eventBus = createEventBus()
@@ -94,7 +94,7 @@ function load(entryId) {
 
 function saveCurrent() {
   const entry = charSheetStorage.saveSheet(_currentEntryId, charSheetStore.get())
-  if (authCloudService.isAuthenticated) synchronizeCurrentEntry()
+  if (authSupabaseService.isAuthenticated) synchronizeCurrentEntry()
   return entry
 }
 
@@ -109,7 +109,7 @@ function importJSON(json) {
 
 function remove(id) {
   charSheetStorage.remove(id)
-  if (authCloudService.isAuthenticated) charSheetCloud.remove(id).catch(throwAsync)
+  if (authSupabaseService.isAuthenticated) charSheetSupabase.remove(id).catch(throwAsync)
   if (id === _currentEntryId) create()
 }
 

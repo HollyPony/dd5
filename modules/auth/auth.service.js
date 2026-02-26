@@ -1,5 +1,5 @@
 import googleProvider from './google.provider.js'
-import authCloudService from './auth.cloud.service.js'
+import authSupabaseService from './auth.supabase.service.js'
 import authStore from './auth.store.js'
 import createEventBus from '../createEventBus.js'
 import { throwAsync } from '../errors.js'
@@ -15,7 +15,7 @@ const enabledProviderIds = new Set()
 const events = []
 
 function handleProviderCredential(providerCredential) {
-  authCloudService.signInWithProviderPayload(providerCredential)
+  authSupabaseService.signInWithProviderPayload(providerCredential)
     .then(() => {
       authStore.setAuthenticated(providerCredential)
       eventBus.emit(USER_CONNECTED)
@@ -31,7 +31,7 @@ function eventsClear() {
 async function init() {
   enabledProviderIds.clear()
   eventsClear()
-  events.push(authCloudService.init())
+  events.push(authSupabaseService.init())
 
   const inits = []
   for (const [providerId, provider] of Object.entries(providers)) {
@@ -60,7 +60,7 @@ async function signIn(providerId) {
 async function signOut() {
   const provider = providers[authStore.getState().providerId]
   if (provider) await provider.signOut()
-  await authCloudService.signOut()
+  await authSupabaseService.signOut()
   authStore.reset()
   eventBus.emit(USER_DISCONNECTED)
 }
