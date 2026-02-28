@@ -41,6 +41,17 @@ export default {
     jsonOutput: {
       title: 'JSON du personnage',
     },
+    syncConflicts: {
+      title: 'Conflits de synchronisation',
+      entryTitle: 'Personnage: {entryId}',
+      localDate: 'Local: {date}',
+      cloudDate: 'Cloud: {date}',
+      choices: {
+        local: 'Garder local',
+        cloud: 'Garder cloud',
+        both: 'Garder les deux',
+      },
+    },
   },
   charName: {
     label: 'Nom du personnage',

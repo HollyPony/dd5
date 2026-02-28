@@ -1,9 +1,15 @@
 import charSheetSupabase from '../storages/charSheet.supabase.js'
 import charSheetStorage from '../storages/charSheet.storage.js'
 
-export const SYNC_STATUS = {
+const SYNC_STATUS = {
   synced: 'synced',
   conflict: 'conflict',
+}
+
+export const SYNC_CHOICES = {
+  local: 'local',
+  cloud: 'cloud',
+  both: 'both',
 }
 
 /**
@@ -65,16 +71,16 @@ export default function charSheetSyncFactory() {
     for (const { choice, entryId } of resolutions) {
 
       switch (choice) {
-        case 'local':
+        case SYNC_CHOICES.local:
           const localEntry = charSheetStorage.getEntry(entryId)
           await charSheetSupabase.save(localEntry)
           break
-        case 'cloud': {
+        case SYNC_CHOICES.cloud: {
           const cloudEntry = await charSheetSupabase.load(entryId)
           charSheetStorage.saveEntry(cloudEntry)
           break
         }
-        case 'both': {
+        case SYNC_CHOICES.both: {
           const cloudEntry = await charSheetSupabase.load(entryId)
           const duplicatedEntry = charSheetStorage.copy(entryId)
           charSheetStorage.saveEntry(cloudEntry)

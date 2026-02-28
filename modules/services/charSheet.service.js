@@ -4,8 +4,11 @@ import charSheetStore from '../stores/charSheet.authority.store.js'
 import authService from '../auth/auth.service.js'
 import { debounce } from '../helpers.js'
 import { fromJSONEntry } from '../storages/charSheet.storage.helpers.js'
-import charSheetSyncFactory, { SYNC_STATUS } from './charSheetSync.factory.js'
+import charSheetSyncFactory from './charSheetSync.factory.js'
 import createEventBus from '../createEventBus.js'
+import modalService from './modal.service.js'
+import { SyncConflictModalContent } from '../../webComponents/SyncConflictModalContent/SyncConflictModalContent.js'
+import { t } from '../i18n.js'
 
 const CURRENT_CHARSHEET_CHANGED = 'currentCharSheetChanged'
 const eventBus = createEventBus()
@@ -25,40 +28,24 @@ function setCurrentId(id) {
   if (changed) eventBus.emit(CURRENT_CHARSHEET_CHANGED)
 }
 
-/**
- * @param {{ id: string, updatedAt: number, data: object }} localEntry
- * @param {{ id: string, updatedAt: number, data: object }} cloudEntry
- * @returns {'local' | 'cloud' | 'both'}
- */
-function askConflictResolutionStrategy(localEntry, cloudEntry) {
-  const localDate = new Date(localEntry.updatedAt).toISOString()
-  const cloudDate = new Date(cloudEntry.updatedAt).toISOString()
-  // TODO: replace prompt-based conflict resolution with a UI-driven workflow.
-  const choice = window.prompt(
-    [
-      `Sync conflict detected for '${localEntry.id}'.`,
-      `Type one value: local | cloud | both`,
-      `local=${localDate}`,
-      `cloud=${cloudDate}`,
-    ].join('\n'),
-    cloudEntry.updatedAt > localEntry.updatedAt ? 'cloud' : 'local'
-  )?.trim()?.toLowerCase()
+function openSyncConflictsModal(conflicts) {
+  if (conflicts.length === 0) return
 
-  if (!choice) throw new Error('Sync conflict was canceled by user.')
-  if (!['local', 'cloud', 'both'].includes(choice)) throw new Error(`Invalid sync choice '${choice}'.`)
-  return choice
-}
-
-async function synchronizeWithConflictResolution(syncState) {
-  if (syncState.status === SYNC_STATUS.synced) return syncState
-
-  const choice = askConflictResolutionStrategy(syncState.localEntry, syncState.cloudEntry)
-  return charSheetSyncService.resolveConflicts([{ entryId: syncState.entryId, choice }])
+  modalService.open({
+    title: t._('modals.syncConflicts.title'),
+    contentComponent: SyncConflictModalContent,
+    contentProps: {
+      syncConflicts: conflicts,
+      resolveConflict: ({ entryId, choice }) =>
+        charSheetSyncService.resolveConflicts([{ entryId, choice }]),
+    },
+    dialogClasses: ['modal-lg'],
+  })
 }
 
 const synchronizeCurrentEntry = debounce(() => {
   charSheetSyncService?.synchronizeEntry(_currentEntryId)
-    .then(synchronizeWithConflictResolution)
+    .then(syncState => openSyncConflictsModal([syncState]))
 }, AUTOSYNC_DELAY)
 
 async function init() {
@@ -74,11 +61,7 @@ async function init() {
     charSheetSyncService = charSheetSyncFactory()
     charSheetSyncService
       .synchronizeEntries(charSheetStorage.getSheetList().map(item => item.id))
-      .then(async syncStates => {
-        for (const syncState of syncStates) {
-          await synchronizeWithConflictResolution(syncState)
-        }
-      })
+      .then(openSyncConflictsModal)
   })
   userDisconnectedEventOff = authService.onUserDisconnected(() => {
     charSheetSyncService = undefined
