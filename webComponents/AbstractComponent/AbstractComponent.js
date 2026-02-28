@@ -1,5 +1,4 @@
 import { currentLang, i18n } from '../../modules/i18n.js'
-import env from '../../modules/env.js'
 
 export class AbstractComponent extends HTMLElement {
   _id
