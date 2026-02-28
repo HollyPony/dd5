@@ -1,7 +1,6 @@
 import googleProvider from './google.provider.js'
 import authStore, { AUTH_STATUS } from './auth.store.js'
 import createEventBus from '../createEventBus.js'
-import { throwAsync } from '../errors.js'
 import supabaseClient from '../supabase.client.js'
 
 const AUTH_INITIALIZED = 'initialized'
@@ -28,7 +27,6 @@ function handleProviderCredential(providerCredential) {
       authStore.setProviderAuth(providerCredential)
       eventBus.emit(USER_CONNECTED)
     })
-    .catch(throwAsync)
 }
 
 function unsubscribe() {

@@ -14,15 +14,6 @@ export function onError(callback) {
   )
 }
 
-/**
- * Re-throw an error on next tick so it reaches global browser error handlers.
- * @param {Error} error
- * @returns {void}
- */
-export function throwAsync(error) {
-  setTimeout(() => { throw error }, 0)
-}
-
 function createCustomError({ name, message, args = [] }) {
   const error = new Error(message, ...args)
   Object.setPrototypeOf(error, createCustomError.prototype)

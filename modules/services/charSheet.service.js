@@ -5,7 +5,6 @@ import authService from '../auth/auth.service.js'
 import { debounce } from '../helpers.js'
 import { fromJSONEntry } from '../storages/charSheet.storage.helpers.js'
 import charSheetSyncFactory, { SYNC_STATUS } from './charSheetSync.factory.js'
-import { throwAsync } from '../errors.js'
 import createEventBus from '../createEventBus.js'
 
 const CURRENT_CHARSHEET_CHANGED = 'currentCharSheetChanged'
@@ -122,7 +121,7 @@ function importJSON(json) {
 
 function remove(id) {
   charSheetStorage.remove(id)
-  if (authService.isAuthenticated) charSheetSupabase.remove(id).catch(throwAsync)
+  if (authService.isAuthenticated) charSheetSupabase.remove(id)
   if (id === _currentEntryId) create()
 }
 
