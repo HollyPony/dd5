@@ -6,6 +6,8 @@ import { createElement, domOn, replaceElement } from '../../modules/domlib.js'
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
 import settingsService from '../../modules/services/settings.service.js'
 import authService from '../../modules/auth/auth.service.js'
+import modalService from '../../modules/services/modal.service.js'
+import { DebugJsonModalContent } from '../DebugJsonModalContent/DebugJsonModalContent.js'
 
 export class AppNavbar extends AbstractComponent {
   static get tagName() { return 'app-navbar' }
@@ -20,9 +22,6 @@ export class AppNavbar extends AbstractComponent {
   #currentCharacterNameElement
   #debugItemElement
   #debugLinkElement
-  #debugModalElement
-  #debugModalTitleElement
-  #debugOutputElement
 
   #authLoginButtonElement
   #authProvidersListElement
@@ -37,14 +36,9 @@ export class AppNavbar extends AbstractComponent {
     this.#currentCharacterNameElement = this.querySelector('.current-character-name')
     this.#debugItemElement = this.querySelector('.debug-item')
     this.#debugLinkElement = this.querySelector('.debug-link')
-    this.#debugModalElement = this.querySelector('.debug-modal')
-    this.#debugModalTitleElement = this.querySelector('.debug-modal-title')
-    this.#debugOutputElement = this.querySelector('.debug-output')
 
     this.#authLoginButtonElement = this.querySelector('.auth-login-button')
     this.#authProvidersListElement = this.querySelector('.auth-providers-list')
-
-    this.#initDebugModalAttributes()
 
     this.#renderSavedCharSheets()
     this.#renderCurrentCharacterName()
@@ -60,7 +54,7 @@ export class AppNavbar extends AbstractComponent {
       domOn(this.#savedCharactersListElement, 'click', this.#savedCharacterClicked),
       domOn(this.#createCharacterLinkElement, 'click', this.#createCharacterClicked),
       domOn(this.#authProvidersListElement, 'click', this.#authProviderClicked),
-      domOn(this.#debugModalElement, 'show.bs.modal', this.#renderJSONOutput),
+      domOn(this.#debugLinkElement, 'click', this.#debugLinkClicked),
 
       charSheetStore.on(charSheetProps.name, this.#renderCurrentCharacterName),
       charSheetService.onCurrentCharSheetChange(this.#renderSavedCharSheets),
@@ -102,45 +96,13 @@ export class AppNavbar extends AbstractComponent {
     ]('d-none')
   }
 
-  #initDebugModalAttributes() {
-    const debugModalId = `debugModal-${this._id}`
-    const debugModalLabelId = `debugModalLabel-${this._id}`
-
-    this.#debugModalElement.id = debugModalId
-    this.#debugModalElement.setAttribute('aria-labelledby', debugModalLabelId)
-    this.#debugModalTitleElement.id = debugModalLabelId
-    this.#debugLinkElement.setAttribute('data-bs-target', `#${debugModalId}`)
-  }
-
-  #renderJSONOutput = () => {
-    const defaultOpenLevels = 2
-    const renderJsonTree = (value, keyLabel, level = 0) => {
-      const type = Array.isArray(value) ? 'array' : (value === null ? 'null' : typeof value)
-
-      if (type === 'object' || type === 'array') {
-        const container = level === 0
-          ? createElement()
-          : createElement('div', null, { style: 'padding-left: 1rem;' })
-
-        const entries = type === 'array' ? value.entries() : Object.entries(value)
-        for (const [k, v] of entries) {
-          container.appendChild(renderJsonTree(v, String(k), level + 1))
-        }
-
-        return level === 0
-          ? createElement(null, container)
-          : createElement('details', [
-            createElement('summary', keyLabel ? `${keyLabel} (${type})` : type),
-            container,
-          ], { open: defaultOpenLevels > level })
-      }
-
-      const leaf = document.createElement('div')
-      leaf.textContent = keyLabel ? `${keyLabel}: ${JSON.stringify(value)}` : JSON.stringify(value)
-      return leaf
-    }
-
-    this.#debugOutputElement.replaceChildren(renderJsonTree(JSON.parse(charSheetService.getCurrentRawEntry())))
+  #debugLinkClicked = (event) => {
+    event.preventDefault()
+    modalService.open({
+      title: t._('modals.jsonOutput.title'),
+      contentComponent: DebugJsonModalContent,
+      dialogClasses: ['modal-lg'],
+    })
   }
 
   #createCharacterClicked = (event) => {

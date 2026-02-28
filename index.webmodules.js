@@ -21,6 +21,7 @@ import { CharacterProfile } from './webComponents/CharacterProfile/CharacterProf
 import { Spellbook } from './webComponents/Spellbook/Spellbook.js'
 import { Backpack } from './webComponents/Backpack/Backpack.js'
 import { Currency } from './webComponents/Currency/Currency.js'
+import { ModalHost } from './webComponents/ModalHost/ModalHost.js'
 
 export default function registerWebComponents() {
   Ability.register()
@@ -46,4 +47,5 @@ export default function registerWebComponents() {
   Spellbook.register()
   Backpack.register()
   Currency.register()
+  ModalHost.register()
 }

@@ -1,0 +1,36 @@
+<template>
+  <div class="d-flex flex-column">
+    <input
+      type="search"
+      class="form-control backpack-search mb-3"
+      data-i18n-attributes='{"placeholder":{"key":"components.Backpack.addModal.searchPlaceholder"}}' />
+    <nav class="navbar navbar-expand-lg">
+      <button
+        class="btn btn-outline-secondary dropdown-toggle w-100 text-start d-lg-none collapsed"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarBackpackEquipmentAdd"
+        aria-expanded="false">
+        <span class="backpack-selected-type-label"></span>
+      </button>
+
+      <div class="navbar-collapse collapse" id="navbarBackpackEquipmentAdd">
+        <ul class="nav navbar-nav d-md-flex backpack-type-tabs">
+          <li class="nav-item"><button class="nav-link active" type="button" data-type-key="weapon" data-i18n="components.Backpack.types.weapon"></button></li>
+          <li class="nav-item"><button class="nav-link" type="button" data-type-key="armor" data-i18n="components.Backpack.types.armor"></button></li>
+          <li class="nav-item"><button class="nav-link" type="button" data-type-key="shield" data-i18n="components.Backpack.types.shield"></button></li>
+          <li class="nav-item"><button class="nav-link" type="button" data-type-key="tool" data-i18n="components.Backpack.types.tool"></button></li>
+          <li class="nav-item"><button class="nav-link" type="button" data-type-key="gear" data-i18n="components.Backpack.types.gear"></button></li>
+          <li class="nav-item"><button class="nav-link" type="button" data-type-key="magicItem" data-i18n="components.Backpack.types.magicItem"></button></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="list-group list-group-flush overflow-auto backpack-add-results"></div>
+
+    <div class="d-flex justify-content-end mt-3">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="components.Backpack.addModal.cancel"></button>
+    </div>
+  </div>
+</template>
+
