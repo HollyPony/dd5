@@ -1,8 +1,8 @@
 import googleProvider from './google.provider.js'
-import authSupabaseService from './auth.supabase.service.js'
-import authStore from './auth.store.js'
+import authStore, { AUTH_STATUS } from './auth.store.js'
 import createEventBus from '../createEventBus.js'
 import { throwAsync } from '../errors.js'
+import supabaseClient from '../supabase.client.js'
 
 const AUTH_INITIALIZED = 'initialized'
 const USER_CONNECTED = 'userConnected'
@@ -11,33 +11,72 @@ const eventBus = createEventBus()
 const providers = {
   [googleProvider.providerId]: googleProvider,
 }
-const enabledProviderIds = new Set()
 const events = []
 
+async function signInWithProviderPayload(payload) {
+  const { data, error } = await supabaseClient.auth.signInWithIdToken({
+    provider: payload?.providerId,
+    token: payload.idToken,
+  })
+  if (error) throw error
+  if (!data?.user?.id) throw new Error('Supabase sign-in response is missing user id.')
+}
+
 function handleProviderCredential(providerCredential) {
-  authSupabaseService.signInWithProviderPayload(providerCredential)
+  signInWithProviderPayload(providerCredential)
     .then(() => {
-      authStore.setAuthenticated(providerCredential)
+      authStore.setProviderAuth(providerCredential)
       eventBus.emit(USER_CONNECTED)
     })
     .catch(throwAsync)
 }
 
-function eventsClear() {
+function unsubscribe() {
   for (const event of events) event()
   events.length = 0
 }
 
+async function supabaseAuthChanged(event, session) {
+  const providerId = authStore.getProviderAuth().providerId
+  const provider = providers[providerId]
+
+  const userId = session?.user?.id
+  if (event === 'SIGNED_OUT' || !userId) {
+    await provider?.signOut()
+    authStore.reset()
+    eventBus.emit(USER_DISCONNECTED)
+    return
+  }
+
+  authStore.setSupabaseAuth({ providerId, userId })
+
+  // switch (event) {
+  //   case 'SIGNED_OUT':
+  //   case 'PASSWORD_RECOVERY':
+  //   case 'TOKEN_REFRESHED':
+  //   case 'INITIAL_SESSION':
+  //   case 'SIGNED_IN':
+  //   case 'USER_UPDATED':
+  //   default:
+  // }
+}
+
 async function init() {
-  enabledProviderIds.clear()
-  eventsClear()
-  events.push(authSupabaseService.init())
+  unsubscribe()
+
+  if (!supabaseClient) {
+    authStore.reset()
+    return () => { }
+  }
+
+  const { data: { subscription } } = supabaseClient.auth.onAuthStateChange(supabaseAuthChanged)
+
+  events.push(subscription.unsubscribe)
 
   const inits = []
-  for (const [providerId, provider] of Object.entries(providers)) {
+  for (const provider of Object.values(providers)) {
     if (!provider.isConfigured()) continue
 
-    enabledProviderIds.add(providerId)
     events.push(provider.onCredential(handleProviderCredential))
     inits.push(provider.init())
   }
@@ -46,11 +85,7 @@ async function init() {
 
   eventBus.emit(AUTH_INITIALIZED)
 
-  return eventsClear
-}
-
-function getProviders() {
-  return Object.values(providers)
+  return unsubscribe
 }
 
 async function signIn(providerId) {
@@ -58,22 +93,31 @@ async function signIn(providerId) {
 }
 
 async function signOut() {
-  const provider = providers[authStore.getState().providerId]
-  if (provider) await provider.signOut()
-  await authSupabaseService.signOut()
-  authStore.reset()
-  eventBus.emit(USER_DISCONNECTED)
+  try {
+    const provider = providers[authStore.getProviderAuth().providerId]
+    await provider?.signOut()
+
+    const { error } = await supabaseClient.auth.signOut()
+    if (error) throw error
+  } catch (error) {
+    authStore.reset()
+    eventBus.emit(USER_DISCONNECTED)
+    throw error
+  }
 }
 
 export default {
   init,
-  getState: authStore.getState,
-  getProviders: getProviders,
+  getProviders: () => Object.values(providers),
   get isAuthenticated() {
-    return authStore.getState().status === 'authenticated'
+    // TODO: 'authenticated' from store consts
+    return authStore.getProviderAuth().status === AUTH_STATUS.authenticated && authStore.getSupabaseAuth().status === AUTH_STATUS.authenticated
   },
-  get user() {
-    return authStore.getState().user
+  get providerUser() {
+    return authStore.getProviderAuth().user
+  },
+  get supabaseUserId() {
+    return authStore.getSupabaseAuth().userId
   },
   signIn, signOut,
   onInitialized: callback => eventBus.on(AUTH_INITIALIZED, callback),

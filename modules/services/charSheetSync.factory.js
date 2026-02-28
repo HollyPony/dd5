@@ -1,53 +1,95 @@
 import charSheetSupabase from '../storages/charSheet.supabase.js'
 import charSheetStorage from '../storages/charSheet.storage.js'
 
-export default function charSheetSyncFactory(resolveConflict) {
+export const SYNC_STATUS = {
+  synced: 'synced',
+  conflict: 'conflict',
+}
+
+/**
+ * @param {string} entryId
+ * @param {{ id: string, updatedAt: number, data: object }} localEntry
+ * @param {{ id: string, updatedAt: number, data: object }} cloudEntry
+ */
+function createConflictState(entryId, localEntry, cloudEntry) {
+  return {
+    status: SYNC_STATUS.conflict,
+    entryId,
+    localEntry,
+    cloudEntry,
+  }
+}
+
+export default function charSheetSyncFactory() {
   async function synchronizeEntry(entryId) {
     const localEntry = charSheetStorage.getEntry(entryId)
     const cloudEntry = await charSheetSupabase.load(entryId)
 
-    if (!cloudEntry) {
-      await charSheetSupabase.save(localEntry)
-      return
+    if (!localEntry && !cloudEntry)
+      throw new Error(`CharSheet id not found ${entryId}`)
+
+    if (!localEntry) {
+      charSheetStorage.saveEntry(cloudEntry)
+      return { status: SYNC_STATUS.synced, entryId }
     }
 
-    if (cloudEntry.updatedAt === localEntry.updatedAt) return
+    if (!cloudEntry) {
+      await charSheetSupabase.save(localEntry)
+      return { status: SYNC_STATUS.synced, entryId }
+    }
 
-    const choice = resolveConflict(localEntry, cloudEntry)
-    switch (choice) {
-      case 'local':
-        await charSheetSupabase.save(localEntry)
-        return
-      case 'cloud': {
-        charSheetStorage.saveEntry(cloudEntry)
-        return
+    if (cloudEntry.updatedAt === localEntry.updatedAt) {
+      return { status: SYNC_STATUS.synced, entryId }
+    }
+
+    return createConflictState(entryId, localEntry, cloudEntry)
+  }
+
+  async function synchronizeEntries(entryIds) {
+    return Promise.allSettled(entryIds.map(synchronizeEntry))
+      .then(results => {
+        const failures = results
+          .filter(result => result.status === 'rejected')
+          .map(result => result.reason)
+        // TODO: Manage / handle this
+        if (failures.length)
+          throw new AggregateError(failures, 'Some sheet synchronizations failed.')
+
+        return results
+          .filter(result => result.status === 'fulfilled' && result.value.status === SYNC_STATUS.conflict)
+          .map(result => result.value)
+      })
+  }
+
+  async function resolveConflicts(resolutions) {
+    for (const { choice, entryId } of resolutions) {
+
+      switch (choice) {
+        case 'local':
+          const localEntry = charSheetStorage.getEntry(entryId)
+          await charSheetSupabase.save(localEntry)
+          break
+        case 'cloud': {
+          const cloudEntry = await charSheetSupabase.load(entryId)
+          charSheetStorage.saveEntry(cloudEntry)
+          break
+        }
+        case 'both': {
+          const cloudEntry = await charSheetSupabase.load(entryId)
+          const duplicatedEntry = charSheetStorage.copy(entryId)
+          charSheetStorage.saveEntry(cloudEntry)
+          await charSheetSupabase.save(duplicatedEntry)
+          break
+        }
+        default:
+          throw new Error(`Unsupported conflict choice '${choice}'.`)
       }
-      case 'both': {
-        const duplicatedEntry = charSheetStorage.copy(entryId)
-        charSheetStorage.saveEntry(cloudEntry)
-        await charSheetSupabase.save(duplicatedEntry)
-        return
-      }
-      default:
-        throw new Error(`Unsupported conflict choice '${choice}'.`)
     }
   }
 
-  return Promise.allSettled(
-    charSheetStorage.getSheetList()
-      .map(item => item.id)
-      .map(synchronizeEntry)
-  ).then(results => {
-    const failures = results
-      .filter(result => result.status === 'rejected')
-      .map(result => result.reason)
-
-    // TODO: Manage / handle this
-    if (failures.length)
-      throw new AggregateError(failures, 'Some sheet synchronizations failed.')
-
-    return {
-      synchronizeEntry,
-    }
-  })
+  return {
+    synchronizeEntry,
+    synchronizeEntries,
+    resolveConflicts,
+  }
 }

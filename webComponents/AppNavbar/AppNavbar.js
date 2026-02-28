@@ -152,7 +152,7 @@ export class AppNavbar extends AbstractComponent {
   #renderAuth = () => {
     const isAuthenticated = authService.isAuthenticated
     const loginLabel = isAuthenticated
-      ? (authService.user?.displayName || authService.user?.email || t._('navbar.auth.account'))
+      ? (authService.providerUser?.displayName || authService.providerUser?.email || t._('navbar.auth.account'))
       : t._('navbar.auth.login')
 
     replaceElement(this.#authLoginButtonElement, loginLabel)

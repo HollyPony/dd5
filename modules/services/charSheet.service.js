@@ -2,10 +2,9 @@ import charSheetStorage from '../storages/charSheet.storage.js'
 import charSheetSupabase from '../storages/charSheet.supabase.js'
 import charSheetStore from '../stores/charSheet.authority.store.js'
 import authService from '../auth/auth.service.js'
-import authSupabaseService from '../auth/auth.supabase.service.js'
 import { debounce } from '../helpers.js'
 import { fromJSONEntry } from '../storages/charSheet.storage.helpers.js'
-import charSheetSyncFactory from './charSheetSync.factory.js'
+import charSheetSyncFactory, { SYNC_STATUS } from './charSheetSync.factory.js'
 import { throwAsync } from '../errors.js'
 import createEventBus from '../createEventBus.js'
 
@@ -32,7 +31,7 @@ function setCurrentId(id) {
  * @param {{ id: string, updatedAt: number, data: object }} cloudEntry
  * @returns {'local' | 'cloud' | 'both'}
  */
-function resolveSyncConflict(localEntry, cloudEntry) {
+function askConflictResolutionStrategy(localEntry, cloudEntry) {
   const localDate = new Date(localEntry.updatedAt).toISOString()
   const cloudDate = new Date(cloudEntry.updatedAt).toISOString()
   // TODO: replace prompt-based conflict resolution with a UI-driven workflow.
@@ -51,8 +50,16 @@ function resolveSyncConflict(localEntry, cloudEntry) {
   return choice
 }
 
+async function synchronizeWithConflictResolution(syncState) {
+  if (syncState.status === SYNC_STATUS.synced) return syncState
+
+  const choice = askConflictResolutionStrategy(syncState.localEntry, syncState.cloudEntry)
+  return charSheetSyncService.resolveConflicts([{ entryId: syncState.entryId, choice }])
+}
+
 const synchronizeCurrentEntry = debounce(() => {
-  charSheetSyncService?.synchronizeEntry(_currentEntryId).catch(throwAsync)
+  charSheetSyncService?.synchronizeEntry(_currentEntryId)
+    .then(synchronizeWithConflictResolution)
 }, AUTOSYNC_DELAY)
 
 async function init() {
@@ -64,9 +71,15 @@ async function init() {
   charSheetSyncService = undefined
 
   autosaveEventTarget = charSheetStore.onAny(debounce(saveCurrent, AUTOSAVE_DELAY))
-  userConnectedEventOff = authService.onUserConnected(async () => {
-    const syncService = await charSheetSyncFactory(resolveSyncConflict).catch(throwAsync)
-    charSheetSyncService = syncService
+  userConnectedEventOff = authService.onUserConnected(() => {
+    charSheetSyncService = charSheetSyncFactory()
+    charSheetSyncService
+      .synchronizeEntries(charSheetStorage.getSheetList().map(item => item.id))
+      .then(async syncStates => {
+        for (const syncState of syncStates) {
+          await synchronizeWithConflictResolution(syncState)
+        }
+      })
   })
   userDisconnectedEventOff = authService.onUserDisconnected(() => {
     charSheetSyncService = undefined
@@ -94,7 +107,7 @@ function load(entryId) {
 
 function saveCurrent() {
   const entry = charSheetStorage.saveSheet(_currentEntryId, charSheetStore.get())
-  if (authSupabaseService.isAuthenticated) synchronizeCurrentEntry()
+  if (authService.isAuthenticated) synchronizeCurrentEntry()
   return entry
 }
 
@@ -109,7 +122,7 @@ function importJSON(json) {
 
 function remove(id) {
   charSheetStorage.remove(id)
-  if (authSupabaseService.isAuthenticated) charSheetSupabase.remove(id).catch(throwAsync)
+  if (authService.isAuthenticated) charSheetSupabase.remove(id).catch(throwAsync)
   if (id === _currentEntryId) create()
 }
 

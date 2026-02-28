@@ -45,7 +45,8 @@ function getRawEntry(entryId) {
 }
 
 function getEntry(entryId) {
-  return fromJSONEntry(getRawEntry(entryId))
+  const rawEntry = getRawEntry(entryId)
+  return rawEntry ? fromJSONEntry(getRawEntry(entryId)) : undefined
 }
 
 function getSheet(entryId) {
