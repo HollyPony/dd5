@@ -35,11 +35,11 @@ function getNode(nodeTree, pathParts, create = false) {
  *
  * @param {{ listeners: Set<Function>, children: Map<string | symbol, any> }} nodeTree - Root node.
  * @param {Array<{ key: string | symbol | Array<string | symbol>, payload?: any, params?: any[] }> | Set<{ key: string | symbol | Array<string | symbol>, payload?: any, params?: any[] }>} targets - Events to emit.
- * @returns {void}
+ * @returns {Promise<any[]>} Resolves once all listeners have completed.
  * @throws {MissingPathError} When one target key has an unsupported type.
  */
 function emitBatch(nodeTree, targets) {
-  const callbacks = new Set()
+  const callbacks = new Map()
 
   for (const event of [...targets]) {
     const { key, payload, params = [] } = event
@@ -49,12 +49,16 @@ function emitBatch(nodeTree, targets) {
 
     for (const listener of node.listeners) {
       if (callbacks.has(listener)) continue
-      callbacks.add(listener)
-      listener(payload, ...params)
+      callbacks.set(listener, Promise.resolve(listener(payload, ...params)))
     }
   }
 
-  for (const listener of (getNode(nodeTree, getPathParts(ANY))?.listeners ?? [])) listener()
+  for (const listener of (getNode(nodeTree, getPathParts(ANY))?.listeners ?? [])) {
+    if (callbacks.has(listener)) continue
+    callbacks.set(listener, Promise.resolve(listener()))
+  }
+
+  return Promise.all(callbacks.values())
 }
 
 /**
@@ -168,8 +172,8 @@ function off(nodeTree, key, callback) {
  * Create a lightweight key-based event hub.
  *
  * @returns {{
- *   emit: (key: string | symbol | Array<string | symbol>, payload?: any, params?: any[]) => void,
- *   emitBatch: (targets: Array<{ key: string | symbol | Array<string | symbol>, payload?: any, params?: any[] }>) => void,
+ *   emit: (key: string | symbol | Array<string | symbol>, payload?: any, params?: any[]) => Promise<any[]>,
+ *   emitBatch: (targets: Array<{ key: string | symbol | Array<string | symbol>, payload?: any, params?: any[] }>) => Promise<any[]>,
  *   on: (key: string | symbol | Array<string | symbol>, callback: Function) => () => boolean,
  *   onMany: (keys: Array<string | symbol | Array<string | symbol>>, callback: Function) => Array<() => boolean>,
  *   onMap: (subscriptions?: Record<string | symbol, Function | Function[]> | Map<string | symbol | Array<string | symbol> | string[], Function | Function[]>) => Array<() => boolean>,
