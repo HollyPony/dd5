@@ -12,6 +12,7 @@ export class ClassBase extends AbstractComponent {
   static _modulePath = new URL('.', import.meta.url).pathname
 
   #baseFeatureButtonElement
+  #baseFeatureAccordionElement
 
   #descriptionContainerElement
   #descriptionBodyElement
@@ -33,16 +34,16 @@ export class ClassBase extends AbstractComponent {
 
     const baseFeatureElement = this.querySelector('.class-feature-base')
     this.#baseFeatureButtonElement = baseFeatureElement.querySelector('.accordion-button')
-    const baseFeatureAccordionElement = baseFeatureElement.querySelector('.accordion-collapse')
-    const accordionBodyElement = baseFeatureAccordionElement.querySelector('.accordion-body')
+    this.#baseFeatureAccordionElement = baseFeatureElement.querySelector('.accordion-collapse')
+    const accordionBodyElement = this.#baseFeatureAccordionElement.querySelector('.accordion-body')
 
     const baseAccordionId = `accordion-base-feature-${this._id}`
     const baseAccordionItemId = `base-item-${this._id}`
 
     baseFeatureElement.id = baseAccordionId
     this.#baseFeatureButtonElement.dataset.bsTarget = `#${baseAccordionItemId}`
-    baseFeatureAccordionElement.id = baseAccordionItemId
-    baseFeatureAccordionElement.dataset.bsParent = `#${baseAccordionId}`
+    this.#baseFeatureAccordionElement.id = baseAccordionItemId
+    this.#baseFeatureAccordionElement.dataset.bsParent = `#${baseAccordionId}`
 
     this.#descriptionContainerElement = accordionBodyElement.querySelector('.card.description')
     this.#descriptionBodyElement = this.#descriptionContainerElement.querySelector('.card-body')
@@ -52,12 +53,13 @@ export class ClassBase extends AbstractComponent {
     this.#skillsChooseLabelElement = this.#skillsContainerElement.querySelector('.card-body > .card-title.choose')
     this.#skillsListElement = this.#skillsContainerElement.querySelector('.card-body > .list')
 
-    this.#toolsContainerElement = baseFeatureAccordionElement.querySelector('.card.tools')
+    this.#toolsContainerElement = this.#baseFeatureAccordionElement.querySelector('.card.tools')
     this.#toolsActionRequiredElement = this.#toolsContainerElement.querySelector('.card-header > .action-required')
     this.#toolsGroupsElement = this.#toolsContainerElement.querySelector('.card-body > .tools-groups')
 
     this.#service = createClassBaseService({ charSheetStore })
 
+    this.#renderBaseTitle()
     this.#renderActionsRequired()
     this.#renderDescription()
     this.#renderSkills()
@@ -67,7 +69,7 @@ export class ClassBase extends AbstractComponent {
   _registerEvents() {
     this._pushEvents(
       charSheetStore.onMap({
-        [charSheetProps.className]: [this.#renderDescription, this.#renderActionsRequired, this.#renderSkills, this.#renderTools],
+        [charSheetProps.className]: [this.#renderBaseTitle, this.#renderDescription, this.#renderActionsRequired, this.#renderSkills, this.#renderTools],
         // TODO: listen skills here. Project to have skills with source and filter on it
         [charSheetProps.originName]: [this.#renderActionsRequired, this.#renderSkills],
         [charSheetProps.choiceSelections]: [this.#renderActionsRequired, this.#renderSkills, this.#renderTools],
@@ -89,6 +91,28 @@ export class ClassBase extends AbstractComponent {
     this.#baseFeatureButtonElement.classList[this._actionRequired ? 'add' : 'remove']('show')
 
     this.eventBus.emit('actionRequired')
+  }
+
+  #renderBaseTitle = () => {
+    const className = charSheetStore.getClassName()
+    const hasClass = Boolean(className)
+
+    if (!hasClass) {
+      this.#baseFeatureButtonElement.disabled = true
+      this.#baseFeatureButtonElement.classList.add('collapsed')
+      this.#baseFeatureButtonElement.setAttribute('aria-expanded', 'false')
+      this.#baseFeatureAccordionElement.classList.remove('show')
+      replaceElement(this.#baseFeatureButtonElement, t.tn('components.ClassBase.title.noClass'))
+      return
+    }
+
+    this.#baseFeatureButtonElement.disabled = false
+    replaceElement(
+      this.#baseFeatureButtonElement,
+      t.md('components.ClassBase.title.withClass', {
+        className: t._(`statics.classes.${className}.name`),
+      })
+    )
   }
 
   #renderDescription = () => {
@@ -209,6 +233,7 @@ export class ClassBase extends AbstractComponent {
 
   _i18nChanged = () => {
     console.info('-- ClassBase._i18nChanged')
+    this.#renderBaseTitle()
     this.#renderDescription()
     this.#renderSkills()
     this.#renderTools()

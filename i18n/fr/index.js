@@ -163,7 +163,10 @@ export default {
       title: `Capacités de classe`
     },
     ClassBase: {
-      title: `Caractéristiques de classe`,
+      title: {
+        noClass: `Choisir une classe d'abord`,
+        withClass: `**{className}** - Caractéristiques`,
+      },
       skills: {
         title: `Maîtrises de compétence`,
         remaining: `Il reste {remaining} compétence(s) à choisir`,
