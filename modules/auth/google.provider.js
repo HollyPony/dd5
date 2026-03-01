@@ -102,7 +102,6 @@ async function restoreSession() {
 async function prompt(options = {
   rememberMe: true
 }) {
-  if (!isConfigured()) throw createCustomError({ name: 'GoogleProviderConfigError', code: errorKeys.auth.googleProviderNotConfigured })
   await init({
     rememberMe: options.rememberMe,
   })
