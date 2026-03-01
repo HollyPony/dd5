@@ -4,7 +4,7 @@ import charSheetStore from '../stores/charSheet.authority.store.js'
 import authService from '../auth/auth.service.js'
 import { debounce } from '../helpers.js'
 import { fromJSONEntry } from '../storages/charSheet.storage.helpers.js'
-import charSheetSyncFactory from './charSheetSync.factory.js'
+import charSheetSyncFactory, { SYNC_STATUS } from './charSheetSync.factory.js'
 import createEventBus from '../createEventBus.js'
 import modalService from './modal.service.js'
 import { SyncConflictModalContent } from '../../webComponents/SyncConflictModalContent/SyncConflictModalContent.js'
@@ -28,14 +28,16 @@ function setCurrentId(id) {
   if (changed) eventBus.emit(CURRENT_CHARSHEET_CHANGED)
 }
 
-function openSyncConflictsModal(conflicts) {
-  if (conflicts.length === 0) return
+function resolveSyncResults(resolveStates) {
+  const conflictStates = resolveStates.filter(resolveState => resolveState.status === SYNC_STATUS.conflict)
+  if (conflictStates.length === 0)
+    return
 
   modalService.open({
     title: t._('modals.syncConflicts.title'),
     contentComponent: SyncConflictModalContent,
     contentProps: {
-      syncConflicts: conflicts,
+      syncConflicts: conflictStates,
       resolveConflict: ({ entryId, choice }) =>
         charSheetSyncService.resolveConflicts([{ entryId, choice }]),
     },
@@ -43,12 +45,18 @@ function openSyncConflictsModal(conflicts) {
   })
 }
 
+async function getAllSyncEntryIds() {
+  const localEntryIds = charSheetStorage.getSheetList().map(item => item.id)
+  const cloudEntryIds = await charSheetSupabase.listIds()
+  return [...new Set([...localEntryIds, ...cloudEntryIds])]
+}
+
 const synchronizeCurrentEntry = debounce(() => {
   charSheetSyncService?.synchronizeEntry(_currentEntryId)
-    .then(syncState => openSyncConflictsModal([syncState]))
+    .then(syncState => resolveSyncResults([syncState]))
 }, AUTOSYNC_DELAY)
 
-async function init() {
+function init() {
   const id = charSheetStorage.getLastUpdatedEntryId()
 
   autosaveEventTarget?.off()
@@ -59,9 +67,9 @@ async function init() {
   autosaveEventTarget = charSheetStore.onAny(debounce(saveCurrent, AUTOSAVE_DELAY))
   userConnectedEventOff = authService.onUserConnected(() => {
     charSheetSyncService = charSheetSyncFactory()
-    charSheetSyncService
-      .synchronizeEntries(charSheetStorage.getSheetList().map(item => item.id))
-      .then(openSyncConflictsModal)
+    getAllSyncEntryIds()
+      .then(charSheetSyncService.synchronizeEntries)
+      .then(resolveSyncResults)
   })
   userDisconnectedEventOff = authService.onUserDisconnected(() => {
     charSheetSyncService = undefined

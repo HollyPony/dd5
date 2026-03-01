@@ -1,7 +1,7 @@
 import charSheetSupabase from '../storages/charSheet.supabase.js'
 import charSheetStorage from '../storages/charSheet.storage.js'
 
-const SYNC_STATUS = {
+export const SYNC_STATUS = {
   synced: 'synced',
   conflict: 'conflict',
 }
@@ -62,7 +62,7 @@ export default function charSheetSyncFactory() {
           throw new AggregateError(failures, 'Some sheet synchronizations failed.')
 
         return results
-          .filter(result => result.status === 'fulfilled' && result.value.status === SYNC_STATUS.conflict)
+          .filter(result => result.status === 'fulfilled')
           .map(result => result.value)
       })
   }

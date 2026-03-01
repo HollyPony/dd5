@@ -45,7 +45,6 @@ export class SyncConflictModalContent extends AbstractComponent {
 
   #listClicked = async ({ target }) => {
     const actionElement = target.closest('[data-choice][data-entry-id]')
-    console.log(target, actionElement)
     if (!actionElement) return
     const entryElement = target.closest('[data-entry]')
     const actionElements = entryElement.querySelectorAll('[data-choice][data-entry-id]')
@@ -67,9 +66,6 @@ export class SyncConflictModalContent extends AbstractComponent {
     } finally {
       actionElement.querySelector('[data-spinner]').classList.remove('spinner-border', 'spinner-border-sm', 'me-1')
     }
-
-
-    this.#props.syncConflicts = this.#props.syncConflicts.filter(conflict => conflict.entryId !== entryId)
   }
 
   #render() {

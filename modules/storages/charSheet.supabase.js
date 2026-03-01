@@ -52,6 +52,17 @@ async function load(id) {
   })
 }
 
+async function listIds() {
+  return withUserTable(async ({ table, userId }) => {
+    const { data, error } = await table
+      .select('id')
+      .eq('user_id', userId)
+
+    if (error) throw error
+    return data.map(item => item.id)
+  })
+}
+
 async function save(entry) {
   return withUserTable(async ({ table, userId }) => {
     const row = mapEntryToCloudRow(entry, userId)
@@ -73,6 +84,7 @@ async function remove(id) {
 }
 
 export default {
+  listIds,
   load,
   save,
   remove,
