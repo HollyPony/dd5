@@ -1,5 +1,6 @@
 import createEventBus from '../createEventBus.js'
 import createStore from '../createStore.js'
+import { createCustomError, errorKeys } from '../errors.js'
 
 const PROVIDER_AUTH = 'providerAuth'
 const SUPABASE_AUTH = 'supabaseAuth'
@@ -33,10 +34,22 @@ function createAnonymousState() {
  * @returns {void}
  */
 function setProviderAuth(payload) {
-  if (!payload?.providerId) throw new Error('Authenticated payload is missing providerId.')
-  if (!payload?.idToken) throw new Error('Authenticated payload is missing idToken.')
-  if (!payload?.claims) throw new Error('Authenticated payload is missing claims.')
-  if (!payload?.user?.id) throw new Error('Authenticated payload is missing user.id.')
+  if (!payload?.providerId) throw createCustomError({
+    name: 'AuthProviderPayloadError',
+    code: errorKeys.auth.providerPayloadMissingProviderId,
+  })
+  if (!payload?.idToken) throw createCustomError({
+    name: 'AuthProviderPayloadError',
+    code: errorKeys.auth.providerPayloadMissingIdToken,
+  })
+  if (!payload?.claims) throw createCustomError({
+    name: 'AuthProviderPayloadError',
+    code: errorKeys.auth.providerPayloadMissingClaims,
+  })
+  if (!payload?.user?.id) throw createCustomError({
+    name: 'AuthProviderPayloadError',
+    code: errorKeys.auth.providerPayloadMissingUserId,
+  })
 
   store.set({
     [PROVIDER_AUTH]: {
@@ -50,8 +63,14 @@ function setProviderAuth(payload) {
 }
 
 function setSupabaseAuth(payload) {
-  if (!payload?.providerId) throw new Error('Supabase authenticated state is missing providerId.')
-  if (!payload?.userId) throw new Error('Supabase authenticated state is missing userId.')
+  if (!payload?.providerId) throw createCustomError({
+    name: 'AuthSupabaseStateError',
+    code: errorKeys.auth.supabaseStateMissingProviderId,
+  })
+  if (!payload?.userId) throw createCustomError({
+    name: 'AuthSupabaseStateError',
+    code: errorKeys.auth.supabaseStateMissingUserId,
+  })
 
   store.set({
     [SUPABASE_AUTH]: {

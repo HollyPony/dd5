@@ -1,6 +1,7 @@
 import supabaseClient from '../supabase.client.js'
 import { fromJSONEntry, toJSONEntry } from './charSheet.storage.helpers.js'
 import authService from '../auth/auth.service.js'
+import { createCustomError, errorKeys } from '../errors.js'
 
 const TABLE_NAME = 'character_sheets'
 
@@ -14,10 +15,22 @@ function mapCloudRowToEntry(row) {
 }
 
 function mapEntryToCloudRow(entry, userId) {
-  if (!entry?.id) throw new Error('Cloud save entry is missing id.')
-  if (!Number.isFinite(entry?.updatedAt)) throw new Error('Cloud save entry is missing updatedAt.')
-  if (!entry?.data) throw new Error('Cloud save entry is missing data.')
-  if (!userId) throw new Error('Cloud save entry is missing user id.')
+  if (!entry?.id) throw createCustomError({
+    name: 'CloudEntryValidationError',
+    code: errorKeys.storage.cloudEntryMissingId,
+  })
+  if (!Number.isFinite(entry?.updatedAt)) throw createCustomError({
+    name: 'CloudEntryValidationError',
+    code: errorKeys.storage.cloudEntryMissingUpdatedAt,
+  })
+  if (!entry?.data) throw createCustomError({
+    name: 'CloudEntryValidationError',
+    code: errorKeys.storage.cloudEntryMissingData,
+  })
+  if (!userId) throw createCustomError({
+    name: 'CloudEntryValidationError',
+    code: errorKeys.storage.cloudEntryMissingUserId,
+  })
 
   const payload = JSON.parse(toJSONEntry({ data: entry.data })).data
 
@@ -32,7 +45,10 @@ function mapEntryToCloudRow(entry, userId) {
 
 async function withUserTable(callback) {
   const userId = authService.supabaseUserId
-  if (!userId) throw new Error('Cloud auth is missing user id.')
+  if (!userId) throw createCustomError({
+    name: 'CloudAuthError',
+    code: errorKeys.storage.cloudAuthMissingUserId,
+  })
 
   const table = supabaseClient.from(TABLE_NAME)
   return callback({ table, userId })

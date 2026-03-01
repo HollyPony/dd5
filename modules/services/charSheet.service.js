@@ -9,6 +9,7 @@ import createEventBus from '../createEventBus.js'
 import modalService from './modal.service.js'
 import { SyncConflictModalContent } from '../../webComponents/SyncConflictModalContent/SyncConflictModalContent.js'
 import { t } from '../i18n.js'
+import { createCustomError, errorKeys } from '../errors.js'
 
 const CURRENT_CHARSHEET_CHANGED = 'currentCharSheetChanged'
 const eventBus = createEventBus()
@@ -44,7 +45,7 @@ function resolveSyncResults(resolveStates) {
     dialogClasses: ['modal-lg'],
   })
 
-  throw new Error(t._('errors.sync.conflict'))
+  throw createCustomError({ name: 'SyncConflictError', code: errorKeys.sync.conflict })
 }
 
 async function getAllSyncEntryIds() {
@@ -69,7 +70,7 @@ const synchronizeCurrentEntry = debounce(() => {
  * @throws {Error} When flush cannot complete successfully.
  */
 function flushSyncNow() {
-  if (!authService.isAuthenticated) throw new Error('Cannot flush sync while unauthenticated.')
+  if (!authService.isAuthenticated) throw createCustomError({ name: 'SyncFlushError', code: errorKeys.sync.flushUnauthenticated })
 
   synchronizeCurrentEntry.cancel()
   saveCurrent()

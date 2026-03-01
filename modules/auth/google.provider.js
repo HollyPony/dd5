@@ -1,5 +1,6 @@
 import { addScript } from '../domlib.js'
 import env from '../env.js'
+import { createCustomError, errorKeys } from '../errors.js'
 
 const providerId = 'google'
 const GOOGLE_GSI_SCRIPT_SRC = 'https://accounts.google.com/gsi/client'
@@ -18,7 +19,7 @@ function isConfigured() {
  */
 function decodeJwtPayload(idToken) {
   const [header, payload, signature] = idToken.split('.')
-  if (!header || !payload || !signature) throw new Error('Invalid JWT format.')
+  if (!header || !payload || !signature) throw createCustomError({ name: 'GoogleJwtError', code: errorKeys.auth.googleInvalidJwtFormat })
 
   const base64Payload = payload.replace(/-/g, '+').replace(/_/g, '/')
   const padLength = (4 - (base64Payload.length % 4)) % 4
@@ -30,10 +31,10 @@ function decodeJwtPayload(idToken) {
  * @param {{ credential: string }} response
  */
 function handleCredentialResponse(response) {
-  if (!response?.credential) throw new Error('Google credential response is missing `credential`.')
+  if (!response?.credential) throw createCustomError({ name: 'GoogleCredentialError', code: errorKeys.auth.googleCredentialMissing })
 
   const claims = decodeJwtPayload(response.credential)
-  if (!claims?.sub) throw new Error('Google ID token payload is missing `sub`.')
+  if (!claims?.sub) throw createCustomError({ name: 'GoogleTokenPayloadError', code: errorKeys.auth.googleTokenMissingSub })
 
   const payload = {
     providerId,
@@ -59,7 +60,7 @@ async function init() {
   if (initialized) return
 
   await addScript(GOOGLE_GSI_SCRIPT_SRC)
-  if (!window.google?.accounts?.id) throw new Error('Google Identity Services API is unavailable.')
+  if (!window.google?.accounts?.id) throw createCustomError({ name: 'GoogleApiUnavailableError', code: errorKeys.auth.googleApiUnavailable })
 
   window.google.accounts.id.initialize({
     client_id: env.GOOGLE_CLIENT_ID,
@@ -75,9 +76,9 @@ async function init() {
  * @returns {Promise<void>}
  */
 async function prompt() {
-  if (!isConfigured()) throw new Error('Google authentication provider is not configured.')
+  if (!isConfigured()) throw createCustomError({ name: 'GoogleProviderConfigError', code: errorKeys.auth.googleProviderNotConfigured })
   await init()
-  if (!window.google?.accounts?.id) throw new Error('Google Identity Services API is unavailable.')
+  if (!window.google?.accounts?.id) throw createCustomError({ name: 'GoogleApiUnavailableError', code: errorKeys.auth.googleApiUnavailable })
 
   window.google.accounts.id.prompt()
 }
@@ -89,7 +90,7 @@ async function prompt() {
 async function signOut() {
   if (!isConfigured()) return
   await init()
-  if (!window.google?.accounts?.id) throw new Error('Google Identity Services API is unavailable.')
+  if (!window.google?.accounts?.id) throw createCustomError({ name: 'GoogleApiUnavailableError', code: errorKeys.auth.googleApiUnavailable })
 
   window.google.accounts.id.disableAutoSelect()
 }

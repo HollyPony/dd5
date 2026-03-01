@@ -1,5 +1,6 @@
 import charSheetSupabase from '../storages/charSheet.supabase.js'
 import charSheetStorage from '../storages/charSheet.storage.js'
+import { createCustomError, errorKeys } from '../errors.js'
 
 export const SYNC_STATUS = {
   synced: 'synced',
@@ -31,7 +32,11 @@ async function synchronizeEntry(entryId) {
   const remoteEntry = await charSheetSupabase.load(entryId)
 
   if (!localEntry && !remoteEntry)
-    throw new Error(`CharSheet id not found ${entryId}`)
+    throw createCustomError({
+      name: 'SyncEntryNotFoundError',
+      code: errorKeys.sync.entryNotFound,
+      interpolations: { entryId },
+    })
 
   if (!localEntry) {
     charSheetStorage.saveEntry(remoteEntry)
@@ -58,7 +63,12 @@ async function synchronizeEntries(entryIds) {
         .map(result => result.reason)
       // TODO: Manage / handle this
       if (failures.length)
-        throw new AggregateError(failures, 'Some sheet synchronizations failed.')
+        throw createCustomError({
+          name: 'SyncBatchError',
+          code: errorKeys.sync.batchFailed,
+          interpolations: { count: failures.length },
+          cause: failures,
+        })
 
       return results
         .filter(result => result.status === 'fulfilled')
@@ -87,7 +97,11 @@ async function resolveConflicts(resolutions) {
         break
       }
       default:
-        throw new Error(`Unsupported conflict choice '${choice}'.`)
+        throw createCustomError({
+          name: 'SyncConflictChoiceError',
+          code: errorKeys.sync.unsupportedChoice,
+          interpolations: { choice },
+        })
     }
   }
 }

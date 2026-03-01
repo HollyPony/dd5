@@ -1,5 +1,6 @@
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
 import { domOn, replaceElement } from '../../modules/domlib.js'
+import { createCustomError, errorKeys } from '../../modules/errors.js'
 
 /**
  * Generic modal wrapper able to host any web component in its body.
@@ -20,7 +21,10 @@ export class ModalHost extends AbstractComponent {
     this.#modalTitleElement = this.querySelector('[data-modal-title]')
     this.#modalBodyElement = this.querySelector('[data-modal-body]')
 
-    if (!globalThis.bootstrap?.Modal) throw new Error('Bootstrap Modal is required.')
+    if (!globalThis.bootstrap?.Modal) throw createCustomError({
+      name: 'BootstrapModalError',
+      code: errorKeys.modal.bootstrapRequired,
+    })
 
     this.#modalInstance = new globalThis.bootstrap.Modal(this.#modalElement)
   }
@@ -60,7 +64,11 @@ export class ModalHost extends AbstractComponent {
     if (contentProps !== undefined) {
       const hasPropsApi = typeof contentElement.setModalProps === 'function'
       if (!hasPropsApi)
-        throw new Error(`Content component '${contentTagName}' must implement setModalProps(props).`)
+        throw createCustomError({
+          name: 'ModalContentContractError',
+          code: errorKeys.modal.contentMissingSetModalProps,
+          interpolations: { contentTagName },
+        })
       contentElement.setModalProps(contentProps)
     }
 
@@ -82,4 +90,3 @@ export class ModalHost extends AbstractComponent {
     replaceElement(this.#modalBodyElement)
   }
 }
-

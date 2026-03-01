@@ -1,4 +1,5 @@
 import { ModalHost } from '../../webComponents/ModalHost/ModalHost.js'
+import { createCustomError, errorKeys } from '../errors.js'
 
 /**
  * Open a generic modal shell and mount any web component inside it.
@@ -27,7 +28,11 @@ function open(options) {
     hostAttributes = {},
   } = options ?? {}
   if (!customElements.get(ModalHost.tagName))
-    throw new Error(`Custom element '${ModalHost.tagName}' must be registered before opening a modal.`)
+    throw createCustomError({
+      name: 'ModalHostRegistrationError',
+      code: errorKeys.modal.hostNotRegistered,
+      interpolations: { tagName: ModalHost.tagName },
+    })
 
   contentComponent.register()
 

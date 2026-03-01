@@ -1,6 +1,6 @@
 import createStore from '../createStore.js'
 import createEventBus from '../createEventBus.js'
-import { InvalidCharacterFieldError } from '../errors.js'
+import { InvalidCharacterFieldError, createCustomError, errorKeys } from '../errors.js'
 import { SELECTOR_TYPE } from '../services/choice.helper.js'
 import properties from './charSheet.authority.properties.js'
 import initialData from './charSheet.authority.initial.js'
@@ -20,7 +20,10 @@ function createCharSheetStorageStore() {
     }
 
     if (equipments.some(equipment => typeof equipment.name !== 'symbol' || !equipment.id))
-      throw new Error(`Some \`equipments\` doesn't contains malformed datas`)
+      throw createCustomError({
+        name: 'CharacterEquipmentsError',
+        code: errorKeys.character.malformedEquipments,
+      })
 
     set({
       [properties.name]: charData[properties.name],

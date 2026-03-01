@@ -2,6 +2,7 @@ import googleProvider from './google.provider.js'
 import authStore, { AUTH_STATUS } from './auth.store.js'
 import createEventBus from '../createEventBus.js'
 import supabaseClient from '../supabase.client.js'
+import { createCustomError, errorKeys } from '../errors.js'
 
 const AUTH_INITIALIZED = 'initialized'
 const USER_CONNECTED = 'userConnected'
@@ -19,7 +20,10 @@ async function signInWithProviderPayload(payload) {
     token: payload.idToken,
   })
   if (error) throw error
-  if (!data?.user?.id) throw new Error('Supabase sign-in response is missing user id.')
+  if (!data?.user?.id) throw createCustomError({
+    name: 'SupabaseSignInError',
+    code: errorKeys.auth.supabaseSignInMissingUserId,
+  })
 }
 
 function handleProviderCredential(providerCredential) {

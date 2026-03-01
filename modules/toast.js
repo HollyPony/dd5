@@ -1,4 +1,5 @@
-import { onError } from './errors.js'
+import { isAppError, onError } from './errors.js'
+import { t, currentLang } from './i18n.js'
 
 const toastContainer = document.getElementById('toastContainer')
 
@@ -48,9 +49,13 @@ export function showErrorToast(error, options = {
   autohide: false,
 }) {
   if (!error) return
+  const message = (isAppError(error) && currentLang)
+    ? t._(`errors.${error.code}`, error.interpolations)
+    : (error.message || String(error))
+
   showToast({
     title: error.name || 'Error',
-    message: error.message || String(error),
+    message,
     variant: 'danger',
     ...options,
   })
