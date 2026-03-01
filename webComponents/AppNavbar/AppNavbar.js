@@ -115,13 +115,24 @@ export class AppNavbar extends AbstractComponent {
     const loginLabel = isAuthenticated
       ? (authService.providerUser?.displayName || authService.providerUser?.email || t._('navbar.auth.account'))
       : t._('navbar.auth.login')
+    const createAuthActionContent = (label) => ([
+      createElement('span', null, {
+        class: 'spinner-border spinner-border-sm me-2 d-none',
+        role: 'status',
+        'aria-hidden': 'true',
+        'data-role': 'auth-spinner',
+      }),
+      createElement('span', label, {
+        'data-role': 'auth-label',
+      }),
+    ])
 
     replaceElement(this.#authLoginButtonElement, loginLabel)
 
     const providers = authService.getProviders()
     const authActions = isAuthenticated
       ? [
-        createElement('li', createElement('button', t._('navbar.auth.logout'), {
+        createElement('li', createElement('button', createAuthActionContent(t._('navbar.auth.logout')), {
           class: 'dropdown-item',
           type: 'button',
           'data-auth-action': 'logout',
@@ -133,7 +144,7 @@ export class AppNavbar extends AbstractComponent {
     const providerActions = providers.map(provider => {
       return createElement('li', createElement(
         'button',
-        t._(`navbar.auth.providers.${provider.providerId}`),
+        createAuthActionContent(t._(`navbar.auth.providers.${provider.providerId}`)),
         {
           class: 'dropdown-item',
           type: 'button',
@@ -146,19 +157,44 @@ export class AppNavbar extends AbstractComponent {
     replaceElement(this.#authProvidersListElement, [...authActions, ...providerActions])
   }
 
-  #authProviderClicked = (event) => {
+  #authProviderClicked = async (event) => {
     event.preventDefault()
 
     const actionElement = event.target?.closest?.('[data-auth-action], [data-provider-id]')
     if (!actionElement) return
 
-    if (actionElement.dataset.authAction === 'logout') {
-      authService.signOut()
-      return
-    }
+    const authActionButtons = Array.from(this.#authProvidersListElement.querySelectorAll('button.dropdown-item'))
+    const initialDisabledStates = authActionButtons.map(buttonElement => ({
+      buttonElement,
+      disabled: buttonElement.disabled,
+    }))
+    const spinnerElement = actionElement.querySelector('[data-role="auth-spinner"]')
 
-    const providerId = actionElement.dataset.providerId
-    authService.signIn(providerId)
+    initialDisabledStates.forEach(({ buttonElement }) => {
+      buttonElement.disabled = true
+    })
+
+    spinnerElement?.classList.remove('d-none')
+
+    try {
+      if (actionElement.dataset.authAction === 'logout') {
+        await authService.signOut()
+        return
+      }
+
+      const providerId = actionElement.dataset.providerId
+      await authService.signIn(providerId)
+    } finally {
+      if (spinnerElement?.isConnected) {
+        spinnerElement.classList.add('d-none')
+      }
+
+      initialDisabledStates.forEach(({ buttonElement, disabled }) => {
+        if (buttonElement.isConnected) {
+          buttonElement.disabled = disabled
+        }
+      })
+    }
   }
 
   #savedCharacterClicked = (event) => {
