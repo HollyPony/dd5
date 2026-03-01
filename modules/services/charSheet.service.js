@@ -18,6 +18,7 @@ const AUTOSYNC_DELAY = 1800
 
 let autosaveEventTarget = null
 let userConnectedEventOff = null
+let userDisconnectingEventOff = null
 let userDisconnectedEventOff = null
 
 let _currentEntryId = undefined
@@ -42,6 +43,8 @@ function resolveSyncResults(resolveStates) {
     },
     dialogClasses: ['modal-lg'],
   })
+
+  throw new Error('Conflict sync')
 }
 
 async function getAllSyncEntryIds() {
@@ -55,11 +58,32 @@ const synchronizeCurrentEntry = debounce(() => {
     .then(syncState => resolveSyncResults([syncState]))
 }, AUTOSYNC_DELAY)
 
+/**
+ * Flush pending local save/sync immediately while auth is still active.
+ * This function rejects when:
+ * - the user is unauthenticated
+ * - the synchronization reports a conflict state (handled by UI flow)
+ * - the underlying sync operation fails
+ *
+ * @returns {Promise<void>}
+ * @throws {Error} When flush cannot complete successfully.
+ */
+function flushSyncNow() {
+  if (!authService.isAuthenticated) throw new Error('Cannot flush sync while unauthenticated.')
+
+  synchronizeCurrentEntry.cancel()
+  saveCurrent()
+
+  return charSheetSyncService.synchronizeEntry(_currentEntryId)
+    .then(syncState => resolveSyncResults([syncState]))
+}
+
 function init() {
   const id = charSheetStorage.getLastUpdatedEntryId()
 
   autosaveEventTarget?.off()
   userConnectedEventOff?.()
+  userDisconnectingEventOff?.()
   userDisconnectedEventOff?.()
 
   autosaveEventTarget = charSheetStore.onAny(debounce(saveCurrent, AUTOSAVE_DELAY))
@@ -68,8 +92,8 @@ function init() {
       .then(charSheetSyncService.synchronizeEntries)
       .then(resolveSyncResults)
   })
-  userDisconnectedEventOff = authService.onUserDisconnected(() => {
-  })
+  userDisconnectingEventOff = authService.onUserDisconnecting(() => flushSyncNow())
+  userDisconnectedEventOff = authService.onUserDisconnected(() => synchronizeCurrentEntry.cancel())
 
   id ? load(id) : create()
 }
@@ -131,6 +155,8 @@ export default {
     autosaveEventTarget = null
     userConnectedEventOff?.()
     userConnectedEventOff = null
+    userDisconnectingEventOff?.()
+    userDisconnectingEventOff = null
     userDisconnectedEventOff?.()
     userDisconnectedEventOff = null
   },
