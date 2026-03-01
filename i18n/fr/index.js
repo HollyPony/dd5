@@ -182,9 +182,6 @@ export default {
     },
     ClassFeature: {
       name: `**Nv.{level}** - {featureName}`,
-      description: {
-        title: `Description`
-      }
     },
     ClassSelect: {
       chooseOne: `Choisir une classe`,
