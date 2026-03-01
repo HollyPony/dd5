@@ -1,6 +1,6 @@
 import { createElement, domOn, replaceElement } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'
-import { SYNC_CHOICES } from '../../modules/services/charSheetSync.factory.js'
+import { SYNC_CHOICES } from '../../modules/services/charSheetSync.service.js'
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
 
 export class SyncConflictModalContent extends AbstractComponent {
@@ -15,9 +15,9 @@ export class SyncConflictModalContent extends AbstractComponent {
    *   syncConflicts: Array<{
    *     entryId: string,
    *     localEntry: { updatedAt: number },
-   *     cloudEntry: { updatedAt: number },
+   *     remoteEntry: { updatedAt: number },
    *   }>,
-   *   resolveConflict: ({ entryId: string, choice: 'local' | 'cloud' | 'both' }) => Promise<void>
+   *   resolveConflict: ({ entryId: string, choice: 'local' | 'remote' | 'both' }) => Promise<void>
    * }} props
    */
   setModalProps(props) {
@@ -71,7 +71,7 @@ export class SyncConflictModalContent extends AbstractComponent {
   #render() {
     replaceElement(this.#listElement, this.#props.syncConflicts.map(conflict => {
       const localDate = new Date(conflict.localEntry.updatedAt).toISOString()
-      const cloudDate = new Date(conflict.cloudEntry.updatedAt).toISOString()
+      const remoteDate = new Date(conflict.remoteEntry.updatedAt).toISOString()
 
       return createElement('div', [
         createElement('div', [
@@ -81,7 +81,7 @@ export class SyncConflictModalContent extends AbstractComponent {
           createElement('small', t._('modals.syncConflicts.localDate', { date: localDate }), {
             class: 'text-body-secondary d-block',
           }),
-          createElement('small', t._('modals.syncConflicts.cloudDate', { date: cloudDate }), {
+          createElement('small', t._('modals.syncConflicts.remoteDate', { date: remoteDate }), {
             class: 'text-body-secondary d-block',
           }),
         ], { class: 'd-flex flex-column gap-1' }),

@@ -4,7 +4,7 @@ import charSheetStore from '../stores/charSheet.authority.store.js'
 import authService from '../auth/auth.service.js'
 import { debounce } from '../helpers.js'
 import { fromJSONEntry } from '../storages/charSheet.storage.helpers.js'
-import charSheetSyncFactory, { SYNC_STATUS } from './charSheetSync.factory.js'
+import charSheetSyncService, { SYNC_STATUS } from './charSheetSync.service.js'
 import createEventBus from '../createEventBus.js'
 import modalService from './modal.service.js'
 import { SyncConflictModalContent } from '../../webComponents/SyncConflictModalContent/SyncConflictModalContent.js'
@@ -19,7 +19,6 @@ const AUTOSYNC_DELAY = 1800
 let autosaveEventTarget = null
 let userConnectedEventOff = null
 let userDisconnectedEventOff = null
-let charSheetSyncService = undefined
 
 let _currentEntryId = undefined
 function setCurrentId(id) {
@@ -47,8 +46,8 @@ function resolveSyncResults(resolveStates) {
 
 async function getAllSyncEntryIds() {
   const localEntryIds = charSheetStorage.getSheetList().map(item => item.id)
-  const cloudEntryIds = await charSheetSupabase.listIds()
-  return [...new Set([...localEntryIds, ...cloudEntryIds])]
+  const remoteEntryIds = await charSheetSupabase.listIds()
+  return [...new Set([...localEntryIds, ...remoteEntryIds])]
 }
 
 const synchronizeCurrentEntry = debounce(() => {
@@ -62,17 +61,14 @@ function init() {
   autosaveEventTarget?.off()
   userConnectedEventOff?.()
   userDisconnectedEventOff?.()
-  charSheetSyncService = undefined
 
   autosaveEventTarget = charSheetStore.onAny(debounce(saveCurrent, AUTOSAVE_DELAY))
   userConnectedEventOff = authService.onUserConnected(() => {
-    charSheetSyncService = charSheetSyncFactory()
     getAllSyncEntryIds()
       .then(charSheetSyncService.synchronizeEntries)
       .then(resolveSyncResults)
   })
   userDisconnectedEventOff = authService.onUserDisconnected(() => {
-    charSheetSyncService = undefined
   })
 
   id ? load(id) : create()

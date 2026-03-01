@@ -45,10 +45,10 @@ export default {
       title: 'Conflits de synchronisation',
       entryTitle: 'Personnage: {entryId}',
       localDate: 'Local: {date}',
-      cloudDate: 'Cloud: {date}',
+      remoteDate: 'Cloud: {date}',
       choices: {
         local: 'Garder local',
-        cloud: 'Garder cloud',
+        remote: 'Garder distant',
         both: 'Garder les deux',
       },
     },
