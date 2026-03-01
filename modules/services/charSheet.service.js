@@ -44,7 +44,7 @@ function resolveSyncResults(resolveStates) {
     dialogClasses: ['modal-lg'],
   })
 
-  throw new Error('Conflict sync')
+  throw new Error(t._('errors.sync.conflict'))
 }
 
 async function getAllSyncEntryIds() {

@@ -6,6 +6,7 @@ import speciesTraits from './species-traits.js'
 import GEARS from './gears.js'
 import spells from './spells.js'
 import feats, { CATEGORY as FEAT_CATEGORY } from './feats.js'
+import errors from './errors.js'
 
 // Remplis toutes les descriptions d’espèces dans species.js.
 // - Écris en français, UTF‑8 avec accents.
@@ -17,6 +18,7 @@ import feats, { CATEGORY as FEAT_CATEGORY } from './feats.js'
 // - N’éditer que species.js.
 
 export default {
+  errors,
   navbar: {
     appTitle: 'D&D Personnage',
     exportChar: 'Télécharger',
