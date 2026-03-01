@@ -6,6 +6,7 @@ import supabaseClient from '../supabase.client.js'
 const AUTH_INITIALIZED = 'initialized'
 const USER_CONNECTED = 'userConnected'
 const USER_DISCONNECTED = 'userDisconnected'
+const USER_DISCONNECTING = 'userDisconnecting'
 const eventBus = createEventBus()
 const providers = {
   [googleProvider.providerId]: googleProvider,
@@ -91,6 +92,8 @@ async function signIn(providerId) {
 }
 
 async function signOut() {
+  await eventBus.emit(USER_DISCONNECTING)
+
   try {
     const provider = providers[authStore.getProviderAuth().providerId]
     await provider?.signOut()
@@ -108,7 +111,6 @@ export default {
   init,
   getProviders: () => Object.values(providers),
   get isAuthenticated() {
-    // TODO: 'authenticated' from store consts
     return authStore.getProviderAuth().status === AUTH_STATUS.authenticated && authStore.getSupabaseAuth().status === AUTH_STATUS.authenticated
   },
   get providerUser() {
@@ -120,5 +122,6 @@ export default {
   signIn, signOut,
   onInitialized: callback => eventBus.on(AUTH_INITIALIZED, callback),
   onUserConnected: callback => eventBus.on(USER_CONNECTED, callback),
+  onUserDisconnecting: callback => eventBus.on(USER_DISCONNECTING, callback),
   onUserDisconnected: callback => eventBus.on(USER_DISCONNECTED, callback),
 }
