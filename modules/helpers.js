@@ -23,21 +23,30 @@ export function isObject(value) {
 /**
  * Creates a debounced version of the provided function that delays its execution
  * until after a specified wait time has elapsed since the last time it was invoked.
+ * The returned function also exposes `cancel()` to clear any pending execution.
  *
  * @example
  * const debouncedLog = debounce(console.info, 200)
  * debouncedLog('Hello') // Will log "Hello" after 200ms if not called again within 200ms
+ * debouncedLog.cancel() // Clears pending execution if any
  *
  * @param {Function} fn - The function to debounce.
  * @param {number} [delayMs=0] - The number of milliseconds to delay execution.
- * @returns {Function} A new debounced function.
+ * @returns {((...params: any[]) => void) & { cancel: () => void }} A new debounced function with a `cancel` method.
  */
 export function debounce(fn, delayMs = 0) {
   let timerId
-  return (...params) => {
+  const debounced = (...params) => {
     clearTimeout(timerId)
     timerId = setTimeout(fn, delayMs, ...params)
   }
+
+  debounced.cancel = () => {
+    clearTimeout(timerId)
+    timerId = undefined
+  }
+
+  return debounced
 }
 
 /**
