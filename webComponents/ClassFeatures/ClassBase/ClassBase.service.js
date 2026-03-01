@@ -47,8 +47,8 @@ export function createClassBaseService({ charSheetStore }) {
     const toolRule = classData?.toolProficiencies
 
     return {
-      skills: skillsRule && (skillsRule?.nb - (charSheetStore?.getChoicePayload(skillsRule?.choice?.selector)?.length ?? 0) > 0),
-      tools: toolRule && (toolRule?.max - (charSheetStore?.getChoicePayload(toolRule?.choice?.selector)?.length ?? 0) > 0),
+      skills: skillsRule && (skillsRule?.nb - (charSheetStore?.getChoicePayload?.(skillsRule?.choice?.selector)?.length ?? 0) > 0),
+      tools: toolRule && (toolRule?.max - (charSheetStore?.getChoicePayload?.(toolRule?.choice?.selector)?.length ?? 0) > 0),
     }
   }
 
