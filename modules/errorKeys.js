@@ -35,7 +35,6 @@ export default Object.freeze({
     googleCredentialMissing: 'auth.googleCredentialMissing',
     googleTokenMissingSub: 'auth.googleTokenMissingSub',
     googleApiUnavailable: 'auth.googleApiUnavailable',
-    googleProviderNotConfigured: 'auth.googleProviderNotConfigured',
   }),
   sync: Object.freeze({
     conflict: 'sync.conflict',

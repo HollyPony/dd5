@@ -1,4 +1,3 @@
-import supabaseClient from '../supabase.client.js'
 import { fromJSONEntry, toJSONEntry } from './charSheet.storage.helpers.js'
 import authService from '../auth/auth.service.js'
 import { createCustomError, errorKeys } from '../errors.js'
@@ -50,7 +49,7 @@ async function withUserTable(callback) {
     code: errorKeys.storage.cloudAuthMissingUserId,
   })
 
-  const table = supabaseClient.from(TABLE_NAME)
+  const table = authService.getSupabaseClient().from(TABLE_NAME)
   return callback({ table, userId })
 }
 

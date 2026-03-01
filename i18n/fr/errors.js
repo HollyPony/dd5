@@ -35,7 +35,6 @@ export default {
     googleCredentialMissing: 'La réponse Google ne contient pas de credential.',
     googleTokenMissingSub: 'Le profil Google ne contient pas d’identifiant utilisateur.',
     googleApiUnavailable: 'Le service de connexion Google est indisponible.',
-    googleProviderNotConfigured: 'Le provider Google n’est pas configuré.',
   },
   sync: {
     conflict: 'Un conflit de synchronisation nécessite une résolution.',
