@@ -78,7 +78,8 @@ async function signInWithProviderPayload(payload) {
     name: 'SupabaseSignInError',
     code: errorKeys.auth.supabaseSignInMissingUserId,
   })
-  // TODO: setSupabase store > data.client ?
+
+  authStore.setSupabaseAuth({ providerId: payload.providerId, userId: data.user.id })
 }
 
 function handleProviderCredential(providerCredential) {
@@ -114,7 +115,8 @@ function supabaseAuthChanged(event, session) {
 
   if (!userId || !providerId) return
 
-  authStore.setSupabaseAuth({ providerId, userId })
+  // TODO: Check all cases handling
+  // authStore.setSupabaseAuth({ providerId, userId })
 
   // switch (event) {
   //   case 'SIGNED_OUT':
