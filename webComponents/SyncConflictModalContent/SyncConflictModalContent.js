@@ -1,6 +1,7 @@
 import { createElement, domOn, replaceElement } from '../../modules/domlib.js'
 import { t } from '../../modules/i18n.js'
 import { SYNC_CHOICES } from '../../modules/services/charSheetSync.service.js'
+import charSheetAuthorityProperties from '../../modules/stores/charSheet.authority.properties.js'
 import { AbstractComponent } from '../AbstractComponent/AbstractComponent.js'
 
 export class SyncConflictModalContent extends AbstractComponent {
@@ -78,10 +79,10 @@ export class SyncConflictModalContent extends AbstractComponent {
           createElement('div', t._('modals.syncConflicts.entryTitle', { entryId: conflict.entryId }), {
             class: 'fw-semibold text-break',
           }),
-          createElement('small', t._('modals.syncConflicts.localEntry', { date: localDate, name: conflict.localEntry.data.name }), {
+          createElement('small', t._('modals.syncConflicts.localEntry', { date: localDate, name: conflict.localEntry.data[charSheetAuthorityProperties.name] }), {
             class: 'text-body-secondary d-block',
           }),
-          createElement('small', t._('modals.syncConflicts.remoteEntry', { date: remoteDate, name: conflict.remoteEntry.data.name }), {
+          createElement('small', t._('modals.syncConflicts.remoteEntry', { date: remoteDate, name: conflict.remoteEntry.data[charSheetAuthorityProperties.name] }), {
             class: 'text-body-secondary d-block',
           }),
         ], { class: 'd-flex flex-column gap-1' }),
