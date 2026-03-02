@@ -105,7 +105,7 @@ function supabaseAuthChanged(event, session) {
 
   if (event === 'SIGNED_OUT') {
     return providers[providerId].signOut()
-      // TODO: Catch: if cannot signOut google ?
+      // TODO: Catch: if cannot signOut provider ?
       .then(() => {
         forgetProviderId()
         authStore.reset()
