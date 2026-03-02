@@ -46,8 +46,8 @@ export default {
     syncConflicts: {
       title: 'Conflits de synchronisation',
       entryTitle: 'Personnage: {entryId}',
-      localDate: 'Local: {date}',
-      remoteDate: 'Cloud: {date}',
+      localEntry: 'Local: {name} - {date}',
+      remoteEntry: 'Cloud: {name} - {date}', // TODO: finish rename Cloud
       choices: {
         local: 'Garder local',
         remote: 'Garder distant',
