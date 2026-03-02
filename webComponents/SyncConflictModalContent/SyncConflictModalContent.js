@@ -71,8 +71,8 @@ export class SyncConflictModalContent extends AbstractComponent {
 
   #render() {
     replaceElement(this.#listElement, this.#props.syncConflicts.map(conflict => {
-      const localDate = new Date(conflict.localEntry.updatedAt).toISOString()
-      const remoteDate = new Date(conflict.remoteEntry.updatedAt).toISOString()
+      const localDate = new Date(conflict.localEntry.updatedAt)
+      const remoteDate = new Date(conflict.remoteEntry.updatedAt)
 
       return createElement('div', [
         createElement('div', [
