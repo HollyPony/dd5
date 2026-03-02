@@ -203,15 +203,16 @@ export const i18n = {
  * strObjInterpolation("The {0} says {1}, {1}, {1}!", ['cow', 'moo']);
  *
  * @param {string} [str=''] Input string.
- * @param {Object|Array} [obj=[]] Interpolation values by name or index.
+ * @param {Object|Array} [interpolations=[]] Interpolation values by name or index.
  * @returns {string}
  */
-function strObjInterpolation(str = '', obj = []) {
+function strObjInterpolation(str = '', interpolations = []) {
   return str.replace(
     /{([^{}]*)}/g,
-    (a, b) => {
-      const r = obj[b]
-      return typeof r === 'string' || typeof r === 'number' ? r : a
+    (match, p1) => {
+      const value = interpolations[p1]
+      if (value instanceof Date) return value.toLocaleDateString(currentLang)
+      return typeof value === 'string' || typeof value === 'number' ? value : match
     },
   )
 }
