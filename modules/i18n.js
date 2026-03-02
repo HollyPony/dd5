@@ -211,7 +211,7 @@ function strObjInterpolation(str = '', interpolations = []) {
     /{([^{}]*)}/g,
     (match, p1) => {
       const value = interpolations[p1]
-      if (value instanceof Date) return value.toLocaleDateString(currentLang)
+      if (value instanceof Date) return `${value.toLocaleDateString(currentLang)} - ${value.toLocaleTimeString(currentLang)}`
       return typeof value === 'string' || typeof value === 'number' ? value : match
     },
   )
