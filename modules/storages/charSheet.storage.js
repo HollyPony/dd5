@@ -76,24 +76,21 @@ function saveEntry(entry) {
   return entry
 }
 
-function saveSheet(entryId, data) {
-  const entry = {
-    id: entryId ?? createId(),
-    updatedAt: Date.now(),
-    version: STORAGE_VERSION,
-    data,
-  }
-
-  return saveEntry(entry)
+function markAsSync(entry) {
+  storage.setItem(buildStorageKey(entry.id), toJSONEntry({
+    ...entry,
+    syncBaseUpdatedAt: entry.updatedAt
+  }))
 }
 
-function copy(entryId) {
-  const { version, data } = getEntry(entryId)
-  data.name += ' (copy)'
+function saveSheet(entryId, data) {
+  const existingEntry = entryId ? getEntry(entryId) : undefined
+
   return saveEntry({
-    id: createId(),
+    id: entryId ?? createId(),
     updatedAt: Date.now(),
-    version,
+    syncBaseUpdatedAt: existingEntry?.syncBaseUpdatedAt ?? null,
+    version: existingEntry?.version ?? STORAGE_VERSION,
     data,
   })
 }
@@ -110,8 +107,8 @@ export default {
   getLastUpdatedEntryId,
   getRawEntry,
   getEntry, getSheet,
-  saveEntry, saveSheet,
-  copy, remove,
+  saveEntry, markAsSync, saveSheet,
+  remove,
   onCharListChanged(callback) {
     return eventBus.on(CHAR_LIST_CHANGED, callback)
   },

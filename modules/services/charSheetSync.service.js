@@ -15,8 +15,8 @@ export const SYNC_CHOICES = {
 
 /**
  * @param {string} entryId
- * @param {{ id: string, updatedAt: number, data: object }} localEntry
- * @param {{ id: string, updatedAt: number, data: object }} remoteEntry
+ * @param {{ id: string, updatedAt: number, syncBaseUpdatedAt: number, data: object }} localEntry
+ * @param {{ id: string, updatedAt: number, syncBaseUpdatedAt: number, data: object }} remoteEntry
  */
 function createConflictState(entryId, localEntry, remoteEntry) {
   return {
@@ -24,6 +24,19 @@ function createConflictState(entryId, localEntry, remoteEntry) {
     entryId,
     localEntry,
     remoteEntry,
+  }
+}
+
+function copyEntry(entry) {
+  const { version, data } = entry
+  data.name += ' (copy)'
+  const updatedAt = Date.now()
+  return {
+    id: charSheetStorage.createId(),
+    updatedAt,
+    syncBaseUpdatedAt: updatedAt,
+    version,
+    data,
   }
 }
 
@@ -39,20 +52,38 @@ async function synchronizeEntry(entryId) {
     })
 
   if (!localEntry) {
+    remoteEntry.syncBaseUpdatedAt = remoteEntry.updatedAt
     charSheetStorage.saveEntry(remoteEntry)
     return { status: SYNC_STATUS.synced, entryId }
   }
 
   if (!remoteEntry) {
     await charSheetSupabase.save(localEntry)
+    charSheetStorage.markAsSync(localEntry)
     return { status: SYNC_STATUS.synced, entryId }
   }
 
-  if (remoteEntry.updatedAt === localEntry.updatedAt) {
+  const localSyncUpdatedAt = localEntry.syncBaseUpdatedAt
+  const localChanged = localEntry.updatedAt !== localSyncUpdatedAt
+  const remoteChanged = remoteEntry.updatedAt !== localSyncUpdatedAt
+
+  if (localChanged && remoteChanged) {
+    return createConflictState(entryId, localEntry, remoteEntry)
+  }
+
+  if (localChanged) {
+    await charSheetSupabase.save(localEntry)
+    charSheetStorage.markAsSync(localEntry)
     return { status: SYNC_STATUS.synced, entryId }
   }
 
-  return createConflictState(entryId, localEntry, remoteEntry)
+  if (remoteChanged) {
+    remoteEntry.syncBaseUpdatedAt = remoteEntry.updatedAt
+    charSheetStorage.saveEntry(remoteEntry)
+    return { status: SYNC_STATUS.synced, entryId }
+  }
+
+  return { status: SYNC_STATUS.synced, entryId }
 }
 
 async function synchronizeEntries(entryIds) {
@@ -78,22 +109,25 @@ async function synchronizeEntries(entryIds) {
 
 async function resolveConflicts(resolutions) {
   for (const { choice, entryId } of resolutions) {
-
     switch (choice) {
       case SYNC_CHOICES.local:
         const localEntry = charSheetStorage.getEntry(entryId)
         await charSheetSupabase.save(localEntry)
+        charSheetStorage.markAsSync(localEntry)
         break
       case SYNC_CHOICES.remote: {
         const remoteEntry = await charSheetSupabase.load(entryId)
+        remoteEntry.syncBaseUpdatedAt = remoteEntry.updatedAt
         charSheetStorage.saveEntry(remoteEntry)
         break
       }
       case SYNC_CHOICES.both: {
         const remoteEntry = await charSheetSupabase.load(entryId)
-        const duplicatedEntry = charSheetStorage.copy(entryId)
-        charSheetStorage.saveEntry(remoteEntry)
+        const duplicatedEntry = copyEntry(charSheetStorage.getEntry(entryId))
         await charSheetSupabase.save(duplicatedEntry)
+        remoteEntry.syncBaseUpdatedAt = remoteEntry.updatedAt
+        charSheetStorage.saveEntry(remoteEntry)
+        charSheetStorage.saveEntry(duplicatedEntry)
         break
       }
       default:
