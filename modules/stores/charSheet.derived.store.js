@@ -381,7 +381,7 @@ function createCharSheetStore() {
   function getHitDiceMax() { return DICE(getLevel(), getClass()?.hitDice ?? 100) }
 
   function getChoicePayload(selector) {
-    return getChoiceSelections()[getSelectorKey(selector)]?.payload ?? null
+    return (selector && getChoiceSelections()[getSelectorKey(selector)]?.payload) ?? null
   }
 
   function setPayloadToSelection(choice, payload) {
